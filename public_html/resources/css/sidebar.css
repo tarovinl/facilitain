@@ -1,0 +1,48 @@
+.sidebar {
+    background-color: #2c2c2c;
+    height: 100vh;
+    padding: 20px;
+    color: white;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.sidebar a:hover {
+    background-color: #444;
+    border-radius: 5px;
+}
+
+.sidebar .active {
+    background-color: #ffca2c;
+    color: black;
+    border-radius: 5px;
+}
+
+.todo-list {
+    margin-top: 20px;
+}
+
+.todo-item {
+    background-color: #000000;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.content h1 {
+    margin-bottom: 20px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 10px;
+}
