@@ -3,6 +3,7 @@
 <html>
 <head>
     <link href="<%=request.getContextPath()%>/resources/css/sidebar.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
     <div class="sidebar">
@@ -10,7 +11,7 @@
             <h2>FACILITAIN</h2>
         </a>
         <p>Welcome, Admin</p>
-        <a href="<%=request.getContextPath()%>/index.jsp" class="${page == 'homepage.jsp' ? 'active' : ''}">
+        <a href="<%=request.getContextPath()%>/maincontroller" class="${page == 'index.jsp' ? 'active' : ''}">
             <i class="bi bi-house"></i> Homepage
         </a>
         <a href="<%=request.getContextPath()%>/notification.jsp" class="${page == 'notification.jsp' ? 'active' : ''}">
@@ -19,7 +20,7 @@
         <a href="<%=request.getContextPath()%>/calendar.jsp" class="${page == 'calendar.jsp' ? 'active' : ''}">
             <i class="bi bi-calendar"></i> Calendar
         </a>
-       <a href="<%=request.getContextPath()%>/history.jsp" class="${page == 'history.jsp' ? 'active' : ''}">
+        <a href="<%=request.getContextPath()%>/history.jsp" class="${page == 'history.jsp' ? 'active' : ''}">
             <i class="bi bi-clock-history"></i> History Logs
         </a>
         <a href="<%=request.getContextPath()%>/feedback.jsp" class="${page == 'feedback.jsp' ? 'active' : ''}">

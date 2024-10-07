@@ -5,67 +5,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>History Logs</title>
-    <link rel="stylesheet" href="resources/hLogs.css">        
+    <!-- Bootstrap CSS from StackPath -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Custom CSS for history logs -->
+    <link rel="stylesheet" href="resources/hLogs.css">
 </head>
 <body>
-    <div class="d-flex vh-100" style="background: red;">
-    <jsp:include page="sidebar.jsp"></jsp:include>
-        <div class="topLevel">
-            <div>
+    <div class="d-flex vh-100">
+        <!-- Include the Sidebar -->
+        <jsp:include page="sidebar.jsp"></jsp:include>
+
+        <!-- Main content -->
+        <div class="container-fluid mt-4">
+            <!-- Page title and sort dropdown -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <h1>History Logs</h1>
-            </div>
-            <div>
-                <select class="sortDropdown">
-                    <option value="all">Sort</option>
+                <select class="form-select w-auto" aria-label="Sort history logs">
+                    <option selected>Sort by</option>
+                    <option value="1">Date</option>
+                    <option value="2">By</option>
+                    <option value="3">Action</option>
                 </select>
             </div>
-        </div>
 
-        <!-- Table structure -->
-        <table aria-label="history logs table" class="logContainer">
-            <thead>
-                <tr style="display: flexbox; justify-item: start;">
-                    <th class="logHeader">Date</th>
-                    <th class="logHeader">Time</th>
-                    <th class="logHeader">By</th>
-                    <th class="logHeader">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="logBody">01/01/2001</td>
-                    <td class="logBody">11:11 PM</td>
-                    <td class="logBody">Administrator 1</td>
-                    <td class="logBody">
-                        Manage thingy 1 fand do some stuff and do some stuff and do some
-                        stuff and do some stuff and do some stuff and do some stuff and do
-                        some stuff and do some stuff and do some stuff and do some stuff
-                        and do some stuff and do some stuff and do some stuff
-                    </td>
-                </tr>
-                <tr>
-                    <td class="logBody">02/02/2002</td>
-                    <td class="logBody">2:22 PM</td>
-                    <td class="logBody">System</td>
-                    <td class="logBody">Manage thingy 2</td>
-                </tr>
-                <tr>
-                    <td class="logBody">03/03/2003</td>
-                    <td class="logBody">3:33 PM</td>
-                    <td class="logBody">Administrator 2</td>
-                    <td class="logBody">Manage thingy 3</td>
-                </tr>
-                <tr>
-                    <td class="logBody">04/04/2004</td>
-                    <td class="logBody">4:44 PM</td>
-                    <td class="logBody">Support Staff 4</td>
-                    <td class="logBody">Manage thingy 4</td>
-                </tr>
-            </tbody>
-        </table>
+            <!-- Table structure -->
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">By</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JSP mock data - using a custom class to store logs -->
+                    <%
+                        // Mock class for history logs
+                        class HistoryLog {
+                            String date, time, by, action;
+                            HistoryLog(String date, String time, String by, String action) {
+                                this.date = date;
+                                this.time = time;
+                                this.by = by;
+                                this.action = action;
+                            }
+                        }
+                        
+                        // Creating an array of history logs
+                        HistoryLog[] logs = new HistoryLog[] {
+                            new HistoryLog("07/15/2024", "12:06 PM", "Administrator 1", "Manual status change"),
+                            new HistoryLog("07/12/2024", "1:04 PM", "Administrator 2", "Quotation of XY2010 uploaded"),
+                            new HistoryLog("06/28/2024", "11:24 AM", "Administrator 3", "Added building 'Henry Sy'"),
+                            new HistoryLog("06/20/2024", "9:05 AM", "System", "Auto status change to 'in maintenance'"),
+                            new HistoryLog("05/14/2024", "2:32 PM", "Administrator 1", "Manual status change"),
+                            new HistoryLog("05/09/2024", "12:30 PM", "Administrator 2", "Quotation of KC0100 uploaded"),
+                            new HistoryLog("05/07/2024", "7:04 AM", "Administrator 3", "Added building 'Parish'"),
+                            new HistoryLog("04/20/2024", "11:04 AM", "System", "Auto status change to 'in maintenance'")
+                        };
+
+                        // Loop through and display each log entry
+                        for (HistoryLog log : logs) {
+                    %>
+                    <tr>
+                        <td><%= log.date %></td>
+                        <td><%= log.time %></td>
+                        <td><%= log.by %></td>
+                        <td><%= log.action %></td>
+                    </tr>
+                    <%
+                        }
+                    %>
+                </tbody>
+            </table>
+        </div>
     </div>
-    
+
+    <!-- StackPath Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

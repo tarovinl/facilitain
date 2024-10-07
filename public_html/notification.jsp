@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- StackPath Bootstrap CSS -->
+   
      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"/>
 
-    <!-- StackPath Bootstrap Icons -->
+    
     <link href="https://stackpath.bootstrapcdn.com/bootstrap-icons/1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Notifications</title>
 </head>
 <body>
     <div class="d-flex">
-        <!-- Include Sidebar here -->
+        
         <jsp:include page="sidebar.jsp"></jsp:include>
 
         <!-- Main container for Notifications -->
