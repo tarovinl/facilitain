@@ -66,6 +66,6 @@ public class mainController extends HttpServlet {
         request.setAttribute("locations", locations);
 
         // Forward the request to your JSP page to display the locations
-        request.getRequestDispatcher("/index.jsp").forward(request, response);
+        request.getRequestDispatcher("/homepage.jsp").forward(request, response);
     }
 }
