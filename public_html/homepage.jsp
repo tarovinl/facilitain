@@ -21,7 +21,7 @@
                        
                         <c:forEach var="location" items="${locations}">
                             <div class="col-md-4">
-                                <a href="buildingDashboard?buildingID=${itemLocId}" class="text-decoration-none"> 
+                                <a href="buildingDashboard?locID=${location.itemLocId}" class="text-decoration-none"> 
                                     <div class="card mb-4">
                                         <div class="card-body">
                                             <h5 class="card-title">${location.locName}</h5>
@@ -33,10 +33,11 @@
                         </c:forEach>
                     </div>
 
-                    <!-- Bootstrap JS -->
-                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+                    
                 </div>
             </div>
         </div>
+        <!-- Bootstrap JS -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

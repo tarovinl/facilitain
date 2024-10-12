@@ -2,16 +2,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link href="<%=request.getContextPath()%>/resources/css/sidebar.css" rel="stylesheet">
+    <link href="resources/css/sidebar.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
     <div class="sidebar">
-        <a href="<%=request.getContextPath()%>/index.jsp">
+        <a href="<%=request.getContextPath()%>/homepage">
             <h2>FACILITAIN</h2>
         </a>
         <p>Welcome, Admin</p>
-        <a href="<%=request.getContextPath()%>/maincontroller" class="${page == 'index.jsp' ? 'active' : ''}">
+        <a href="<%=request.getContextPath()%>/homepage" class="${page == 'index.jsp' ? 'active' : ''}">
             <i class="bi bi-house"></i> Homepage
         </a>
         <a href="<%=request.getContextPath()%>/notification.jsp" class="${page == 'notification.jsp' ? 'active' : ''}">
