@@ -7,11 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+
 import java.util.List;
 import java.util.Map;
-
-import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -26,18 +24,21 @@ import sample.model.PooledConnection;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage" })
 public class mainController extends HttpServlet {
+
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
+
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
     }
+
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(CONTENT_TYPE);
         
         List<Location> locations = new ArrayList<>();
         ArrayList<Location> listFloor = new ArrayList<>();
-        ArrayList<Item> listItem = new ArrayList<>();
+        List<Item> listItem = new ArrayList<>();
 
      
         try (
@@ -54,13 +55,7 @@ public class mainController extends HttpServlet {
                 location.setLocDescription(rs.getString("DESCRIPTION"));
                 location.setActiveFlag(rs.getInt("ACTIVE_FLAG"));
                 locations.add(location);
-                // Print 
-                System.out.println("__________________________");
-                System.out.println("ID = " + location.getItemLocId());
-                System.out.println("Name = " + location.getLocName());
-                System.out.println("Description = " + location.getLocDescription());
-                System.out.println("Active Flag = " + location.getActiveFlag());
-                System.out.println("__________________________");
+                
             }
             rs.close();
 
@@ -77,7 +72,7 @@ public class mainController extends HttpServlet {
             while (rsItem.next()) {
                 Item items = new Item();
                 items.setItemID(rsItem.getInt("ITEM_ID"));
-                items.setItemLID(rsItem.getInt("ITEM_LOCATION_ID"));
+                items.setItemLID(rsItem.getInt("LOCATION_ID"));
                 items.setItemTID(rsItem.getInt("ITEM_TYPE_ID"));
                 items.setItemName(rsItem.getString("NAME"));
                 items.setItemRoom(rsItem.getString("ROOM_NO"));
@@ -85,9 +80,19 @@ public class mainController extends HttpServlet {
                 items.setItemLocText(rsItem.getString("LOCATION_TEXT"));
                 items.setDateInstalled(rsItem.getDate("DATE_INSTALLED"));
                 listItem.add(items);
+
+                // Print 
+                System.out.println("__________________________");
+                System.out.println("ID = " + items.getItemID());
+                System.out.println("Name = " + items.getItemName());
+                System.out.println("Item Loc ID = " + items.getItemLID());
+                System.out.println("Item Type ID = " + items.getItemTID());
+                System.out.println("Room = " + items.getItemRoom());
+                System.out.println("Floor = " + items.getItemFloor());
+                System.out.println("__________________________");
             }
             rsItem.close();
-            
+
         } catch (SQLException error) {
             error.printStackTrace();
         }
@@ -102,7 +107,7 @@ public class mainController extends HttpServlet {
             }
             groupedFloors.get(locID).add(floorName);
         }
-
+        
         // Store locations in the request scope to pass to JSP
         request.setAttribute("locations", locations);
         request.setAttribute("FMO_FLOORS_LIST", groupedFloors);
