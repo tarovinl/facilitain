@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<%@ page contentType="text/html;charset=windows-1252"%>
+<%@ page contentType="text/html;charset=windows-1252" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,73 +11,72 @@
     <link rel="stylesheet" href="resources/hLogs.css">
 </head>
 <body>
-    <div class="d-flex vh-100">
-        <!-- Include the Sidebar -->
-        <jsp:include page="sidebar.jsp"></jsp:include>
-
-        <!-- Main content -->
-        <div class="container-fluid mt-4">
-            <!-- Page title and sort dropdown -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1>History Logs</h1>
-                <select class="form-select w-auto" aria-label="Sort history logs">
-                    <option selected>Sort by</option>
-                    <option value="1">Date</option>
-                    <option value="2">By</option>
-                    <option value="3">Action</option>
-                </select>
+    <div class="container-fluid">
+        <div class="row vh-100">
+            <!-- Sidebar: Fixed width using Bootstrap's grid system -->
+            <div class="col-md-3 col-lg-2 p-0">
+                <jsp:include page="sidebar.jsp"></jsp:include>
             </div>
+            
+            <!-- Main content: Use col and offset to avoid overlap with sidebar -->
+            <div class="col-md-9 col-lg-10 p-4">
+                <!-- Page title and sort dropdown -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1>History Logs</h1>
+                    <select class="form-select w-auto" aria-label="Sort history logs">
+                        <option selected>Sort by</option>
+                        <option value="1">Date</option>
+                        <option value="2">By</option>
+                        <option value="3">Action</option>
+                    </select>
+                </div>
 
-            <!-- Table structure -->
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Time</th>
-                        <th scope="col">By</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- JSP mock data - using a custom class to store logs -->
-                    <%
-                        // Mock class for history logs
-                        class HistoryLog {
-                            String date, time, by, action;
-                            HistoryLog(String date, String time, String by, String action) {
-                                this.date = date;
-                                this.time = time;
-                                this.by = by;
-                                this.action = action;
+                <!-- Table structure -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">By</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- JSP mock data - using a custom class to store logs -->
+                        <%
+                            class HistoryLog {
+                                String date, time, by, action;
+                                HistoryLog(String date, String time, String by, String action) {
+                                    this.date = date;
+                                    this.time = time;
+                                    this.by = by;
+                                    this.action = action;
+                                }
                             }
-                        }
-                        
-                        // Creating an array of history logs
-                        HistoryLog[] logs = new HistoryLog[] {
-                            new HistoryLog("07/15/2024", "12:06 PM", "Administrator 1", "Manual status change"),
-                            new HistoryLog("07/12/2024", "1:04 PM", "Administrator 2", "Quotation of XY2010 uploaded"),
-                            new HistoryLog("06/28/2024", "11:24 AM", "Administrator 3", "Added building 'Henry Sy'"),
-                            new HistoryLog("06/20/2024", "9:05 AM", "System", "Auto status change to 'in maintenance'"),
-                            new HistoryLog("05/14/2024", "2:32 PM", "Administrator 1", "Manual status change"),
-                            new HistoryLog("05/09/2024", "12:30 PM", "Administrator 2", "Quotation of KC0100 uploaded"),
-                            new HistoryLog("05/07/2024", "7:04 AM", "Administrator 3", "Added building 'Parish'"),
-                            new HistoryLog("04/20/2024", "11:04 AM", "System", "Auto status change to 'in maintenance'")
-                        };
-
-                        // Loop through and display each log entry
-                        for (HistoryLog log : logs) {
-                    %>
-                    <tr>
-                        <td><%= log.date %></td>
-                        <td><%= log.time %></td>
-                        <td><%= log.by %></td>
-                        <td><%= log.action %></td>
-                    </tr>
-                    <%
-                        }
-                    %>
-                </tbody>
-            </table>
+                            HistoryLog[] logs = new HistoryLog[] {
+                                new HistoryLog("07/15/2024", "12:06 PM", "Administrator 1", "Manual status change"),
+                                new HistoryLog("07/12/2024", "1:04 PM", "Administrator 2", "Quotation of XY2010 uploaded"),
+                                new HistoryLog("06/28/2024", "11:24 AM", "Administrator 3", "Added building 'Henry Sy'"),
+                                new HistoryLog("06/20/2024", "9:05 AM", "System", "Auto status change to 'in maintenance'"),
+                                new HistoryLog("05/14/2024", "2:32 PM", "Administrator 1", "Manual status change"),
+                                new HistoryLog("05/09/2024", "12:30 PM", "Administrator 2", "Quotation of KC0100 uploaded"),
+                                new HistoryLog("05/07/2024", "7:04 AM", "Administrator 3", "Added building 'Parish'"),
+                                new HistoryLog("04/20/2024", "11:04 AM", "System", "Auto status change to 'in maintenance'")
+                            };
+                            for (HistoryLog log : logs) {
+                        %>
+                        <tr>
+                            <td><%= log.date %></td>
+                            <td><%= log.time %></td>
+                            <td><%= log.by %></td>
+                            <td><%= log.action %></td>
+                        </tr>
+                        <%
+                            }
+                        %>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
