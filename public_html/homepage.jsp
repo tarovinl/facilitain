@@ -56,33 +56,43 @@
     </div>
 </div>
 
-<!-- Modal for Adding Building -->
+<!-- Add building modal -->
 <div class="modal fade" id="addBuildingModal" tabindex="-1" role="dialog" aria-labelledby="addBuildingModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addBuildingModalLabel">Add Building</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="buildingName">Name</label>
-                    <input type="text" class="form-control" id="buildingName" placeholder="Enter building name">
+        <form action="addBuilding" method="post" enctype="multipart/form-data"> <!-- Form action to servlet -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBuildingModalLabel">Add Building</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="form-group">
-                    <label for="buildingImage">Upload Image</label>
-                    <input type="file" class="form-control-file" id="buildingImage">
+                <div class="modal-body">
+                    <!-- Building Name (maps to locName in the model) -->
+                    <div class="form-group">
+                        <label for="locName">Building Name</label>
+                        <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter building name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="locDescription">Building Description</label>
+                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter building description" required>
+                    </div>
+
+                    <!-- Optional: Building Image (file upload) -->
+                    <div class="form-group">
+                        <label for="locImage">Upload Image</label>
+                        <input type="file" class="form-control-file" id="locImage" name="locImage">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning">Add</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-warning">Add</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
+
 
 <!-- Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
