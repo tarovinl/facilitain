@@ -7,10 +7,14 @@ public class Item {
     private int itemID;
     private int itemTID;
     private int itemLID;
+    private int itemCID;
     private String itemName;
     private String itemRoom;
     private String itemFloor;
     private String itemLocText;
+    private String itemBrand;
+    private String itemType;
+    private String itemCat;
     private Date dateInstalled;
 
     public void setItemID(int itemID) {
@@ -75,5 +79,37 @@ public class Item {
 
     public int getItemLID() {
         return itemLID;
+    }
+
+    public void setItemBrand(String itemBrand) {
+        this.itemBrand = itemBrand;
+    }
+
+    public String getItemBrand() {
+        return itemBrand;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemCat(String itemCat) {
+        this.itemCat = itemCat;
+    }
+
+    public String getItemCat() {
+        return itemCat;
+    }
+
+    public void setItemCID(int itemCID) {
+        this.itemCID = itemCID;
+    }
+
+    public int getItemCID() {
+        return itemCID;
     }
 }

@@ -24,11 +24,17 @@
     request.setAttribute("locID", locID);
     request.setAttribute("floorName", floorName);
 %>
+
+            <c:set var="locMatchFound" value="false" />
+            <c:set var="flrMatchFound" value="false" />
+            
             <c:forEach items="${locations}" var="location">
                 <c:if test="${location.itemLocId == locID}">
                     <c:set var="locName" value="${location.locName}"/>
+                    <c:set var="locMatchFound" value="true" />
                 </c:if>
-            </c:forEach>
+            </c:forEach>    
+            
 
     <body>
     <div class="container-fluid">
@@ -63,6 +69,9 @@
                     <a href="./buildingDashboard?locID=${locID}/manage?floor=${floor}" class="floorLinks">
                         ${floor}
                     </a>
+                    <c:if test="${floor == floorName}">
+                        <c:set var="flrMatchFound" value="true" />
+                    </c:if>
                 </c:forEach>
             </c:if>
         </c:forEach>    
@@ -83,16 +92,16 @@
         <!-- list of room dropdowns  (turn roomDropdown <li> into foreach)-->
         <div class="roomDropsdiv">
             <ul class="roomDropdowns">
-             <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
-                <c:if test="${item.itemLID == locID}">
-                    <c:if test="${item.itemFloor == floorName}">
-            
-           
+          
+          <c:forEach items="${uniqueRooms}" var="room" >
+            <c:if test="${room.itemLID == locID}">
+                <c:if test="${room.itemFloor == floorName}">
+                            
                 <li class="roomDropdown">
                     <div class="roomDropDiv">
                         <div class="roomDLblDiv">
                             <h3>
-                                <button onclick="showTblDiv()" >${item.itemRoom != null ? item.itemRoom : 'Non-Room Equipment'}</button>
+                                <button onclick="showTblDiv(this)" >${room.itemRoom != null ? room.itemRoom : 'Non-Room Equipment'}</button>
                             </h3>
                         </div>
                         <div class="roomDTblDiv">
@@ -101,6 +110,7 @@
                                     <th ></th>
                                     <th >ID</th>
                                     <th >Codename</th>
+                                    <th >Category</th>
                                     <th >Type</th>
                                     <th >Brand</th>
                                     <th >Date Installed</th>
@@ -110,38 +120,54 @@
                                     <th >Status</th>
                                 </tr>
                                 
+                            <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
+                                <c:if test="${item.itemLID == locID}">
+                                    <c:if test="${item.itemFloor == floorName}">
+                                    <c:if test="${item.itemRoom == room.itemRoom}">
                                 <tr>
                                     <td style="display: flex; justify-content: center; align-items: center; margin-bottom: 8px;">
                                         <input type="image" src="resources/images/editItem.svg" id="quotModalButton" alt="Open Modal" width="24" height="24">
                                     </td>
-                                    <td >1</td>
-                                    <td >5505</td>
-                                    <td >Aircon</td>
-                                    <td >Mitsubishi</td>
-                                    <td >01/01/2001</td>
+                                    <td >${item.itemID}</td>
+                                    <td >${item.itemName}</td>
+                                    <c:forEach items="${FMO_TYPES_LIST}" var="type" >
+                                        <c:if test="${type.itemTID == item.itemTID}">
+                                        <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
+                                            <c:if test="${cat.itemCID == type.itemCID}">
+                                            <td >${cat.itemCat}</td>
+                                            </c:if>
+                                        </c:forEach>
+                                            <td >${type.itemType}</td>
+                                        </c:if>
+                                    </c:forEach>
+                                    <td >${item.itemBrand != null ? item.itemBrand : 'N/A'}</td>
+                                    <td >${item.dateInstalled}</td>
                                     <td style="display: flex; justify-content: center; align-items: center; margin-top: 8px;">
                                         <input type="image" src="resources/images/quotationsIcon.svg" id="quotModalButton" alt="Open Modal" width="24" height="24">
                                     </td>
                                     <td >
-                                        <select id="status" class="statusDropdown">
+                                        <select class="statusDropdown">
                                             <option value="working" class="working">Working</option>
                                             <option value="nwork" class="nwork">Not Working</option>
                                             <option value="maintenance" class="maintenance">In Maintenance</option>
                                         </select>
                                     </td>
                                 </tr>
-                                
+                                    </c:if>
+                                    </c:if>
+                                </c:if>
+                            </c:forEach>    
                                 
                             </table>
                         </div>
                     </div>
                 </li>
                 
-              </c:if>  
-            </c:if>
-          </c:forEach> 
+                </c:if>    
+            </c:if>            
+        </c:forEach>   
            
-                <li>room 808</li>
+                <!--<li>room 808</li>-->
             </ul>
          </div>
         </div>
@@ -238,37 +264,47 @@
 </div>
 <!--end of add equipment modal-->
     
+    
+    <c:if test="${locMatchFound == false || flrMatchFound == false}">
+        <meta http-equiv="refresh" content="0; URL=./homepage" /> 
+    </c:if>
     <script>
     
-        function showTblDiv() {
-            var tblDiv = document.querySelector('.roomDTblDiv');
-                        tblDiv.style.display = (tblDiv.style.display === 'none' || tblDiv.style.display === '') ? 'block' : 'none';
+        function showTblDiv(button) {
+            var roomDropDiv = button.closest('.roomDropDiv');
+            // Find the .roomDTblDiv inside the parent container
+            var tblDiv = roomDropDiv.querySelector('.roomDTblDiv');
+    
+            // Toggle the display property of the specific .roomDTblDiv
+            tblDiv.style.display = (tblDiv.style.display === 'none' || tblDiv.style.display === '') ? 'block' : 'none';
+  
         }
     
-       const statusDropdown = document.getElementById('status');
+        const statusDropdowns = document.querySelectorAll('.statusDropdown');
 
-        // Function to update the dropdown's background color based on the selected option
-        function updateDropdownColor() {
-          const selectedValue = statusDropdown.value;
-        
-          // Remove all existing classes
-          statusDropdown.classList.remove('working', 'nwork', 'maintenance');
-        
-          // Add the class corresponding to the selected value
-          if (selectedValue === 'working') {
-            statusDropdown.classList.add('working');
-          } else if (selectedValue === 'nwork') {
-            statusDropdown.classList.add('nwork');
-          } else if (selectedValue === 'maintenance') {
-            statusDropdown.classList.add('maintenance');
-          }
+        function updateDropdownColor(dropdown) {
+            const selectedValue = dropdown.value;
+
+            dropdown.classList.remove('working', 'nwork', 'maintenance');
+
+            if (selectedValue === 'working') {
+                dropdown.classList.add('working');
+            } else if (selectedValue === 'nwork') {
+                dropdown.classList.add('nwork');
+            } else if (selectedValue === 'maintenance') {
+                dropdown.classList.add('maintenance');
+            }
         }
 
-        // Set initial color when the page loads
-        updateDropdownColor();
+        statusDropdowns.forEach(function(dropdown) {
+            updateDropdownColor(dropdown);
 
-        // Update the color whenever the dropdown value changes
-        statusDropdown.addEventListener('change', updateDropdownColor);
+            // Add event listener to each dropdown
+            dropdown.addEventListener('change', function() {
+                updateDropdownColor(dropdown);
+            });
+        });
+
     </script>
     
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>

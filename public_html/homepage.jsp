@@ -18,7 +18,6 @@
                     <h1 class="my-4">Homepage</h1>
 
                     <div class="row">
-                       
                         <c:forEach var="location" items="${locations}">
                             <div class="col-md-4">
                                 <a href="buildingDashboard?locID=${location.itemLocId}" class="text-decoration-none"> 

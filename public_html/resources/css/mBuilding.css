@@ -151,4 +151,8 @@
     .roomDTblDiv tr {
         margin-bottom: 10px;
     }
+    .buttonsBuilding{
+        padding: 8px 16px;
+        font-size: 16px;
+    }
 }

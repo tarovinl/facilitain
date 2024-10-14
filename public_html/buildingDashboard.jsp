@@ -6,11 +6,20 @@
 <%
     request.setAttribute("locID", request.getParameter("locID"));
 %>
+        <c:set var="matchFound" value="false" />
+
             <c:forEach items="${locations}" var="location">
                 <c:if test="${location.itemLocId == locID}">
                     <c:set var="locName" value="${location.locName}" />
+                    <c:set var="matchFound" value="true" />
                 </c:if>
             </c:forEach>
+            
+        <c:if test="${matchFound == false}">
+            <script>
+            window.location.href = './homepage'; 
+            </script>
+        </c:if>
 
 
 <html>
