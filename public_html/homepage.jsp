@@ -39,7 +39,7 @@
                 <c:forEach var="location" items="${locations}">
                     <div class="col-md-4">
                         <div class="card mb-4 position-relative">
-                            <a href="buildingDashboard?buildingID=${location.itemLocId}" class="text-decoration-none">
+                            <a href="buildingDashboard?locID=${location.itemLocId}" class="text-decoration-none">
                                 <div class="card-body">
                                     <h5 class="card-title">${location.locName}</h5>
                                     <p class="card-text">${location.locDescription}</p>
@@ -59,7 +59,7 @@
 <!-- Add building modal -->
 <div class="modal fade" id="addBuildingModal" tabindex="-1" role="dialog" aria-labelledby="addBuildingModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form action="addBuilding" method="post"> <!-- Form action to servlet -->
+        <form action="building" method="post"> <!-- Form action to servlet -->
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addBuildingModalLabel">Add Building</h5>
