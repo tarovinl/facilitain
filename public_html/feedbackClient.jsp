@@ -1,5 +1,5 @@
-<%@ page contentType="text/html;charset=windows-1252"%>
 <!DOCTYPE html>
+<%@ page contentType="text/html;charset=windows-1252"%>
 <html lang="en">
     <head>
         <!-- Meta Tags -->
