@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=windows-1252"%> 
 <%@ page import="java.util.ArrayList" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <html>
     <head>
@@ -11,6 +12,9 @@
         <link rel="stylesheet" href="resources/css/mBuilding.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.js"></script>
+        
     </head>
 
 <%
@@ -35,6 +39,11 @@
                 </c:if>
             </c:forEach>    
             
+            <c:set var="brandListString" value="" />
+                <c:forEach var="brand" items="${FMO_BRANDS_LIST}" varStatus="status">
+                    <c:set var="brandListString" value="${brandListString}${brand.itemBrand}${status.last ? '' : ', '}" />
+                </c:forEach>
+
 
     <body>
     <div class="container-fluid">
@@ -85,7 +94,7 @@
               <button class="buttonsBuilding"> <!--hidden if acc is not admin-->
                 Edit Building
               </button>
-              <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button">Add Equipment</button>
+              <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="roomRender()">Add Equipment</button>
             </div>
         </div>
         
@@ -198,29 +207,43 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
-                                    <label for="itemType" class="form-label">Type</label>
-                                    <select class="form-select" name="itemType">
-                                      <option value="aircon" selected>Aircon</option>
+                                    <label for="itemCat" class="form-label">Category</label>
+                                    <select class="form-select" name="itemCat">
+                                        <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
+                                            <option value="${cat.itemCID}" selected>${cat.itemCat}</option>
+                                        </c:forEach>
                                     </select>
                                 </div>
                                 <div class="col">
-                                    <label for="itemFloor" class="form-label">Floor</label>
-                                    <select class="form-select" name="itemFloor">
-                                      <option value="1" selected>1F</option>
+                                    <label for="itemType" class="form-label">Type</label>
+                                    <select class="form-select" name="itemType">
+                                        <c:forEach items="${FMO_TYPES_LIST}" var="type" >
+                                            <option value="${type.itemTID}" selected>${type.itemType}</option>
+                                        </c:forEach>
                                     </select>
+                                </div>
+                                <div class="col">
+                                    <label for="itemBrand" class="form-label">Brand</label>
+                                    <input class="form-control awesomplete" id="brandName" data-list="${brandListString}">
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
-                                    <label for="itemBrand" class="form-label">Brand</label>
-                                    <select class="form-select" name="itemBrand">
-                                      <option value="mitsubishi" selected>Mitsubishi</option>
+                                    <label for="itemFloor" class="form-label">Floor</label>
+                                    <select class="form-select" name="itemFloor" id="itemFloor" onchange="roomRender()">
+                                      <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
+                                        <c:if test="${floors.key == locID}">
+                                        <c:forEach var="floor" items="${floors.value}">
+                                            <option value="${floor}">${floor}</option>
+                                        </c:forEach>
+                                        </c:if>
+                                      </c:forEach>  
                                     </select>
                                 </div>
                                 <div class="col">
                                     <label for="itemRoom" class="form-label">Room</label>
-                                    <select class="form-select" name="itemRoom">
-                                      <option value="1" selected>1804</option>
+                                    <select class="form-select" name="itemRoom" id="itemRoom" onchange="roomCall()">
+                                        <!--javascript function populates select after choosing floor-->
                                     </select>
                                 </div>
                             </div>
@@ -247,12 +270,22 @@
                                     
                                 </div>
                             </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="locText">Location Text</label>
+                                    <textarea class="form-control" id="locText" rows="2"></textarea>
+                                </div>
+                                <div class="col">
+                                    <label for="remarks">Remarks</label>
+                                    <textarea class="form-control" id="remarks" rows="2"></textarea>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col text-center">
-                                    <input type="submit" value="Save" class="btn btn-warning btn-lg mt-5 w-50 fw-bold">
+                                    <input type="submit" value="Save" class="btn btn-warning btn-lg mt-5 w-100 fw-bold">
                                 </div> 
                                 <div class="col text-center">
-                                    <button type="button" class="btn btn-warning btn-lg mt-5 w-50 fw-bold" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-warning btn-lg mt-5 w-100 fw-bold" data-dismiss="modal">Cancel</button>
                                 </div> 
                             </div>
                         </form>
@@ -305,6 +338,57 @@
             });
         });
 
+
+        const roomsData = [
+        <c:forEach items="${uniqueRooms}" var="room">
+            {
+                floor: '${room.itemFloor}', // Assuming room has an 'itemFloor' property
+                lid: '${room.itemLID}',     // Assuming room has an 'itemLID' property
+                roomName: '${room.itemRoom != null ? room.itemRoom : "Non-Room Equipment"}'
+            },
+        </c:forEach>
+        ];
+
+    function roomRender() {
+        const selectedFloor = document.getElementById('itemFloor').value;
+        const locID = '${locID}'; 
+        const roomSelect = document.getElementById('itemRoom');
+
+        roomSelect.innerHTML = '';
+
+        const defaultOption = document.createElement('option');
+        defaultOption.value = null; 
+        defaultOption.text = "Non-Room Equipment";
+        defaultOption.selected = true;
+        roomSelect.appendChild(defaultOption);
+        
+        const filteredRooms = roomsData.filter(function(room) {
+            return room.floor === selectedFloor && room.lid === locID;
+        });
+
+        filteredRooms.forEach(function(room) {
+            if(room.roomName !== "Non-Room Equipment"){
+            const option = document.createElement('option');
+            option.value = room.roomName
+            option.text = room.roomName;
+            roomSelect.appendChild(option);
+            }
+        });
+
+        // If no rooms, default message
+        if (filteredRooms.length === 0) {
+            const option = document.createElement('option');
+            option.value = "";
+            option.text = "No rooms available";
+            roomSelect.appendChild(option);
+        }
+    }
+    
+    function roomCall() {
+        const selectedRoom = document.getElementById('itemRoom').value;
+        console.log(selectedRoom);
+    }
+    
     </script>
     
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
