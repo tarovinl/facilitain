@@ -8,7 +8,15 @@
     </head>
     <body>
     <footer class="bg-facilGray sticky-top p-3 d-flex justify-content-between align-items-center w-100">
-    <img src="./resources/images/USTLogo.png" alt="USTLOGO" class="img-fluid" style="height: 6rem;" />
+    <img src="./resources/images/FACILITAIN.png" alt="USTLOGO" class="img-fluid" style="height: 3rem;" />
+    <div >
+    <a href="<%=request.getContextPath()%>/termsClient.jsp" class="${page == 'termsClient.jsp' ? 'active' : ''} pr-5">
+             Terms and Conditions
+        </a>
+         <a href="<%=request.getContextPath()%>/privacyClient.jsp" class="${page == 'privacyClient.jsp' ? 'active' : ''}">
+             Privacy Policy
+        </a>
+        </div>
 </footer>
 </body>
 </html>

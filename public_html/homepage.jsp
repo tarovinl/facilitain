@@ -11,8 +11,10 @@
     <body>
         <div class="d-flex vh-100">
             <!-- Sidebar Component -->
+            
             <jsp:include page="sidebar.jsp"/>
             <!-- Main Content -->
+           
             <div class="flex-grow-1 p-4">
                 <div class="container">
                     <h1 class="my-4">Homepage</h1>
