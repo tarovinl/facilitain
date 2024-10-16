@@ -75,7 +75,6 @@
                             <img src="resources/images/manageNext.svg" alt="next icon" width="20" height="20">
                         </a>
                     </c:if>
-                    
                 </c:forEach>
             </c:if>
           </c:forEach>
