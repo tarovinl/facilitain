@@ -44,6 +44,7 @@ public class mainController extends HttpServlet {
         ArrayList<Item> listItem = new ArrayList<>();
         ArrayList<Item> listTypes = new ArrayList<>();
         ArrayList<Item> listCats = new ArrayList<>();
+        ArrayList<Item> listBrands = new ArrayList<>();
 
      
         try (
@@ -51,8 +52,9 @@ public class mainController extends HttpServlet {
              PreparedStatement statement = con.prepareCall("SELECT ITEM_LOC_ID, NAME, DESCRIPTION, ACTIVE_FLAG FROM C##FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY NAME");
              PreparedStatement stmntFloor = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOC_FLOORS ORDER BY ITEM_LOC_ID, CASE WHEN REGEXP_LIKE(NAME, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(NAME, '^[0-9]+')) ELSE 9999 END, NAME");
              PreparedStatement stmntItems = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEMS ORDER BY LOCATION_ID, CASE WHEN REGEXP_LIKE(FLOOR_NO, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(FLOOR_NO, '^[0-9]+')) ELSE 9999 END, ROOM_NO, ITEM_ID");
-             PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_TYPES ORDER BY ITEM_TYPE_ID");
-             PreparedStatement stmntICats = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY ITEM_CAT_ID")){
+             PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME");
+             PreparedStatement stmntICats = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
+             PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME")){
 
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -121,6 +123,13 @@ public class mainController extends HttpServlet {
             }
             rsCat.close();
             
+            ResultSet rsBrand = stmntIBrands.executeQuery();
+            while (rsBrand.next()) {
+                Item brand = new Item();
+                brand.setItemBrand(rsBrand.getString("BRAND_NAME"));
+                listBrands.add(brand);
+            }
+            rsBrand.close();
 
         } catch (SQLException error) {
             error.printStackTrace();
@@ -137,14 +146,14 @@ public class mainController extends HttpServlet {
             groupedFloors.get(locID).add(floorName);
         }
         
-        Set<String> uniqueFloors = new HashSet<>();
-                List<Item> resultList = new ArrayList<>();
+        Set<String> uniqueRooms = new HashSet<>();
+                List<Item> resultRoomList = new ArrayList<>();
 
                 for (Item item : listItem) {
                     String uniqueKey = item.getItemLID() + ":" + item.getItemRoom() + ":" + item.getItemFloor();
-                    if (!uniqueFloors.contains(uniqueKey)) {
-                        uniqueFloors.add(uniqueKey);
-                        resultList.add(item);
+                    if (!uniqueRooms.contains(uniqueKey)) {
+                        uniqueRooms.add(uniqueKey);
+                        resultRoomList.add(item);
                     }
                 }
 
@@ -154,14 +163,21 @@ public class mainController extends HttpServlet {
 //                    System.out.println("Item LID: " + item.getItemLID() + ", Room: " + item.getItemRoom()+ ", Floor: " + item.getItemFloor()) ;
 //                }
         
+//        for (Item item : listBrands) {
+//                    System.out.println("_______________________________________________________");
+//                    System.out.println(item.getItemBrand()) ;
+//                    
+//                }
+        
         // Store locations in the request scope to pass to JSP
         request.setAttribute("locations", locations);
         request.setAttribute("FMO_FLOORS_LIST", groupedFloors);
         request.setAttribute("FMO_ITEMS_LIST", listItem);
-        request.setAttribute("uniqueRooms", resultList);
+        request.setAttribute("uniqueRooms", resultRoomList);
         request.setAttribute("FMO_TYPES_LIST", listTypes);
         request.setAttribute("FMO_CATEGORIES_LIST", listCats);
-
+        request.setAttribute("FMO_BRANDS_LIST", listBrands);
+        
         String path = request.getServletPath();
         String queryString = request.getQueryString();
 
