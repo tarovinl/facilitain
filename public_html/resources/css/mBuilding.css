@@ -147,6 +147,11 @@
     font-weight: bold;
 }
 
+td {
+            border: 1px solid black; /* Border for table cells */
+            padding: 8px; /* Space inside each cell */
+        }
+
 @media (max-width: 400px) {
     .roomDTblDiv tr {
         margin-bottom: 10px;
