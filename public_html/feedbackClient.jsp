@@ -9,7 +9,7 @@
         
         <!-- Bootstrap CSS -->
        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
         <!-- Optional: Add a custom title -->
         <title>Feedback</title>
     </head>
@@ -72,10 +72,16 @@
         <textarea id="suggestions" name="suggestions" rows="4" cols="50" class="d-block">
 
 </textarea>
+
             <!-- Example Bootstrap Button -->
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
         <button class="btn btn-primary">Submit</button>
     </div>
+    <div class="">
+    <button class="btn text-white p-2" style="background-color: transparent;">
+        <i class="bi bi-arrow-left-short"></i>Back
+    </button>
+</div>
             </div>
         </div>
 
