@@ -36,7 +36,7 @@
                                 <div class="mb-3">
                                     <span class="display-1"><i class="fas fa-users"></i></span>
                                 </div>
-                                <h5 class="card-title">Item Users</h5>
+                                <h5 class="card-title">Item Type</h5>
                             </div>
                             </a>
                         </div>
@@ -51,7 +51,20 @@
                                 <div class="mb-3">
                                     <span class="display-1"><i class="fas fa-users"></i></span>
                                 </div>
-                                <h5 class="card-title">QR management</h5>
+                                <h5 class="card-title">QR Print</h5>
+                             </a>
+                             </div>
+                          
+                        </div>
+                    </div>
+                     <div class="col-md-6">
+                        <div class="card text-center mb-4">
+                            <div class="card-body">
+                            <a href='#'>
+                                <div class="mb-3">
+                                    <span class="display-1"><i class="fas fa-users"></i></span>
+                                </div>
+                                <h5 class="card-title">Maintenance Schedule</h5>
                              </a>
                              </div>
                           
