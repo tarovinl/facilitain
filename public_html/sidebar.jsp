@@ -70,7 +70,7 @@
 </head>
 <body>
     <div class="sidebar d-flex flex-column">
-        <a href="<%=request.getContextPath()%>/index.jsp">
+        <a href="<%=request.getContextPath()%>/homepage">
             <h2>FACILITAIN</h2>
         </a>
         <p>Welcome, Admin</p>

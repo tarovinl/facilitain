@@ -25,7 +25,7 @@ public class buildingController extends HttpServlet {
             String sql;
 
             if (locID == null || locID.isEmpty()) {
-                // Insert a new building if locID is not provided
+                //  add new building if locID is not provided
                 sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_LOCATIONS (NAME, DESCRIPTION) VALUES (?, ?)";
             } else {
                 // Update existing building if locID is provided

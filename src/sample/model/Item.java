@@ -3,20 +3,23 @@ package sample.model;
 import java.util.Date;
 
 public class Item {
-    
-    private int itemID;
-    private int itemTID;
-    private int itemLID;
-    private int itemCID;
-    private String itemName;
-    private String itemRoom;
-    private String itemFloor;
-    private String itemLocText;
-    private String itemBrand;
-    private String itemType;
-    private String itemCat;
-    private Date dateInstalled;
 
+    private int itemID;          
+    private int itemTID;        
+    private int itemLID;       
+    private int itemCID;        
+    private String itemName;
+    private String itemRoom;     
+    private String itemFloor;    
+    private String itemLocText;  
+    private String itemBrand;    
+    private String itemType;     
+    private String itemCat;      
+    private String itemTypeDescription;
+    private Date dateInstalled;  
+    private int activeFlag;     
+
+    // Getters and Setters
     public void setItemID(int itemID) {
         this.itemID = itemID;
     }
@@ -31,6 +34,22 @@ public class Item {
 
     public int getItemTID() {
         return itemTID;
+    }
+
+    public void setItemLID(int itemLID) {
+        this.itemLID = itemLID;
+    }
+
+    public int getItemLID() {
+        return itemLID;
+    }
+
+    public void setItemCID(int itemCID) {
+        this.itemCID = itemCID;
+    }
+
+    public int getItemCID() {
+        return itemCID;
     }
 
     public void setItemName(String itemName) {
@@ -73,14 +92,6 @@ public class Item {
         return dateInstalled;
     }
 
-    public void setItemLID(int itemLID) {
-        this.itemLID = itemLID;
-    }
-
-    public int getItemLID() {
-        return itemLID;
-    }
-
     public void setItemBrand(String itemBrand) {
         this.itemBrand = itemBrand;
     }
@@ -105,11 +116,19 @@ public class Item {
         return itemCat;
     }
 
-    public void setItemCID(int itemCID) {
-        this.itemCID = itemCID;
+    public void setActiveFlag(int activeFlag) {
+        this.activeFlag = activeFlag;
     }
 
-    public int getItemCID() {
-        return itemCID;
+    public int getActiveFlag() {
+        return activeFlag;
+    }
+    
+    public void setItemTypeDescription(String itemTypeDescription) {
+        this.itemTypeDescription = itemTypeDescription;
+    }
+
+    public String getItemTypeDescription() {
+        return itemTypeDescription;
     }
 }
