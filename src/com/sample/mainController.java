@@ -88,6 +88,7 @@ public class mainController extends HttpServlet {
                 items.setItemFloor(rsItem.getString("FLOOR_NO"));
                 items.setItemBrand(rsItem.getString("BRAND_NAME"));
                 items.setItemLocText(rsItem.getString("LOCATION_TEXT"));
+                items.setItemRemarks(rsItem.getString("REMARKS"));
                 items.setDateInstalled(rsItem.getDate("DATE_INSTALLED"));
                 listItem.add(items);
 

@@ -78,6 +78,31 @@
 .roomDropdowns {
     list-style-type: none;
 }
+#paginationControls {
+    text-align: center;
+    margin-top: 15px;
+}
+.page-btn {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border: 1px solid #007bff; /* Border color */
+    background-color: green;   /* Background color */
+    color: #007bff;            /* Text color */
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s; /* Add a smooth hover effect */
+}
+.page-btn:hover {
+    background-color: #007bff; /* Blue background on hover */
+    color: white;              /* White text on hover */
+}
+.page-btn.active {
+    background-color: #007bff; /* Active button background */
+    color: white;              /* Active button text color */
+    border-color: #007bff;     /* Border color for the active button */
+}
+
 
 .roomDropdown {
 }

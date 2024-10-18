@@ -12,6 +12,7 @@ public class Item {
     private String itemRoom;
     private String itemFloor;
     private String itemLocText;
+    private String itemRemarks;
     private String itemBrand;
     private String itemType;
     private String itemCat;
@@ -111,5 +112,13 @@ public class Item {
 
     public int getItemCID() {
         return itemCID;
+    }
+
+    public void setItemRemarks(String itemRemarks) {
+        this.itemRemarks = itemRemarks;
+    }
+
+    public String getItemRemarks() {
+        return itemRemarks;
     }
 }
