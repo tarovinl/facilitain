@@ -39,7 +39,7 @@
                                     <div class="mb-3">
                                         <span class="display-1"><i class="fas fa-users"></i></span>
                                     </div>
-                                    <h5 class="card-title">Item Type</h5>
+                                    <h5 class="card-title">Item Types</h5>
                                 </div>
                             </a>
                         </div>
@@ -62,7 +62,7 @@
                     
                     <div class="col-md-6">
                         <div class="card text-center mb-4">
-                            <a href="<%=request.getContextPath()%>/maintenanceController">
+                            <a href="<%=request.getContextPath()%>/maintenanceSchedule">
                                 <div class="card-body">
                                     <div class="mb-3">
                                         <span class="display-1"><i class="fas fa-calendar"></i></span>
