@@ -1,0 +1,134 @@
+@charset "windows-1252";
+.topButtons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+
+}
+
+.buttonsBack {
+  text-decoration: none;
+  color: black;
+  font-size: 20px;
+  margin-left: 2px;
+  display: flex;
+}
+
+.buttonsBuilding{
+  margin: 8px 8px;
+    background-color: #fccc4c;
+    border: none;
+    font-weight: bold;
+    padding: 16px 32px;
+    font-size: 18px;
+    -webkit-appearance: none; /* Reset button appearance for WebKit browsers */
+    -moz-appearance: none; /* Reset button appearance for Mozilla browsers */
+    appearance: none; /* Reset button appearance for other browsers */
+}
+
+.statusDiv {
+  display: flex;
+  justify-content: end;
+  padding: 8px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.buildingName {
+  font-size: 28px;
+  padding-left: 10px;
+  padding-top: 56px;
+}
+
+.buildingManage {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding-right: 32px;
+  font-size: 26px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+
+.buildingDiagrams {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.diagram {
+  flex: 1;
+  outline: 2px solid black;
+  background-color: black;
+
+}
+.diagram:not(:last-child) {
+    margin-right: 6px; 
+}
+
+.diagramTitle {
+  padding-left: 10px;
+  color: white;
+}
+
+.buildingActivities {
+  display: flex;
+  justify-content: center;
+  gap: 160px;
+  margin-bottom: 20px;
+}
+
+.activity {
+  max-width: 580px;
+  flex: 1;
+  width: 100%; /* Make the child div take the full width of its container */
+  margin: 0 auto; /* Center the child div horizontally */
+  box-sizing: border-box;
+}
+
+.actContainer {
+  background: white;
+  height: 320px;
+  overflow: auto;
+  outline: 2px solid black;
+}
+
+.actItem {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  outline: 2px solid black;
+  font-size: 18px;
+  gap: 16px;
+}
+
+@media (max-width: 800px) {
+  .buildingActivities {
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .actCategories {
+    display: flex;
+    justify-content: center;
+  }
+
+  .buildingDiagrams {
+    flex-direction: column;
+    margin-bottom: 36px;
+  }
+  .buttonsBuilding{
+    padding: 8px 16px;
+    font-size: 16px;
+}
+
+}
