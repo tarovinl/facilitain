@@ -34,12 +34,12 @@
                     <div class="col-md-6">
                         <div class="card text-center mb-4">
                             <!-- Updated link to go through the controller -->
-                            <a href="<%=request.getContextPath()%>/itemTypes">
+                            <a href="<%=request.getContextPath()%>/itemCategories">
                                 <div class="card-body">
                                     <div class="mb-3">
                                         <span class="display-1"><i class="fas fa-users"></i></span>
                                     </div>
-                                    <h5 class="card-title">Item Types</h5>
+                                    <h5 class="card-title">Item Category</h5>
                                 </div>
                             </a>
                         </div>
