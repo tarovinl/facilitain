@@ -10,7 +10,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Building Dashboard</title>
         <link rel="stylesheet" href="resources/css/mBuilding.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <!-- Bootstrap 5 CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.js"></script>
@@ -50,6 +58,7 @@
       <div class="row min-vh-100">
         <div class=" col-lg-2 bg-light p-0">
           <jsp:include page="sidebar.jsp"/>
+          <jsp:include page="quotations.jsp" />
         </div>
     
     <div class="col-md-9 col-lg-10">
@@ -71,7 +80,7 @@
         <div class="buildingName">
             <h1>${locName}</h1>
         </div>
-        <div class="floorContainer">
+        <div class="container">
         <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
             <c:if test="${floors.key == locID}">
                 <c:forEach var="floor" items="${floors.value}">
@@ -94,18 +103,17 @@
               <button class="buttonsBuilding"> <!--hidden if acc is not admin-->
                 Edit Building
               </button>
-              <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="roomRender()">Add Equipment</button>
+              <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender();">Add Equipment</button>
             </div>
         </div>
         
         <!-- list of room dropdowns  (turn roomDropdown <li> into foreach)-->
         <div class="roomDropsdiv">
-            <ul class="roomDropdowns">
+            <ul class="roomDropdowns" id="roomDropdowns">
           
           <c:forEach items="${uniqueRooms}" var="room" >
             <c:if test="${room.itemLID == locID}">
-                <c:if test="${room.itemFloor == floorName}">
-                            
+                <c:if test="${room.itemFloor == floorName}">      
                 <li class="roomDropdown">
                     <div class="roomDropDiv">
                         <div class="roomDLblDiv">
@@ -114,7 +122,7 @@
                             </h3>
                         </div>
                         <div class="roomDTblDiv">
-                            <table aria-label="history logs table" >
+                            <table aria-label="history logs table">
                                 <tr style="margin-bottom: 120px;">
                                     <th ></th>
                                     <th >ID</th>
@@ -134,8 +142,38 @@
                                     <c:if test="${item.itemFloor == floorName}">
                                     <c:if test="${item.itemRoom == room.itemRoom}">
                                 <tr>
+                                
+                                <c:forEach items="${FMO_TYPES_LIST}" var="type" >
+                                    <c:if test="${type.itemTID == item.itemTID}">
+                                    <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
+                                        <c:if test="${cat.itemCID == type.itemCID}">
+                                        <!-- Store cat.itemCat and type.itemType in scoped variables -->
+                                            <c:set var="itemEditCat" value="${cat.itemCID}" />
+                                            <c:set var="itemEditType" value="${type.itemTID}" />
+                                        </c:if>
+                                    </c:forEach>
+                                    </c:if>
+                                </c:forEach>
+                                
                                     <td style="display: flex; justify-content: center; align-items: center; margin-bottom: 8px;">
-                                        <input type="image" src="resources/images/editItem.svg" id="quotModalButton" alt="Open Modal" width="24" height="24">
+                                        <input type="image" 
+                                        src="resources/images/editItem.svg" 
+                                        id="quotModalButton" 
+                                        alt="Open Edit Modal" 
+                                        width="24" 
+                                        height="24" 
+                                        data-toggle="modal" 
+                                        data-target="#editEquipment"
+                                        data-itemid="${item.itemID}"
+                                        data-itemname="${item.itemName}"
+                                        data-itembrand="${item.itemBrand}"
+                                        data-dateinst="${item.dateInstalled}"
+                                        data-itemcat="${itemEditCat}"
+                                        data-itemroom="${item.itemRoom}"
+                                        data-itemtype="${itemEditType}"
+                                        data-itemloctext="${item.itemLocText}"
+                                        data-itemremarks="${item.itemRemarks}"
+                                        onclick="populateEditModal(this);setFloorSelection(this);floorERender();">
                                     </td>
                                     <td >${item.itemID}</td>
                                     <td >${item.itemName}</td>
@@ -152,7 +190,14 @@
                                     <td >${item.itemBrand != null ? item.itemBrand : 'N/A'}</td>
                                     <td >${item.dateInstalled}</td>
                                     <td style="display: flex; justify-content: center; align-items: center; margin-top: 8px;">
-                                        <input type="image" src="resources/images/quotationsIcon.svg" id="quotModalButton" alt="Open Modal" width="24" height="24">
+                                        <input type="image"
+                                        src="resources/images/quotationsIcon.svg"
+                                        id="quotModalButton"
+                                        alt="Open Modal" width="24" height="24"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#quotEquipment"
+                                        data-itemid="${item.itemID}"
+                                        onclick="populateQuotModal(this)">
                                     </td>
                                     <td >
                                         <select class="statusDropdown">
@@ -178,6 +223,8 @@
            
                 <!--<li>room 808</li>-->
             </ul>
+            
+            <div id="paginationControls"></div>
          </div>
         </div>
      </div>
@@ -189,7 +236,7 @@
         <div class="modal-content">
                 <div class="centered-div bg-white">
                     <div class="container p-4 mt-4 mb-4">
-                        <form action="./homepage" method="">
+                        <form action="itemcontroller" method="POST">
                             <div class="row">
                                 <div class="col">
                                     <h3 class="fw-bold">Add Equipment</h3>
@@ -198,11 +245,15 @@
                             <div class="row mt-1">
                                 <div class="col">
                                     <label for="" class="form-label">Codename</label>
-                                    <input type="text" name="itemCode" id="" class="form-control">
+                                    <input type="text" name="itemCode" id="" class="form-control" required>
                                 </div>
                                 <div class="col">
                                     <label for="" class="form-label">Building</label>
-                                    <input type="text" name="itemBuilding" id="" class="form-control">
+                                    <select class="form-select" name="itemBuilding" onchange="floorRender()">
+                                        <c:forEach items="${locations}" var="loc" >
+                                            <option value="${loc.itemLocId}" selected>${loc.locName}</option>
+                                        </c:forEach>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row mt-2">
@@ -224,33 +275,32 @@
                                 </div>
                                 <div class="col">
                                     <label for="itemBrand" class="form-label">Brand</label>
-                                    <input class="form-control awesomplete" id="brandName" data-list="${brandListString}">
+                                    <input class="form-control awesomplete" id="brandName" data-list="${brandListString}" name="itemBrand">
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
-                                    <label for="itemFloor" class="form-label">Floor</label>
-                                    <select class="form-select" name="itemFloor" id="itemFloor" onchange="roomRender()">
-                                      <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
+                                    <label for="itemAddFloor" class="form-label">Floor</label>
+                                    <select class="form-select" name="itemAddFloor" id="itemAddFloor" onchange="roomRender()">
+                                      <%--<c:forEach var="floors" items="${FMO_FLOORS_LIST}">
                                         <c:if test="${floors.key == locID}">
                                         <c:forEach var="floor" items="${floors.value}">
                                             <option value="${floor}">${floor}</option>
                                         </c:forEach>
                                         </c:if>
-                                      </c:forEach>  
+                                      </c:forEach>--%>  
                                     </select>
                                 </div>
                                 <div class="col">
-                                    <label for="itemRoom" class="form-label">Room</label>
-                                    <select class="form-select" name="itemRoom" id="itemRoom" onchange="roomCall()">
-                                        <!--javascript function populates select after choosing floor-->
-                                    </select>
+                                    <label for="itemAddRoom" class="form-label">Room</label>
+                                    <input class="form-control" list="roomOptions" id="itemAddRoom" name="itemAddRoom">
+                                    <datalist id="roomOptions"></datalist>
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="" class="form-label">Date Installed</label>
-                                    <input type="date" name="itemInstalled" id="" class="form-control">
+                                    <input type="date" name="itemInstalled" id="" class="form-control" required>
                                 </div>
                                 <div class="col">
                                     <div class="row"><label for="itemSched" class="form-label">Maintenance Cycle: Every...</label></div>
@@ -273,11 +323,11 @@
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="locText">Location Text</label>
-                                    <textarea class="form-control" id="locText" rows="2"></textarea>
+                                    <textarea class="form-control" id="locText" name="locText" rows="2"></textarea>
                                 </div>
                                 <div class="col">
                                     <label for="remarks">Remarks</label>
-                                    <textarea class="form-control" id="remarks" rows="2"></textarea>
+                                    <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
                                 </div>
                             </div>
                             <div class="row">
@@ -296,6 +346,125 @@
     </div>
 </div>
 <!--end of add equipment modal-->
+
+    <!--edit equipment modal-->
+    <div class="modal fade" id="editEquipment" tabindex="-1" role="dialog" aria-labelledby="equipmentEdit" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="centered-div bg-white">
+                    <div class="container p-4 mt-4 mb-4">
+                        <form action="itemcontroller" method="POST">
+                            <div class="row">
+                                <div class="col">
+                                    <h3 class="fw-bold">Edit Equipment</h3>
+                                </div>
+                            </div>
+                            <input type="hidden" name="itemEditID" id="itemIDField" class="form-control">
+                            <div class="row mt-1">
+                                <div class="col">
+                                    <label for="" class="form-label">Codename</label>
+                                    <input type="text" name="itemEditCode" id="" class="form-control">
+                                </div>
+                                <div class="col">
+                                    <label for="" class="form-label">Building</label>
+                                    <select class="form-select" name="itemEditLoc" onchange="floorERender()">
+                                        <c:forEach items="${locations}" var="loc" >
+                                            <option value="${loc.itemLocId}" selected>${loc.locName}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="itemEditCat" class="form-label">Category</label>
+                                    <select class="form-select" name="itemEditCat">
+                                        <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
+                                            <option value="${cat.itemCID}" selected>${cat.itemCat}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label for="itemEditType" class="form-label">Type</label>
+                                    <select class="form-select" name="itemEditType">
+                                        <c:forEach items="${FMO_TYPES_LIST}" var="type" >
+                                            <option value="${type.itemTID}" selected>${type.itemType}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label for="itemEditBrand" class="form-label">Brand</label>
+                                    <input class="form-control awesomplete" name="itemEditBrand" id="brandName" data-list="${brandListString}">
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="itemEditFloor" class="form-label">Floor</label>
+                                    <select class="form-select" name="itemEditFloor" id="itemEditFloor" onchange="roomEditRender()">
+                                      <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
+                                        <c:if test="${floors.key == locID}">
+                                        <c:forEach var="floor" items="${floors.value}">
+                                            <option value="${floor}">${floor}</option>
+                                        </c:forEach>
+                                        </c:if>
+                                      </c:forEach>  
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label for="itemEditRoom" class="form-label">Room</label>
+                                    <input class="form-control" list="editRoomOptions" id="itemEditRoom" name="itemEditRoom">
+                                    <datalist id="editRoomOptions"></datalist>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="" class="form-label">Date Installed</label>
+                                    <input type="date" name="itemEditInstalled" id="itemEditInstalled" class="form-control">
+                                </div>
+                                <div class="col">
+                                    <div class="row"><label for="itemEditSched" class="form-label">Maintenance Cycle: Every...</label></div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <input type="number" name="itemEditSchedNum" min="1" oninput="validity.valid||(value='');" class="form-control">
+                                        </div>
+                                        <div class="col">
+                                            <select class="form-select" name="itemEditSched">
+                                              <option value="hours" selected>Hour/s</option>
+                                              <option value="days" >Day/s</option>
+                                              <option value="months" >Month/s</option>
+                                              <option value="years" >Year/s</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="locText">Location Text</label>
+                                    <textarea class="form-control" name="editLocText" id="locText" rows="2"></textarea>
+                                </div>
+                                <div class="col">
+                                    <label for="remarks">Remarks</label>
+                                    <textarea class="form-control" id="remarks" name="editRemarks" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-center">
+                                    <input type="submit" value="Save" class="btn btn-warning btn-lg mt-5 w-100 fw-bold">
+                                </div> 
+                                <div class="col text-center">
+                                    <button type="button" class="btn btn-warning btn-lg mt-5 w-100 fw-bold" data-dismiss="modal">Cancel</button>
+                                </div> 
+                            </div>
+                        </form>
+                    </div>     
+                </div>
+            
+            </div>
+        </div>
+    </div>
+    <!--end of edit equipment modal-->
+    
     
     
     <c:if test="${locMatchFound == false || flrMatchFound == false}">
@@ -328,7 +497,6 @@
                 dropdown.classList.add('maintenance');
             }
         }
-
         statusDropdowns.forEach(function(dropdown) {
             updateDropdownColor(dropdown);
 
@@ -337,6 +505,79 @@
                 updateDropdownColor(dropdown);
             });
         });
+
+
+
+const buildingFloors = {
+        <c:forEach var="entry" items="${FMO_FLOORS_LIST}">
+            "${entry.key}": [
+                <c:forEach var="floor" items="${entry.value}">
+                    "${floor}",
+                </c:forEach>
+            ],
+        </c:forEach>
+    };
+
+function QOLLocSet(){
+    var itemLID = parseInt(${locID}); 
+        var selectLoc = document.querySelector('select[name="itemBuilding"]');
+        if (selectLoc) {
+            var options = selectLoc.options;
+            for (var i = 0; i < options.length; i++) {
+                if (parseInt(options[i].value) === itemLID) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
+}
+
+function floorRender() {
+    // Get selected building ID
+    const selectedBuilding = document.querySelector('[name="itemBuilding"]').value;
+
+    // Get the itemAddFloor dropdown
+    const floorDropdown = document.getElementById('itemAddFloor');
+
+    // Clear existing options
+    floorDropdown.innerHTML = '';
+
+    // Fetch floors for the selected building from buildingFloors
+    const floors = buildingFloors[selectedBuilding] || [];
+
+    // Populate the dropdown with the fetched floors
+    floors.forEach(floor => {
+        const option = document.createElement('option');
+        option.value = floor;
+        option.textContent = floor;
+        floorDropdown.appendChild(option);
+    });
+
+    roomRender();
+}
+
+function floorERender() {
+    // Get selected building ID
+    const selectedBuilding = document.querySelector('[name="itemEditLoc"]').value;
+
+    // Get the itemAddFloor dropdown
+    const floorDropdown = document.getElementById('itemEditFloor');
+
+    // Clear existing options
+    floorDropdown.innerHTML = '';
+
+    // Fetch floors for the selected building from buildingFloors
+    const floors = buildingFloors[selectedBuilding] || [];
+
+    // Populate the dropdown with the fetched floors
+    floors.forEach(floor => {
+        const option = document.createElement('option');
+        option.value = floor;
+        option.textContent = floor;
+        floorDropdown.appendChild(option);
+    });
+    roomEditRenderCopy();
+}
 
 
         const roomsData = [
@@ -349,10 +590,36 @@
         </c:forEach>
         ];
 
-    function roomRender() {
-        const selectedFloor = document.getElementById('itemFloor').value;
-        const locID = '${locID}'; 
-        const roomSelect = document.getElementById('itemRoom');
+
+function roomRender() {
+    
+    const selectedBuilding = document.querySelector('[name="itemBuilding"]').value;
+    const selectedFloor = document.getElementById('itemAddFloor').value;
+    const roomSelect = document.getElementById('roomOptions');
+
+    roomSelect.innerHTML = '';    
+
+    const filteredRooms = roomsData.filter(function(room) {
+            return room.floor === selectedFloor && room.lid === selectedBuilding;
+        });
+    console.log(filteredRooms);
+
+    filteredRooms.forEach(room => {
+        const option = document.createElement('option');
+        option.value = room.roomName;  
+        option.text = room.roomName; 
+        roomSelect.appendChild(option); 
+    });
+            console.log(roomSelect);
+
+    
+}
+//    same as roomRender but for edit modal pancakes
+    function roomEditRender(itemRoom) {
+        const selectedBuilding = document.querySelector('[name="itemEditLoc"]').value;
+        const selectedFloor = document.getElementById('itemEditFloor').value;
+        const roomField = document.getElementById('itemEditRoom')
+        const roomSelect = document.getElementById('editRoomOptions');
 
         roomSelect.innerHTML = '';
 
@@ -363,9 +630,8 @@
         roomSelect.appendChild(defaultOption);
         
         const filteredRooms = roomsData.filter(function(room) {
-            return room.floor === selectedFloor && room.lid === locID;
+            return room.floor === selectedFloor && room.lid === selectedBuilding;
         });
-
         filteredRooms.forEach(function(room) {
             if(room.roomName !== "Non-Room Equipment"){
             const option = document.createElement('option');
@@ -374,27 +640,163 @@
             roomSelect.appendChild(option);
             }
         });
-
-        // If no rooms, default message
-        if (filteredRooms.length === 0) {
-            const option = document.createElement('option');
-            option.value = "";
-            option.text = "No rooms available";
-            roomSelect.appendChild(option);
+        
+        for (let i = 0; i < roomSelect.options.length; i++) {
+        if (roomSelect.options[i].value === itemRoom) {
+//            roomSelect.options[i].selected = true;
+            roomField.value = roomSelect.options[i].value
+            break;
         }
     }
-    
-    function roomCall() {
-        const selectedRoom = document.getElementById('itemRoom').value;
-        console.log(selectedRoom);
+        
     }
     
+    
+    function populateEditModal(button) {
+        var itemID = button.getAttribute('data-itemid');
+        var itemLID = parseInt(${locID});
+        var itemName = button.getAttribute('data-itemname');
+        var itemBrand = button.getAttribute('data-itembrand');
+        var itemDateInst = button.getAttribute('data-dateinst');
+        var itemCat = button.getAttribute('data-itemcat');
+        var itemType = button.getAttribute('data-itemtype');
+        var itemLocText = button.getAttribute('data-itemloctext');
+        var itemRemarks = button.getAttribute('data-itemremarks');
+        
+        document.querySelector('input[name="itemEditID"]').value = itemID;
+
+        document.querySelector('input[name="itemEditCode"]').value = itemName;
+        document.querySelector('input[name="itemEditBrand"]').value = itemBrand;
+        document.querySelector('input[name="itemEditInstalled"]').value = itemDateInst;
+        document.querySelector('textarea[name="editLocText"]').value = itemLocText;
+        document.querySelector('textarea[name="editRemarks"]').value = itemRemarks;
+        var selectCat = document.querySelector('select[name="itemEditCat"]');
+        if (selectCat) {
+            var options = selectCat.options;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].value === itemCat) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
+        var selectType = document.querySelector('select[name="itemEditType"]');
+        if (selectType) {
+            var options = selectType.options;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].value === itemType) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
+        var selectLoc = document.querySelector('select[name="itemEditLoc"]');
+        if (selectLoc) {
+            var options = selectLoc.options;
+            for (var i = 0; i < options.length; i++) {
+                if (parseInt(options[i].value) === itemLID) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
+            
+    }
+    
+    function setFloorSelection(button) {
+    var itemRoom = button.getAttribute('data-itemroom');
+    console.log(itemRoom);
+    const flrName = '${floorName}';
+    const itemEditFloor = document.getElementById('itemEditFloor');
+
+    // Loop through options to find and select the one that matches floorName
+    for (let i = 0; i < itemEditFloor.options.length; i++) {
+        if (itemEditFloor.options[i].value === flrName) {
+            itemEditFloor.options[i].selected = true;
+            break; 
+        }
+    }
+
+    roomEditRender(itemRoom);
+}
+
+    
+    document.addEventListener("DOMContentLoaded", function() {
+    const itemsPerPage = 5;  // Set how many items you want per page
+    const ul = document.getElementById("roomDropdowns");
+    const items = ul.getElementsByClassName("roomDropdown");  // Get all list items
+    const totalItems = items.length;
+    const paginationControls = document.getElementById("paginationControls");
+    
+    let currentPage = 1;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    function showPage(page) {
+        currentPage = page;
+        // Hide all items
+        for (let i = 0; i < totalItems; i++) {
+            items[i].style.display = "none";
+        }
+        // Show only the items for the current page
+        let start = (page - 1) * itemsPerPage;
+        let end = start + itemsPerPage;
+        for (let i = start; i < end && i < totalItems; i++) {
+            items[i].style.display = "block";
+        }
+        // Update pagination controls
+        updatePaginationControls();
+    }
+
+    function updatePaginationControls() {
+        paginationControls.innerHTML = "";  // Clear existing controls
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement("button");
+            button.textContent = i;
+            button.classList.add("page-btn");
+            if (i === currentPage) {
+                button.classList.add("active");
+            }
+            button.addEventListener("click", function() {
+                showPage(i);
+            });
+            paginationControls.appendChild(button);
+        }
+    }
+
+    // Initialize the first page
+    showPage(1);
+});
+
+function populateQuotModal(button) {
+    // Get data from the button's data-* attributes
+    var itemId = button.getAttribute("data-itemid");
+
+    // Populate the modal fields with the data
+    document.getElementById("modalItemId").innerText = itemId;
+}
+
+function roomEditRenderCopy() {
+    const selectedBuilding = document.querySelector('[name="itemEditLoc"]').value;
+    const selectedFloor = document.getElementById('itemEditFloor').value;
+    const roomSelect = document.getElementById('editRoomOptions');
+    roomSelect.innerHTML = '';    
+
+    const filteredRooms = roomsData.filter(function(room) {
+            return room.floor === selectedFloor && room.lid === selectedBuilding;
+        });
+    filteredRooms.forEach(room => {
+        const option = document.createElement('option');
+        option.value = room.roomName;  
+        option.text = room.roomName; 
+        roomSelect.appendChild(option); 
+    });
+ 
+}
+
     </script>
     
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

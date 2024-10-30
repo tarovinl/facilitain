@@ -88,6 +88,7 @@ public class mainController extends HttpServlet {
                 items.setItemFloor(rsItem.getString("FLOOR_NO"));
                 items.setItemBrand(rsItem.getString("BRAND_NAME"));
                 items.setItemLocText(rsItem.getString("LOCATION_TEXT"));
+                items.setItemRemarks(rsItem.getString("REMARKS"));
                 items.setDateInstalled(rsItem.getDate("DATE_INSTALLED"));
                 listItem.add(items);
 
@@ -215,11 +216,10 @@ public class mainController extends HttpServlet {
             case "/buildingDashboard":
                 if (queryString != null && queryString.contains("/manage")) {
                     request.getRequestDispatcher("/manageBuilding.jsp").forward(request, response);
-                    System.out.println(locID);
-                    System.out.println(locID.substring(locID.indexOf("floor=") + 6));
+//                    System.out.println(locID);
+//                    System.out.println(locID.substring(locID.indexOf("floor=") + 6));
                 } else {
                     request.getRequestDispatcher("/buildingDashboard.jsp").forward(request, response);
-                    System.out.println(locID);
                 }
                 break;
             default:

@@ -2,8 +2,7 @@ package sample.model;
 
 import java.util.Date;
 
-public class Item {
-
+public class Item {    
     private int itemID;          
     private int itemTID;        
     private int itemLID;       
@@ -15,6 +14,7 @@ public class Item {
     private String itemBrand;    
     private String itemType;     
     private String itemCat;      
+    private String itemRemarks;
     private String itemTypeDescription;
     private Date dateInstalled;  
     private int activeFlag;     
@@ -123,6 +123,15 @@ public class Item {
     public int getActiveFlag() {
         return activeFlag;
     }
+
+
+    public void setItemRemarks(String itemRemarks) {
+        this.itemRemarks = itemRemarks;
+    }
+
+    public String getItemRemarks() {
+        return itemRemarks;
+
     
     public void setItemTypeDescription(String itemTypeDescription) {
         this.itemTypeDescription = itemTypeDescription;
@@ -130,5 +139,6 @@ public class Item {
 
     public String getItemTypeDescription() {
         return itemTypeDescription;
+
     }
 }
