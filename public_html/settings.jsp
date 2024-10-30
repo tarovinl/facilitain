@@ -10,7 +10,6 @@
 </head>
 <body>
     <div class="d-flex vh-100">
-       
         <jsp:include page="sidebar.jsp"/>
         
         <div class="flex-grow-1 p-4">
@@ -20,41 +19,57 @@
                     <!-- Service Providers Card -->
                     <div class="col-md-6">
                         <div class="card text-center mb-4">
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <span class="display-1"><i class="fas fa-cogs"></i></span>
+                            <a href="serviceProviders">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <span class="display-1"><i class="fas fa-cogs"></i></span>
+                                    </div>
+                                    <h5 class="card-title">Service Providers</h5>
                                 </div>
-                                <h5 class="card-title">Service Providers</h5>
-                            </div>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Item Type Card -->
+                    <div class="col-md-6">
+                        <div class="card text-center mb-4">
+                            <!-- Updated link to go through the controller -->
+                            <a href="<%=request.getContextPath()%>/itemCategories">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <span class="display-1"><i class="fas fa-users"></i></span>
+                                    </div>
+                                    <h5 class="card-title">Item Category</h5>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card text-center mb-4">
+                            <a href="#">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <span class="display-1"><i class="fas fa-print"></i></span>
+                                    </div>
+                                    <h5 class="card-title">QR Print</h5>
+                                </div>
+                            </a>
                         </div>
                     </div>
                     
                     <div class="col-md-6">
                         <div class="card text-center mb-4">
-                         <a href='#'>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <span class="display-1"><i class="fas fa-users"></i></span>
+                            <a href="<%=request.getContextPath()%>/maintenanceSchedule">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <span class="display-1"><i class="fas fa-calendar"></i></span>
+                                    </div>
+                                    <h5 class="card-title">Maintenance Schedule</h5>
                                 </div>
-                                <h5 class="card-title">Item Users</h5>
-                            </div>
                             </a>
-                        </div>
-                    </div>
-                </div>
-                 <div class="row">
-            
-                    <div class="col-md-6">
-                        <div class="card text-center mb-4">
-                            <div class="card-body">
-                            <a href='#'>
-                                <div class="mb-3">
-                                    <span class="display-1"><i class="fas fa-users"></i></span>
-                                </div>
-                                <h5 class="card-title">QR management</h5>
-                             </a>
-                             </div>
-                          
                         </div>
                     </div>
                 </div>
