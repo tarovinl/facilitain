@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/employees")
+@WebServlet("/employee")
 public class EmployeeController extends HttpServlet {
 
     @Override

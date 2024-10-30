@@ -131,7 +131,7 @@ public class Item {
 
     public String getItemRemarks() {
         return itemRemarks;
-
+    }
     
     public void setItemTypeDescription(String itemTypeDescription) {
         this.itemTypeDescription = itemTypeDescription;
