@@ -21,10 +21,12 @@
              <img src="resources/images/FACILITAIN.png" alt="FACILITAIN"
                  style="height: 4rem;"/>
             <h3 class="text-center ">Report a Problem</h3>
+    <form action="${pageContext.request.contextPath}/reportsClient" method="post">
             <label for="room">Type of Equipment</label>
             <div class="mt-1">
-    <input type="text" name="equipment" id="equipment" class="form-control w-100" placeholder="Enter equipment">
-</div>
+            <input type="text" name="equipment" id="equipment" class="form-control w-100" placeholder="Enter equipment"
+             required pattern="\d+" title="Please enter a valid floor number (only digits).">
+            </div>
 
             <label for="building">Building</label>
              <div class="mt-1">
@@ -54,12 +56,12 @@
         </label>
         <textarea id="suggestions" name="suggestions" rows="4" cols="50" class="d-block">
 
-</textarea>
+        </textarea>
             <!-- Example Bootstrap Button -->
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
         <button class="btn btn-primary">Submit</button>
     </div>
-    
+    </form>
     <div class="">
     <form action="/FMOCapstone/menuClient.jsp" method="get">
     <button class="btn text-white p-2" style="background-color: transparent;">
