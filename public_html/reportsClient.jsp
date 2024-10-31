@@ -69,9 +69,11 @@
     </div>
     
     <div class="">
+    <form action="/FMOCapstone/menuClient.jsp" method="get">
     <button class="btn text-white p-2" style="background-color: transparent;">
         <i class="bi bi-arrow-left-short"></i>Back
     </button>
+    </form>
 </div>
             </div>
         </div>

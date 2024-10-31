@@ -23,15 +23,22 @@
           
             <!-- Example Bootstrap Button -->
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
+              <form action="/FMOCapstone/feedbackClient" method="get">
         <button class="btn btn-primary w-100">Make a Feedback</button>
+        </form>
     </div>
-    <div class="container mt-3 w-100 d-flex justify-content-center"> <!-- Centering with flexbox -->
-        <button class="btn btn-primary w-100">Report a Problem</button>
-    </div>
+   <div class="container mt-3 w-100 d-flex justify-content-center">
+    <form action="/FMOCapstone/reportsClient" method="get">
+        <button type="submit" class="btn btn-primary w-100">Report a Problem</button>
+    </form>
+</div>
+
     <div class="">
+    <form action="/FMOCapstone/agreementClient.jsp" method="get">
     <button class="btn text-white p-2" style="background-color: transparent;">
         <i class="bi bi-arrow-left-short"></i>Back
     </button>
+    </form>
 </div>
 
 

@@ -29,7 +29,9 @@
           </p>
             <!-- Example Bootstrap Button -->
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
+             <form action="/FMOCapstone/menuClient.jsp" method="get">
         <button class="btn btn-primary w-100">Agree</button>
+        </form>
     </div>
     <div class="container mt-3 w-100 d-flex justify-content-center"> <!-- Centering with flexbox -->
         <button class="btn btn-primary w-100">Disagree</button>
