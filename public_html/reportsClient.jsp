@@ -22,12 +22,10 @@
                  style="height: 4rem;"/>
             <h3 class="text-center ">Report a Problem</h3>
             <label for="room">Type of Equipment</label>
-             <div class="mt-1">
-                <select name="equipment" id="equipment" class="form-control w-100">
-                <option value="aircon">Aircon</option>
-                <option value="wfountain">Water Fountain</option>
-                </select>
-            </div>
+            <div class="mt-1">
+    <input type="text" name="equipment" id="equipment" class="form-control w-100" placeholder="Enter equipment">
+</div>
+
             <label for="building">Building</label>
              <div class="mt-1">
                 <select name="building" id="building" class="form-control w-100">
@@ -37,17 +35,11 @@
             </div>
              <label for="floor">Floor</label>
              <div class="mt-1">
-                <select name="floor" id="floor" class="form-control w-100">
-                <option value="first">1st Floor</option>
-                <option value="second">2nd Floor</option>
-                </select>
+                <input type="text" name="floor" id="floor" class="form-control w-100" placeholder="Enter Floor">
             </div>
              <label for="room">Room</label>
              <div class="mt-1">
-                <select name="room" id="room" class="form-control w-100">
-                <option value="frassati">2002</option>
-                <option value="main">2004</option>
-                </select>
+                <input type="text" name="room" id="room" class="form-control w-100" placeholder="Enter Room">
             </div>
             
            <label for="image">Upload Picture</label>
