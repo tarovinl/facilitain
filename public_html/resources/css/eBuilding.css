@@ -1,0 +1,94 @@
+@charset "windows-1252";
+.topButtons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 36px;
+    padding-left: 16px;
+}
+
+.editbuildingName {
+    padding-left: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px black solid;
+}
+.editbuildingName h1 {
+    margin-bottom: 0;
+    line-height: 1;
+    font-size: 60px;
+    font-weight: bold;
+}
+.locName {
+    display: flex;
+    vertical-align: middle;
+}
+
+.floorAndButtons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-top: 8px;
+}
+.buttonsBuilding {
+    margin: 8px 8px;
+    background-color: #fccc4c;
+    border: none;
+    font-weight: bold;
+    padding: 16px 32px;
+    font-size: 18px;
+    -webkit-appearance: none; /* Reset button appearance for WebKit browsers */
+    -moz-appearance: none; /* Reset button appearance for Mozilla browsers */
+    appearance: none; /* Reset button appearance for other browsers */
+}
+
+.floorDLblDiv {
+    background-color: #fccc4c;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: solid 1px black;
+}
+
+.floorDLblDiv button:hover {
+    background-color: #ffcc00; /* Change button color on hover */
+}
+.floorDLblDiv:has(button:hover) {
+    background-color: #ffcc00; /* Change div color when button is hovered */
+}
+.floorDLblDiv button {
+    background-color: #fccc4c;
+    font-weight: bold;
+    padding-right: 80px;
+    border: none;
+}
+
+.activeFloorTbl {
+    display: none;
+}
+
+.archivedFloorTbl {
+    display: none;
+}
+
+@media (max-width: 400px) {
+    .buttonsBuilding {
+        padding: 8px 16px;
+        font-size: 16px;
+    }
+    .floorAndButtons {
+        display: block;
+        margin-top: 12px;
+    }
+    .floorAndButtons div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .archivedLbl button {
+        font-size: 18px;
+    }
+}
+

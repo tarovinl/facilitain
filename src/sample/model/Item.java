@@ -131,6 +131,7 @@ public class Item {
 
     public String getItemRemarks() {
         return itemRemarks;
+
     }
     
     public void setItemTypeDescription(String itemTypeDescription) {
@@ -139,6 +140,5 @@ public class Item {
 
     public String getItemTypeDescription() {
         return itemTypeDescription;
-
     }
 }
