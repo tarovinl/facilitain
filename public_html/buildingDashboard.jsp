@@ -47,7 +47,7 @@
             </div>
             <div>
               <!-- Edit button triggers the modal -->
-              <button class="buttonsBuilding" data-bs-toggle="modal" data-bs-target="#editBuildingModal">
+              <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'"><!--hidden if acc is not admin-->
                 Edit
               </button>
               <button class="buttonsBuilding">Generate Report</button>
@@ -136,7 +136,7 @@
     </div>
 
     <!-- Modal for Editing Building -->
-    <div class="modal fade" id="editBuildingModal" tabindex="-1" aria-labelledby="editBuildingModalLabel" aria-hidden="true">
+    <!--<div class="modal fade" id="editBuildingModal" tabindex="-1" aria-labelledby="editBuildingModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -153,7 +153,7 @@
                 <label for="locDescription" class="form-label">Building Description</label>
                 <textarea class="form-control" id="locDescription" name="locDescription" rows="3" required>${locDescription}</textarea>
               </div>
-              <!-- Hidden input to store locID -->
+              --><!-- Hidden input to store locID --><!--
               <input type="hidden" name="locID" value="${locID}">
             </div>
             <div class="modal-footer">
@@ -163,7 +163,7 @@
           </form>
         </div>
       </div>
-    </div>
+    </div>-->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>

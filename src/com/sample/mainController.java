@@ -25,7 +25,7 @@ import sample.model.Location;
 import sample.model.Item;
 import sample.model.PooledConnection;
 
-@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage" })
+@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit" })
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
@@ -72,6 +72,7 @@ public class mainController extends HttpServlet {
             while (rsFlr.next()) {
                 Location itemFloor = new Location();
                 itemFloor.setItemLocId(rsFlr.getInt("ITEM_LOC_ID"));
+                itemFloor.setItemLocFlrId(rsFlr.getInt("ITEM_LOC_FLR_ID"));
                 itemFloor.setLocFloor(rsFlr.getString("NAME"));
                 listFloor.add(itemFloor);
             }
@@ -173,6 +174,7 @@ public class mainController extends HttpServlet {
         // Store locations in the request scope to pass to JSP
         request.setAttribute("locations", locations);
         request.setAttribute("FMO_FLOORS_LIST", groupedFloors);
+        request.setAttribute("FMO_FLOORS_LIST2", listFloor);
         request.setAttribute("FMO_ITEMS_LIST", listItem);
         request.setAttribute("uniqueRooms", resultRoomList);
         request.setAttribute("FMO_TYPES_LIST", listTypes);
@@ -218,7 +220,10 @@ public class mainController extends HttpServlet {
                     request.getRequestDispatcher("/manageBuilding.jsp").forward(request, response);
 //                    System.out.println(locID);
 //                    System.out.println(locID.substring(locID.indexOf("floor=") + 6));
-                } else {
+                } else if (queryString != null && queryString.contains("/edit")) {
+                    request.getRequestDispatcher("/editLocation.jsp").forward(request, response);
+                }
+                  else  {
                     request.getRequestDispatcher("/buildingDashboard.jsp").forward(request, response);
                 }
                 break;

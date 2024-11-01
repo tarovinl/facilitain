@@ -100,9 +100,10 @@
               <h1>${floorName}</h1>
             </div>
             <div>
-              <button class="buttonsBuilding"> <!--hidden if acc is not admin-->
-                Edit Building
+              <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'"><!--hidden if acc is not admin-->
+                Edit Location
               </button>
+               
               <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender();">Add Equipment</button>
             </div>
         </div>
@@ -158,7 +159,7 @@
                                     <td style="display: flex; justify-content: center; align-items: center; margin-bottom: 8px;">
                                         <input type="image" 
                                         src="resources/images/editItem.svg" 
-                                        id="quotModalButton" 
+                                        id="editModalButton" 
                                         alt="Open Edit Modal" 
                                         width="24" 
                                         height="24" 

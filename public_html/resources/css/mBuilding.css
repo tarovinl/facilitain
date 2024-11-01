@@ -199,4 +199,17 @@ table {
         padding: 8px 16px;
         font-size: 16px;
     }
+    .buttonsBuilding {
+        padding: 8px 16px;
+        font-size: 16px;
+    }
+    .floorAndButtons {
+        display: block;
+        margin-top: 12px;
+    }
+    .floorAndButtons div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }

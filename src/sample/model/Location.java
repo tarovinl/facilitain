@@ -7,6 +7,7 @@
         private int activeFlag;
         private String locFloor;
         private String locRoom;
+        private int itemLocFlrId;
     
         // Getters and Setters
         public int getItemLocId() {
@@ -56,4 +57,12 @@
         public String getLocRoom() {
             return locRoom;
         }
+
+    public void setItemLocFlrId(int itemLocFlrId) {
+        this.itemLocFlrId = itemLocFlrId;
     }
+
+    public int getItemLocFlrId() {
+        return itemLocFlrId;
+    }
+}
