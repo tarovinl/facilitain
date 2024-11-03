@@ -62,12 +62,13 @@
               <h3 class="fw-bold">${locName}</h3>
             </div>
             <div>
-                <button class="buttonsBuilding" data-toggle="modal" data-target="#archiveFloor" type="button" onclick="">Archive Floor</button>
+                <button class="buttonsBuilding" data-toggle="modal" data-target="#addFloor" type="button" onclick="">Add Floor</button>
+                <!--<button class="buttonsBuilding" data-toggle="modal" data-target="#archiveFloor" type="button" onclick="">Archive Floor</button>-->
                 <button class="buttonsBuilding" data-toggle="modal" data-target="#archiveLocation" type="button" onclick="">Archive Location</button>
             </div>
         </div>
             <div class="container mt-1 ms-2 me-2">
-                <form action="buildingcontroller" method="POST">    
+                <form action="buildingController" method="POST">    
                 <input type="hidden" name="locID" value="${locID}">
                 <div class="row mt-4">
                     <div class="col">
@@ -83,10 +84,10 @@
                 </div>
                 <div class="row mt-2">
                     <div class="col text-center">
-                        <input type="submit" value="Save Name and Description" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold">
+                        <input type="submit" value="Save Name & Description" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold">
                     </div> 
                     <div class="col text-center">
-                        <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold" onclick="location.reload()">Cancel</button>
+                        <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold" onclick="location.reload()">Reset</button>
                     </div> 
                 </div>
                 </form>
@@ -103,6 +104,8 @@
                                 <th scope="col"></th>
                                 <th scope="col">Floor ID</th>
                                 <th scope="col">Floor Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col"></th>
                               </tr>
                             </thead>
                             <tbody>
@@ -120,11 +123,26 @@
                                                 data-toggle="modal"
                                                 data-flrid="${floors.itemLocFlrId}"
                                                 data-flrname="${floors.locFloor}"
+                                                data-flrdesc="${floors.locDescription}"
                                                 data-target="#editFloor"
-                                                onclick="populateEditModal()">
+                                                onclick="populateEditModal(this)">
                                         </th>
                                         <td>${floors.itemLocFlrId}</td>
                                         <td>${floors.locFloor}</td>
+                                        <td>${floors.locDescription != null ? floors.locDescription : 'N/A'}</td>
+                                        <th scope="row">
+                                            <input type="image" 
+                                                src="resources/images/editItem.svg" 
+                                                id="archFlrModalButton" 
+                                                alt="Open Edit Modal" 
+                                                width="24" 
+                                                height="24" 
+                                                data-toggle="modal"
+                                                data-aflrid="${floors.itemLocFlrId}"
+                                                data-aflrname="${floors.locFloor}"
+                                                data-target="#archiveFloor"
+                                                onclick="populateArchFlrModal(this)">
+                                        </th>
                                      </tr>
                                     </c:if>
                                 </c:forEach> 
@@ -149,11 +167,11 @@
                         <table class="archivedFloorTbl table table-striped table-bordered border border-dark mb-4">
                             <thead class="table-dark">
                               <tr>
-                                <th scope="col">
-
-                                </th>
+                                <th scope="col"></th>
                                 <th scope="col">Floor ID</th>
                                 <th scope="col">Floor Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col"></th>
                               </tr>
                             </thead>
                             <tbody>
@@ -161,7 +179,6 @@
                                     <c:if test="${floors.itemLocId == locID}">
                                      <tr>
                                         <th scope="row">
-                                        <!--  -->
                                             <input type="image" 
                                                 src="resources/images/editItem.svg" 
                                                 id="editModalButton" 
@@ -171,11 +188,26 @@
                                                 data-toggle="modal"
                                                 data-flrid="${floors.itemLocFlrId}"
                                                 data-flrname="${floors.locFloor}"
+                                                data-flrdesc="${floors.locDescription}"
                                                 data-target="#editFloor"
-                                                onclick="populateEditModal()">
+                                                onclick="populateEditModal(this)">
                                         </th>
                                         <td>${floors.itemLocFlrId}</td>
                                         <td>${floors.locFloor}</td>
+                                        <td>${floors.locDescription != null ? floors.locDescription : 'N/A'}</td>
+                                        <th scope="row">
+                                            <!--<input type="image" 
+                                                src="resources/images/editItem.svg" 
+                                                id="archFlrModalButton" 
+                                                alt="Open Edit Modal" 
+                                                width="24" 
+                                                height="24" 
+                                                data-toggle="modal"
+                                                data-aflrid="${floors.itemLocFlrId}"
+                                                data-aflrname="${floors.locFloor}"
+                                                data-target="#archiveFloor"
+                                                onclick="populateArchFlrModal(this)">-->
+                                        </th>
                                      </tr>
                                     </c:if>
                                 </c:forEach> 
@@ -199,7 +231,7 @@
         <div class="modal-content">
             <div class="centered-div bg-white">
                 <div class="container p-4 mt-4 mb-4">
-                    <form action="buildingcontroller" method="POST">
+                    <form action="floorcontroller" method="POST">
                         <div class="row">
                             <div class="col">
                                 <h3 class="fw-bold">Edit Floor</h3>
@@ -208,10 +240,18 @@
                         <div class="row mt-3">
                             <div class="col">
                                 <label for="flrName" class="fw-bold">Floor Name</label>
-                                <input type="text" name="editFlrName" id="" class="form-control mt-3" required>
+                                <input type="text" name="editFlrName" id="editFlrName" class="form-control mt-3" required>
                             </div>
                         </div>
-                        <input type="hidden" name="editFlrLocID" id="locIDField" class="form-control" value="${locID}">
+                        <input type="hidden" name="editFlrLocID" id="editFlrLocID" class="form-control" value="${locID}">
+                        <input type="hidden" name="editFlrID" id="editFlrID" class="form-control">
+                        <input type="hidden" name="locID" value="${locID}">
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="flrDesc" class="fw-bold">Floor Description</label>
+                                <textarea class="form-control mt-3" name="editFlrDesc" id="editFlrDesc" rows="2"></textarea>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col text-center">
                                 <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
@@ -229,33 +269,65 @@
 <!-- end of edit floor modal -->
 
 
+<!--add floor modal-->
+<div class="modal fade" id="addFloor" tabindex="-1" role="dialog" aria-labelledby="addFloor" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="centered-div bg-white">
+                <div class="container p-4 mt-4 mb-4">
+                    <form action="floorcontroller" method="POST">
+                        <div class="row">
+                            <div class="col">
+                                <h3 class="fw-bold">Add Floor</h3>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="flrName" class="fw-bold">Floor Name</label>
+                                <input type="text" name="addFlrName" id="addFlrName" class="form-control mt-3" required>
+                            </div>
+                        </div>
+                        <input type="hidden" name="addFlrLocID" id="addFlrLocID" class="form-control" value="${locID}">
+                        <input type="hidden" name="locID" value="${locID}">
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="flrDesc" class="fw-bold">Floor Description</label>
+                                <textarea class="form-control mt-3" name="addFlrDesc" id="addFlrDesc" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-center">
+                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
+                            </div> 
+                            <div class="col text-center">
+                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 fw-bold" data-dismiss="modal">Cancel</button>
+                            </div> 
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end of add floor modal -->
+
+
 <!-- archive floor modal -->
 <div class="modal fade" id="archiveFloor" tabindex="-1" role="dialog" aria-labelledby="archiveFloor" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="centered-div bg-white">
                 <div class="container p-4 mt-4 mb-4">
-                    <form action="buildingcontroller" method="POST">
+                    <form action="floorcontroller" method="POST">
                         <div class="row">
-                            <div class="col">
-                                <h3 class="fw-bold">Archive Floor</h3>
+                            <div class="col text-center">
+                                <h2 class="fw-bold" id="archYouSure"></h2>
                             </div>
                         </div>
-                        <input type="hidden" name="archiveFlrlocID" id="locIDField" class="form-control" value="${locID}">
-                        <div class="row mt-3">
-                            <div class="col">
-                                <label for="archiveFlr" class="fw-bold">Please choose which floor to archive:</label>
-                                <select class="form-select mt-3" id="archiveFlr" name="archiveFlr" onchange="">
-                                     <c:forEach var="floors" items="${FMO_FLOORS_LIST2}">
-                                        <c:if test="${floors.itemLocId == locID}">
-                                            <option value="${floors.itemLocFlrId}">${floors.locFloor}</option>
-                                        </c:if>
-                                    </c:forEach> 
-                                    <!--<option value="1">1F</option>
-                                    <option value="2">2F</option>-->
-                                </select>
-                            </div>
-                        </div>
+                        <input type="hidden" name="locID" value="${locID}">
+                        <input type="hidden" name="archiveFlrLocID" id="archiveFlrLocID" class="form-control" value="${locID}">
+                        <input type="hidden" name="archiveFlrID" id="archiveFlrID" class="form-control">
+                        <input type="hidden" name="archiveFlr" id="archiveFlr" class="form-control">
                         <div class="row">
                             <div class="col text-center">
                                 <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
@@ -279,13 +351,14 @@
         <div class="modal-content">
             <div class="centered-div bg-white">
                 <div class="container p-4 mt-4 mb-4">
-                    <form action="" method="">
+                    <form action="buildingcontroller" method="POST">
                         <div class="row">
                             <div class="col text-center">
                                 <h2 class="fw-bold">Are you sure you want to archive ${locName}?</h2>
                             </div>
                         </div>
-                        <input type="hidden" name="archiveLocID" id="locIDField" class="form-control" value="${locID}">
+                        <input type="hidden" name="locID" value="${locID}">
+                        <input type="hidden" name="archiveLocID" id="archiveLocID" class="form-control" value="${locID}">
                         <div class="row">
                             <div class="col text-center">
                                 <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
@@ -324,15 +397,30 @@
         }
     }
 
-    function populateEditModal(){
-        event.preventDefault();
-        // Get data from the button's data-* attributes
+    function populateEditModal(button){
+//        event.preventDefault();
+        console.log(button); // Check if button is correctly passed
         var flrId = button.getAttribute("data-flrid");
         var flrName = button.getAttribute("data-flrname");
+        var flrDesc = button.getAttribute("data-flrdesc");
 
-        // Populate the modal fields with the data
-        document.querySelector('input[name="editFlrLocID"]').value = flrId;
-        document.querySelector('input[name="editFlrName"]').value = flrName;
+        document.getElementById('editFlrID').value = flrId;
+        document.getElementById('editFlrName').value = flrName;
+        document.getElementById('editFlrDesc').value = flrDesc;
+
+    }
+    
+    function populateArchFlrModal(button){
+//        event.preventDefault();
+//        console.log(button); // Check if button is correctly passed
+        var flrId = button.getAttribute("data-aflrid");
+        var flrName = button.getAttribute("data-aflrname");
+
+        document.getElementById('archiveFlrID').value = flrId;
+        document.getElementById('archiveFlr').value = flrName;
+        var modalMessage = document.getElementById("archYouSure");
+        modalMessage.innerText = "Are you sure you want to archive " + flrName + "?";
+       
     }
 
 </script>

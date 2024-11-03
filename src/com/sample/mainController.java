@@ -74,6 +74,7 @@ public class mainController extends HttpServlet {
                 itemFloor.setItemLocId(rsFlr.getInt("ITEM_LOC_ID"));
                 itemFloor.setItemLocFlrId(rsFlr.getInt("ITEM_LOC_FLR_ID"));
                 itemFloor.setLocFloor(rsFlr.getString("NAME"));
+                itemFloor.setLocDescription(rsFlr.getString("DESCRIPTION"));
                 listFloor.add(itemFloor);
             }
             rsFlr.close();

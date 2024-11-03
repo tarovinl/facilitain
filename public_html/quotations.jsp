@@ -26,7 +26,7 @@
                 Upload Quotations
                 <input type="file" id="quotationsUpload" style="display: none;">
             </label>
-    
+            <span id="modalItemId" style="display: none;"></span>
             <button type="button" class="btn btn-warning fw-bold ms-auto" data-bs-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -51,7 +51,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><span id="modalItemId"></span></td>
+                                            <td>001</td>
                                             <td>Sample Description 1</td>
                                             <td>2024-10-17</td>
                                             <td></td>
