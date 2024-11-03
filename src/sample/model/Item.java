@@ -133,7 +133,7 @@ public class Item {
         return itemRemarks;
 
     }
-
+    
     public void setItemTypeDescription(String itemTypeDescription) {
         this.itemTypeDescription = itemTypeDescription;
     }
