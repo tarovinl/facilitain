@@ -21,11 +21,11 @@
              <img src="resources/images/FACILITAIN.png" alt="FACILITAIN"
                  style="height: 4rem;"/>
             <h3 class="text-center ">Report a Problem</h3>
-    <form action="${pageContext.request.contextPath}/reportsClient" method="post">
+   <form action="./reportsClient" method="post" enctype="multipart/form-data">
             <label for="room">Type of Equipment</label>
             <div class="mt-1">
-            <input type="text" name="equipment" id="equipment" class="form-control w-100" placeholder="Enter equipment"
-             required pattern="\d+" title="Please enter a valid floor number (only digits).">
+            <input type="text" name="equipmentType" id="equipmentType" class="form-control w-100" placeholder="Enter equipment"
+              required pattern="[A-Za-z\s]+" title="Please enter a valid type of equipment">
             </div>
 
             <label for="building">Building</label>
@@ -46,10 +46,7 @@
             
            <label for="image">Upload Picture</label>
              <div class="mt-1">
-                <form action="/action_page.php">
                 <input type="file" id="myFile" name="filename">
-               
-                </form>
             </div>
         <label for="suggestions" class="text-center d-block mt-3 mb-3">
             Describe the Issue
@@ -59,7 +56,7 @@
         </textarea>
             <!-- Example Bootstrap Button -->
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
-        <button class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </div>
     </form>
     <div class="">
