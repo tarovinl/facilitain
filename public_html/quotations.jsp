@@ -31,7 +31,7 @@
                 <div class="modal-header d-flex align-items-center justify-content-space-between">
                     <h3 class="modal-title fw-bold" id="equipmentquot">Quotations</h3>
                     <div>
-                        <button class="btn btn-dark text-warning fw-bold mx-3 mt-2" id="uploadQuotationBtn">
+                        <button class="btn btn-dark text-warning fw-bold mx-3 mt-2" id="uploadQuotationBtn" onclick="itemIDcarry(getModalItemId())">
                             Upload Quotations
                         </button>
                         <button type="button" class="btn btn-warning fw-bold ms-auto" data-bs-dismiss="modal" aria-label="Close">
@@ -89,7 +89,7 @@
                 <div class="modal-body">
                     <form id="uploadQuotationForm" enctype="multipart/form-data" method="post" action="quotations">
                         <!-- Hidden Field to Store Item ID -->
-                        <input type="hidden" name="itemId" id="hiddenItemId">
+                        <input type="hidden" name="hiddenItemId" id="hiddenItemId">
 
                         <div class="mb-3">
                             <label for="quotationDescription" class="form-label">Quotation Description</label>
@@ -163,9 +163,20 @@
         
        
         modalItemId.value = itemId; 
+           }
+function itemIDcarry(itemId) {
+    // Set the value of the hidden field in the upload modal with the item ID
+    document.querySelector('input[name="hiddenItemId"]').value = itemId;
+}
 
       
-    }
+    
+    // Function to get the item ID from the hidden span
+function getModalItemId() {
+    // Assuming there's an element (span or similar) in the modal that contains the item ID
+    return document.getElementById("modalItemId").innerText;
+}
+
 
     </script>
 </body>

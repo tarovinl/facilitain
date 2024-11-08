@@ -1,7 +1,10 @@
 package com.sample;
 
 import java.io.IOException;
+
+import java.sql.Blob;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import sample.model.Location;
 import sample.model.Item;
+import sample.model.Quotation;
 import sample.model.PooledConnection;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit" })
@@ -45,6 +49,8 @@ public class mainController extends HttpServlet {
         ArrayList<Item> listTypes = new ArrayList<>();
         ArrayList<Item> listCats = new ArrayList<>();
         ArrayList<Item> listBrands = new ArrayList<>();
+        ArrayList<Quotation> listQuotations = new ArrayList<>();
+
 
      
         try (
@@ -55,8 +61,30 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME");
              PreparedStatement stmntICats = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
              PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME")){
-
+            PreparedStatement stmntQuotations = con.prepareCall("SELECT QUOTATION_ID, DESCRIPTION, DATE_UPLOADED, ITEM_ID, QUOTATION_IMAGE FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY DATE_UPLOADED DESC");
+            ResultSet rsQuotations = stmntQuotations.executeQuery();
             ResultSet rs = statement.executeQuery();
+            
+            while (rsQuotations.next()) {
+                int quotationId = rsQuotations.getInt("QUOTATION_ID");
+                String description = rsQuotations.getString("DESCRIPTION");
+                Date dateUploaded = rsQuotations.getDate("DATE_UPLOADED");
+                int itemId = rsQuotations.getInt("ITEM_ID");
+
+               
+                Blob blob = rsQuotations.getBlob("QUOTATION_IMAGE");
+                byte[] quotationImage = null;
+                if (blob != null) {
+                    quotationImage = blob.getBytes(1, (int) blob.length());
+                }
+
+                // Create a Quotation object with the constructor
+                Quotation quotation = new Quotation(quotationId, description, dateUploaded, itemId, quotationImage);
+                listQuotations.add(quotation);
+            }
+            rsQuotations.close();
+
+            
             while (rs.next()) {
                 Location location = new Location();
                 location.setItemLocId(rs.getInt("ITEM_LOC_ID"));
@@ -132,10 +160,12 @@ public class mainController extends HttpServlet {
                 listBrands.add(brand);
             }
             rsBrand.close();
-
+            stmntQuotations.close();
         } catch (SQLException error) {
             error.printStackTrace();
         }
+        
+        
 
         // Group floors in proper order
         Map<Integer, List<String>> groupedFloors = new HashMap<>();
@@ -158,6 +188,7 @@ public class mainController extends HttpServlet {
                         resultRoomList.add(item);
                     }
                 }
+                
 
 //                // Print the unique items
 //                for (Item item : resultList) {
@@ -180,7 +211,7 @@ public class mainController extends HttpServlet {
         request.setAttribute("FMO_TYPES_LIST", listTypes);
         request.setAttribute("FMO_CATEGORIES_LIST", listCats);
         request.setAttribute("FMO_BRANDS_LIST", listBrands);
-        
+        request.setAttribute("FMO_QUOTATIONS_LIST", listQuotations);
         String path = request.getServletPath();
         String queryString = request.getQueryString();
 
