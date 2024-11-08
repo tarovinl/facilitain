@@ -17,7 +17,9 @@ public class Item {
     private String itemRemarks;
     private String itemTypeDescription;
     private Date dateInstalled;  
-    private int activeFlag;     
+    private int activeFlag; 
+    private int itemArchive;
+    private Date expiration;  
 
     // Getters and Setters
     public void setItemID(int itemID) {
@@ -140,5 +142,21 @@ public class Item {
 
     public String getItemTypeDescription() {
         return itemTypeDescription;
+    }
+
+    public void setItemArchive(int itemArchive) {
+        this.itemArchive = itemArchive;
+    }
+
+    public int getItemArchive() {
+        return itemArchive;
+    }
+
+    public void setExpiration(Date expiration) {
+        this.expiration = expiration;
+    }
+
+    public Date getExpiration() {
+        return expiration;
     }
 }

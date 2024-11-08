@@ -37,6 +37,9 @@ public class itemController extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(CONTENT_TYPE);
             // Access form parameters
+        
+        String loc = request.getParameter("itemLID");
+        String flr = request.getParameter("itemFlr");
             
         String itemName = request.getParameter("itemCode");
         String itemBuilding = request.getParameter("itemBuilding");
@@ -46,6 +49,7 @@ public class itemController extends HttpServlet {
         String itemFloor = request.getParameter("itemAddFloor");
         String itemRoom = request.getParameter("itemAddRoom");
         String itemDateInst = request.getParameter("itemInstalled");
+        String itemExpiry = request.getParameter("itemExpiration");
         String itemSchedNum = request.getParameter("itemSchedNum");
         String itemSched = request.getParameter("itemSched");
         String locText = request.getParameter("locText");
@@ -60,6 +64,7 @@ public class itemController extends HttpServlet {
         String itemEditFloor = request.getParameter("itemEditFloor");
         String itemEditRoom = request.getParameter("itemEditRoom");
         String itemEditDateInst = request.getParameter("itemEditInstalled");
+        String itemEditExpiry = request.getParameter("itemEditExpiration");
         String itemEditSchedNum = request.getParameter("itemEditSchedNum");
         String itemEditSched = request.getParameter("itemEditSched");
         String editLocText = request.getParameter("editLocText");
@@ -68,14 +73,22 @@ public class itemController extends HttpServlet {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date sqlDate = null;
         Date sqlEditDate = null;
+        Date sqlExpire = null;
+        Date sqlEditExpire = null;
         
         try {
-            if(itemEID == null){
+            if (itemEID == null) {
                 java.util.Date parsedDate = dateFormat.parse(itemDateInst);
                 sqlDate = new Date(parsedDate.getTime()); 
-            }else{
+
+                java.util.Date parsedExpireDate = dateFormat.parse(itemExpiry);
+                sqlExpire = new Date(parsedExpireDate.getTime());
+            } else {
                 java.util.Date parsedEDate = dateFormat.parse(itemEditDateInst);
                 sqlEditDate = new Date(parsedEDate.getTime());
+
+                java.util.Date parsedEditExpireDate = dateFormat.parse(itemEditExpiry);
+                sqlEditExpire = new Date(parsedEditExpireDate.getTime());
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -96,17 +109,17 @@ public class itemController extends HttpServlet {
         
 //        System.out.println(sqlDate);
         
-
+        
         try (Connection conn = PooledConnection.getConnection()) {
             String sql;
             
             if(itemEID == null){
-                sql = "INSERT INTO C##FMO_ADM.FMO_ITEMS (ITEM_TYPE_ID,NAME,LOCATION_ID,LOCATION_TEXT,FLOOR_NO,ROOM_NO,DATE_INSTALLED,BRAND_NAME,REMARKS) values (?,?,?,?,?,?,?,?,?)";
-                System.out.println("add this " + itemName);
+                sql = "INSERT INTO C##FMO_ADM.FMO_ITEMS (ITEM_TYPE_ID,NAME,LOCATION_ID,LOCATION_TEXT,FLOOR_NO,ROOM_NO,DATE_INSTALLED,BRAND_NAME,EXPIRY_DATE,REMARKS) values (?,?,?,?,?,?,?,?,?,?)";
+                //System.out.println("add this " + itemName);
                 
             }else{
-                sql = "UPDATE C##FMO_ADM.FMO_ITEMS SET ITEM_TYPE_ID = ?, NAME = ?, LOCATION_ID = ?, LOCATION_TEXT = ?, FLOOR_NO = ?, ROOM_NO = ?, DATE_INSTALLED = ?, BRAND_NAME = ?, REMARKS = ?  WHERE ITEM_ID = ?";
-                System.out.println("edit this " + itemEditName);
+                sql = "UPDATE C##FMO_ADM.FMO_ITEMS SET ITEM_TYPE_ID = ?, NAME = ?, LOCATION_ID = ?, LOCATION_TEXT = ?, FLOOR_NO = ?, ROOM_NO = ?, DATE_INSTALLED = ?, BRAND_NAME = ?, EXPIRY_DATE = ?, REMARKS = ?  WHERE ITEM_ID = ?";
+                //System.out.println("edit this " + itemEditName);
             }
                 
             
@@ -121,7 +134,8 @@ public class itemController extends HttpServlet {
                     stmt.setString(6, itemRoom);
                     stmt.setDate(7, sqlDate);
                     stmt.setString(8, itemBrand);
-                    stmt.setString(9, remarks);
+                    stmt.setDate(9, sqlExpire);
+                    stmt.setString(10, remarks);
                 }else{
                     stmt.setInt(1, Integer.parseInt(itemEditType));
                     stmt.setString(2, itemEditName);
@@ -131,8 +145,9 @@ public class itemController extends HttpServlet {
                     stmt.setString(6, itemEditRoom);
                     stmt.setDate(7, sqlEditDate);
                     stmt.setString(8, itemEditBrand);
-                    stmt.setString(9, editRemarks);
-                    stmt.setInt(10, Integer.parseInt(itemEID));
+                    stmt.setDate(9, sqlEditExpire);
+                    stmt.setString(10, editRemarks);
+                    stmt.setInt(11, Integer.parseInt(itemEID));
                 }
 
                 
@@ -140,7 +155,7 @@ public class itemController extends HttpServlet {
             }
 
             // Redirect to homepage after processing
-            response.sendRedirect("./homepage");
+            response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ServletException("Database error while adding/editing item.");

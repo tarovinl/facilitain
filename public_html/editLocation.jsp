@@ -111,6 +111,7 @@
                             <tbody>
                                 <c:forEach var="floors" items="${FMO_FLOORS_LIST2}">
                                     <c:if test="${floors.itemLocId == locID}">
+                                        <c:if test="${floors.locArchive == 1}">
                                      <tr>
                                         <th scope="row">
                                         <!--  -->
@@ -144,6 +145,7 @@
                                                 onclick="populateArchFlrModal(this)">
                                         </th>
                                      </tr>
+                                        </c:if>
                                     </c:if>
                                 </c:forEach> 
                               
@@ -177,6 +179,7 @@
                             <tbody>
                                 <c:forEach var="floors" items="${FMO_FLOORS_LIST2}">
                                     <c:if test="${floors.itemLocId == locID}">
+                                    <c:if test="${floors.locArchive == 2}">
                                      <tr>
                                         <th scope="row">
                                             <input type="image" 
@@ -196,19 +199,20 @@
                                         <td>${floors.locFloor}</td>
                                         <td>${floors.locDescription != null ? floors.locDescription : 'N/A'}</td>
                                         <th scope="row">
-                                            <!--<input type="image" 
+                                            <input type="image" 
                                                 src="resources/images/editItem.svg" 
                                                 id="archFlrModalButton" 
                                                 alt="Open Edit Modal" 
                                                 width="24" 
                                                 height="24" 
                                                 data-toggle="modal"
-                                                data-aflrid="${floors.itemLocFlrId}"
-                                                data-aflrname="${floors.locFloor}"
-                                                data-target="#archiveFloor"
-                                                onclick="populateArchFlrModal(this)">-->
+                                                data-acflrid="${floors.itemLocFlrId}"
+                                                data-acflrname="${floors.locFloor}"
+                                                data-target="#activateFloor"
+                                                onclick="populateUnarchFlrModal(this)">
                                         </th>
                                      </tr>
+                                    </c:if>
                                     </c:if>
                                 </c:forEach> 
                               <!--<tr>
@@ -344,6 +348,38 @@
 </div>
 <!-- end of archive floor modal -->
 
+<!-- activate floor modal -->
+<div class="modal fade" id="activateFloor" tabindex="-1" role="dialog" aria-labelledby="activateFloor" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="centered-div bg-white">
+                <div class="container p-4 mt-4 mb-4">
+                    <form action="floorcontroller" method="POST">
+                        <div class="row">
+                            <div class="col text-center">
+                                <h2 class="fw-bold" id="actYouSure"></h2>
+                            </div>
+                        </div>
+                        <input type="hidden" name="locID" value="${locID}">
+                        <input type="hidden" name="activateFlrLocID" id="archiveFlrLocID" class="form-control" value="${locID}">
+                        <input type="hidden" name="activateFlrID" id="archiveFlrID" class="form-control">
+                        <input type="hidden" name="activateFlr" id="archiveFlr" class="form-control">
+                        <div class="row">
+                            <div class="col text-center">
+                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
+                            </div> 
+                            <div class="col text-center">
+                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 fw-bold" data-dismiss="modal">Cancel</button>
+                            </div> 
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end of activate floor modal -->
+
 
 <!-- archive location modal -->
 <div class="modal fade" id="archiveLocation" tabindex="-1" role="dialog" aria-labelledby="archiveLocation" aria-hidden="true">
@@ -421,6 +457,16 @@
         var modalMessage = document.getElementById("archYouSure");
         modalMessage.innerText = "Are you sure you want to archive " + flrName + "?";
        
+    }
+    
+    function populateUnarchFlrModal(button){
+        var flrId = button.getAttribute("data-acflrid");
+        var flrName = button.getAttribute("data-acflrname");
+
+        document.getElementById('activateFlrID').value = flrId;
+        document.getElementById('activateFlr').value = flrName;
+        var modalMessage = document.getElementById("actYouSure");
+        modalMessage.innerText = "Are you sure you want to activate " + flrName + "?";
     }
 
 </script>

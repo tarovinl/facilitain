@@ -29,14 +29,48 @@
         <title>Building Dashboard</title>
         <link rel="stylesheet" href="./resources/css/bDash.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
+        <script>
+        google.charts.load('current', {packages: ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Item Category');
+        data.addColumn('number', 'MaintenanceNo');
+        data.addRows([
+          ['Aircon', 3],
+          ['Fire Extinguisher', 1],
+          ['Elevator', 1],
+          ['Generator Set', 1],
+          ['Pump', 2],
+          ['Drinking Fountain', 5],
+          ['Chiller', 2],
+          ['Cooler', 4],
+          ['Air Cooled Chiller', 4],
+          ['Aeration Blower', 1],
+          ['Fire Alarm', 2],
+          ['Emergency and Exit Lights', 1]
+        ]);
+
+        // Set chart options
+        var options = {'title':'Pending Maintenance:'};
+
+        
+        // Instantiate and draw the chart.
+        var chart = new google.visualization.PieChart(document.getElementById('pendingMainChart'));
+        chart.draw(data, options);
+        }
+        </script>
     </head>
     <body>
-    <div class="container-fluid">
+    <div class="container-fluid contwhole" style="margin-right: 1px;">
       <div class="row min-vh-100">
         <div class="col-lg-2 bg-light p-0">
           <jsp:include page="sidebar.jsp"/>
         </div>
-
         <div class="col-md-9 col-lg-10">
           <div class="topButtons">
             <div>
@@ -83,7 +117,7 @@
             <!-- Frequency of Repairs -->
             <div class="diagram">
               <div class="diagramTitle">
-                <h2>Frequency of Repairs</h2>
+                <h2>Repairs per Month</h2>
               </div>
               <div style="background: green; height: 280px; overflow: auto;">
                 <div>graph and chart and stuff</div>
@@ -94,19 +128,19 @@
               <div class="diagramTitle">
                 <h2>Pending Maintenance</h2>
               </div>
-              <div style="background: green; height: 280px; overflow: auto;">
-                <div>graph and chart and stuff</div>
+              <div style="background: green; height: 280px;">
+                  <div id="pendingMainChart" style="height: 100%; width: 100%;"></div>
               </div>
             </div>
             <!-- Punctuality -->
-            <div class="diagram">
+            <!--<div class="diagram">
               <div class="diagramTitle">
                 <h2>Punctuality</h2>
               </div>
               <div style="background: green; height: 280px; overflow: auto;">
                 <div>graph and chart and stuff</div>
               </div>
-            </div>
+            </div>-->
           </div>
 
           <!-- Activities -->

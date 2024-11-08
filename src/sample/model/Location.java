@@ -8,6 +8,7 @@
         private String locFloor;
         private String locRoom;
         private int itemLocFlrId;
+        private int locArchive;
     
         // Getters and Setters
         public int getItemLocId() {
@@ -64,5 +65,13 @@
 
     public int getItemLocFlrId() {
         return itemLocFlrId;
+    }
+
+    public void setLocArchive(int locArchive) {
+        this.locArchive = locArchive;
+    }
+
+    public int getLocArchive() {
+        return locArchive;
     }
 }

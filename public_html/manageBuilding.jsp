@@ -114,7 +114,8 @@
           
           <c:forEach items="${uniqueRooms}" var="room" >
             <c:if test="${room.itemLID == locID}">
-                <c:if test="${room.itemFloor == floorName}">      
+                <c:if test="${room.itemFloor == floorName}">  
+                <c:if test="${room.itemArchive == 1}">  
                 <li class="roomDropdown">
                     <div class="roomDropDiv">
                         <div class="roomDLblDiv">
@@ -169,6 +170,7 @@
                                         data-itemname="${item.itemName}"
                                         data-itembrand="${item.itemBrand}"
                                         data-dateinst="${item.dateInstalled}"
+                                        data-itemexpiry="${item.expiration}"
                                         data-itemcat="${itemEditCat}"
                                         data-itemroom="${item.itemRoom}"
                                         data-itemtype="${itemEditType}"
@@ -217,7 +219,7 @@
                         </div>
                     </div>
                 </li>
-                
+                </c:if>
                 </c:if>    
             </c:if>            
         </c:forEach>   
@@ -243,6 +245,8 @@
                                     <h3 class="fw-bold">Add Equipment</h3>
                                 </div>
                             </div>
+                            <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}">
+                            <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}">
                             <div class="row mt-1">
                                 <div class="col">
                                     <label for="" class="form-label">Codename</label>
@@ -304,6 +308,10 @@
                                     <input type="date" name="itemInstalled" id="" class="form-control" required>
                                 </div>
                                 <div class="col">
+                                    <label for="" class="form-label">Expiration Date</label>
+                                    <input type="date" name="itemExpiration" id="" class="form-control">
+                                </div>
+                                <div class="col">
                                     <div class="row"><label for="itemSched" class="form-label">Maintenance Cycle: Every...</label></div>
                                     <div class="row">
                                         <div class="col">
@@ -361,6 +369,8 @@
                                 </div>
                             </div>
                             <input type="hidden" name="itemEditID" id="itemIDField" class="form-control">
+                            <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}">
+                            <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}">
                             <div class="row mt-1">
                                 <div class="col">
                                     <label for="" class="form-label">Codename</label>
@@ -420,6 +430,10 @@
                                 <div class="col">
                                     <label for="" class="form-label">Date Installed</label>
                                     <input type="date" name="itemEditInstalled" id="itemEditInstalled" class="form-control">
+                                </div>
+                                <div class="col">
+                                    <label for="" class="form-label">Expiration Date</label>
+                                    <input type="date" name="itemEditExpiration" id="" class="form-control">
                                 </div>
                                 <div class="col">
                                     <div class="row"><label for="itemEditSched" class="form-label">Maintenance Cycle: Every...</label></div>
@@ -659,6 +673,7 @@ function roomRender() {
         var itemName = button.getAttribute('data-itemname');
         var itemBrand = button.getAttribute('data-itembrand');
         var itemDateInst = button.getAttribute('data-dateinst');
+        var itemExpiry = button.getAttribute('data-itemexpiry');
         var itemCat = button.getAttribute('data-itemcat');
         var itemType = button.getAttribute('data-itemtype');
         var itemLocText = button.getAttribute('data-itemloctext');
@@ -669,6 +684,7 @@ function roomRender() {
         document.querySelector('input[name="itemEditCode"]').value = itemName;
         document.querySelector('input[name="itemEditBrand"]').value = itemBrand;
         document.querySelector('input[name="itemEditInstalled"]').value = itemDateInst;
+        document.querySelector('input[name="itemEditExpiration"]').value = itemExpiry;
         document.querySelector('textarea[name="editLocText"]').value = itemLocText;
         document.querySelector('textarea[name="editRemarks"]').value = itemRemarks;
         var selectCat = document.querySelector('select[name="itemEditCat"]');

@@ -36,13 +36,16 @@ public class floorController extends HttpServlet {
         String editFlrName = request.getParameter("editFlrName");
         String editFlrDesc = request.getParameter("editFlrDesc");
         
-        String addFlrLocId = request.getParameter("addFlrLocID");
+//        String addFlrLocId = request.getParameter("addFlrLocID");
         String addFlrName = request.getParameter("addFlrName");
         String addFlrDesc = request.getParameter("addFlrDesc");
         
-        String archFlrLocID = request.getParameter("archiveFlrLocID");
+//        String archFlrLocID = request.getParameter("archiveFlrLocID");
         String archFlrID = request.getParameter("archiveFlrID");
         String archFlr = request.getParameter("archiveFlr");
+        
+        String actFlrID = request.getParameter("activateFlrID");
+        String actFlr = request.getParameter("activateFlr");
 
 //        System.out.println(archFlrID);
 //        System.out.println(archFlr);
@@ -53,29 +56,33 @@ public class floorController extends HttpServlet {
         try (Connection conn = PooledConnection.getConnection()) {
             String sql;
 
-            if(editFlrID == null || editFlrID.isEmpty()){
-                //                archive sql feature here
-                sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_LOC_FLOORS (ITEM_LOC_ID, NAME, DESCRIPTION) VALUES (?, ?, ?)";
-            }else{
-                sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOC_FLOORS SET NAME = ?, DESCRIPTION = ? WHERE ITEM_LOC_FLR_ID = ?";
-            }
-            
-
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                if (editFlrID == null || editFlrID.isEmpty()) {
-                    stmt.setInt(1, Integer.parseInt(locID));
-                    stmt.setString(2, addFlrName);
-                    stmt.setString(3, addFlrDesc);
-                }else{
-                    
-                    stmt.setString(1, editFlrName);
-                    stmt.setString(2, editFlrDesc);
-                    stmt.setInt(3, Integer.parseInt(editFlrID));
-                }
-                
-
-                stmt.executeUpdate();
-            }
+                if (editFlrID != null && !editFlrID.isEmpty()) {
+                            sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOC_FLOORS SET NAME = ?, DESCRIPTION = ? WHERE ITEM_LOC_FLR_ID = ?";
+                        } else if (archFlrID != null && !archFlrID.isEmpty()) {
+                            sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOC_FLOORS SET ARCHIVED_FLAG = 2 WHERE ITEM_LOC_FLR_ID = ?";
+                        } else if (actFlrID != null && !actFlrID.isEmpty()) {
+                            sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOC_FLOORS SET ARCHIVED_FLAG = 1 WHERE ITEM_LOC_FLR_ID = ?";
+                        } else {
+                            sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_LOC_FLOORS (ITEM_LOC_ID, NAME, DESCRIPTION, ARCHIVED_FLAG) VALUES (?, ?, ?, 1)";
+                        }
+                        
+                        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                            if (editFlrID != null && !editFlrID.isEmpty()) {
+                                stmt.setString(1, editFlrName);
+                                stmt.setString(2, editFlrDesc);
+                                stmt.setInt(3, Integer.parseInt(editFlrID));
+                            } else if (archFlrID != null && !archFlrID.isEmpty()) {
+                                stmt.setInt(1, Integer.parseInt(archFlrID));
+                            } else if (actFlrID != null && !actFlrID.isEmpty()) {
+                                stmt.setInt(1, Integer.parseInt(actFlrID));
+                            } else {
+                                stmt.setInt(1, Integer.parseInt(locID));
+                                stmt.setString(2, addFlrName);
+                                stmt.setString(3, addFlrDesc);
+                            }
+                            
+                            stmt.executeUpdate();
+                        }
 
             // Redirect to building dashboard after saving changes
             response.sendRedirect("buildingDashboard?locID=" + locID + "/edit");
