@@ -52,7 +52,9 @@
             margin-bottom: 10px;
         }
         h2{
-            font-family: 'GothamBold', sans-serif;
+            color: #fbbf16;
+            font-family: 'NeueHaas', sans-serif;
+            font-size: 50px;
         }
 
         @media (max-width: 768px) {
@@ -83,7 +85,7 @@
         <p>Welcome, Admin</p>
         </div>
         <div class="ps-1">
-         <a href="<%=request.getContextPath()%>/homepage" class="${page == 'homepage.jsp' ? 'active' : ''}">
+         <a href="<%=request.getContextPath()%>/homepage" class="${page == './homepage.jsp' ? 'active' : ''}">
             <i class="fa-solid fa-house pe-2"></i> Homepage
         </a>
         <a href="<%=request.getContextPath()%>/notification.jsp" class="${page == 'notification.jsp' ? 'active' : ''}">
