@@ -8,7 +8,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .sidebar {
-            background-color: #2c2c2c;
+            background-color: #000000;
             height: 100vh; 
             padding: 20px;
             color: white;
@@ -28,7 +28,7 @@
         }
 
         .sidebar a:hover {
-            background-color: #444;
+            color: #fbbf16;
             border-radius: 5px;
         }
 
