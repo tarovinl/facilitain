@@ -1,12 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
     <style>
         .sidebar {
             background-color: #000000;
@@ -18,6 +20,7 @@
             width: 250px;
             top: 0;
             left: 0;
+            font-family: 'GothamBook', sans-serif;
         }
 
         .sidebar a {
@@ -30,12 +33,11 @@
 
         .sidebar a:hover {
             color: #fbbf16;
-            border-radius: 5px;
         }
 
         .sidebar .active {
             background-color: #ffca2c;
-            color: yellow;
+            color: #fbbf16;
             border-radius: 5px;
         }
 
@@ -48,6 +50,9 @@
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 10px;
+        }
+        h2{
+            font-family: 'GothamBold', sans-serif;
         }
 
         @media (max-width: 768px) {
@@ -71,32 +76,35 @@
 </head>
 <body>
     <div class="sidebar d-flex flex-column">
-        <a href="<%=request.getContextPath()%>/homepage">
-            <h2>FACILITAIN</h2>
+    <div class="text-center pt-2 pb-4">
+        <a href="<%=request.getContextPath()%>/homepage" class="p-0">
+            <h2>Facilitain</h2>
         </a>
         <p>Welcome, Admin</p>
-        <a href="<%=request.getContextPath()%>/homepage" class="${page == 'homepage.jsp' ? 'active' : ''}">
-            <i class="bi bi-house"></i> Homepage
+        </div>
+        <div class="ps-1">
+         <a href="<%=request.getContextPath()%>/homepage" class="${page == 'homepage.jsp' ? 'active' : ''}">
+            <i class="fa-solid fa-house pe-2"></i> Homepage
         </a>
         <a href="<%=request.getContextPath()%>/notification.jsp" class="${page == 'notification.jsp' ? 'active' : ''}">
-            <i class="bi bi-bell"></i> Notifications
+            <i class="fa-solid fa-bell pe-2"></i> Notifications
         </a>
         <a href="<%=request.getContextPath()%>/calendar.jsp" class="${page == 'calendar.jsp' ? 'active' : ''}">
-            <i class="bi bi-calendar"></i> Calendar
+            <i class="fa-solid fa-calendar pe-2"></i> Calendar
         </a>
         <a href="<%=request.getContextPath()%>/history.jsp" class="${page == 'history.jsp' ? 'active' : ''}">
-            <i class="bi bi-clock-history"></i> History Logs
+           <i class="fa-solid fa-clock-rotate-left pe-2"></i> History Logs
         </a>
         <a href="<%=request.getContextPath()%>/feedback.jsp" class="${page == 'feedback.jsp' ? 'active' : ''}">
-            <i class="bi bi-chat-dots"></i> Feedback
+            <i class="fa-solid fa-comments pe-2"></i> Feedback
         </a>
-        <a href="<%=request.getContextPath()%>/reports.jsp" class="${page == 'reportsPage.jsp' ? 'active' : ''}">
-            <i class="bi bi-file-earmark-text"></i> Reports
+        <a href="<%=request.getContextPath()%>/reports.jsp" class="${page == 'reports.jsp' ? 'active' : ''}">
+            <i class="fa-solid fa-circle-exclamation pe-2"></i> Reports
         </a>
         <a href="<%=request.getContextPath()%>/settings.jsp" class="${page == 'settings.jsp' ? 'active' : ''}">
-            <i class="bi bi-gear"></i> Settings
+            <i class="fa-solid fa-gear pe-2"></i> Settings
         </a>
-
+        </div>
         <div class="todo-list">
             <h4>To-Do</h4>
             <div class="todo-item">
@@ -116,6 +124,6 @@
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

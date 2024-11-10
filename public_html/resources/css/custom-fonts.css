@@ -1,10 +1,11 @@
 @charset "windows-1252";
 
 @font-face {
-    font-family: 'YourFontName';
-    src: url('./fonts/GothamMedium.ttf') format('truetype');
+    font-family: 'GothamBook';
+    src: url('../fonts/GothamBook.ttf') format('truetype');
 }
 
-body {
-    font-family: 'GothamMed', sans-serif;
+@font-face {
+    font-family: 'GothamBold';
+    src: url('../fonts/GothamBold.ttf') format('truetype');
 }
