@@ -1,6 +1,6 @@
 package sample.model;
 
-public class Employees {
+public class Employee {
     private int employeeId;        
     private String surname;        
     private String firstName;       
