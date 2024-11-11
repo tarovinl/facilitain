@@ -11,7 +11,7 @@
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
     <style>
         .sidebar {
-             background: linear-gradient(to bottom, #292927, #000000);
+             background: #000000;
             height: 100vh; 
             padding: 20px;
             color: white;
@@ -24,16 +24,29 @@
         }
 
         .sidebar a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
+        color: white;
+        text-decoration: none;
+        display: block;
+        padding: 10px;
+        margin-bottom: 10px;
+         transition: filter 0.3s ease;
+    }
 
-        .sidebar a:hover {
-            color: #fbbf16;
-        }
+    .sidebar a:hover {
+        color: #fbbf16;
+       
+    }
+
+    /* Target SVG icons specifically */
+       .sidebar a img.icon {
+     filter: brightness(0) saturate(100%) invert(100%);
+    transition: filter 0.3s ease;
+                            }
+
+    .sidebar a:hover img.icon {
+    filter: brightness(0) saturate(100%) invert(72%) sepia(82%) saturate(1973%) hue-rotate(1deg) brightness(103%) contrast(106%);
+                            }
+
 
         .sidebar .active {
             background-color: #ffca2c;
@@ -46,10 +59,10 @@
         }
 
         .todo-item {
-            background-color: #000000;
+            background-color: #ffffff;
             padding: 10px;
-            border-radius: 5px;
             margin-bottom: 10px;
+            color:#000000;
         }
         h2{
             color: #fbbf16;
@@ -74,6 +87,8 @@
                 text-align: center; /* Center heading and text */
             }
         }
+       
+
     </style>
 </head>
 <body>
@@ -84,27 +99,33 @@
         </a>
         <p>Welcome, Admin</p>
         </div>
-        <div class="ps-1">
-         <a href="<%=request.getContextPath()%>/homepage" class="${page == './homepage.jsp' ? 'active' : ''}">
-            <i class="fa-solid fa-house pe-2"></i> Homepage
+        <div class="ps-2">
+        <a href="<%=request.getContextPath()%>/homepage" class="${page == 'homepage.jsp' ? 'active' : ''}">
+        <img src="resources/images/icons/house.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+        Homepage
         </a>
+
+
         <a href="<%=request.getContextPath()%>/notification.jsp" class="${page == 'notification.jsp' ? 'active' : ''}">
-            <i class="fa-solid fa-bell pe-2"></i> Notifications
+           <img src="resources/images/icons/bell-solid.svg" alt="Notifications" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+           Notifications
         </a>
         <a href="<%=request.getContextPath()%>/calendar.jsp" class="${page == 'calendar.jsp' ? 'active' : ''}">
-            <i class="fa-solid fa-calendar pe-2"></i> Calendar
+            <img src="resources/images/icons/calendar-solid.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+            Calendar
         </a>
         <a href="<%=request.getContextPath()%>/history.jsp" class="${page == 'history.jsp' ? 'active' : ''}">
-           <i class="fa-solid fa-clock-rotate-left pe-2"></i> History Logs
+            <img src="resources/images/icons/clock-rotate-left-solid.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+            History Logs
         </a>
         <a href="<%=request.getContextPath()%>/feedback.jsp" class="${page == 'feedback.jsp' ? 'active' : ''}">
-            <i class="fa-solid fa-comments pe-2"></i> Feedback
+             <img src="resources/images/icons/comments-solid.svg" alt="Feedback" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> Feedback
         </a>
         <a href="<%=request.getContextPath()%>/reports.jsp" class="${page == 'reports.jsp' ? 'active' : ''}">
-            <i class="fa-solid fa-circle-exclamation pe-2"></i> Reports
+             <img src="resources/images/icons/circle-exclamation-solid.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> Reports
         </a>
         <a href="<%=request.getContextPath()%>/settings.jsp" class="${page == 'settings.jsp' ? 'active' : ''}">
-            <i class="fa-solid fa-gear pe-2"></i> Settings
+            <img src="resources/images/icons/gear-solid.svg" alt="Settings" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> Settings
         </a>
         </div>
         <div class="todo-list">
@@ -120,7 +141,7 @@
             </div>
         </div>
 
-        <a href="#" class="btn btn-outline-light mt-4">Logout</a>
+        <a href="#" class="btn  mt-4"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
     </div>
 
     <!-- Bootstrap JS and dependencies -->
