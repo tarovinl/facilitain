@@ -13,7 +13,6 @@
         .sidebar {
              background: #000000;
             height: 100vh; 
-            padding: 20px;
             color: white;
             overflow-y: auto;
             position: fixed;
@@ -46,7 +45,29 @@
     .sidebar a:hover img.icon {
     filter: brightness(0) saturate(100%) invert(72%) sepia(82%) saturate(1973%) hue-rotate(1deg) brightness(103%) contrast(106%);
                             }
+.button-group .btn:hover {
+    border-radius: 5px;
+}
 
+/* Styling for SVG icons */
+.icon {
+    width: 1.5em;
+    height: 1.5em;
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7500%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
+/* Hover effect for SVG icons */
+.button-group .btn:hover .icon {
+   filter: brightness(0) saturate(100%) invert(72%) sepia(82%) saturate(1973%) hue-rotate(1deg) brightness(103%) contrast(106%);
+}
+
+/* Base styling for SVG icons */
+
+
+/* Hover effect for SVG icons */
+.icon-button:hover .icon {
+    filter: brightness(0) saturate(100%) invert(72%) sepia(82%) saturate(1973%) hue-rotate(1deg) brightness(103%) contrast(106%);
+}
 
         .sidebar .active {
             background-color: #ffca2c;
@@ -55,14 +76,14 @@
         }
 
         .todo-list {
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .todo-item {
-            background-color: #ffffff;
-            padding: 10px;
-            margin-bottom: 10px;
-            color:#000000;
+            background-color: #000000;
+            padding: 5px;
+            margin-bottom: 5px;
+            color:#ffffff;
         }
         h2{
             color: #fbbf16;
@@ -93,7 +114,7 @@
 </head>
 <body>
     <div class="sidebar d-flex flex-column">
-    <div class="text-center pt-2 pb-4">
+    <div class="text-center pt-4 pb-4">
         <a href="<%=request.getContextPath()%>/homepage" class="p-0">
             <h2>Facilitain</h2>
         </a>
@@ -128,19 +149,28 @@
             <img src="resources/images/icons/gear-solid.svg" alt="Settings" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> Settings
         </a>
         </div>
-        <div class="todo-list">
-            <h4>To-Do</h4>
-            <div class="todo-item">
-                <p>
-                    Aircon Maintenance<br>
-                    Frassati Building<br>
-                    <small>July 24, 2024</small>
-                </p>
-                <button class="btn btn-sm btn-outline-success">✓</button>
-                <button class="btn btn-sm btn-outline-danger">✕</button>
+        <div class="todo-list pt-2">
+            <div class="d-flex justify-content-between align-items-center">
+            <h4 class="ps-1">To-Do</h4>
+            <button class="btn btn-sm icon-button"><img src="resources/images/icons/plus-solid.svg" alt="Add" class="icon" style="width: 2em; height: 2em; vertical-align: middle;"></button>
             </div>
-        </div>
+            <hr class="bg-light border-2 border-top border-light" />
+           <div class="todo-item d-flex justify-content-between align-items-center">
+    <div class="ps-2">
+        <p>
+            Aircon Maintenance<br>
+            Frassati Building<br>
+            <small>July 24, 2024</small>
+        </p>
+    </div>
+    <div class="button-group d-flex flex-column">
+        <button class="btn btn-sm"><img src="resources/images/icons/check-solid.svg" alt="Check" class="icon" style="width: 1.5em; height: 1.5em; vertical-align: middle;"></button>
+        <button class="btn btn-sm"><img src="resources/images/icons/xmark-solid.svg" alt="X" class="icon " style="width: 1.5em; height: 1.5em; vertical-align: middle;"></button>
+    </div>
+</div>
 
+        </div>
+<hr class="bg-light border-2 border-top border-light" />
         <a href="#" class="btn  mt-4"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
     </div>
 
