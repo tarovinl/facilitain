@@ -11,7 +11,7 @@
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
     <style>
         .sidebar {
-            background-color: #000000;
+             background: linear-gradient(to bottom, #292927, #000000);
             height: 100vh; 
             padding: 20px;
             color: white;
