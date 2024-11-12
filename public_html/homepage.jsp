@@ -47,9 +47,7 @@
                                     <p class="card-text">${location.locDescription}</p>
                                 </div>
                             </a>
-                            <button class="btn btn-sm btn-danger trash-btn">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                          
                         </div>
                     </div>
                     </c:if>
@@ -62,7 +60,7 @@
 <!-- Add building modal -->
 <div class="modal fade" id="addBuildingModal" tabindex="-1" role="dialog" aria-labelledby="addBuildingModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form action="building" method="post"> <!-- Form action to servlet -->
+        <form action="buildingController" method="post"> <!-- Form action to servlet -->
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addBuildingModalLabel">Add Building</h5>
