@@ -1,6 +1,8 @@
 package com.sample;
 
+import sample.model.ItemType;
 import sample.model.PooledConnection;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,42 +12,39 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import sample.model.Item;
-
-@WebServlet("/itemTypes")
-public class itemTypeController extends HttpServlet {
+@WebServlet("/itemType")
+public class ItemTypeController extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Item> itemList = new ArrayList<>();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<ItemType> itemTypeList = new ArrayList<>();
 
-        try (Connection conn = PooledConnection.getConnection()) {
-            String sql = "SELECT ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION, ACTIVE_FLAG FROM C##FMO_ADM.FMO_ITEM_TYPES";
-            try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Item item = new Item();
-                    
-                    item.setItemTID(rs.getInt("ITEM_TYPE_ID"));  // Type ID
-                    item.setItemCID(rs.getInt("ITEM_CAT_ID"));   // Category ID
-                    item.setItemName(rs.getString("NAME"));      // Name
-                    item.setItemCat(rs.getString("DESCRIPTION")); // Description as Category
-                    item.setActiveFlag(rs.getInt("ACTIVE_FLAG")); // Active flag
-                    itemList.add(item);
-                }
+        // Query to retrieve item types
+        String sql = "SELECT ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION, ACTIVE_FLAG FROM C##FMO_ADM.FMO_ITEM_TYPES";
+
+        try (Connection connection = PooledConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                ItemType itemType = new ItemType();
+                itemType.setItemTypeId(resultSet.getInt("ITEM_TYPE_ID"));
+                itemType.setItemCatId(resultSet.getInt("ITEM_CAT_ID"));
+                itemType.setName(resultSet.getString("NAME"));
+                itemType.setDescription(resultSet.getString("DESCRIPTION"));
+                itemType.setActiveFlag(resultSet.getInt("ACTIVE_FLAG"));
+                itemTypeList.add(itemType);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new ServletException("Database error while retrieving items.", e);
+        } catch (Exception e) {
+            throw new ServletException("Error retrieving item types data", e);
         }
 
-        // Set the itemList attribute to pass to the JSP
-        request.setAttribute("itemList", itemList);
-
-        // Forward to the JSP page
-        request.getRequestDispatcher("itemTypes.jsp").forward(request, response);
+        // Set itemTypeList as a request attribute
+        request.setAttribute("itemTypeList", itemTypeList);
+        request.getRequestDispatcher("itemType.jsp").forward(request, response);
     }
 }
