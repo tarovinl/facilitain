@@ -131,4 +131,12 @@
     font-size: 16px;
 }
 
+  .buildingName h1{
+    font-size: 26px;
+  }
+
+  .contwhole{
+      margin-right: 0px;
+  }
+
 }
