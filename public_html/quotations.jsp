@@ -14,6 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+
     <style>
         .modal-backdrop {
             z-index: 1040;
@@ -90,6 +91,69 @@
                     <form id="uploadQuotationForm" enctype="multipart/form-data" method="post" action="quotations">
                         <!-- Hidden Field to Store Item ID -->
                         <input type="hidden" name="hiddenItemId" id="hiddenItemId">
+
+
+<!--             <div class="modal-body">
+                <div class="centered-div bg-white">
+                    <div class="container mt-2 mb-2">
+                        <!-- Table Section -->
+                        <div class="row mt-1">
+                            <div class="col">
+                                <table id="quotationsTable" class="table table-striped table-hover table-bordered">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Code</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Date Uploaded</th>
+                                            <th scope="col"></th> <!-- Empty column for actions -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>001</td>
+                                            <td>Sample Description 1</td>
+                                            <td>2024-10-17</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>002</td>
+                                            <td>Sample Description 2</td>
+                                            <td>2024-10-18</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>002</td>
+                                            <td>Sample Description 2</td>
+                                            <td>2024-10-18</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>002</td>
+                                            <td>Sample Description 2</td>
+                                            <td>2024-10-18</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>002</td>
+                                            <td>Sample Description 2</td>
+                                            <td>2024-10-18</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>002</td>
+                                            <td>Sample Description 2</td>
+                                            <td>2024-10-18</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>002</td>
+                                            <td>Sample Description 2</td>
+                                            <td>2024-10-18</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div> -->
 
                         <div class="mb-3">
                             <label for="quotationDescription" class="form-label">Quotation Description</label>

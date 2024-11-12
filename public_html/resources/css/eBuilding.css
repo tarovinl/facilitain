@@ -87,6 +87,11 @@
         align-items: center;
         justify-content: center;
     }
+    .locName h3{
+        display: flex;
+        align-items: center;
+        justify-content: center;    
+    }
     .archivedLbl button {
         font-size: 18px;
     }

@@ -38,6 +38,7 @@
             <!-- Buildings Listing -->
             <div class="row">
                 <c:forEach var="location" items="${locations}">
+                    <c:if test="${location.locArchive == 1}">
                     <div class="col-md-4">
                         <div class="card mb-4 position-relative">
                             <a href="buildingDashboard?locID=${location.itemLocId}" class="text-decoration-none">
@@ -49,6 +50,7 @@
                           
                         </div>
                     </div>
+                    </c:if>
                 </c:forEach>
             </div>
         </div>

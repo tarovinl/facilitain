@@ -13,6 +13,7 @@
         <c:set var="locName" value="${location.locName}" />
         <c:set var="locDescription" value="${location.locDescription}" />
         <c:set var="matchFound" value="true" />
+        <c:set var="locID2" value="${location.itemLocId}" />
     </c:if>
 </c:forEach>
 
@@ -29,14 +30,98 @@
         <title>Building Dashboard</title>
         <link rel="stylesheet" href="./resources/css/bDash.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
+        <script>
+        google.charts.load('current', {packages: ['corechart']});
+        google.charts.setOnLoadCallback(drawCharts);
+        
+        function drawCharts() {
+        drawPieChart();
+        drawColumnChart();
+        }
+        
+        function drawPieChart() {
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Item Category');
+        data.addColumn('number', 'MaintenanceNo');
+    
+
+// loop that lists the category and how many items are in maintenance per category. change itemMaintStat to 2 when final
+        data.addRows([
+        <c:forEach var="category" items="${FMO_CATEGORIES_LIST}">
+            <c:set var="itemCount" value="0" />
+            <c:forEach var="itemz" items="${FMO_ITEMS_LIST}">
+                <c:if test="${itemz.itemLID == locID2}">
+
+                <c:set var="itemCID" value="" />
+
+                <c:forEach var="type" items="${FMO_TYPES_LIST}">
+                <c:if test="${type.itemTID == itemz.itemTID}">
+                    <c:forEach var="cat" items="${FMO_CATEGORIES_LIST}">
+                    <c:if test="${cat.itemCID == type.itemCID}">
+                        <c:set var="itemCID" value="${cat.itemCID}" />            
+                    </c:if>
+                    </c:forEach>
+                </c:if>
+                </c:forEach>
+            
+                <c:if test="${category.itemCID == itemCID}">
+                    <c:if test="${itemz.itemArchive == 1}">
+                    <c:if test="${itemz.itemMaintStat == 1}">
+                        <c:set var="itemCount" value="${itemCount + 1}" />
+                    </c:if>
+                    </c:if>
+                </c:if>
+                </c:if>
+            </c:forEach>
+
+            ['${category.itemCat}', ${itemCount}],
+        </c:forEach>
+
+        ]);
+       
+        // Set chart options
+        var options = {chartArea: { 
+            left: 20, // Adjust margins to center the pie
+            width: '80%',  // Width of the pie chart area
+            height: '80%'  // Height of the pie chart area
+        }};
+        // Instantiate and draw the chart.
+        var chart = new google.visualization.PieChart(document.getElementById('pendingMainChart'));
+        chart.draw(data, options);
+        }
+        
+        function drawColumnChart() {
+        // Create the data table for the column chart.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Month');
+        data.addColumn('number', 'No. of Repairs');
+        data.addRows([
+            ['October', 10],
+            ['November', 14],
+            ['December', 16]
+        ]);
+        // Set options for the column chart
+        var options = {
+            hAxis: { title: 'Month' },
+            vAxis: { title: 'Repairs' },
+            colors: ['#fccc4c'],
+            legend: { position: 'none' }
+        };
+        // Instantiate and draw the column chart
+        var chart = new google.visualization.ColumnChart(document.getElementById('repairNoChart'));
+        chart.draw(data, options);
+    }
+        </script>
     </head>
     <body>
-    <div class="container-fluid">
+    <div class="container-fluid contwhole" style="margin-right: 1px;">
       <div class="row min-vh-100">
         <div class="col-lg-2 bg-light p-0">
           <jsp:include page="sidebar.jsp"/>
         </div>
-
         <div class="col-md-9 col-lg-10">
           <div class="topButtons">
             <div>
@@ -83,10 +168,10 @@
             <!-- Frequency of Repairs -->
             <div class="diagram">
               <div class="diagramTitle">
-                <h2>Frequency of Repairs</h2>
+                <h2>Repairs per Month</h2>
               </div>
-              <div style="background: green; height: 280px; overflow: auto;">
-                <div>graph and chart and stuff</div>
+              <div style="background: green; height: 280px; ">
+                <div id="repairNoChart" style="height: 100%; width: 100%;"></div>
               </div>
             </div>
             <!-- Pending Maintenance -->
@@ -94,19 +179,19 @@
               <div class="diagramTitle">
                 <h2>Pending Maintenance</h2>
               </div>
-              <div style="background: green; height: 280px; overflow: auto;">
-                <div>graph and chart and stuff</div>
+              <div style="background: green; height: 280px;">
+                  <div id="pendingMainChart" style="height: 100%; width: 100%;"></div>
               </div>
             </div>
             <!-- Punctuality -->
-            <div class="diagram">
+            <!--<div class="diagram">
               <div class="diagramTitle">
                 <h2>Punctuality</h2>
               </div>
               <div style="background: green; height: 280px; overflow: auto;">
                 <div>graph and chart and stuff</div>
               </div>
-            </div>
+            </div>-->
           </div>
 
           <!-- Activities -->

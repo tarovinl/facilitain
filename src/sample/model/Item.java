@@ -17,7 +17,13 @@ public class Item {
     private String itemRemarks;
     private String itemTypeDescription;
     private Date dateInstalled;  
-    private int activeFlag;     
+    private int activeFlag; 
+    private int itemArchive;
+    private int itemMaintStat;
+    private String maintStatName;
+    private int maintSchedDays;
+    private int maintSchedWarn;
+    private Date expiration;  
 
     // Getters and Setters
     public void setItemID(int itemID) {
@@ -140,5 +146,53 @@ public class Item {
 
     public String getItemTypeDescription() {
         return itemTypeDescription;
+    }
+
+    public void setItemArchive(int itemArchive) {
+        this.itemArchive = itemArchive;
+    }
+
+    public int getItemArchive() {
+        return itemArchive;
+    }
+
+    public void setExpiration(Date expiration) {
+        this.expiration = expiration;
+    }
+
+    public Date getExpiration() {
+        return expiration;
+    }
+
+    public void setItemMaintStat(int itemMaintStat) {
+        this.itemMaintStat = itemMaintStat;
+    }
+
+    public int getItemMaintStat() {
+        return itemMaintStat;
+    }
+
+    public void setMaintStatName(String maintStatName) {
+        this.maintStatName = maintStatName;
+    }
+
+    public String getMaintStatName() {
+        return maintStatName;
+    }
+
+    public void setMaintSchedDays(int maintSchedDays) {
+        this.maintSchedDays = maintSchedDays;
+    }
+
+    public int getMaintSchedDays() {
+        return maintSchedDays;
+    }
+
+    public void setMaintSchedWarn(int maintSchedWarn) {
+        this.maintSchedWarn = maintSchedWarn;
+    }
+
+    public int getMaintSchedWarn() {
+        return maintSchedWarn;
     }
 }

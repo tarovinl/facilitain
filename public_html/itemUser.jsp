@@ -20,6 +20,7 @@
                     <thead>
                         <tr>
                             <th>Employee Number</th>
+                            <th>Full Name</th>
                             <th>User Type</th>
                         </tr>
                     </thead>
@@ -27,7 +28,18 @@
                         <c:forEach var="user" items="${itemUserList}">
                             <tr>
                                 <td>${user.empNumber}</td>
-                                <td>${user.userType == 1 ? 'Admin' : 'View Only'}</td>
+                                <td>${user.fullName}</td>
+                                <td>
+                                    <form action="itemUser" method="post">
+                                        <!-- Hidden field to store employee number -->
+                                        <input type="hidden" name="empNumber" value="${user.empNumber}" />
+                                        <select name="userType" class="form-select" onchange="this.form.submit()">
+                                            <c:forEach var="type" items="${userTypeList}">
+                                                <option value="${type.key}" ${type.key == user.userType ? 'selected' : ''}>${type.value}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </form>
+                                </td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -35,7 +47,6 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
