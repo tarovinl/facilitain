@@ -203,11 +203,19 @@
                                         onclick="populateQuotModal(this)">
                                     </td>
                                     <td >
-                                        <select class="statusDropdown">
-                                            <option value="working" class="working">Working</option>
-                                            <option value="nwork" class="nwork">Not Working</option>
-                                            <option value="maintenance" class="maintenance">In Maintenance</option>
+                                      <form action="itemcontroller" method="POST">
+                                        <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}"/>
+                                        <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}"/>
+                                        <input type="hidden" name="maintStatID" value="${item.itemID}" />
+                                        <select name="statusDropdown" class="statusDropdown" onchange="this.form.submit()">
+                                            <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
+                                                <option value="${status.itemMaintStat}" 
+                                                <c:if test="${status.itemMaintStat == item.itemMaintStat}">selected</c:if>>
+                                                ${status.maintStatName}
+                                                </option>
+                                            </c:forEach>
                                         </select>
+                                      </form>
                                     </td>
                                 </tr>
                                     </c:if>
@@ -494,32 +502,39 @@
     
             // Toggle the display property of the specific .roomDTblDiv
             tblDiv.style.display = (tblDiv.style.display === 'none' || tblDiv.style.display === '') ? 'block' : 'none';
-  
+            // Store the state in localStorage
+            localStorage.setItem('tblDivVisible', tblDiv.style.display === 'block' ? 'true' : 'false');
         }
-    
-        const statusDropdowns = document.querySelectorAll('.statusDropdown');
-
-        function updateDropdownColor(dropdown) {
-            const selectedValue = dropdown.value;
-
-            dropdown.classList.remove('working', 'nwork', 'maintenance');
-
-            if (selectedValue === 'working') {
-                dropdown.classList.add('working');
-            } else if (selectedValue === 'nwork') {
-                dropdown.classList.add('nwork');
-            } else if (selectedValue === 'maintenance') {
-                dropdown.classList.add('maintenance');
+        window.onload = function() {
+            const isTblDivVisible = localStorage.getItem('tblDivVisible');
+            const tblDiv = document.querySelector('.roomDTblDiv');
+            if (isTblDivVisible === 'true') {
+                tblDiv.style.display = 'block';
             }
-        }
-        statusDropdowns.forEach(function(dropdown) {
-            updateDropdownColor(dropdown);
-
-            // Add event listener to each dropdown
-            dropdown.addEventListener('change', function() {
-                updateDropdownColor(dropdown);
-            });
-        });
+        };
+//        const statusDropdowns = document.querySelectorAll('.statusDropdown');
+//
+//        function updateDropdownColor(dropdown) {
+//            const selectedValue = dropdown.value;
+//
+//            dropdown.classList.remove('working', 'nwork', 'maintenance');
+//
+//            if (selectedValue === 'working') {
+//                dropdown.classList.add('working');
+//            } else if (selectedValue === 'nwork') {
+//                dropdown.classList.add('nwork');
+//            } else if (selectedValue === 'maintenance') {
+//                dropdown.classList.add('maintenance');
+//            }
+//        }
+//        statusDropdowns.forEach(function(dropdown) {
+//            updateDropdownColor(dropdown);
+//
+//            // Add event listener to each dropdown
+//            dropdown.addEventListener('change', function() {
+//                updateDropdownColor(dropdown);
+//            });
+//        });
 
 
 

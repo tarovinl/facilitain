@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import sample.model.Location;
 import sample.model.Item;
 import sample.model.PooledConnection;
+import sample.model.SharedData;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit" })
 public class mainController extends HttpServlet {
@@ -45,16 +46,20 @@ public class mainController extends HttpServlet {
         ArrayList<Item> listTypes = new ArrayList<>();
         ArrayList<Item> listCats = new ArrayList<>();
         ArrayList<Item> listBrands = new ArrayList<>();
+        ArrayList<Item> listMaintStat = new ArrayList<>();
+        ArrayList<Item> listMaintSched = new ArrayList<>();
 
-     
+        
         try (
              Connection con = PooledConnection.getConnection();
-             PreparedStatement statement = con.prepareCall("SELECT ITEM_LOC_ID, NAME, DESCRIPTION, ACTIVE_FLAG, ARCHIVED_FLAG FROM C##FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY NAME");
+             PreparedStatement statement = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY NAME");
              PreparedStatement stmntFloor = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOC_FLOORS ORDER BY ITEM_LOC_ID, CASE WHEN REGEXP_LIKE(NAME, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(NAME, '^[0-9]+')) ELSE 9999 END, NAME");
              PreparedStatement stmntItems = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEMS ORDER BY LOCATION_ID, CASE WHEN REGEXP_LIKE(FLOOR_NO, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(FLOOR_NO, '^[0-9]+')) ELSE 9999 END, ROOM_NO, ITEM_ID");
              PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME");
              PreparedStatement stmntICats = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
              PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME")){
+             PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
+            PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 ORDER BY ITEM_MS_ID");
 
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -95,7 +100,8 @@ public class mainController extends HttpServlet {
                 items.setItemRemarks(rsItem.getString("REMARKS"));
                 items.setDateInstalled(rsItem.getDate("DATE_INSTALLED"));
                 items.setExpiration(rsItem.getDate("EXPIRY_DATE"));
-                items.setItemArchive(rsItem.getInt("ARCHIVED_FLAG"));
+                items.setItemArchive(rsItem.getInt("ITEM_STAT_ID"));
+                items.setItemMaintStat(rsItem.getInt("MAINTENANCE_STATUS"));
                 listItem.add(items);
 
                 // Print 
@@ -137,6 +143,26 @@ public class mainController extends HttpServlet {
                 listBrands.add(brand);
             }
             rsBrand.close();
+            
+            ResultSet rsMaintStat = stmntMaintStat.executeQuery();
+            while (rsMaintStat.next()) {
+                Item mstat = new Item();
+                mstat.setItemMaintStat(rsMaintStat.getInt("STATUS_ID"));
+                mstat.setMaintStatName(rsMaintStat.getString("STATUS_NAME"));
+                listMaintStat.add(mstat);
+            }
+            rsMaintStat.close();
+            
+            ResultSet rsMaintSched = stmntMaintSched.executeQuery();
+            while (rsMaintSched.next()) {
+                Item msched = new Item();
+                msched.setItemID(rsMaintSched.getInt("ITEM_MS_ID"));
+                msched.setItemTID(rsMaintSched.getInt("ITEM_TYPE_ID"));
+                msched.setMaintSchedDays(rsMaintSched.getInt("NO_OF_DAYS"));
+                msched.setMaintSchedWarn(rsMaintSched.getInt("NO_OF_DAYS_WARNING"));
+                listMaintSched.add(msched);
+            }
+            rsMaintSched.close();
 
         } catch (SQLException error) {
             error.printStackTrace();
@@ -198,6 +224,11 @@ public class mainController extends HttpServlet {
         request.setAttribute("FMO_TYPES_LIST", listTypes);
         request.setAttribute("FMO_CATEGORIES_LIST", listCats);
         request.setAttribute("FMO_BRANDS_LIST", listBrands);
+        request.setAttribute("FMO_MAINTSTAT_LIST", listMaintStat);
+        
+        SharedData.getInstance().setItemsList(listItem);
+        SharedData.getInstance().setMaintStat(listMaintStat);
+        SharedData.getInstance().setMaintSched(listMaintSched);
         
         String path = request.getServletPath();
         String queryString = request.getQueryString();

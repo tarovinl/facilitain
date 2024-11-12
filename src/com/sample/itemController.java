@@ -70,6 +70,9 @@ public class itemController extends HttpServlet {
         String editLocText = request.getParameter("editLocText");
         String editRemarks = request.getParameter("editRemarks");
         
+        String maintStatID = request.getParameter("maintStatID");
+        String maintStatus = request.getParameter("statusDropdown");
+        
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date sqlDate = null;
         Date sqlEditDate = null;
@@ -77,18 +80,20 @@ public class itemController extends HttpServlet {
         Date sqlEditExpire = null;
         
         try {
-            if (itemEID == null) {
-                java.util.Date parsedDate = dateFormat.parse(itemDateInst);
-                sqlDate = new Date(parsedDate.getTime()); 
-
-                java.util.Date parsedExpireDate = dateFormat.parse(itemExpiry);
-                sqlExpire = new Date(parsedExpireDate.getTime());
-            } else {
+            if (itemEID != null && !itemEID.isEmpty()) {
                 java.util.Date parsedEDate = dateFormat.parse(itemEditDateInst);
                 sqlEditDate = new Date(parsedEDate.getTime());
 
                 java.util.Date parsedEditExpireDate = dateFormat.parse(itemEditExpiry);
                 sqlEditExpire = new Date(parsedEditExpireDate.getTime());
+            } else if(maintStatID != null && !maintStatID.isEmpty()){
+                
+            } else {
+                java.util.Date parsedDate = dateFormat.parse(itemDateInst);
+                sqlDate = new Date(parsedDate.getTime()); 
+
+                java.util.Date parsedExpireDate = dateFormat.parse(itemExpiry);
+                sqlExpire = new Date(parsedExpireDate.getTime());
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -113,30 +118,22 @@ public class itemController extends HttpServlet {
         try (Connection conn = PooledConnection.getConnection()) {
             String sql;
             
-            if(itemEID == null){
-                sql = "INSERT INTO C##FMO_ADM.FMO_ITEMS (ITEM_TYPE_ID,NAME,LOCATION_ID,LOCATION_TEXT,FLOOR_NO,ROOM_NO,DATE_INSTALLED,BRAND_NAME,EXPIRY_DATE,REMARKS) values (?,?,?,?,?,?,?,?,?,?)";
-                //System.out.println("add this " + itemName);
-                
-            }else{
+            if(itemEID != null && !itemEID.isEmpty()){
                 sql = "UPDATE C##FMO_ADM.FMO_ITEMS SET ITEM_TYPE_ID = ?, NAME = ?, LOCATION_ID = ?, LOCATION_TEXT = ?, FLOOR_NO = ?, ROOM_NO = ?, DATE_INSTALLED = ?, BRAND_NAME = ?, EXPIRY_DATE = ?, REMARKS = ?  WHERE ITEM_ID = ?";
                 //System.out.println("edit this " + itemEditName);
+                
+            }else if(maintStatID != null && !maintStatID.isEmpty()){
+                sql = "UPDATE C##FMO_ADM.FMO_ITEMS SET MAINTENANCE_STATUS = ? WHERE ITEM_ID = ?";
+                //System.out.println("maint this " + maintStatus);
+            }else{
+                sql = "INSERT INTO C##FMO_ADM.FMO_ITEMS (ITEM_TYPE_ID,NAME,LOCATION_ID,LOCATION_TEXT,FLOOR_NO,ROOM_NO,DATE_INSTALLED,BRAND_NAME,EXPIRY_DATE,REMARKS,MAINTENANCE_STATUS) values (?,?,?,?,?,?,?,?,?,?,1)";
+                //System.out.println("add this " + itemName);
             }
                 
             
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                if(itemEID == null){
-                    stmt.setInt(1, Integer.parseInt(itemType));
-                    stmt.setString(2, itemName);
-                    stmt.setInt(3, Integer.parseInt(itemBuilding));
-                    stmt.setString(4, locText);
-                    stmt.setString(5, itemFloor);
-                    stmt.setString(6, itemRoom);
-                    stmt.setDate(7, sqlDate);
-                    stmt.setString(8, itemBrand);
-                    stmt.setDate(9, sqlExpire);
-                    stmt.setString(10, remarks);
-                }else{
+                if(itemEID != null && !itemEID.isEmpty()){
                     stmt.setInt(1, Integer.parseInt(itemEditType));
                     stmt.setString(2, itemEditName);
                     stmt.setInt(3, Integer.parseInt(itemEditLoc));
@@ -148,6 +145,20 @@ public class itemController extends HttpServlet {
                     stmt.setDate(9, sqlEditExpire);
                     stmt.setString(10, editRemarks);
                     stmt.setInt(11, Integer.parseInt(itemEID));
+                }else if(maintStatID != null && !maintStatID.isEmpty()){
+                    stmt.setInt(1, Integer.parseInt(maintStatus));
+                    stmt.setInt(2, Integer.parseInt(maintStatID));
+                }else{
+                    stmt.setInt(1, Integer.parseInt(itemType));
+                    stmt.setString(2, itemName);
+                    stmt.setInt(3, Integer.parseInt(itemBuilding));
+                    stmt.setString(4, locText);
+                    stmt.setString(5, itemFloor);
+                    stmt.setString(6, itemRoom);
+                    stmt.setDate(7, sqlDate);
+                    stmt.setString(8, itemBrand);
+                    stmt.setDate(9, sqlExpire);
+                    stmt.setString(10, remarks);
                 }
 
                 

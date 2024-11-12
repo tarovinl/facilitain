@@ -19,6 +19,10 @@ public class Item {
     private Date dateInstalled;  
     private int activeFlag; 
     private int itemArchive;
+    private int itemMaintStat;
+    private String maintStatName;
+    private int maintSchedDays;
+    private int maintSchedWarn;
     private Date expiration;  
 
     // Getters and Setters
@@ -158,5 +162,37 @@ public class Item {
 
     public Date getExpiration() {
         return expiration;
+    }
+
+    public void setItemMaintStat(int itemMaintStat) {
+        this.itemMaintStat = itemMaintStat;
+    }
+
+    public int getItemMaintStat() {
+        return itemMaintStat;
+    }
+
+    public void setMaintStatName(String maintStatName) {
+        this.maintStatName = maintStatName;
+    }
+
+    public String getMaintStatName() {
+        return maintStatName;
+    }
+
+    public void setMaintSchedDays(int maintSchedDays) {
+        this.maintSchedDays = maintSchedDays;
+    }
+
+    public int getMaintSchedDays() {
+        return maintSchedDays;
+    }
+
+    public void setMaintSchedWarn(int maintSchedWarn) {
+        this.maintSchedWarn = maintSchedWarn;
+    }
+
+    public int getMaintSchedWarn() {
+        return maintSchedWarn;
     }
 }

@@ -417,12 +417,20 @@
     function showActiveTbl() {
         //event.preventDefault();
         const table = document.querySelector('.activeFloorTbl');
-        if (table.style.display === 'none' || table.style.display === '') {
-            table.style.display = 'table';
-        } else {
-            table.style.display = 'none';
-        }
+         // Toggle the display property
+        table.style.display = (table.style.display === 'none' || table.style.display === '') ? 'table' : 'none';
+        
+        // Store the state in localStorage
+        localStorage.setItem('tableVisible', table.style.display === 'table' ? 'true' : 'false');
     }
+        window.onload = function() {
+            const isTableVisible = localStorage.getItem('tableVisible');
+            const table = document.querySelector('.activeFloorTbl');
+            if (isTableVisible === 'true') {
+                table.style.display = 'table';
+            }
+        };
+    
     function showArchivedTbl() {
         //event.preventDefault();
         const table = document.querySelector('.archivedFloorTbl');
