@@ -4,10 +4,10 @@
     padding: 20px;
     color: white;
     overflow-y: auto;
-    position: fixed; /* Keeps the sidebar fixed while scrolling */
     width: 250px;
     top: 0;
     left: 0;
+    position: relative; /* Ensure sidebar is positioned correctly */
 }
 
 .sidebar a {

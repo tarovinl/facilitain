@@ -26,7 +26,7 @@ import sample.model.Item;
 import sample.model.PooledConnection;
 import sample.model.SharedData;
 
-@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit" })
+@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification", "/calendar", "/history", "/feedback", "/reports", "/settings" })
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
@@ -275,6 +275,24 @@ public class mainController extends HttpServlet {
                   else  {
                     request.getRequestDispatcher("/buildingDashboard.jsp").forward(request, response);
                 }
+                break;
+            case "/notification":
+                request.getRequestDispatcher("/notification.jsp").forward(request, response);
+                break;
+            case "/calendar":
+                request.getRequestDispatcher("/calendar.jsp").forward(request, response);
+                break;
+            case "/history":
+                request.getRequestDispatcher("/history.jsp").forward(request, response);
+                break;
+            case "/feedback":
+                request.getRequestDispatcher("/feedback.jsp").forward(request, response);
+                break;
+            case "/reports":
+                request.getRequestDispatcher("/reports.jsp").forward(request, response);
+                break;
+            case "/settings":
+                request.getRequestDispatcher("/settings.jsp").forward(request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);

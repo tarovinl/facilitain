@@ -14,11 +14,12 @@
 </head>
 <body>
     <div class="d-flex">
-        
-        <jsp:include page="sidebar.jsp"></jsp:include>
+        <div class="col-12 col-md-2 p-0">
+            <jsp:include page="sidebar.jsp" />
+        </div>
 
-        <!-- Main container for Notifications -->
-        <div class="container p-4">
+        <!-- Main Content -->
+        <div class="col-12 col-md-10 p-4">
             <h1 class="mb-4">Notifications</h1>
 
             <!-- Hardcoded array of notifications (for now) -->
