@@ -1,59 +1,100 @@
-.sidebar {
-    background-color: #2c2c2c;
-    height: 100vh; /* Ensures full page height */
-    padding: 20px;
-    color: white;
-    overflow-y: auto;
-    position: fixed; /* Keeps the sidebar fixed while scrolling */
-    width: 250px;
-    top: 0;
-    left: 0;
-}
+  .sidebar {
+             background: #000000;
+            
+            color: white;
+            overflow-y: auto;
+            position: fixed;
+            width: 250px;
+            top: 0;
+            left: 0;
+            font-family: 'GothamBook', sans-serif;
+            display: flex;
+        }
 
-.sidebar a {
-    color: white;
-    text-decoration: none;
-    display: block;
-    padding: 10px;
-    margin-bottom: 10px;
-}
+        .sidebar a {
+        color: white;
+        text-decoration: none;
+        display: block;
+        padding: 10px;
+        margin-bottom: 10px;
+         transition: filter 0.3s ease;
+    }
 
-.sidebar a:hover {
-    background-color: #444;
+    .sidebar a:hover {
+        color: #fbbf16;
+       
+    }
+
+    /* Target SVG icons specifically */
+       .sidebar a img.icon {
+     filter: brightness(0) saturate(100%) invert(100%);
+    transition: filter 0.3s ease;
+                            }
+
+    .sidebar a:hover img.icon {
+    filter: brightness(0) saturate(100%) invert(72%) sepia(82%) saturate(1973%) hue-rotate(1deg) brightness(103%) contrast(106%);
+                            }
+.button-group .btn:hover {
     border-radius: 5px;
 }
 
-.sidebar .active {
-    background-color: #ffca2c;
-    color: yellow;
-    border-radius: 5px;
+/* Styling for SVG icons */
+.icon {
+    width: 1.5em;
+    height: 1.5em;
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7500%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
-.todo-list {
-    margin-top: 20px;
+/* Hover effect for SVG icons */
+.button-group .btn:hover .icon {
+   filter: brightness(0) saturate(100%) invert(72%) sepia(82%) saturate(1973%) hue-rotate(1deg) brightness(103%) contrast(106%);
 }
 
-.todo-item {
-    background-color: #000000;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
+/* Base styling for SVG icons */
+
+
+/* Hover effect for SVG icons */
+.icon-button:hover .icon {
+    filter: brightness(0) saturate(100%) invert(72%) sepia(82%) saturate(1973%) hue-rotate(1deg) brightness(103%) contrast(106%);
 }
 
-@media (max-width: 768px) {
-    .sidebar {
-        position: relative; 
-        width: 100%; 
-        height: auto; /* Adjust height */
-        padding: 10px; /* Add padding for smaller screens */
-    }
+        .sidebar .active {
+            background-color: #ffca2c;
+            color: #fbbf16;
+            border-radius: 5px;
+        }
 
-    .sidebar a {
-        float: none; /* Avoid floating elements */
-        text-align: center; /* Center text on smaller screens */
-    }
+        .todo-list {
+            margin-top: 10px;
+        }
 
-    .sidebar h2, .sidebar p {
-        text-align: center; /* Center heading and text */
-    }
-}
+        .todo-item {
+            background-color: #000000;
+            padding: 5px;
+            margin-bottom: 5px;
+            color:#ffffff;
+        }
+        h2{
+            color: #fbbf16;
+            font-family: 'NeueHaas', sans-serif;
+            font-size: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative; /* Make sidebar scroll with content in smaller screens */
+                width: 100%; /* Full width for small screens */
+                height: auto; /* Adjust height */
+                padding: 10px; /* Add padding for smaller screens */
+            }
+
+            .sidebar a {
+                float: none; /* Avoid floating elements */
+                text-align: center; /* Center text on smaller screens */
+            }
+
+            .sidebar h2, .sidebar p {
+                text-align: center; /* Center heading and text */
+            }
+        }
+       
