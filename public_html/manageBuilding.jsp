@@ -54,14 +54,13 @@
 
 
     <body>
-    <div class="container-fluid">
-      <div class="row min-vh-100">
-        <div class=" col-lg-2 bg-light p-0">
-          <jsp:include page="sidebar.jsp"/>
-          <jsp:include page="quotations.jsp" />
-        </div>
+<div class="container-fluid d-flex">
+    <div class="col-md-3 p-0">
+        <jsp:include page="sidebar.jsp"/>
+    </div>
     
-    <div class="col-md-9 col-lg-10">
+    <div class="col-md-9">
+            <jsp:include page="quotations.jsp" />
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
@@ -237,10 +236,9 @@
             
             <div id="paginationControls"></div>
          </div>
-        </div>
      </div>
-    </div>   
-    
+    </div> 
+    </div>
     <!--add equipment modal-->
     <div class="modal fade" id="addEquipment" tabindex="-1" role="dialog" aria-labelledby="equipmentAdd" aria-hidden="true">
     <div class="modal-dialog" role="document">

@@ -12,69 +12,70 @@
 </head>
 <body>
 <div class="container-fluid">
-<div class="row flex-nowrap">
-    <div class="sidebar col-auto col-md-4 col-lg-3 min-vh-100 d-flex flex-column justify-content-between">
-    <div class="text-center pt-4 ">
-        <a href="<%=request.getContextPath()%>/homepage" class="p-0">
-            <h2>Facilitain</h2>
-        </a>
-        <p>Welcome, Admin</p>
-        </div>
-        <div class="ps-2">
-        <a href="<%=request.getContextPath()%>/homepage" class="${page == 'homepage.jsp' ? 'active' : ''}">
-        <img src="resources/images/icons/house.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-        Homepage
-        </a>
-
-
-        <a href="<%=request.getContextPath()%>/notification.jsp" class="${page == 'notification.jsp' ? 'active' : ''}">
-           <img src="resources/images/icons/bell-solid.svg" alt="Notifications" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-           Notifications
-        </a>
-        <a href="<%=request.getContextPath()%>/calendar.jsp" class="${page == 'calendar.jsp' ? 'active' : ''}">
-            <img src="resources/images/icons/calendar-solid.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-            Calendar
-        </a>
-        <a href="<%=request.getContextPath()%>/history.jsp" class="${page == 'history.jsp' ? 'active' : ''}">
-            <img src="resources/images/icons/clock-rotate-left-solid.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-            History Logs
-        </a>
-        <a href="<%=request.getContextPath()%>/feedback.jsp" class="${page == 'feedback.jsp' ? 'active' : ''}">
-             <img src="resources/images/icons/comments-solid.svg" alt="Feedback" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> Feedback
-        </a>
-        <a href="<%=request.getContextPath()%>/reports.jsp" class="${page == 'reports.jsp' ? 'active' : ''}">
-             <img src="resources/images/icons/circle-exclamation-solid.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> Reports
-        </a>
-        <a href="<%=request.getContextPath()%>/settings.jsp" class="${page == 'settings.jsp' ? 'active' : ''}">
-            <img src="resources/images/icons/gear-solid.svg" alt="Settings" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> Settings
-        </a>
-        </div>
-        <div class="todo-list ">
-            <div class="d-flex justify-content-between align-items-center">
-            <h4 class="ps-1">To-Do</h4>
-            <button class="btn btn-sm icon-button"><img src="resources/images/icons/plus-solid.svg" alt="Add" class="icon" style="width: 2em; height: 2em; vertical-align: middle;"></button>
+    <div class="row flex-nowrap">
+        <div class="sidebar col-auto col-md-4 col-lg-3 min-vh-100 d-flex flex-column justify-content-between">
+            <div class="text-center pt-4 ">
+                <a href="<%=request.getContextPath()%>/homepage" class="p-0">
+                    <h2>Facilitain</h2>
+                </a>
+                <p>Welcome, Admin</p>
             </div>
-            <hr class="bg-light border-2 border-top border-light" />
-           <div class="todo-item d-flex justify-content-between align-items-center">
-    <div class="ps-2">
-        <p>
-            Aircon Maintenance<br>
-            Frassati Building<br>
-            <small>July 24, 2024</small>
-        </p>
-    </div>
-    <div class="button-group d-flex flex-column">
-        <button class="btn btn-sm"><img src="resources/images/icons/check-solid.svg" alt="Check" class="icon" style="width: 1.5em; height: 1.5em; vertical-align: middle;"></button>
-        <button class="btn btn-sm"><img src="resources/images/icons/xmark-solid.svg" alt="X" class="icon " style="width: 1.5em; height: 1.5em; vertical-align: middle;"></button>
-    </div>
-</div>
-<hr class="bg-light border-2 border-top border-light" />
+            <div class="ps-2">
+                <a href="homepage" class="${page == 'homepage' ? 'active' : ''}">
+                    <img src="resources/images/icons/house.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                    Homepage
+                </a>
+                <a href="notification" class="${page == 'notification' ? 'active' : ''}">
+                    <img src="resources/images/icons/bell-solid.svg" alt="Notifications" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                    Notifications
+                </a>
+                <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
+                    <img src="resources/images/icons/calendar-solid.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                    Calendar
+                </a>
+                <a href="history" class="${page == 'history' ? 'active' : ''}">
+                    <img src="resources/images/icons/clock-rotate-left-solid.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                    History Logs
+                </a>
+                <a href="feedback" class="${page == 'feedback' ? 'active' : ''}">
+                    <img src="resources/images/icons/comments-solid.svg" alt="Feedback" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                    Feedback
+                </a>
+                <a href="reports" class="${page == 'reports' ? 'active' : ''}">
+                    <img src="resources/images/icons/circle-exclamation-solid.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                    Reports
+                </a>
+                <a href="settings" class="${page == 'settings' ? 'active' : ''}">
+                    <img src="resources/images/icons/gear-solid.svg" alt="Settings" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                    Settings
+                </a>
+            </div>
+            <div class="todo-list">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="ps-1">To-Do</h4>
+                    <button class="btn btn-sm icon-button"><img src="resources/images/icons/plus-solid.svg" alt="Add" class="icon" style="width: 2em; height: 2em; vertical-align: middle;"></button>
+                </div>
+                <hr class="bg-light border-2 border-top border-light"/>
+                <div class="todo-item d-flex justify-content-between align-items-center">
+                    <div class="ps-2">
+                        <p>
+                            Aircon Maintenance<br>
+                            Frassati Building<br>
+                            <small>July 24, 2024</small>
+                        </p>
+                    </div>
+                    <div class="button-group d-flex flex-column">
+                        <button class="btn btn-sm"><img src="resources/images/icons/check-solid.svg" alt="Check" class="icon" style="width: 1.5em; height: 1.5em; vertical-align: middle;"></button>
+                        <button class="btn btn-sm"><img src="resources/images/icons/xmark-solid.svg" alt="X" class="icon" style="width: 1.5em; height: 1.5em; vertical-align: middle;"></button>
+                    </div>
+                </div>
+                <hr class="bg-light border-2 border-top border-light"/>
+            </div>
+            <a href="#" class="btn"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
         </div>
-
-        <a href="#" class="btn "><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
     </div>
 </div>
-</div>
+
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
