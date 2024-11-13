@@ -52,12 +52,12 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card text-center mb-4">
-                          <a href="<%=request.getContextPath()%>/employee">
+                          <a href="<%=request.getContextPath()%>/itemUser">
                                 <div class="card-body">
                                     <div class="mb-3">
                                         <span class="display-1"><i class="fas fa-print"></i></span>
                                     </div>
-                                    <h5 class="card-title">Employees</h5>
+                                    <h5 class="card-title">Users</h5>
                                 </div>
                             </a>
                         </div>
