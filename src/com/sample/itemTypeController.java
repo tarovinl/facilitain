@@ -14,37 +14,87 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.AbstractMap;
 
 @WebServlet("/itemType")
-public class ItemTypeController extends HttpServlet {
+public class itemTypeController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<ItemType> itemTypeList = new ArrayList<>();
+        List<Map.Entry<Integer, String>> categoryList = new ArrayList<>();
 
-        // Query to retrieve item types
-        String sql = "SELECT ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION, ACTIVE_FLAG FROM C##FMO_ADM.FMO_ITEM_TYPES";
+        String itemTypeQuery = "SELECT ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION FROM C##FMO_ADM.FMO_ITEM_TYPES";
+        String categoryQuery = "SELECT ITEM_CAT_ID, NAME FROM C##FMO_ADM.FMO_ITEM_CATEGORIES";
 
         try (Connection connection = PooledConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement itemTypeStatement = connection.prepareStatement(itemTypeQuery);
+             PreparedStatement categoryStatement = connection.prepareStatement(categoryQuery)) {
 
-            while (resultSet.next()) {
-                ItemType itemType = new ItemType();
-                itemType.setItemTypeId(resultSet.getInt("ITEM_TYPE_ID"));
-                itemType.setItemCatId(resultSet.getInt("ITEM_CAT_ID"));
-                itemType.setName(resultSet.getString("NAME"));
-                itemType.setDescription(resultSet.getString("DESCRIPTION"));
-                itemType.setActiveFlag(resultSet.getInt("ACTIVE_FLAG"));
-                itemTypeList.add(itemType);
+            try (ResultSet itemTypeResult = itemTypeStatement.executeQuery()) {
+                while (itemTypeResult.next()) {
+                    ItemType itemType = new ItemType();
+                    itemType.setItemTypeId(itemTypeResult.getInt("ITEM_TYPE_ID"));
+                    itemType.setItemCatId(itemTypeResult.getInt("ITEM_CAT_ID"));
+                    itemType.setName(itemTypeResult.getString("NAME"));
+                    itemType.setDescription(itemTypeResult.getString("DESCRIPTION"));
+                    itemTypeList.add(itemType);
+                }
+            }
+
+            try (ResultSet categoryResult = categoryStatement.executeQuery()) {
+                while (categoryResult.next()) {
+                    int itemCatId = categoryResult.getInt("ITEM_CAT_ID");
+                    String name = categoryResult.getString("NAME");
+                    categoryList.add(new AbstractMap.SimpleEntry<>(itemCatId, name));
+                }
             }
         } catch (Exception e) {
-            throw new ServletException("Error retrieving item types data", e);
+            e.printStackTrace();
         }
 
-        // Set itemTypeList as a request attribute
         request.setAttribute("itemTypeList", itemTypeList);
-        request.getRequestDispatcher("itemType.jsp").forward(request, response);
+        request.setAttribute("categoryList", categoryList);
+        request.getRequestDispatcher("/itemType.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String editMode = request.getParameter("editMode");
+        int itemCatId = Integer.parseInt(request.getParameter("itemCatId"));
+        String name = request.getParameter("name");
+        String description = request.getParameter("description");
+
+        String query;
+        if ("true".equals(editMode)) {
+            int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
+            query = "UPDATE C##FMO_ADM.FMO_ITEM_TYPES SET ITEM_CAT_ID = ?, NAME = ?, DESCRIPTION = ? WHERE ITEM_TYPE_ID = ?";
+            try (Connection connection = PooledConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, itemCatId);
+                statement.setString(2, name);
+                statement.setString(3, description);
+                statement.setInt(4, itemTypeId);
+                statement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            query = "INSERT INTO C##FMO_ADM.FMO_ITEM_TYPES (ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (ITEM_TYPE_SEQ.NEXTVAL, ?, ?, ?)";
+            try (Connection connection = PooledConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, itemCatId);
+                statement.setString(2, name);
+                statement.setString(3, description);
+                statement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        response.sendRedirect("itemType");
     }
 }

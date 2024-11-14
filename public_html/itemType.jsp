@@ -26,7 +26,7 @@
                             <th>Category Name</th>
                             <th>Name</th>
                             <th>Description</th>
-                            <th>Active</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,7 +42,11 @@
                                 </td>
                                 <td>${type.name}</td>
                                 <td>${type.description}</td>
-                                <td>${type.activeFlag == 1 ? 'Yes' : 'No'}</td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editItemTypeModal"
+                                            data-itemtypeid="${type.itemTypeId}" data-itemcatid="${type.itemCatId}"
+                                            data-name="${type.name}" data-description="${type.description}">Edit</button>
+                                </td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -83,10 +87,59 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Edit Item Type Modal -->
+                <div class="modal fade" id="editItemTypeModal" tabindex="-1" aria-labelledby="editItemTypeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="itemType" method="post">
+                                <input type="hidden" name="editMode" value="true">
+                                <input type="hidden" id="editItemTypeId" name="itemTypeId">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editItemTypeModalLabel">Edit Item Type</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="editItemCatId" class="form-label">Category</label>
+                                        <select class="form-select" id="editItemCatId" name="itemCatId" required>
+                                            <c:forEach var="category" items="${categoryList}">
+                                                <option value="${category.key}">${category.value}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editName" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="editName" name="name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editDescription" class="form-label">Description</label>
+                                        <textarea class="form-control" id="editDescription" name="description" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Prefill Edit Modal with selected item data
+        const editModal = document.getElementById('editItemTypeModal');
+        editModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            document.getElementById('editItemTypeId').value = button.getAttribute('data-itemtypeid');
+            document.getElementById('editItemCatId').value = button.getAttribute('data-itemcatid');
+            document.getElementById('editName').value = button.getAttribute('data-name');
+            document.getElementById('editDescription').value = button.getAttribute('data-description');
+        });
+    </script>
 </body>
 </html>

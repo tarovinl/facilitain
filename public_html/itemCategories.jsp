@@ -33,22 +33,28 @@
                     </thead>
                     <tbody>
                         <c:forEach var="category" items="${categoryList}">
-                            <tr>
-                                <td>${category.itemCID}</td>
-                                <td>${category.categoryName}</td>
-                                <td>${category.description}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#editCategoryModal"
-                                            data-cid="${category.itemCID}" 
-                                            data-name="${category.categoryName}" 
-                                            data-description="${category.description}"
-                                            data-active-flag="${category.activeFlag}"> 
-                                        Edit
-                                    </button>
-                                </td>
-                            </tr>
+                            <c:if test="${category.archivedFlag == 1}">
+                                <tr>
+                                    <td>${category.itemCID}</td>
+                                    <td>${category.categoryName}</td>
+                                    <td>${category.description}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editCategoryModal"
+                                                data-cid="${category.itemCID}" 
+                                                data-name="${category.categoryName}" 
+                                                data-description="${category.description}"
+                                                data-active-flag="${category.activeFlag}"> 
+                                            Edit
+                                        </button>
+                                        <form action="itemCategories" method="post" class="d-inline">
+                                            <input type="hidden" name="itemCID" value="${category.itemCID}">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to archive this category?');">Archive</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </c:if>
                         </c:forEach>
                     </tbody>
                 </table>
@@ -113,7 +119,7 @@
                         </div>
                         <div class="form-group">
                             <label for="editActiveFlag">Active Flag</label>
-                            <input type="number" class="form-control" id="editActiveFlag" name="activeFlag" required min="0" max="1"> <!-- Hidden field for active flag -->
+                            <input type="number" class="form-control" id="editActiveFlag" name="activeFlag" required min="0" max="1"> 
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -128,7 +134,6 @@
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Fill the Edit Modal with data when clicking the Edit button
         document.querySelectorAll('[data-bs-target="#editCategoryModal"]').forEach(button => {
             button.addEventListener('click', function() {
                 const cid = this.getAttribute('data-cid');

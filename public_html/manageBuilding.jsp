@@ -53,16 +53,18 @@
                 </c:forEach>
 
 
-    <body>
-<div class="container-fluid d-flex">
-    <div class="col-md-3 p-0">
-        <jsp:include page="sidebar.jsp"/>
-    </div>
-    
-    <div class="col-md-9">
-            <jsp:include page="quotations.jsp" />
-        <div class="topButtons"> <!-- top buttons -->
-            <div>
+  <body>
+<div class="main vh-100">
+    <div class="row h-100">
+        <!-- Sidebar Component -->
+        <div class="col-12 col-md-2 p-1">
+            <jsp:include page="sidebar.jsp" />
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-12 col-md-10 p-4">
+        <jsp:include page="quotations.jsp" />
+        <div class="topButtons">
                 <!-- Link component remains unchanged -->
                 <a href="./buildingDashboard?locID=${locID}" class="buttonsBack" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;">
                 <img

@@ -75,6 +75,18 @@
                             </a>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="card text-center mb-4">
+                            <a href="<%=request.getContextPath()%>/itemType">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <span class="display-1"><i class="fas fa-gear"></i></span>
+                                    </div>
+                                    <h5 class="card-title">Item Types</h5>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
