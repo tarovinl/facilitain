@@ -42,7 +42,7 @@
 
                     <div class="container mt-3">
                         <label for="rating" class="text-center d-block mt-3 mb-3">
-                            Rate the performance of the <br /> equipments in your classroom
+                            Rate the performance of the <br /> equipments in your location
                         </label>
 
                         <div class="d-flex justify-content-center">
@@ -70,7 +70,7 @@
                     </div>
 
                     <label for="suggestions" class="text-center d-block mt-3 mb-3">
-                        Suggestions (Optional)
+                       Detailed Feedback and Suggestions (Optional)
                     </label>
                     <textarea id="suggestions" name="suggestions" rows="4" cols="50" class="d-block"></textarea>
 
