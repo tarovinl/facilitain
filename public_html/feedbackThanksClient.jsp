@@ -26,7 +26,8 @@
           </p>
             <!-- Example Bootstrap Button -->
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
-        <button class="btn btn-primary w-100">Back</button>
+        
+         <button class="btn btn-primary w-100" onclick="window.location.href='feedbackClientController';">Back</button>
     </div>
     
             </div>
