@@ -1,4 +1,6 @@
-<%@ page import="java.util.ArrayList, java.util.List" %>
+<%@ page import="java.util.List" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> <!-- JSTL fmt taglib for date formatting -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -53,43 +55,26 @@
                     <thead>
                         <tr>
                             <th scope="col">Rating</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Building</th>
+                            <th scope="col">Room</th>
+                            <th scope="col">Location</th>
                             <th scope="col">Suggestions</th>
                             <th scope="col">Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <%
-                            class Feedback {
-                                String rating, type, building, suggestions, date;
-
-                                public Feedback(String rating, String type, String building, String suggestions, String date) {
-                                    this.rating = rating;
-                                    this.type = type;
-                                    this.building = building;
-                                    this.suggestions = suggestions;
-                                    this.date = date;
-                                }
-                            }
-
-                            List<Feedback> feedbackList = new ArrayList<>();
-                            feedbackList.add(new Feedback("5", "Classroom", "Albertus Magnus", "Need more maintenance in classrooms", "07/13/2024"));
-                            feedbackList.add(new Feedback("3", "Auditorium", "Frassati", "Aircon is not felt throughout the auditorium", "07/12/2024"));
-                            feedbackList.add(new Feedback("1", "Classroom", "Benevides", "Need more maintenance in classrooms", "07/11/2024"));
-
-                            for (Feedback feedback : feedbackList) {
-                        %>
-                        <tr>
-                            <td><%= feedback.rating %></td>
-                            <td><%= feedback.type %></td>
-                            <td><%= feedback.building %></td>
-                            <td><%= feedback.suggestions %></td>
-                            <td><%= feedback.date %></td>
-                        </tr>
-                        <%
-                            }
-                        %>
+                        <!-- Iterate over feedbackList passed from the controller -->
+                        <c:forEach var="feedback" items="${feedbackList}">
+                            <tr>
+                                <td>${feedback.rating}</td>
+                                <td>${feedback.room}</td>
+                                <td>${feedback.location}</td>
+                                <td>${feedback.suggestions}</td>
+                                <!-- Format the REC_INS_DT date using JSTL fmt:formatDate -->
+                                <td>
+                                    <fmt:formatDate value="${feedback.recInsDt}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                                </td>
+                            </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
             </div>

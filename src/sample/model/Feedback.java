@@ -5,7 +5,33 @@ import java.util.Date;
 public class Feedback {
     private int feedbackId;
     private int itemLocId;
+    private String location;
+   
+    private String room;
+    private int rating;
+    private String suggestions;
+    private Date recInsDt; 
 
+    // Constructor for FeedbackClientController
+    public Feedback( int itemLocId, String room, int rating, String suggestions, Date recInsDt) {
+        
+        this.itemLocId = itemLocId;
+        this.room = room;
+        this.rating = rating;
+        this.suggestions = suggestions;
+        this.recInsDt = recInsDt;
+    }
+    //Constructor for FeedbackController
+    public Feedback(int feedbackId, String location, String room, int rating, String suggestions, Date recInsDt) {
+          this.feedbackId = feedbackId;
+          this.location = location;
+          this.room = room;
+          this.rating = rating;
+          this.suggestions = suggestions;
+          this.recInsDt = recInsDt;
+      }
+
+    // Getters and Setters
     public void setFeedbackId(int feedbackId) {
         this.feedbackId = feedbackId;
     }
@@ -13,21 +39,6 @@ public class Feedback {
     public int getFeedbackId() {
         return feedbackId;
     }
-    private String room;
-    private int rating;
-    private String suggestions;
-    private Date recInsDt; 
-
-    // Constructor
-    public Feedback(int itemLocId, String room, int rating, String suggestions, Date recInsDt) {
-        this.itemLocId = itemLocId;
-        this.room = room;
-        this.rating = rating;
-        this.suggestions = suggestions;
-        this.recInsDt = recInsDt;
-    }
-
-    // Getters and Setters
     public int getItemLocId() {
         return itemLocId;
     }
@@ -35,6 +46,13 @@ public class Feedback {
     public void setItemLocId(int itemLocId) {
         this.itemLocId = itemLocId;
     }
+    public String getLocation() {
+            return location;
+        }
+
+    public void setLocation(String location) {
+            this.location = location;
+        }
 
     public String getRoom() {
         return room;
