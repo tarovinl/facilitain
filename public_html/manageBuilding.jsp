@@ -55,7 +55,7 @@
 
 <body>
 <div class="container-fluid">
-      <div class="row vh-100">
+      <div class="row vh-100 d-flex">
         
           <jsp:include page="sidebar.jsp"/>
     

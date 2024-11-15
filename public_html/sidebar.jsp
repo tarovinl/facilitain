@@ -72,6 +72,7 @@
             </div>
             <a href="#" class="btn"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
         </div>
+        <div class="col-md-2 d-flex flex-column justify-content-between sidebarunder"></div>
 
 
     <!-- Bootstrap JS and dependencies -->
