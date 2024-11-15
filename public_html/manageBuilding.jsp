@@ -8,7 +8,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Building Dashboard</title>
+        <title>Manage Location</title>
         <link rel="stylesheet" href="resources/css/mBuilding.css">
         <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
@@ -53,14 +53,13 @@
                 </c:forEach>
 
 
-    <body>
-<div class="container-fluid d-flex">
-    <div class="col-md-3 p-0">
-        <jsp:include page="sidebar.jsp"/>
-    </div>
+<body>
+<div class="container-fluid">
+      <div class="row vh-100">
+        
+          <jsp:include page="sidebar.jsp"/>
     
-    <div class="col-md-9">
-            <jsp:include page="quotations.jsp" />
+    <div class="col-md-10">
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
@@ -236,9 +235,12 @@
             
             <div id="paginationControls"></div>
          </div>
+        </div>
      </div>
-    </div> 
-    </div>
+    </div>   
+    
+    <jsp:include page="quotations.jsp" />
+    
     <!--add equipment modal-->
     <div class="modal fade" id="addEquipment" tabindex="-1" role="dialog" aria-labelledby="equipmentAdd" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -825,7 +827,7 @@ function roomEditRenderCopy() {
 
     </script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script> 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>

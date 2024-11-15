@@ -10,15 +10,12 @@
  
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row vh-100">
-            <!-- Sidebar: Fixed width using Bootstrap's grid system -->
-            <div class="col-md-3 col-lg-2 p-0">
-                <jsp:include page="sidebar.jsp"></jsp:include>
-            </div>
-            
-            <!-- Main content: Use col and offset to avoid overlap with sidebar -->
-            <div class="col-md-9 col-lg-10 p-4">
+<div class="container-fluid">
+      <div class="row min-vh-100">
+        
+          <jsp:include page="sidebar.jsp"/>
+    
+    <div class="col-md-10">
                 <!-- Page title and sort dropdown -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1>History Logs</h1>

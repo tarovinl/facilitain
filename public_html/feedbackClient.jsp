@@ -41,7 +41,7 @@
             Rate the performance of the <br /> equipments in your classroom
         </label>
 
-        <!-- Radio buttons in a single line -->
+       
         <div class="d-flex justify-content-center">
     <div class="radio-inline p-2 d-flex flex-column align-items-center">
         <input type="radio" id="five" name="rating" value="5">
@@ -73,7 +73,7 @@
 
 </textarea>
 
-            <!-- Example Bootstrap Button -->
+            
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
         <button class="btn btn-primary">Submit</button>
     </div>

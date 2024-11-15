@@ -1,0 +1,11 @@
+@charset "windows-1252";
+
+@font-face {
+    font-family: 'GothamBook';
+    src: url('../fonts/GothamBook.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'NeueHaas';
+    src: url('../fonts/NeueHaasDisplayMedium.ttf') format('truetype');
+}

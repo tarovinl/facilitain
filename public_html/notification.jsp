@@ -13,13 +13,12 @@
     <title>Notifications</title>
 </head>
 <body>
-    <div class="d-flex">
-        <div class="col-12 col-md-2 p-0">
-            <jsp:include page="sidebar.jsp" />
-        </div>
-
-        <!-- Main Content -->
-        <div class="col-12 col-md-10 p-4">
+<div class="container-fluid">
+      <div class="row min-vh-100">
+        
+          <jsp:include page="sidebar.jsp"/>
+    
+    <div class="col-md-10">
             <h1 class="mb-4">Notifications</h1>
 
             <!-- Hardcoded array of notifications (for now) -->

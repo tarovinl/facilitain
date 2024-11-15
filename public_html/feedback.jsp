@@ -11,12 +11,12 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row vh-100">
-            <div class="col-md-3 col-lg-2 p-0">
-                <jsp:include page="sidebar.jsp"></jsp:include>
-            </div>
-            <div class="col-md-9 col-lg-10 p-4">
+<div class="container-fluid">
+      <div class="row min-vh-100">
+        
+          <jsp:include page="sidebar.jsp"/>
+    
+    <div class="col-md-10">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1>Feedback</h1>
                     <button class="btn btn-warning">Generate Report</button>

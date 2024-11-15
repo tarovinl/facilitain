@@ -9,12 +9,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row vh-100">
-            <div class="col-md-3 col-lg-2 p-0">
-                <jsp:include page="sidebar.jsp"></jsp:include>
-            </div>
-            <div class="col-md-9 col-lg-10 p-4">
+<div class="container-fluid">
+      <div class="row min-vh-100">
+        
+          <jsp:include page="sidebar.jsp"/>
+    
+            <div class="col-md-10">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1>Reports</h1>
                     <select class="form-select w-auto" aria-label="Sort reports">

@@ -9,13 +9,12 @@
     <link href="<%=request.getContextPath()%>/css/sidebar.css" rel="stylesheet"/>
 </head>
 <body>
-    <div class="d-flex vh-100">
-        <div class="col-12 col-md-2 p-0">
-            <jsp:include page="sidebar.jsp" />
-        </div>
-
-        <!-- Main Content -->
-        <div class="col-12 col-md-10 p-4">
+<div class="container-fluid">
+      <div class="row min-vh-100">
+        
+          <jsp:include page="sidebar.jsp"/>
+    
+    <div class="col-md-10">
             <div class="container">
                 <h1 class="my-4">Settings</h1>
                 <div class="row">
@@ -52,12 +51,12 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card text-center mb-4">
-                          <a href="<%=request.getContextPath()%>/employee">
+                          <a href="<%=request.getContextPath()%>/itemUser">
                                 <div class="card-body">
                                     <div class="mb-3">
                                         <span class="display-1"><i class="fas fa-print"></i></span>
                                     </div>
-                                    <h5 class="card-title">Employees</h5>
+                                    <h5 class="card-title">Users</h5>
                                 </div>
                             </a>
                         </div>

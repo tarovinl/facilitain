@@ -11,9 +11,8 @@
    
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row flex-nowrap">
-        <div class="sidebar col-auto col-md-4 col-lg-3 min-vh-100 d-flex flex-column justify-content-between">
+
+        <div class="col-md-2 d-flex flex-column justify-content-between sidebar">
             <div class="text-center pt-4 ">
                 <a href="<%=request.getContextPath()%>/homepage" class="p-0">
                     <h2>Facilitain</h2>
@@ -73,8 +72,7 @@
             </div>
             <a href="#" class="btn"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
         </div>
-    </div>
-</div>
+
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
