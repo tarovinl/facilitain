@@ -2,12 +2,17 @@
 
 
 @font-face {
-    font-family: 'NeueHaasLight';
-        src: url('./resources/fonts/neuehaasdisplay-light.ttf') format('truetype');
+    font-family: "NeueHaasLight";
+    src: url("../fonts/neuehaasdisplay-light.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
 }
 
 
 @font-face {
-    font-family: 'NeueHaasMedium';
-    src: url('./resources/fonts/neuehaasdisplay-medium.ttf') format('truetype');
+    font-family: "NeueHaasMedium";
+    src: url("../fonts/neuehaasdisplay-medium.ttf") format("truetype");
+    font-weight:bold;
+    font-style:normal;
+         
 }
