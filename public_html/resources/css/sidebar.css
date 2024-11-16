@@ -56,9 +56,10 @@
 @media (max-width: 800px) {
     .sidebar {
         position: relative; 
-        width: 100%; 
+        width: 20%; 
         height: auto; /* Adjust height */
         padding: 10px; /* Add padding for smaller screens */
+        font-size:30px;
         font-family: NeueHaasLight, sans-serif;
     } 
     .sidebarunder {
