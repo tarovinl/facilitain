@@ -1,11 +1,18 @@
 @charset "windows-1252";
 
-@font-face {
-    font-family: 'GothamBook';
-    src: url('../fonts/GothamBook.ttf') format('truetype');
-}
 
 @font-face {
-    font-family: 'NeueHaas';
-    src: url('../fonts/NeueHaasDisplayMedium.ttf') format('truetype');
+    font-family: "NeueHaasLight";
+    src: url("../fonts/NeueHaasDisplayLight.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: "NeueHaasMedium";
+    src: url("../fonts/NeueHaasDisplayMedium.ttf") format("truetype");
+    font-weight:bold;
+    font-style:normal;
+         
 }

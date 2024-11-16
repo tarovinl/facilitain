@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="./resources/css/sidebar.css">
+    <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
    
 </head>
@@ -14,7 +15,7 @@
         <div class="col-md-2 d-flex flex-column justify-content-between sidebar">
             <div class="text-center pt-4 ">
                 <a href="<%=request.getContextPath()%>/homepage" class="p-0">
-                    <h2>Facilitain</h2>
+                    <h2 style=" font-family: NeueHaasMedium, sans-serif;">Facilitain</h2>
                 </a>
                 <p>Welcome, Admin</p>
             </div>
