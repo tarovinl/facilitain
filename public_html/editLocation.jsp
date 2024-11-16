@@ -37,9 +37,14 @@
     </c:forEach>
     
 <body>
-   <div class="container-fluid">
-    <div class="col-md-9 col-lg-10">
-    <div class="topButtons"> <!-- top buttons -->
+<div class="container-fluid">
+      <div class="row min-vh-100">
+        
+          <jsp:include page="sidebar.jsp"/>
+       
+    
+    <div class="col-md-10">
+        <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
                 <a href="./buildingDashboard?locID=${locID}" class="buttonsBack" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;">
@@ -225,7 +230,7 @@
                     </div>
                 </div>
             </div>
-        
+        </div>
     </div>
 </div>
 

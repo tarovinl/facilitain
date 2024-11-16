@@ -9,13 +9,12 @@
     <link href="<%=request.getContextPath()%>/css/sidebar.css" rel="stylesheet"/>
 </head>
 <body>
-    <div class="d-flex vh-100">
-        <div class="col-12 col-md-2 p-0">
-            <jsp:include page="sidebar.jsp" />
-        </div>
-
-        <!-- Main Content -->
-        <div class="col-12 col-md-10 p-4">
+<div class="container-fluid">
+  <div class="row min-vh-100">
+        
+    <jsp:include page="sidebar.jsp"/>
+    
+    <div class="col-md-10">
             <div class="container">
                 <h1 class="my-4">Settings</h1>
                 <div class="row">
@@ -91,6 +90,7 @@
             </div>
         </div>
     </div>
+</div>
     
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
