@@ -31,7 +31,7 @@ import sample.model.Item;
 import sample.model.PooledConnection;
 import sample.model.SharedData;
 
-@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification", "/calendar", "/history", "/feedback", "/reports", "/settings" })
+@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification", "/calendar", "/history", "/reports", "/settings" })
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
