@@ -102,7 +102,7 @@
                 Edit Location
               </button>
                
-              <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender();">Add Equipment</button>
+              <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender(); toggleAirconDiv();">Add Equipment</button>
             </div>
         </div>
         
@@ -170,11 +170,22 @@
                                         data-dateinst="${item.dateInstalled}"
                                         data-itemexpiry="${item.expiration}"
                                         data-itemcat="${itemEditCat}"
+                                        data-itemfloor="${item.itemFloor}"
                                         data-itemroom="${item.itemRoom}"
                                         data-itemtype="${itemEditType}"
                                         data-itemloctext="${item.itemLocText}"
                                         data-itemremarks="${item.itemRemarks}"
-                                        onclick="populateEditModal(this);setFloorSelection(this);floorERender();"/>
+
+                                        data-itempcc="${item.itemPCC}"
+                                        data-accu="${item.acACCU}"
+                                        data-fcu="${item.acFCU}"
+                                        data-inverter="${item.acINVERTER}"
+                                        data-itemcapacity="${item.itemCapacity}"
+                                        data-itemmeasure="${item.itemUnitMeasure}"
+                                        data-itemev="${item.itemEV}"
+                                        data-itemeph="${item.itemEPH}"
+                                        data-itemehz="${item.itemEHZ}"
+                                        onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/>
                                     </td>
                                     <td >${item.itemID}</td>
                                     <td >${item.itemName}</td>
@@ -267,11 +278,15 @@
                                         </c:forEach>
                                     </select>
                                 </div>
+                                <div class="col">
+                                    <label for="itemPCC" class="form-label">PC Code</label>
+                                    <input class="form-control" id="itemPCC" type="number" name="itemPCC">
+                                </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="itemCat" class="form-label">Category</label>
-                                    <select class="form-select" name="itemCat">
+                                    <select class="form-select" name="itemCat" onchange="toggleAirconDiv()">
                                         <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
                                             <option value="${cat.itemCID}" selected>${cat.itemCat}</option>
                                         </c:forEach>
@@ -290,6 +305,51 @@
                                     <input class="form-control awesomplete" id="brandName" data-list="${brandListString}" name="itemBrand">
                                 </div>
                             </div>
+                            <div class="row mt-2 onlyAir">
+                                <div class="col-12">
+                                    <div class="form-row d-flex justify-content-center">
+                                    <label for="itemACType" class="form-label">Airconditioner Type</label>
+                                    </div>
+                                    <div class="form-row d-flex justify-content-between">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1" name="itemACCU">
+                                        <label class="form-check-label" for="inlineCheckbox1">ACCU</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="1" name="itemFCU">
+                                        <label class="form-check-label" for="inlineCheckbox2">FCU</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="1" name="itemACINVERTER">
+                                        <label class="form-check-label" for="inlineCheckbox3">INVERTER</label>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="itemCapacity" class="form-label">Capacity</label>
+                                    <input class="form-control" id="itemCapacity" type="number" name="itemCapacity">
+                                </div>
+                                <div class="col">
+                                    <label for="itemUnitMeasure" class="form-label">Unit of Measure</label>
+                                    <input class="form-control" id="itemUnitMeasure" name="itemUnitMeasure">
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="itemElecV" class="form-label">Electrical V</label>
+                                    <input class="form-control" id="itemElecV" name="itemElecV" type="number">
+                                </div>
+                                <div class="col">
+                                    <label for="itemElecPH" class="form-label">Electrical PH</label>
+                                    <input class="form-control" id="itemElecPH" name="itemElecPH" type="number">
+                                </div>
+                                <div class="col">
+                                    <label for="itemElecHZ" class="form-label">Electrical HZ</label>
+                                    <input class="form-control" id="itemElecHZ" name="itemElecHZ" type="number">
+                                </div>
+                            </div>
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="itemAddFloor" class="form-label">Floor</label>
@@ -305,7 +365,7 @@
                                 </div>
                                 <div class="col">
                                     <label for="itemAddRoom" class="form-label">Room</label>
-                                    <input class="form-control" list="roomOptions" id="itemAddRoom" name="itemAddRoom">
+                                    <input class="form-control awesomplete" list="roomOptions" id="itemAddRoom" name="itemAddRoom">
                                     <datalist id="roomOptions"></datalist>
                                 </div>
                             </div>
@@ -348,10 +408,10 @@
                             </div>
                             <div class="row">
                                 <div class="col text-center">
-                                    <input type="submit" value="Save" class="btn btn-warning btn-lg mt-5 w-100 fw-bold">
+                                    <input type="submit" value="Save" class="btn btn-warning btn-lg mt-3 w-100 fw-bold">
                                 </div> 
                                 <div class="col text-center">
-                                    <button type="button" class="btn btn-warning btn-lg mt-5 w-100 fw-bold" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-warning btn-lg mt-3 w-100 fw-bold" data-dismiss="modal">Cancel</button>
                                 </div> 
                             </div>
                         </form>
@@ -391,11 +451,15 @@
                                         </c:forEach>
                                     </select>
                                 </div>
+                                <div class="col">
+                                    <label for="itemEditPCC" class="form-label">PC Code</label>
+                                    <input class="form-control" id="itemEditPCC" type="number" name="itemEditPCC">
+                                </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="itemEditCat" class="form-label">Category</label>
-                                    <select class="form-select" name="itemEditCat">
+                                    <select class="form-select" name="itemEditCat" onchange="toggleEAirconDiv()">
                                         <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
                                             <option value="${cat.itemCID}" selected>${cat.itemCat}</option>
                                         </c:forEach>
@@ -412,6 +476,51 @@
                                 <div class="col">
                                     <label for="itemEditBrand" class="form-label">Brand</label>
                                     <input class="form-control awesomplete" name="itemEditBrand" id="brandName" data-list="${brandListString}">
+                                </div>
+                            </div>
+                            <div class="row mt-2 onlyEditAir">
+                                <div class="col-12">
+                                    <div class="form-row d-flex justify-content-center">
+                                    <label for="itemEditACType" class="form-label">Airconditioner Type</label>
+                                    </div>
+                                    <div class="form-row d-flex justify-content-between">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1" name="itemEditACCU">
+                                        <label class="form-check-label" for="inlineCheckbox1">ACCU</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="1" name="itemEditFCU">
+                                        <label class="form-check-label" for="inlineCheckbox2">FCU</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="1" name="itemEditACINVERTER">
+                                        <label class="form-check-label" for="inlineCheckbox3">INVERTER</label>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="itemECapacity" class="form-label">Capacity</label>
+                                    <input class="form-control" id="itemECapacity" type="number" name="itemECapacity">
+                                </div>
+                                <div class="col">
+                                    <label for="itemEUnitMeasure" class="form-label">Unit of Measure</label>
+                                    <input class="form-control" id="itemEUnitMeasure" name="itemEUnitMeasure">
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="" class="form-label">Electrical V</label>
+                                    <input class="form-control" id="itemElecV" name="itemEditElecV" type="number">
+                                </div>
+                                <div class="col">
+                                    <label for="" class="form-label">Electrical PH</label>
+                                    <input class="form-control" id="itemElecPH" name="itemEditElecPH" type="number">
+                                </div>
+                                <div class="col">
+                                    <label for="" class="form-label">Electrical HZ</label>
+                                    <input class="form-control" id="itemElecHZ" name="itemEditElecHZ" type="number">
                                 </div>
                             </div>
                             <div class="row mt-2">
@@ -535,7 +644,26 @@
 //            });
 //        });
 
-
+function toggleAirconDiv() {
+        const selectedCat = document.querySelector('[name="itemCat"]').value;
+        const onlyAirDiv = document.querySelector('.onlyAir');
+        
+        if (selectedCat === "1") {
+            onlyAirDiv.style.removeProperty('display'); // Removes "display: none"
+        } else {
+            onlyAirDiv.style.display = "none";
+        }
+    }
+function toggleEAirconDiv(editVal) {
+        const selectedECat = document.querySelector('[name="itemEditCat"]').value;
+        const onlyEAirDiv = document.querySelector('.onlyEditAir');
+        
+        if (selectedECat === "1" || editVal === 1) {
+            onlyEAirDiv.style.removeProperty('display'); // Removes "display: none"
+        } else {
+            onlyEAirDiv.style.display = "none";
+        }
+    }
 
 const buildingFloors = {
         <c:forEach var="entry" items="${FMO_FLOORS_LIST}">
@@ -560,6 +688,7 @@ function QOLLocSet(){
             }
         }
 }
+
 
 function floorRender() {
     // Get selected building ID
@@ -605,6 +734,7 @@ function floorERender() {
         option.textContent = floor;
         floorDropdown.appendChild(option);
     });
+    
     roomEditRenderCopy();
 }
 
@@ -619,6 +749,10 @@ function floorERender() {
         </c:forEach>
         ];
 
+const inputAddR = document.querySelector("#itemAddRoom");
+    const awesompleteAddR = new Awesomplete(inputAddR, {
+        list: "#roomOptions"
+    });
 
 function roomRender() {
     
@@ -641,9 +775,16 @@ function roomRender() {
     });
             console.log(roomSelect);
 
-    
+    const roomNames = filteredRooms.map(room => room.roomName); // Extract room names as strings
+    awesompleteAddR.list = roomNames;
 }
+
+
 //    same as roomRender but for edit modal pancakes
+const inputER = document.querySelector("#itemEditRoom");
+    const awesompleteER = new Awesomplete(inputER, {
+        list: "#editRoomOptions"
+    });
     function roomEditRender(itemRoom) {
         const selectedBuilding = document.querySelector('[name="itemEditLoc"]').value;
         const selectedFloor = document.getElementById('itemEditFloor').value;
@@ -676,6 +817,9 @@ function roomRender() {
             roomField.value = roomSelect.options[i].value
             break;
         }
+        
+        const roomENames = filteredRooms.map(room => room.roomName); // Extract room names as strings
+        awesompleteER.list = roomENames;
     }
         
     }
@@ -686,12 +830,23 @@ function roomRender() {
         var itemLID = parseInt(${locID});
         var itemName = button.getAttribute('data-itemname');
         var itemBrand = button.getAttribute('data-itembrand');
+        var itemFloor = button.getAttribute('data-itemfloor');
         var itemDateInst = button.getAttribute('data-dateinst');
         var itemExpiry = button.getAttribute('data-itemexpiry');
         var itemCat = button.getAttribute('data-itemcat');
         var itemType = button.getAttribute('data-itemtype');
         var itemLocText = button.getAttribute('data-itemloctext');
         var itemRemarks = button.getAttribute('data-itemremarks');
+        
+        var itemPCCode = button.getAttribute('data-itempcc');
+        var itemACaccu = button.getAttribute('data-accu');
+        var itemACfcu = button.getAttribute('data-fcu');
+        var itemACinverter = button.getAttribute('data-inverter');
+        var itemCapacity = button.getAttribute('data-itemcapacity');
+        var itemMeasure = button.getAttribute('data-itemmeasure');
+        var itemEV = button.getAttribute('data-itemev');
+        var itemEPH = button.getAttribute('data-itemeph');
+        var itemEHZ = button.getAttribute('data-itemehz');
         
         document.querySelector('input[name="itemEditID"]').value = itemID;
 
@@ -701,6 +856,14 @@ function roomRender() {
         document.querySelector('input[name="itemEditExpiration"]').value = itemExpiry;
         document.querySelector('textarea[name="editLocText"]').value = itemLocText;
         document.querySelector('textarea[name="editRemarks"]').value = itemRemarks;
+        
+        document.querySelector('input[name="itemEditPCC"]').value = itemPCCode;
+        document.querySelector('input[name="itemECapacity"]').value = itemCapacity;
+        document.querySelector('input[name="itemEUnitMeasure"]').value = itemMeasure;
+        document.querySelector('input[name="itemEditElecV"]').value = itemEV;
+        document.querySelector('input[name="itemEditElecPH"]').value = itemEPH;
+        document.querySelector('input[name="itemEditElecHZ"]').value = itemEHZ;
+        
         var selectCat = document.querySelector('select[name="itemEditCat"]');
         if (selectCat) {
             var options = selectCat.options;
@@ -731,13 +894,29 @@ function roomRender() {
                 }
             }
         }
+        
+        if (itemACaccu === '1') {
+            document.querySelector('[name="itemEditACCU"]').checked = true;
+        } else {
+            document.querySelector('[name="itemEditACCU"]').checked = false;
+        }
+        if (itemACfcu === '1') {
+            document.querySelector('[name="itemEditFCU"]').checked = true;
+        } else {
+            document.querySelector('[name="itemEditFCU"]').checked = false;
+        }
+        if (itemACinverter === '1') {
+            document.querySelector('[name="itemEditACINVERTER"]').checked = true;
+        } else {
+            document.querySelector('[name="itemEditACINVERTER"]').checked = false;
+        }
             
     }
     
     function setFloorSelection(button) {
     var itemRoom = button.getAttribute('data-itemroom');
-    console.log(itemRoom);
     const flrName = '${floorName}';
+    console.log(flrName);
     const itemEditFloor = document.getElementById('itemEditFloor');
 
     // Loop through options to find and select the one that matches floorName
@@ -747,6 +926,7 @@ function roomRender() {
             break; 
         }
     }
+    
 
     roomEditRender(itemRoom);
 }
@@ -823,6 +1003,7 @@ function roomEditRenderCopy() {
     });
  
 }
+
 
     </script>
     

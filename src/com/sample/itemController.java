@@ -54,6 +54,17 @@ public class itemController extends HttpServlet {
         String itemSched = request.getParameter("itemSched");
         String locText = request.getParameter("locText");
         String remarks = request.getParameter("remarks");
+        String itemPCC = request.getParameter("itemPCC");
+        String itemACCU = request.getParameter("itemACCU");
+        String itemFCU = request.getParameter("itemFCU");
+        String itemACINVERTER = request.getParameter("itemACINVERTER");
+        String itemCapacity = request.getParameter("itemCapacity");
+        String itemUnitMeasure = request.getParameter("itemUnitMeasure");
+        String itemEV = request.getParameter("itemElecV");
+        String itemEPH = request.getParameter("itemElecPH");
+        String itemEHZ = request.getParameter("itemElecHZ");
+        
+        
         
         String itemEID = request.getParameter("itemEditID");
         String itemEditName = request.getParameter("itemEditCode");
@@ -69,6 +80,15 @@ public class itemController extends HttpServlet {
         String itemEditSched = request.getParameter("itemEditSched");
         String editLocText = request.getParameter("editLocText");
         String editRemarks = request.getParameter("editRemarks");
+        String itemEditPCC = request.getParameter("itemEditPCC");
+        String itemEditACCU = request.getParameter("itemEditACCU");
+        String itemEditFCU = request.getParameter("itemEditFCU");
+        String itemEditACINVERTER = request.getParameter("itemEditACINVERTER");
+        String itemEditCapacity = request.getParameter("itemECapacity");
+        String itemEditUnitMeasure = request.getParameter("itemEUnitMeasure");
+        String itemEditEV = request.getParameter("itemEditElecV");
+        String itemEditEPH = request.getParameter("itemEditElecPH");
+        String itemEditEHZ = request.getParameter("itemEditElecHZ");
         
         String maintStatID = request.getParameter("maintStatID");
         String maintStatus = request.getParameter("statusDropdown");
@@ -119,17 +139,17 @@ public class itemController extends HttpServlet {
             String sql;
             
             if(itemEID != null && !itemEID.isEmpty()){
-                sql = "UPDATE C##FMO_ADM.FMO_ITEMS SET ITEM_TYPE_ID = ?, NAME = ?, LOCATION_ID = ?, LOCATION_TEXT = ?, FLOOR_NO = ?, ROOM_NO = ?, DATE_INSTALLED = ?, BRAND_NAME = ?, EXPIRY_DATE = ?, REMARKS = ?  WHERE ITEM_ID = ?";
+                sql = "UPDATE C##FMO_ADM.FMO_ITEMS SET ITEM_TYPE_ID = ?, NAME = ?, LOCATION_ID = ?, LOCATION_TEXT = ?, FLOOR_NO = ?, ROOM_NO = ?, DATE_INSTALLED = ?, BRAND_NAME = ?, EXPIRY_DATE = ?, REMARKS = ?, PC_CODE = ?, AC_ACCU = ?, AC_FCU = ?, AC_INVERTER = ?, CAPACITY = ?, UNIT_OF_MEASURE = ?, ELECTRICAL_V = ?, ELECTRICAL_PH = ?, ELECTRICAL_HZ = ?  WHERE ITEM_ID = ?";
                 //System.out.println("edit this " + itemEditName);
                 
             }else if(maintStatID != null && !maintStatID.isEmpty()){
                 sql = "UPDATE C##FMO_ADM.FMO_ITEMS SET MAINTENANCE_STATUS = ? WHERE ITEM_ID = ?";
                 //System.out.println("maint this " + maintStatus);
             }else{
-                sql = "INSERT INTO C##FMO_ADM.FMO_ITEMS (ITEM_TYPE_ID,NAME,LOCATION_ID,LOCATION_TEXT,FLOOR_NO,ROOM_NO,DATE_INSTALLED,BRAND_NAME,EXPIRY_DATE,REMARKS,MAINTENANCE_STATUS) values (?,?,?,?,?,?,?,?,?,?,1)";
+                sql = "INSERT INTO C##FMO_ADM.FMO_ITEMS (ITEM_TYPE_ID,NAME,LOCATION_ID,LOCATION_TEXT,FLOOR_NO,ROOM_NO,DATE_INSTALLED,BRAND_NAME,EXPIRY_DATE,REMARKS,PC_CODE,AC_ACCU,AC_FCU,AC_INVERTER,CAPACITY,UNIT_OF_MEASURE,ELECTRICAL_V,ELECTRICAL_PH,ELECTRICAL_HZ,MAINTENANCE_STATUS,ITEM_STAT_ID,QUANTITY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,1,1)";
                 //System.out.println("add this " + itemName);
             }
-                
+            
             
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -144,7 +164,50 @@ public class itemController extends HttpServlet {
                     stmt.setString(8, itemEditBrand);
                     stmt.setDate(9, sqlEditExpire);
                     stmt.setString(10, editRemarks);
-                    stmt.setInt(11, Integer.parseInt(itemEID));
+                        if (itemEditPCC != null && !itemEditPCC.isEmpty()) {
+                            stmt.setInt(11, Integer.parseInt(itemEditPCC));
+                        } else {
+                            stmt.setNull(11, java.sql.Types.INTEGER);
+                        }
+                        if (itemEditACCU != null && !itemEditACCU.isEmpty()) {
+                            stmt.setInt(12, Integer.parseInt(itemEditACCU));
+                        } else {
+                            stmt.setNull(12, java.sql.Types.INTEGER);
+                        }
+                        if (itemEditFCU != null && !itemEditFCU.isEmpty()) {
+                            stmt.setInt(13, Integer.parseInt(itemEditFCU));
+                        } else {
+                            stmt.setNull(13, java.sql.Types.INTEGER);
+                        }
+                        if (itemEditACINVERTER != null && !itemEditACINVERTER.isEmpty()) {
+                            stmt.setInt(14, Integer.parseInt(itemEditACINVERTER));
+                        } else {
+                            stmt.setNull(14, java.sql.Types.INTEGER);
+                        }
+                        if (itemEditCapacity != null && !itemEditCapacity.isEmpty()) {
+                            stmt.setInt(15, Integer.parseInt(itemEditCapacity));
+                        } else {
+                            stmt.setNull(15, java.sql.Types.INTEGER);
+                        }
+                        stmt.setString(16, itemEditUnitMeasure);
+                        if (itemEditEV != null && !itemEditEV.isEmpty()) {
+                            stmt.setInt(17, Integer.parseInt(itemEditEV));
+                        } else {
+                            stmt.setNull(17, java.sql.Types.INTEGER);
+                        }
+                        if (itemEditEPH != null && !itemEditEPH.isEmpty()) {
+                            stmt.setInt(18, Integer.parseInt(itemEditEPH));
+                        } else {
+                            stmt.setNull(18, java.sql.Types.INTEGER);
+                        }
+                        if (itemEditEHZ != null && !itemEditEHZ.isEmpty()) {
+                            stmt.setInt(19, Integer.parseInt(itemEditEHZ));
+                        } else {
+                            stmt.setNull(19, java.sql.Types.INTEGER);
+                        }
+
+                    
+                    stmt.setInt(20, Integer.parseInt(itemEID));
                 }else if(maintStatID != null && !maintStatID.isEmpty()){
                     stmt.setInt(1, Integer.parseInt(maintStatus));
                     stmt.setInt(2, Integer.parseInt(maintStatID));
@@ -159,6 +222,48 @@ public class itemController extends HttpServlet {
                     stmt.setString(8, itemBrand);
                     stmt.setDate(9, sqlExpire);
                     stmt.setString(10, remarks);
+                        if (itemPCC != null && !itemPCC.isEmpty()) {
+                            stmt.setInt(11, Integer.parseInt(itemPCC));
+                        } else {
+                            stmt.setNull(11, java.sql.Types.INTEGER);
+                        }
+                        if (itemACCU != null && !itemACCU.isEmpty()) {
+                            stmt.setInt(12, Integer.parseInt(itemACCU));
+                        } else {
+                            stmt.setNull(12, java.sql.Types.INTEGER);
+                        }
+                        if (itemFCU != null && !itemFCU.isEmpty()) {
+                            stmt.setInt(13, Integer.parseInt(itemFCU));
+                        } else {
+                            stmt.setNull(13, java.sql.Types.INTEGER);
+                        }
+                        if (itemACINVERTER != null && !itemACINVERTER.isEmpty()) {
+                            stmt.setInt(14, Integer.parseInt(itemACINVERTER));
+                        } else {
+                            stmt.setNull(14, java.sql.Types.INTEGER);
+                        }
+                        if (itemCapacity != null && !itemCapacity.isEmpty()) {
+                            stmt.setInt(15, Integer.parseInt(itemCapacity));
+                        } else {
+                            stmt.setNull(15, java.sql.Types.INTEGER);
+                        }
+                        stmt.setString(16, itemUnitMeasure);
+                        if (itemEV != null && !itemEV.isEmpty()) {
+                            stmt.setInt(17, Integer.parseInt(itemEV));
+                        } else {
+                            stmt.setNull(17, java.sql.Types.INTEGER);
+                        }
+                        if (itemEPH != null && !itemEPH.isEmpty()) {
+                            stmt.setInt(18, Integer.parseInt(itemEPH));
+                        } else {
+                            stmt.setNull(18, java.sql.Types.INTEGER);
+                        }
+                        if (itemEHZ != null && !itemEHZ.isEmpty()) {
+                            stmt.setInt(19, Integer.parseInt(itemEHZ));
+                        } else {
+                            stmt.setNull(19, java.sql.Types.INTEGER);
+                        }
+
                 }
 
                 

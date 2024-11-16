@@ -190,6 +190,14 @@ table {
     tr:hover {
         background-color: #f9f9f9; /* Light gray background on row hover */
     }
+    
+
+.onlyAir {
+    display: none;
+}
+.onlyEditAir{
+    display:none;
+}
 
 @media (max-width: 400px) {
     .roomDTblDiv tr {

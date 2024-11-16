@@ -11,14 +11,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-<div class="d-flex vh-100">
-    <!-- Sidebar Component -->
-    <jsp:include page="sidebar.jsp"/>
-
-    <!-- Main Content -->
-    <div class="flex-grow-1 p-4">
+<div class="container-fluid">
+      <div class="row min-vh-100">
+        
+          <jsp:include page="sidebar.jsp"/>
+       
+    
+    <div class="col-md-10">
         <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
                 <h1>Maintenance Schedule</h1>
                 <!-- Trigger Modal Button -->
                 <button class="btn btn-warning" data-toggle="modal" data-target="#maintenanceModal" onclick="clearModal()">
@@ -41,22 +42,32 @@
                 <tbody>
                     <c:forEach var="maintenance" items="${maintenanceList}">
                         <tr>
-                            <td>${maintenance.itemMsId}</td>
-                            <td>${maintenance.itemTypeName}</td> <!-- Display name instead of ID -->
-                            <td>${maintenance.noOfDays}</td>
-                            <td>${maintenance.remarks}</td>
-                            <td>${maintenance.noOfDaysWarning}</td>
+                            <td>${maintenance.itemID}</td>
+                            <td>${maintenance.itemTID}</td>
+                            <td>${maintenance.maintSchedDays}</td>
+                            <td>${maintenance.itemRemarks}</td>
+                            <td>${maintenance.maintSchedWarn}</td>
                             <td>
-                                <button class="btn btn-sm btn-primary" data-toggle="modal" 
-                                        data-target="#maintenanceModal"
-                                        onclick="editSchedule('${maintenance.itemMsId}', '${maintenance.itemTypeId}', '${maintenance.noOfDays}', '${maintenance.remarks}', '${maintenance.noOfDaysWarning}')">
-                                    Edit
-                                </button>
+                                <input type="image" 
+                                        src="resources/images/editItem.svg" 
+                                        alt="Open Modal" 
+                                        width="24" 
+                                        height="24" 
+                                    data-toggle="modal" 
+                                    data-target="#maintenanceModal" 
+                                    data-id="${maintenance.itemID}"
+                                    data-item-type-id="${maintenance.itemTID}"
+                                    data-no-of-days="${maintenance.maintSchedDays}"
+                                    data-remarks="${maintenance.itemRemarks}"
+                                    data-warning="${maintenance.maintSchedWarn}">
+                                   <!--<button> Edit
+                                </button>-->
                             </td>
                         </tr>
                     </c:forEach>
                 </tbody>
             </table>
+        </div>
         </div>
     </div>
 </div>
@@ -73,16 +84,16 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Hidden field for itemMsId to determine add or edit -->
+
                     <input type="hidden" id="itemMsId" name="itemMsId">
                     
                     <!-- Item Type Dropdown -->
                     <div class="form-group">
                         <label for="itemTypeId">Item Type</label>
                         <select class="form-control" id="itemTypeId" name="itemTypeId" required>
-                            <option value="" disabled>Select Item Type</option>
-                            <c:forEach var="itemType" items="${itemTypeList}">
-                                <option value="${itemType.itemTypeId}">${itemType.name}</option>
+                            <option value="" disabled selected>Select Item Type</option>
+                            <c:forEach var="typez" items="${FMO_TYPES_LIST}">
+                                <option value="${typez.itemTID}">${typez.itemType}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -106,8 +117,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-warning fw-bold">Save</button>
+                    <button type="button" class="btn btn-dark fw-bold text-warning" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </form>
@@ -119,21 +130,40 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 
 <script>
-    function editSchedule(itemMsId, itemTypeId, noOfDays, remarks, noOfDaysWarning) {
-        document.getElementById("itemMsId").value = itemMsId;
-        document.getElementById("itemTypeId").value = itemTypeId;
-        document.getElementById("noOfDays").value = noOfDays;
-        document.getElementById("remarks").value = remarks;
-        document.getElementById("noOfDaysWarning").value = noOfDaysWarning;
-    }
 
-    function clearModal() {
-        document.getElementById("itemMsId").value = "";
-        document.getElementById("itemTypeId").value = "";
-        document.getElementById("noOfDays").value = "";
-        document.getElementById("remarks").value = "";
-        document.getElementById("noOfDaysWarning").value = "";
-    }
+    $('#maintenanceModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); 
+        var itemMsId = button.data('id');
+        var itemTypeId = button.data('item-type-id');
+        var noOfDays = button.data('no-of-days');
+        var remarks = button.data('remarks');
+        var warning = button.data('warning');
+        
+        var modal = $(this);
+        modal.find('.modal-body input#itemMsId').val(itemMsId);
+        modal.find('.modal-body select#itemTypeId').val(itemTypeId);
+        modal.find('.modal-body input#noOfDays').val(noOfDays);
+        modal.find('.modal-body input#remarks').val(remarks);
+        modal.find('.modal-body input#noOfDaysWarning').val(warning);
+                
+    });
+
+//     function editSchedule(itemMsId, itemTypeId, noOfDays, remarks, noOfDaysWarning) {
+//         document.getElementById("itemMsId").value = itemMsId;
+//         document.getElementById("itemTypeId").value = itemTypeId;
+//         document.getElementById("noOfDays").value = noOfDays;
+//         document.getElementById("remarks").value = remarks;
+//         document.getElementById("noOfDaysWarning").value = noOfDaysWarning;
+//     }
+
+//     function clearModal() {
+//         document.getElementById("itemMsId").value = "";
+//         document.getElementById("itemTypeId").value = "";
+//         document.getElementById("noOfDays").value = "";
+//         document.getElementById("remarks").value = "";
+//         document.getElementById("noOfDaysWarning").value = "";
+//     }
+
 </script>
 
 </body>

@@ -6,7 +6,9 @@ public class Maintenance {
     private int noOfDays;
     private String remarks;
     private int noOfDaysWarning;
+    private int activeFlag;
     private String itemTypeName;
+
 
     // Getters and Setters
     public int getItemMsId() {
@@ -55,5 +57,13 @@ public class Maintenance {
 
     public void setNoOfDaysWarning(int noOfDaysWarning) {
         this.noOfDaysWarning = noOfDaysWarning;
+    }
+
+    public void setActiveFlag(int activeFlag) {
+        this.activeFlag = activeFlag;
+    }
+
+    public int getActiveFlag() {
+        return activeFlag;
     }
 }

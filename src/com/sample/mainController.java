@@ -31,7 +31,8 @@ import sample.model.Item;
 import sample.model.PooledConnection;
 import sample.model.SharedData;
 
-@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification", "/calendar", "/history", "/reports", "/settings" })
+@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification",
+                                                     "/calendar", "/history", "/feedback", "/reports", "/settings", "/maintenanceSchedule" })
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
@@ -54,6 +55,7 @@ public class mainController extends HttpServlet {
 
         ArrayList<Item> listMaintStat = new ArrayList<>();
         ArrayList<Item> listMaintSched = new ArrayList<>();
+        
 
 
         
@@ -114,6 +116,17 @@ public class mainController extends HttpServlet {
                 items.setExpiration(rsItem.getDate("EXPIRY_DATE"));
                 items.setItemArchive(rsItem.getInt("ITEM_STAT_ID"));
                 items.setItemMaintStat(rsItem.getInt("MAINTENANCE_STATUS"));
+                
+                items.setItemPCC(rsItem.getInt("PC_CODE"));
+                items.setAcACCU(rsItem.getInt("AC_ACCU"));
+                items.setAcFCU(rsItem.getInt("AC_FCU"));
+                items.setAcINVERTER(rsItem.getInt("AC_INVERTER"));
+                items.setItemCapacity(rsItem.getInt("CAPACITY"));
+                items.setItemUnitMeasure(rsItem.getString("UNIT_OF_MEASURE"));
+                items.setItemEV(rsItem.getInt("ELECTRICAL_V"));
+                items.setItemEPH(rsItem.getInt("ELECTRICAL_PH"));
+                items.setItemEHZ(rsItem.getInt("ELECTRICAL_HZ"));
+                
                 listItem.add(items);
 
                 // Print 
@@ -171,6 +184,7 @@ public class mainController extends HttpServlet {
                 msched.setItemID(rsMaintSched.getInt("ITEM_MS_ID"));
                 msched.setItemTID(rsMaintSched.getInt("ITEM_TYPE_ID"));
                 msched.setMaintSchedDays(rsMaintSched.getInt("NO_OF_DAYS"));
+                msched.setItemRemarks(rsMaintSched.getString("REMARKS"));
                 msched.setMaintSchedWarn(rsMaintSched.getInt("NO_OF_DAYS_WARNING"));
                 listMaintSched.add(msched);
             }
@@ -217,6 +231,17 @@ public class mainController extends HttpServlet {
                         resultRoomList.add(item);
                     }
                 }
+        
+        Set<String> uniqueRooms2 = new HashSet<>();
+                List<Item> resultRoomList2 = new ArrayList<>();
+
+                for (Item itemzz : listItem) {
+                    String uniqueKey2 = itemzz.getItemLID() + ":" + itemzz.getItemRoom();
+                    if (!uniqueRooms2.contains(uniqueKey2)) {
+                        uniqueRooms2.add(uniqueKey2);
+                        resultRoomList2.add(itemzz);
+                    }
+                }
                 
 
 //                // Print the unique items
@@ -237,9 +262,11 @@ public class mainController extends HttpServlet {
         request.setAttribute("FMO_FLOORS_LIST2", listFloor);
         request.setAttribute("FMO_ITEMS_LIST", listItem);
         request.setAttribute("uniqueRooms", resultRoomList);
+        request.setAttribute("uniqueRooms2", resultRoomList2);
         request.setAttribute("FMO_TYPES_LIST", listTypes);
         request.setAttribute("FMO_CATEGORIES_LIST", listCats);
         request.setAttribute("FMO_BRANDS_LIST", listBrands);
+        request.setAttribute("maintenanceList", listMaintSched);
         request.setAttribute("FMO_MAINTSTAT_LIST", listMaintStat);
         
 //        SharedData.getInstance().setItemsList(listItem);
@@ -309,6 +336,9 @@ public class mainController extends HttpServlet {
                 break;
             case "/settings":
                 request.getRequestDispatcher("/settings.jsp").forward(request, response);
+                break;
+            case "/maintenanceSchedule":
+                request.getRequestDispatcher("/maintenanceSchedule.jsp").forward(request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
