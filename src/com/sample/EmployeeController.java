@@ -1,6 +1,6 @@
 package com.sample;
 
-import sample.model.Employees;
+import sample.model.Employee;
 import sample.model.PooledConnection;
 
 import javax.servlet.ServletException;
@@ -21,7 +21,7 @@ public class EmployeeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Employees> employeeList = new ArrayList<>();
+        List<Employee> employeeList = new ArrayList<>();
         String query = "SELECT FMO_EMP_ID, SURNAME, FIRST_NAME, MIDDLE_NAME, OTHER_NAME, SRVC_AREA_ID, " +
                        "EMP_STATUS, EMP_NUMBER, ACTIVE_FLAG, COMPANY_NAME FROM C##FMO_ADM.FMO_EMPLOYEES";
 
@@ -30,7 +30,7 @@ public class EmployeeController extends HttpServlet {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                Employees employee = new Employees();
+                Employee employee = new Employee();
                 employee.setEmployeeId(resultSet.getInt("FMO_EMP_ID"));
                 employee.setSurname(resultSet.getString("SURNAME"));
                 employee.setFirstName(resultSet.getString("FIRST_NAME"));

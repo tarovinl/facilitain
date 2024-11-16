@@ -175,6 +175,7 @@
                                         data-itemtype="${itemEditType}"
                                         data-itemloctext="${item.itemLocText}"
                                         data-itemremarks="${item.itemRemarks}"
+
                                         data-itempcc="${item.itemPCC}"
                                         data-accu="${item.acACCU}"
                                         data-fcu="${item.acFCU}"

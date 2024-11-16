@@ -22,20 +22,20 @@
             <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
                 <h1>Maintenance Schedule</h1>
                 <!-- Trigger Modal Button -->
-                <button class="btn btn-warning" data-toggle="modal" data-target="#maintenanceModal">
-                    <i class="bi bi-plus-lg"></i> Add
+                <button class="btn btn-warning" data-toggle="modal" data-target="#maintenanceModal" onclick="clearModal()">
+                    <i class="bi bi-plus-lg"></i> Add Schedule
                 </button>
             </div>
 
-            <!-- Maintenance List -->
+            <!-- Maintenance List Table -->
             <table class="table table-striped">
                 <thead class="thead-dark">
                     <tr>
-                        <th>ITEM_MS_ID</th>
-                        <th>ITEM_TYPE</th>
-                        <th>NO_OF_DAYS</th>
-                        <th>REMARKS</th>
-                        <th>NO_OF_DAYS_WARNING</th>
+                        <th>ID</th>
+                        <th>Item Type</th>
+                        <th>Number of Days</th>
+                        <th>Remarks</th>
+                        <th>Warning Days</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -75,15 +75,16 @@
 <!-- Maintenance Modal -->
 <div class="modal fade" id="maintenanceModal" tabindex="-1" role="dialog" aria-labelledby="maintenanceModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form action="maintenanceSave" method="post"> <!-- Form action for saving -->
+        <form action="maintenanceSave" method="post">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="maintenanceModalLabel">Maintenance Schedule</h5>
+                    <h5 class="modal-title" id="maintenanceModalLabel">Add/Edit Maintenance Schedule</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
+
                     <input type="hidden" id="itemMsId" name="itemMsId">
                     
                     <!-- Item Type Dropdown -->
@@ -129,6 +130,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 
 <script>
+
     $('#maintenanceModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); 
         var itemMsId = button.data('id');
@@ -143,10 +145,25 @@
         modal.find('.modal-body input#noOfDays').val(noOfDays);
         modal.find('.modal-body input#remarks').val(remarks);
         modal.find('.modal-body input#noOfDaysWarning').val(warning);
-        
-        console.warn("Item ID value not found in dropdown options:", itemMsId);
-        
+                
     });
+
+//     function editSchedule(itemMsId, itemTypeId, noOfDays, remarks, noOfDaysWarning) {
+//         document.getElementById("itemMsId").value = itemMsId;
+//         document.getElementById("itemTypeId").value = itemTypeId;
+//         document.getElementById("noOfDays").value = noOfDays;
+//         document.getElementById("remarks").value = remarks;
+//         document.getElementById("noOfDaysWarning").value = noOfDaysWarning;
+//     }
+
+//     function clearModal() {
+//         document.getElementById("itemMsId").value = "";
+//         document.getElementById("itemTypeId").value = "";
+//         document.getElementById("noOfDays").value = "";
+//         document.getElementById("remarks").value = "";
+//         document.getElementById("noOfDaysWarning").value = "";
+//     }
+
 </script>
 
 </body>

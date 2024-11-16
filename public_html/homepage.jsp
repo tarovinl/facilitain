@@ -13,14 +13,13 @@
 </head>
 <body>
 <div class="container-fluid">
-      <div class="row min-vh-100">
-        
-          <jsp:include page="sidebar.jsp"/>
+  <div class="row min-vh-100">
+    <jsp:include page="sidebar.jsp"/>
     
-    <div class="col-md-10">
+      <div class="col-md-10">
             <div class="container">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 style="font-family: 'NeueHaas', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
+                    <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
 
                     <!-- Trigger Modal Button -->
                     <button class="btn btn-warning" data-toggle="modal" data-target="#addBuildingModal">
@@ -40,10 +39,9 @@
                                         url('resources/images/samplebuilding.jpg');background-size: cover;background-position: center;
                                         min-height: 250px;display: flex;flex-direction: column;justify-content: flex-end;
                                           overflow:hidden; ">
-                                        <h5 class="card-title text-light fs-4">${location.locName}</h5>
-                                        <p class="card-text text-light fs-6">${location.locDescription}</p>
+                                        <h5 class="card-title text-light fs-4" style="font-family: 'NeueHaasMedium', sans-serif;">${location.locName}</h5>
+                                        <p class="card-text text-light fs-6" style="font-family: 'NeueHaasLight', sans-serif;">${location.locDescription}</p>
                                         </div>
-
                                     </a>
                                 </div>
                             </div>
@@ -52,7 +50,7 @@
                 </div>
             </div>
         </div>
-    </div>
+  </div>
 </div>
 
 

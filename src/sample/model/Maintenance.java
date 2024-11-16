@@ -7,6 +7,8 @@ public class Maintenance {
     private String remarks;
     private int noOfDaysWarning;
     private int activeFlag;
+    private String itemTypeName;
+
 
     // Getters and Setters
     public int getItemMsId() {
@@ -39,6 +41,14 @@ public class Maintenance {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getItemTypeName() {
+        return itemTypeName;
+    }
+
+    public void setItemTypeName(String itemTypeName) {
+        this.itemTypeName = itemTypeName;
     }
 
     public int getNoOfDaysWarning() {
