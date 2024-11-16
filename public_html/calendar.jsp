@@ -18,12 +18,12 @@
     </style>
 </head>
 <body>
-    <div class="d-flex vh-100">
-        <!-- Sidebar (include your sidebar file) -->
-        <jsp:include page="sidebar.jsp"></jsp:include>
-
-        <!-- Main Content for Calendar -->
-        <div class="container p-4 flex-grow-1">
+<div class="container-fluid">
+      <div class="row min-vh-100">
+        
+          <jsp:include page="sidebar.jsp"/>
+    
+    <div class="col-md-10">
             <h1>Maintenance Calendar</h1>
 
             <!-- Calendar Div -->

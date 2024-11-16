@@ -8,7 +8,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Building Dashboard</title>
+        <title>Manage Location</title>
         <link rel="stylesheet" href="resources/css/mBuilding.css">
         <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
@@ -53,18 +53,15 @@
                 </c:forEach>
 
 
-  <body>
-<div class="main vh-100">
-    <div class="row h-100">
-        <!-- Sidebar Component -->
-        <div class="col-12 col-md-2 p-1">
-            <jsp:include page="sidebar.jsp" />
-        </div>
-
-        <!-- Main Content -->
-        <div class="col-12 col-md-10 p-4">
-        <jsp:include page="quotations.jsp" />
-        <div class="topButtons">
+<body>
+<div class="container-fluid">
+      <div class="row vh-100 d-flex">
+        
+          <jsp:include page="sidebar.jsp"/>
+    
+    <div class="col-md-10">
+        <div class="topButtons"> <!-- top buttons -->
+            <div>
                 <!-- Link component remains unchanged -->
                 <a href="./buildingDashboard?locID=${locID}" class="buttonsBack" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;">
                 <img
@@ -177,7 +174,7 @@
                                         data-itemtype="${itemEditType}"
                                         data-itemloctext="${item.itemLocText}"
                                         data-itemremarks="${item.itemRemarks}"
-                                        onclick="populateEditModal(this);setFloorSelection(this);floorERender();">
+                                        onclick="populateEditModal(this);setFloorSelection(this);floorERender();"/>
                                     </td>
                                     <td >${item.itemID}</td>
                                     <td >${item.itemName}</td>
@@ -238,9 +235,11 @@
             
             <div id="paginationControls"></div>
          </div>
+        </div>
      </div>
-    </div> 
-    </div>
+    </div>   
+    
+    
     <!--add equipment modal-->
     <div class="modal fade" id="addEquipment" tabindex="-1" role="dialog" aria-labelledby="equipmentAdd" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -488,7 +487,7 @@
     </div>
     <!--end of edit equipment modal-->
     
-    
+    <jsp:include page="quotations.jsp" />
     
     <c:if test="${locMatchFound == false || flrMatchFound == false}">
         <meta http-equiv="refresh" content="0; URL=./homepage" /> 
@@ -827,7 +826,7 @@ function roomEditRenderCopy() {
 
     </script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script> 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>

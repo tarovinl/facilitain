@@ -242,9 +242,9 @@ public class mainController extends HttpServlet {
         request.setAttribute("FMO_BRANDS_LIST", listBrands);
         request.setAttribute("FMO_MAINTSTAT_LIST", listMaintStat);
         
-        SharedData.getInstance().setItemsList(listItem);
-        SharedData.getInstance().setMaintStat(listMaintStat);
-        SharedData.getInstance().setMaintSched(listMaintSched);
+//        SharedData.getInstance().setItemsList(listItem);
+//        SharedData.getInstance().setMaintStat(listMaintStat);
+//        SharedData.getInstance().setMaintSched(listMaintSched);
         
         String path = request.getServletPath();
         String queryString = request.getQueryString();

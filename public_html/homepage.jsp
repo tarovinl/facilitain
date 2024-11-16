@@ -12,15 +12,11 @@
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
 </head>
 <body>
-<div class="main vh-100">
-    <div class="row h-100">
-        <!-- Sidebar Component -->
-        <div class="col-12 col-md-2 p-0">
-            <jsp:include page="sidebar.jsp" />
-        </div>
-
-        <!-- Main Content -->
-        <div class="col-12 col-md-10 p-4">
+<div class="container-fluid">
+  <div class="row min-vh-100">
+    <jsp:include page="sidebar.jsp"/>
+    
+      <div class="col-md-10">
             <div class="container">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1 style="font-family: 'NeueHaas', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
@@ -46,7 +42,6 @@
                                         <h5 class="card-title text-light fs-4">${location.locName}</h5>
                                         <p class="card-text text-light fs-6">${location.locDescription}</p>
                                         </div>
-
                                     </a>
                                 </div>
                             </div>
@@ -55,7 +50,7 @@
                 </div>
             </div>
         </div>
-    </div>
+  </div>
 </div>
 
 
