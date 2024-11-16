@@ -24,7 +24,7 @@ public class itemCategoriesController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try (Connection conn = PooledConnection.getConnection()) {
-            String query = "SELECT ITEM_CAT_ID, NAME, DESCRIPTION, ACTIVE_FLAG FROM C##FMO_ADM.FMO_ITEM_CATEGORIES";
+            String query = "SELECT ITEM_CAT_ID, NAME, DESCRIPTION, ACTIVE_FLAG, ARCHIVED_FLAG FROM C##FMO_ADM.FMO_ITEM_CATEGORIES";
             try (PreparedStatement stmt = conn.prepareStatement(query);
                  ResultSet rs = stmt.executeQuery()) {
 
@@ -35,6 +35,7 @@ public class itemCategoriesController extends HttpServlet {
                     category.setCategoryName(rs.getString("NAME"));
                     category.setDescription(rs.getString("DESCRIPTION"));
                     category.setActiveFlag(rs.getInt("ACTIVE_FLAG"));
+                    category.setArchivedFlag(rs.getInt("ARCHIVED_FLAG"));
                     categoryList.add(category);
                 }
                 request.setAttribute("categoryList", categoryList);
@@ -44,24 +45,29 @@ public class itemCategoriesController extends HttpServlet {
             throw new ServletException("Database error while fetching item categories.", e);
         }
 
-        // Forward the request to itemcategories.jsp to display the data
+        // Forward the request to itemCategories.jsp to display the data
         request.getRequestDispatcher("itemCategories.jsp").forward(request, response);
     }
 
-    
-    
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String itemCIDParam = request.getParameter("itemCID");
         String categoryName = request.getParameter("categoryName");
         String description = request.getParameter("description");
         int activeFlag = Integer.parseInt(request.getParameter("activeFlag"));
-        
-        
+        String action = request.getParameter("action"); // Add action parameter for different operations
+
         Integer itemCID = (itemCIDParam != null && !itemCIDParam.isEmpty()) ? Integer.parseInt(itemCIDParam) : null;
 
         try (Connection conn = PooledConnection.getConnection()) {
-            if (itemCID != null && existsInDatabase(conn, itemCID)) {
-                // edit
+            if (action != null && action.equals("archive") && itemCID != null) {
+                // Archive action: Update ARCHIVED_FLAG to 2
+                String archiveSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET ARCHIVED_FLAG = 2 WHERE ITEM_CAT_ID = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(archiveSql)) {
+                    stmt.setInt(1, itemCID);
+                    stmt.executeUpdate();
+                }
+            } else if (itemCID != null && existsInDatabase(conn, itemCID)) {
+                // Edit action
                 String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET NAME = ?, DESCRIPTION = ?, ACTIVE_FLAG = ? WHERE ITEM_CAT_ID = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
                     stmt.setString(1, categoryName);
@@ -71,7 +77,7 @@ public class itemCategoriesController extends HttpServlet {
                     stmt.executeUpdate();
                 }
             } else {
-                // add
+                // Add action
                 String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_CATEGORIES (NAME, DESCRIPTION, ACTIVE_FLAG) VALUES (?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
                     stmt.setString(1, categoryName);
@@ -85,11 +91,10 @@ public class itemCategoriesController extends HttpServlet {
             throw new ServletException("Database error while processing item categories.", e);
         }
 
-        
         response.sendRedirect(request.getContextPath() + "/itemCategories");
     }
 
- //CID check
+    // CID check
     private boolean existsInDatabase(Connection conn, int itemCID) throws SQLException {
         String checkSql = "SELECT 1 FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE ITEM_CAT_ID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {

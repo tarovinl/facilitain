@@ -174,7 +174,7 @@
                                         data-itemtype="${itemEditType}"
                                         data-itemloctext="${item.itemLocText}"
                                         data-itemremarks="${item.itemRemarks}"
-                                        onclick="populateEditModal(this);setFloorSelection(this);floorERender();">
+                                        onclick="populateEditModal(this);setFloorSelection(this);floorERender();"/>
                                     </td>
                                     <td >${item.itemID}</td>
                                     <td >${item.itemName}</td>
@@ -239,7 +239,6 @@
      </div>
     </div>   
     
-    <jsp:include page="quotations.jsp" />
     
     <!--add equipment modal-->
     <div class="modal fade" id="addEquipment" tabindex="-1" role="dialog" aria-labelledby="equipmentAdd" aria-hidden="true">
@@ -488,7 +487,7 @@
     </div>
     <!--end of edit equipment modal-->
     
-    
+    <jsp:include page="quotations.jsp" />
     
     <c:if test="${locMatchFound == false || flrMatchFound == false}">
         <meta http-equiv="refresh" content="0; URL=./homepage" /> 

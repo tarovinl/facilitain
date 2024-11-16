@@ -11,7 +11,6 @@
    
 </head>
 <body>
-
         <div class="col-md-2 d-flex flex-column justify-content-between sidebar">
             <div class="text-center pt-4 ">
                 <a href="<%=request.getContextPath()%>/homepage" class="p-0">
