@@ -25,7 +25,7 @@ public class ScheduleMaintenance {
 
     public void startScheduler() {
         // Schedule performMaintenance to run once, immediately on startup
-        scheduler.schedule(this::performMaintenance, 0, TimeUnit.SECONDS);
+        //scheduler.schedule(this::performMaintenance, 0, TimeUnit.SECONDS);
     }
 
 

@@ -11,14 +11,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-<div class="d-flex vh-100">
-    <!-- Sidebar Component -->
-    <jsp:include page="sidebar.jsp"/>
-
-    <!-- Main Content -->
-    <div class="flex-grow-1 p-4">
+<div class="container-fluid">
+      <div class="row min-vh-100">
+        
+          <jsp:include page="sidebar.jsp"/>
+       
+    
+    <div class="col-md-10">
         <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
                 <h1>Maintenance Schedule</h1>
                 <!-- Trigger Modal Button -->
                 <button class="btn btn-warning" data-toggle="modal" data-target="#maintenanceModal">
@@ -41,27 +42,32 @@
                 <tbody>
                     <c:forEach var="maintenance" items="${maintenanceList}">
                         <tr>
-                            <td>${maintenance.itemMsId}</td>
-                            <td>${maintenance.itemTypeId}</td>
-                            <td>${maintenance.noOfDays}</td>
-                            <td>${maintenance.remarks}</td>
-                            <td>${maintenance.noOfDaysWarning}</td>
+                            <td>${maintenance.itemID}</td>
+                            <td>${maintenance.itemTID}</td>
+                            <td>${maintenance.maintSchedDays}</td>
+                            <td>${maintenance.itemRemarks}</td>
+                            <td>${maintenance.maintSchedWarn}</td>
                             <td>
-                                <button class="btn btn-sm btn-primary" 
+                                <input type="image" 
+                                        src="resources/images/editItem.svg" 
+                                        alt="Open Modal" 
+                                        width="24" 
+                                        height="24" 
                                     data-toggle="modal" 
                                     data-target="#maintenanceModal" 
-                                    data-id="${maintenance.itemMsId}"
-                                    data-item-type-id="${maintenance.itemTypeId}"
-                                    data-no-of-days="${maintenance.noOfDays}"
-                                    data-remarks="${maintenance.remarks}"
-                                    data-warning="${maintenance.noOfDaysWarning}">
-                                    Edit
-                                </button>
+                                    data-id="${maintenance.itemID}"
+                                    data-item-type-id="${maintenance.itemTID}"
+                                    data-no-of-days="${maintenance.maintSchedDays}"
+                                    data-remarks="${maintenance.itemRemarks}"
+                                    data-warning="${maintenance.maintSchedWarn}">
+                                   <!--<button> Edit
+                                </button>-->
                             </td>
                         </tr>
                     </c:forEach>
                 </tbody>
             </table>
+        </div>
         </div>
     </div>
 </div>
@@ -78,15 +84,15 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- No input for itemMsId (Primary Key), auto-incremented in the database -->
-
+                    <input type="hidden" id="itemMsId" name="itemMsId">
+                    
                     <!-- Item Type Dropdown -->
                     <div class="form-group">
                         <label for="itemTypeId">Item Type</label>
                         <select class="form-control" id="itemTypeId" name="itemTypeId" required>
                             <option value="" disabled selected>Select Item Type</option>
-                            <c:forEach var="itemType" items="${itemTypeList}">
-                                <option value="${itemType.itemTypeId}">${itemType.itemTypeName} (${itemType.itemTypeId})</option>
+                            <c:forEach var="typez" items="${FMO_TYPES_LIST}">
+                                <option value="${typez.itemTID}">${typez.itemType}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -110,8 +116,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-warning fw-bold">Save</button>
+                    <button type="button" class="btn btn-dark fw-bold text-warning" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </form>
@@ -137,6 +143,9 @@
         modal.find('.modal-body input#noOfDays').val(noOfDays);
         modal.find('.modal-body input#remarks').val(remarks);
         modal.find('.modal-body input#noOfDaysWarning').val(warning);
+        
+        console.warn("Item ID value not found in dropdown options:", itemMsId);
+        
     });
 </script>
 

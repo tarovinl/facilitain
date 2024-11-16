@@ -20,6 +20,17 @@ public class Item {
     private int activeFlag; 
     private int itemArchive;
     private int itemMaintStat;
+    
+    private int itemPCC;
+    private int acACCU;
+    private int acFCU;
+    private int acINVERTER;
+    private int itemCapacity;
+    private String itemUnitMeasure;
+    private int itemEV;
+    private int itemEPH;
+    private int itemEHZ;
+    
     private String maintStatName;
     private int maintSchedDays;
     private int maintSchedWarn;
@@ -194,5 +205,77 @@ public class Item {
 
     public int getMaintSchedWarn() {
         return maintSchedWarn;
+    }
+
+    public void setItemPCC(int itemPCC) {
+        this.itemPCC = itemPCC;
+    }
+
+    public int getItemPCC() {
+        return itemPCC;
+    }
+
+    public void setAcACCU(int acACCU) {
+        this.acACCU = acACCU;
+    }
+
+    public int getAcACCU() {
+        return acACCU;
+    }
+
+    public void setAcFCU(int acFCU) {
+        this.acFCU = acFCU;
+    }
+
+    public int getAcFCU() {
+        return acFCU;
+    }
+
+    public void setAcINVERTER(int acINVERTER) {
+        this.acINVERTER = acINVERTER;
+    }
+
+    public int getAcINVERTER() {
+        return acINVERTER;
+    }
+
+    public void setItemCapacity(int itemCapacity) {
+        this.itemCapacity = itemCapacity;
+    }
+
+    public int getItemCapacity() {
+        return itemCapacity;
+    }
+
+    public void setItemUnitMeasure(String itemUnitMeasure) {
+        this.itemUnitMeasure = itemUnitMeasure;
+    }
+
+    public String getItemUnitMeasure() {
+        return itemUnitMeasure;
+    }
+
+    public void setItemEV(int itemEV) {
+        this.itemEV = itemEV;
+    }
+
+    public int getItemEV() {
+        return itemEV;
+    }
+
+    public void setItemEPH(int itemEPH) {
+        this.itemEPH = itemEPH;
+    }
+
+    public int getItemEPH() {
+        return itemEPH;
+    }
+
+    public void setItemEHZ(int itemEHZ) {
+        this.itemEHZ = itemEHZ;
+    }
+
+    public int getItemEHZ() {
+        return itemEHZ;
     }
 }

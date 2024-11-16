@@ -43,7 +43,7 @@ public class itemTypeController extends HttpServlet {
         }
 
         // Set the itemList attribute to pass to the JSP
-        request.setAttribute("itemList", itemList);
+        request.setAttribute("itemTypeList", itemList);
 
         // Forward to the JSP page
         request.getRequestDispatcher("itemTypes.jsp").forward(request, response);

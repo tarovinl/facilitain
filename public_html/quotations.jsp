@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -93,10 +94,6 @@
                         <input type="hidden" name="hiddenItemId" id="hiddenItemId">
 
 
-<!--             <div class="modal-body">
-                <div class="centered-div bg-white">
-                    <div class="container mt-2 mb-2">
-                        <!-- Table Section -->
                         <div class="row mt-1">
                             <div class="col">
                                 <table id="quotationsTable" class="table table-striped table-hover table-bordered">
@@ -153,7 +150,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div> -->
+                            </div>
 
                         <div class="mb-3">
                             <label for="quotationDescription" class="form-label">Quotation Description</label>
