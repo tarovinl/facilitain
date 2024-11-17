@@ -32,13 +32,13 @@
                     <c:forEach var="location" items="${locations}">
                         <c:if test="${location.locArchive == 1}">
                             <div class="col-md-4">
-                                <div class="card mb-4 position-relative" >
+                                <div class="card mb-4 position-relative" style="border:none;" >
                                     <a href="buildingDashboard?locID=${location.itemLocId}" class="text-decoration-none" style="border-radius:20px;">
                                         <div class="card-body rounded-4" style=" background-image: 
                                         linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
                                         url('resources/images/samplebuilding.jpg');background-size: cover;background-position: center;
                                         min-height: 250px;display: flex;flex-direction: column;justify-content: flex-end;
-                                          overflow:hidden; ">
+                                          overflow:hidden; outline:none; ">
                                         <h5 class="card-title text-light fs-4" style="font-family: 'NeueHaasMedium', sans-serif;">${location.locName}</h5>
                                         <p class="card-text text-light fs-6" style="font-family: 'NeueHaasLight', sans-serif;">${location.locDescription}</p>
                                         </div>
