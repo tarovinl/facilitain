@@ -30,7 +30,7 @@
         <title>Location Dashboard</title>
         <link rel="stylesheet" href="./resources/css/bDash.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+        <link rel="stylesheet" href="./resources/css/custom-fonts.css">
         <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script>
         google.charts.load('current', {packages: ['corechart']});
@@ -127,17 +127,20 @@
         
           <div class="topButtons">
             <div>
-              <a href="./homepage" class="buttonsBack" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;">
-                <img src="resources/images/backIcon.svg" alt="back icon" width="16" height="16" style="transform: rotateY(180deg); margin-right: 8px;">
+              <a href="./homepage" class="buttonsBack d-flex align-items-center gap-2" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;font-family: NeueHaasLight, sans-serif;">
+                <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
                 Back
               </a>
             </div>
             <div>
               <!-- Edit button triggers the modal -->
-              <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'"><!--hidden if acc is not admin-->
+              <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
+                <img src="resources/images/icons/pen-solid.svg" class="pe-2" alt="edit icon" width="25" height="25">
                 Edit
               </button>
-              <button class="buttonsBuilding">Generate Report</button>
+              <button class="buttonsBuilding" style="font-family: NeueHaasMedium, sans-serif;">
+              <img src="resources/images/icons/file-export-solid.svg" class="pe-2" alt="generate report icon" width="25" height="25">
+              Generate Report</button>
             </div>
           </div>
 
@@ -146,7 +149,7 @@
             <div class="statusDiv">
               <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
             </div>
-            <div class="buildingName">
+            <div class="buildingName" style=" font-family: NeueHaasMedium, sans-serif;">
               <h1>${locName}</h1>
             </div>
             <div>
@@ -154,9 +157,9 @@
                 <c:if test="${floors.key == locID}">
                   <c:forEach var="floor" items="${floors.value}" varStatus="status">
                     <c:if test="${status.first}">
-                      <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" class="buildingManage">
+                      <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" class="buildingManage d-flex align-items-center" style=" font-family: NeueHaasMedium, sans-serif;">
                         Manage
-                        <img src="resources/images/manageNext.svg" alt="next icon" width="20" height="20">
+                        <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
                       </a>
                     </c:if>
                   </c:forEach>
@@ -166,20 +169,20 @@
           </div>
 
           <!-- Graphs and Charts -->
-          <div class="buildingDiagrams">
+          <div class="buildingDiagrams" >
             <!-- Frequency of Repairs -->
             <div class="diagram">
               <div class="diagramTitle">
-                <h2>Repairs per Month</h2>
+                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Repairs per Month</h2>
               </div>
-              <div style="background: green; height: 280px; ">
-                <div id="repairNoChart" style="height: 100%; width: 100%;"></div>
+              <div style="background: green;">
+                <div id="repairNoChart" style="height:100%; width: 100%; "></div>
               </div>
             </div>
             <!-- Pending Maintenance -->
             <div class="diagram">
               <div class="diagramTitle">
-                <h2>Pending Maintenance</h2>
+                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Pending Maintenance</h2>
               </div>
               <div style="background: green; height: 280px;">
                   <div id="pendingMainChart" style="height: 100%; width: 100%;"></div>
@@ -200,7 +203,7 @@
           <div class="buildingActivities">
             <div class="activity">
               <div class="actCategories">
-                <h2>Upcoming Activities</h2>
+                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h2>
               </div>
               <div class="actContainer">
                 <a href="#" style="text-decoration: none; color: black;">
@@ -213,7 +216,7 @@
             </div>
             <div class="activity">
               <div class="actCategories">
-                <h2>Recent Activities</h2>
+                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h2>
               </div>
               <div class="actContainer"></div>
             </div>
