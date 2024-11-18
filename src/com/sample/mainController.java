@@ -3,6 +3,7 @@ package com.sample;
 import java.io.IOException;
 
 
+import java.sql.Blob;
 import java.sql.Connection;
 
 import java.sql.PreparedStatement;
@@ -29,6 +30,7 @@ import sample.model.Location;
 import sample.model.Item;
 
 import sample.model.PooledConnection;
+import sample.model.Quotation;
 import sample.model.SharedData;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification",
@@ -46,7 +48,9 @@ public class mainController extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(CONTENT_TYPE);
         
+        List<Quotation> quotations = new ArrayList<>();
         List<Location> locations = new ArrayList<>();
+        
         ArrayList<Location> listFloor = new ArrayList<>();
         ArrayList<Item> listItem = new ArrayList<>();
         ArrayList<Item> listTypes = new ArrayList<>();
@@ -55,7 +59,6 @@ public class mainController extends HttpServlet {
 
         ArrayList<Item> listMaintStat = new ArrayList<>();
         ArrayList<Item> listMaintSched = new ArrayList<>();
-        
 
 
         
@@ -69,6 +72,7 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME")){
              PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
              PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 ORDER BY ITEM_MS_ID");
+            PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
 
 
             ResultSet rs = statement.executeQuery();
@@ -189,6 +193,26 @@ public class mainController extends HttpServlet {
                 listMaintSched.add(msched);
             }
             rsMaintSched.close();
+            
+            ResultSet rsQuot = stmntQuotations.executeQuery();
+            while (rsQuot.next()) {
+                Quotation quotation = new Quotation();
+                quotation.setQuotationId(rsQuot.getInt("QUOTATION_ID"));
+                quotation.setDescription(rsQuot.getString("DESCRIPTION"));
+                quotation.setDateUploaded(rsQuot.getDate("DATE_UPLOADED"));
+                quotation.setItemId(rsQuot.getInt("ITEM_ID"));
+                Blob blob = rsQuot.getBlob("QUOTATION_IMAGE");
+                byte[] imageBytes = null;
+
+                if (blob != null) {
+                    // Convert Blob to byte[]
+                    imageBytes = blob.getBytes(1, (int) blob.length());
+                }
+                // Use the setter to store the image as byte[]
+                quotation.setQuotationImage(imageBytes);
+                quotations.add(quotation);
+            }
+            rsQuot.close();
 
 
         } catch (SQLException error) {
@@ -268,7 +292,8 @@ public class mainController extends HttpServlet {
         request.setAttribute("FMO_BRANDS_LIST", listBrands);
         request.setAttribute("maintenanceList", listMaintSched);
         request.setAttribute("FMO_MAINTSTAT_LIST", listMaintStat);
-        
+        request.setAttribute("quotations", quotations);
+        getServletContext().setAttribute("quotations", quotations);
 //        SharedData.getInstance().setItemsList(listItem);
 //        SharedData.getInstance().setMaintStat(listMaintStat);
 //        SharedData.getInstance().setMaintSched(listMaintSched);
@@ -345,7 +370,6 @@ public class mainController extends HttpServlet {
                 break;
         }
         
+    }}
 
-
-    }
-}
+    
