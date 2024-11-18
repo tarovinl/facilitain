@@ -67,7 +67,7 @@
   flex: 1;
   outline: 2px solid black;
   background-color: black;
-
+    
 }
 .diagram:not(:last-child) {
     margin-right: 6px; 
@@ -95,7 +95,7 @@
 
 .actContainer {
   background: white;
-  height: 320px;
+  height: 200px;
   overflow: auto;
   outline: 2px solid black;
 }
