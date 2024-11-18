@@ -9,15 +9,6 @@ public class Quotation {
     private int itemId;              
     private byte[] quotationImage;    
    
-    // Constructor
-    public Quotation(int quotationId, String description, Date dateUploaded, int itemId, byte[] quotationImage) {
-        this.quotationId = quotationId;
-        this.description = description;
-        this.dateUploaded = dateUploaded;
-        this.itemId = itemId;
-        this.quotationImage = quotationImage;
-    }
-
     // Getters and Setters
     public int getQuotationId() {
         return quotationId;
