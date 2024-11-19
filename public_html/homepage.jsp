@@ -21,8 +21,8 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
 
-                    <!-- Trigger Modal Button -->
-                    <button class="btn btn-warning" data-toggle="modal" data-target="#addBuildingModal">
+                    
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addBuildingModal">
                         <i class="bi bi-plus-lg"></i> Add
                     </button>
                 </div>
@@ -53,43 +53,35 @@
   </div>
 </div>
 
-
-
-<!-- Add building modal -->
-<div class="modal fade" id="addBuildingModal" tabindex="-1" role="dialog" aria-labelledby="addBuildingModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <form action="buildingController" method="post"> <!-- Form action to servlet -->
+<!-- Add Modal -->
+<div class="modal fade" id="addBuildingModal" tabindex="-1" aria-labelledby="addBuildingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="buildingController" method="post">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addBuildingModalLabel">Add Building</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Building Name (maps to locName in the model) -->
-                    <div class="form-group">
-                        <label for="locName">Building Name</label>
+                    <div class="mb-3">
+                        <label for="locName" class="form-label">Building Name</label>
                         <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter building name" required>
                     </div>
-                    <!-- Building Description (maps to locDescription in the model) -->
-                    <div class="form-group">
-                        <label for="locDescription">Building Description</label>
+                    <div class="mb-3">
+                        <label for="locDescription" class="form-label">Building Description</label>
                         <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter building description" required>
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-warning">Add</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<!--  Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
