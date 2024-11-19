@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +23,7 @@
                         <option selected>Sort by</option>
                         <option value="1">Date</option>
                         <option value="2">Equipment Type</option>
-                        <option value="3">Building</option>
+                        <option value="3">Location</option>
                     </select>
                 </div>
 
@@ -30,7 +32,7 @@
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Equipment Type</th>
-                            <th scope="col">Building</th>
+                            <th scope="col">Location</th>
                             <th scope="col">Floor</th>
                             <th scope="col">Room</th>
                             <th scope="col">Describe the Issue</th>
@@ -39,43 +41,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <%
-                            class Report {
-                                String id, equipmentType, building, floor, room, issue, proofIcon, date;
-
-                                public Report(String id, String equipmentType, String building, String floor, String room, String issue, String proofIcon, String date) {
-                                    this.id = id;
-                                    this.equipmentType = equipmentType;
-                                    this.building = building;
-                                    this.floor = floor;
-                                    this.room = room;
-                                    this.issue = issue;
-                                    this.proofIcon = proofIcon;
-                                    this.date = date;
-                                }
-                            }
-                            //mock data
-                            Report[] reports = new Report[] {
-                                new Report("1", "Aircon", "Albertus Magnus", "2", "2", "Broken Aircon", "🖼️", "07/13/2024"),
-                                new Report("2", "Aircon", "Frassati", "19", "19", "Aircon is not working", "🖼️", "07/12/2024"),
-                                new Report("3", "Generator", "Benevides", "1", "1", "Power broke out and didn't come again", "🖼️", "07/11/2024")
-                            };
-
-                            for (Report report : reports) {
-                        %>
+                        <c:forEach var="report" items="${reportsList}">
                             <tr>
-                                <td><%= report.id %></td>
-                                <td><%= report.equipmentType %></td>
-                                <td><%= report.building %></td>
-                                <td><%= report.floor %></td>
-                                <td><%= report.room %></td>
-                                <td><%= report.issue %></td>
-                                <td><%= report.proofIcon %></td>
-                                <td><%= report.date %></td>
+                                <td>${report.reportId}</td>
+                                <td>${report.repEquipment}</td>
+                                <td>${report.locName}</td>
+                                <td>${report.repfloor}</td>
+                                <td>${report.reproom}</td>
+                                <td>${report.repissue}</td>
+                                <td>${report.repfileName != null ? 'Yes' : 'No'}</td>
+                                <td><fmt:formatDate value="${report.recInstDt}" pattern="yyyy-MM-dd"/></td>
                             </tr>
-                        <%
-                            }
-                        %>
+                        </c:forEach>
                     </tbody>
                 </table>
             </div>
