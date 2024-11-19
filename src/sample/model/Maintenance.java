@@ -8,7 +8,8 @@ public class Maintenance {
     private int noOfDaysWarning;
     private int activeFlag;
     private String itemTypeName;
-
+    private Integer quarterlySchedNo; // Can be NULL
+    private Integer yearlySchedNo; // Can be NULL
 
     // Getters and Setters
     public int getItemMsId() {
@@ -59,11 +60,27 @@ public class Maintenance {
         this.noOfDaysWarning = noOfDaysWarning;
     }
 
+    public int getActiveFlag() {
+        return activeFlag;
+    }
+
     public void setActiveFlag(int activeFlag) {
         this.activeFlag = activeFlag;
     }
 
-    public int getActiveFlag() {
-        return activeFlag;
+    public Integer getQuarterlySchedNo() {
+        return quarterlySchedNo;
+    }
+
+    public void setQuarterlySchedNo(Integer quarterlySchedNo) {
+        this.quarterlySchedNo = quarterlySchedNo;
+    }
+
+    public Integer getYearlySchedNo() {
+        return yearlySchedNo;
+    }
+
+    public void setYearlySchedNo(Integer yearlySchedNo) {
+        this.yearlySchedNo = yearlySchedNo;
     }
 }

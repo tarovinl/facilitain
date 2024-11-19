@@ -69,42 +69,54 @@ public class maintenanceController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String itemMsIdStr = request.getParameter("itemMsId");
-        int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
-        int noOfDays = Integer.parseInt(request.getParameter("noOfDays"));
-        String remarks = request.getParameter("remarks");
-        int noOfDaysWarning = Integer.parseInt(request.getParameter("noOfDaysWarning"));
-
         try (Connection con = PooledConnection.getConnection()) {
-            if (itemMsIdStr == null || itemMsIdStr.isEmpty()) {
-                // Add new maintenance schedule
-                String sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED (ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, ACTIVE_FLAG, NO_OF_DAYS_WARNING) VALUES (?, ?, ?, 1, ?)";
-                try (PreparedStatement ps = con.prepareStatement(sql)) {
-                    ps.setInt(1, itemTypeId);
-                    ps.setInt(2, noOfDays);
-                    ps.setString(3, remarks);
-                    ps.setInt(4, noOfDaysWarning);
-                    ps.executeUpdate();
-                }
+            String itemMsIdStr = request.getParameter("itemMsId");
+            int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
+            int noOfDays = Integer.parseInt(request.getParameter("noOfDays"));
+            String remarks = request.getParameter("remarks");
+            int noOfDaysWarning = Integer.parseInt(request.getParameter("noOfDaysWarning"));
+
+            String quarterlySchedule = request.getParameter("quarterlySchedule");
+            String yearlySchedule = request.getParameter("yearlySchedule");
+
+            int itemMsId = itemMsIdStr.isEmpty() ? 0 : Integer.parseInt(itemMsIdStr);
+
+            String sql;
+            if (itemMsId == 0) {
+                // Insert new record
+                sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED (ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, NO_OF_DAYS_WARNING, QUARTERLY_SCHED_NO, YEARLY_SCHED_NO) VALUES (?, ?, ?, ?, ?, ?)";
             } else {
-                // Edit existing maintenance schedule
-                int itemMsId = Integer.parseInt(itemMsIdStr);
-                String sql = "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ITEM_TYPE_ID = ?, NO_OF_DAYS = ?, REMARKS = ?, NO_OF_DAYS_WARNING = ? WHERE ITEM_MS_ID = ?";
-                try (PreparedStatement ps = con.prepareStatement(sql)) {
-                    ps.setInt(1, itemTypeId);
-                    ps.setInt(2, noOfDays);
-                    ps.setString(3, remarks);
-                    ps.setInt(4, noOfDaysWarning);
-                    ps.setInt(5, itemMsId);
-                    ps.executeUpdate();
-                }
+                // Update existing record
+                sql = "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ITEM_TYPE_ID = ?, NO_OF_DAYS = ?, REMARKS = ?, NO_OF_DAYS_WARNING = ?, QUARTERLY_SCHED_NO = ?, YEARLY_SCHED_NO = ? WHERE ITEM_MS_ID = ?";
             }
-            
-            response.sendRedirect("maintenanceSchedule");
+
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setInt(1, itemTypeId);
+                ps.setInt(2, noOfDays);
+                ps.setString(3, remarks);
+                ps.setInt(4, noOfDaysWarning);
+
+                if (noOfDays == 90 && quarterlySchedule != null) {
+                    ps.setInt(5, Integer.parseInt(quarterlySchedule)); // Set Quarterly Schedule
+                    ps.setNull(6, java.sql.Types.INTEGER); // Nullify Yearly Schedule
+                } else if (noOfDays == 365 && yearlySchedule != null) {
+                    ps.setNull(5, java.sql.Types.INTEGER); // Nullify Quarterly Schedule
+                    ps.setInt(6, Integer.parseInt(yearlySchedule)); // Set Yearly Schedule
+                } else {
+                    ps.setNull(5, java.sql.Types.INTEGER); // Nullify both if invalid
+                    ps.setNull(6, java.sql.Types.INTEGER);
+                }
+
+                if (itemMsId != 0) {
+                    ps.setInt(7, itemMsId);
+                }
+
+                ps.executeUpdate();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        
+        response.sendRedirect("maintenanceSchedule");
     }
 }

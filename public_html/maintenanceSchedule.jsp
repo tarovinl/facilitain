@@ -97,12 +97,56 @@
                             </c:forEach>
                         </select>
                     </div>
+<!-- Number of Days -->
+<div class="form-group">
+    <label for="noOfDays">Number of Days</label>
+    <input 
+        type="number" 
+        class="form-control" 
+        id="noOfDays" 
+        name="noOfDays" 
+        required 
+        oninput="toggleQuarterlyOptions()">
+</div>
 
-                    <!-- Number of Days -->
-                    <div class="form-group">
-                        <label for="noOfDays">Number of Days</label>
-                        <input type="number" class="form-control" id="noOfDays" name="noOfDays" required>
-                    </div>
+<!-- Quarterly Options -->
+<div id="quarterlyOptionsGroup" style="display: none;">
+    <label>Quarterly Schedule</label>
+    <div>
+        <input type="radio" id="quarterly1" name="quarterlySchedule" value="1">
+        <label for="quarterly1">January, April, July, October</label>
+    </div>
+    <div>
+        <input type="radio" id="quarterly2" name="quarterlySchedule" value="2">
+        <label for="quarterly2">February, May, August, November</label>
+    </div>
+    <div>
+        <input type="radio" id="quarterly3" name="quarterlySchedule" value="3">
+        <label for="quarterly3">March, June, September, December</label>
+    </div>
+</div>
+
+<!-- Yearly Options -->
+<div id="annualOptionsGroup" style="display: none;">
+    <label for="month">Yearly Month Schedule</label>
+    <select id="month" name="yearlySchedule" class="form-control">
+        <option value="" disabled selected>-- Select Month --</option>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+</div>
+
+
 
                     <!-- Remarks -->
                     <div class="form-group">
@@ -163,6 +207,29 @@
 //         document.getElementById("remarks").value = "";
 //         document.getElementById("noOfDaysWarning").value = "";
 //     }
+
+ function toggleQuarterlyOptions() {
+    const value = document.getElementById('noOfDays').value;
+    const quarterlyOptionsGroup = document.getElementById('quarterlyOptionsGroup');
+    const annualOptionsGroup = document.getElementById('annualOptionsGroup');
+
+    if (value == 90) {
+        quarterlyOptionsGroup.style.display = 'block';
+        annualOptionsGroup.style.display = 'none';
+        document.getElementById('month').value = ""; 
+    } else if (value == 365) {
+        annualOptionsGroup.style.display = 'block';
+        quarterlyOptionsGroup.style.display = 'none';
+        document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false); // Clear quarterly selection
+    } else {
+        quarterlyOptionsGroup.style.display = 'none';
+        annualOptionsGroup.style.display = 'none';
+        document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
+        document.getElementById('month').value = "";
+    }
+}
+
+
 
 </script>
 
