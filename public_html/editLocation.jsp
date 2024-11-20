@@ -119,7 +119,6 @@
                                         <c:if test="${floors.locArchive == 1}">
                                      <tr>
                                         <th scope="row">
-                                        <!--  -->
                                             <input type="image" 
                                                 src="resources/images/editItem.svg" 
                                                 id="editModalButton" 
@@ -133,14 +132,11 @@
                                                 data-target="#editFloor"
                                                 onclick="populateEditModal(this)">
                                         </th>
-                                        <td>${floors.itemLocFlrId}</td>
-                                        <td>${floors.locFloor}</td>
-                                        <td>${floors.locDescription != null ? floors.locDescription : 'N/A'}</td>
                                         <th scope="row">
                                             <input type="image" 
-                                                src="resources/images/editItem.svg" 
+                                                src="resources/images/archiveItem.svg" 
                                                 id="archFlrModalButton" 
-                                                alt="Open Edit Modal" 
+                                                alt="Open Archive Modal" 
                                                 width="24" 
                                                 height="24" 
                                                 data-toggle="modal"
@@ -149,6 +145,9 @@
                                                 data-target="#archiveFloor"
                                                 onclick="populateArchFlrModal(this)">
                                         </th>
+                                        <td>${floors.itemLocFlrId}</td>
+                                        <td>${floors.locFloor}</td>
+                                        <td>${floors.locDescription != null ? floors.locDescription : 'N/A'}</td>
                                      </tr>
                                         </c:if>
                                     </c:if>
@@ -164,7 +163,7 @@
                     </div>
                 </div>
 
-                <div class="row mt-3 mb-4">
+                <!--<div class="row mt-3 mb-4">
                     <div class="col dropTbl mb-4">
                         <div class="floorDLblDiv">
                             <h4 class="fw-bold mt-2 archivedLbl">
@@ -220,15 +219,15 @@
                                     </c:if>
                                     </c:if>
                                 </c:forEach> 
-                              <!--<tr>
+                              --><!--<tr>
                                 <th scope="row">Unarchive button</th>
                                 <td>111</td>
                                 <td>12F</td>
-                              </tr>-->
+                              </tr>--><!--
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>

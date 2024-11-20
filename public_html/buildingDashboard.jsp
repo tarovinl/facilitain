@@ -16,7 +16,8 @@
         <c:set var="locID2" value="${location.itemLocId}" />
     </c:if>
 </c:forEach>
-
+<c:set var="currentYear" value="${currentYear}" />
+<c:set var="currentMonth" value="${currentMonth}" />
 <c:if test="${matchFound == false}">
     <script>
         window.location.href = './homepage'; 
@@ -99,13 +100,24 @@
         data.addColumn('string', 'Month');
         data.addColumn('number', 'No. of Repairs');
         data.addRows([
-            ['October', 10],
-            ['November', 14],
-            ['December', 16]
+            <c:forEach var="month" items="${monthsList}" varStatus="status">
+                <c:set var="repairCount" value="0" />
+                <c:set var="monthNumber" value="${status.index + 1}" />
+                <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
+                <c:if test="${repair.repairLocID == locID2}">
+                    <c:if test="${repair.repairYear == currentYear}">
+                    <c:if test="${repair.repairMonth == monthNumber}">
+                        <c:set var="repairCount" value="${repair.repairCount}" />
+                    </c:if>
+                    </c:if>
+                </c:if>
+                </c:forEach>
+                ['${month}', ${repairCount}],
+            </c:forEach>
         ]);
         // Set options for the column chart
         var options = {
-            hAxis: { title: 'Month' },
+            hAxis: { title: '${currentYear}' },
             vAxis: { title: 'Repairs' },
             colors: ['#fccc4c'],
             legend: { position: 'none' }
@@ -113,7 +125,7 @@
         // Instantiate and draw the column chart
         var chart = new google.visualization.ColumnChart(document.getElementById('repairNoChart'));
         chart.draw(data, options);
-    }
+        }
         </script>
     </head>
     <body>

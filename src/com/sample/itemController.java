@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import java.sql.Date;
+import java.sql.ResultSet;
 
 @WebServlet(name = "itemController", urlPatterns = { "/itemcontroller" })
 public class itemController extends HttpServlet {
@@ -50,8 +51,8 @@ public class itemController extends HttpServlet {
         String itemRoom = request.getParameter("itemAddRoom");
         String itemDateInst = request.getParameter("itemInstalled");
         String itemExpiry = request.getParameter("itemExpiration");
-        String itemSchedNum = request.getParameter("itemSchedNum");
-        String itemSched = request.getParameter("itemSched");
+//        String itemSchedNum = request.getParameter("itemSchedNum");
+//        String itemSched = request.getParameter("itemSched");
         String locText = request.getParameter("locText");
         String remarks = request.getParameter("remarks");
         String itemPCC = request.getParameter("itemPCC");
@@ -76,8 +77,8 @@ public class itemController extends HttpServlet {
         String itemEditRoom = request.getParameter("itemEditRoom");
         String itemEditDateInst = request.getParameter("itemEditInstalled");
         String itemEditExpiry = request.getParameter("itemEditExpiration");
-        String itemEditSchedNum = request.getParameter("itemEditSchedNum");
-        String itemEditSched = request.getParameter("itemEditSched");
+//        String itemEditSchedNum = request.getParameter("itemEditSchedNum");
+//        String itemEditSched = request.getParameter("itemEditSched");
         String editLocText = request.getParameter("editLocText");
         String editRemarks = request.getParameter("editRemarks");
         String itemEditPCC = request.getParameter("itemEditPCC");
@@ -92,6 +93,9 @@ public class itemController extends HttpServlet {
         
         String maintStatID = request.getParameter("maintStatID");
         String maintStatus = request.getParameter("statusDropdown");
+        String oldMaintStat = request.getParameter("oldMaintStat");
+
+        String itemAID = request.getParameter("itemArchiveID");
         
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date sqlDate = null;
@@ -108,6 +112,8 @@ public class itemController extends HttpServlet {
                 sqlEditExpire = new Date(parsedEditExpireDate.getTime());
             } else if(maintStatID != null && !maintStatID.isEmpty()){
                 
+            } else if(itemAID != null && !itemAID.isEmpty()){
+                    
             } else {
                 java.util.Date parsedDate = dateFormat.parse(itemDateInst);
                 sqlDate = new Date(parsedDate.getTime()); 
@@ -144,7 +150,11 @@ public class itemController extends HttpServlet {
                 
             }else if(maintStatID != null && !maintStatID.isEmpty()){
                 sql = "UPDATE C##FMO_ADM.FMO_ITEMS SET MAINTENANCE_STATUS = ? WHERE ITEM_ID = ?";
-                //System.out.println("maint this " + maintStatus);
+                //System.out.println("maint this " + maintStatus + " "+oldMaintStat+" "+loc);
+                
+            } else if(itemAID != null && !itemAID.isEmpty()){
+                sql = "UPDATE C##FMO_ADM.FMO_ITEMS SET ITEM_STAT_ID = 2 WHERE ITEM_ID = ?";
+                //System.out.println("archive this " + itemAID);
             }else{
                 sql = "INSERT INTO C##FMO_ADM.FMO_ITEMS (ITEM_TYPE_ID,NAME,LOCATION_ID,LOCATION_TEXT,FLOOR_NO,ROOM_NO,DATE_INSTALLED,BRAND_NAME,EXPIRY_DATE,REMARKS,PC_CODE,AC_ACCU,AC_FCU,AC_INVERTER,CAPACITY,UNIT_OF_MEASURE,ELECTRICAL_V,ELECTRICAL_PH,ELECTRICAL_HZ,MAINTENANCE_STATUS,ITEM_STAT_ID,QUANTITY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,1,1)";
                 //System.out.println("add this " + itemName);
@@ -159,7 +169,11 @@ public class itemController extends HttpServlet {
                     stmt.setInt(3, Integer.parseInt(itemEditLoc));
                     stmt.setString(4, editLocText);
                     stmt.setString(5, itemEditFloor);
-                    stmt.setString(6, itemEditRoom);
+                    if ("Non-Room Equipment".equals(itemEditRoom)) {
+                        stmt.setNull(6, java.sql.Types.VARCHAR); // Set the parameter to null if the condition is met
+                    } else {
+                        stmt.setString(6, itemEditRoom); // Set the value as is if the condition is not met
+                    }
                     stmt.setDate(7, sqlEditDate);
                     stmt.setString(8, itemEditBrand);
                     stmt.setDate(9, sqlEditExpire);
@@ -169,21 +183,30 @@ public class itemController extends HttpServlet {
                         } else {
                             stmt.setNull(11, java.sql.Types.INTEGER);
                         }
-                        if (itemEditACCU != null && !itemEditACCU.isEmpty()) {
-                            stmt.setInt(12, Integer.parseInt(itemEditACCU));
-                        } else {
-                            stmt.setNull(12, java.sql.Types.INTEGER);
-                        }
-                        if (itemEditFCU != null && !itemEditFCU.isEmpty()) {
-                            stmt.setInt(13, Integer.parseInt(itemEditFCU));
-                        } else {
-                            stmt.setNull(13, java.sql.Types.INTEGER);
-                        }
-                        if (itemEditACINVERTER != null && !itemEditACINVERTER.isEmpty()) {
-                            stmt.setInt(14, Integer.parseInt(itemEditACINVERTER));
-                        } else {
-                            stmt.setNull(14, java.sql.Types.INTEGER);
-                        }
+                        
+                            if ("1".equals(itemEditCat)) {  // Check if itemEditCat is "1"
+                                if (itemEditACCU != null && !itemEditACCU.isEmpty()) {
+                                    stmt.setInt(12, Integer.parseInt(itemEditACCU));
+                                } else {
+                                    stmt.setNull(12, java.sql.Types.INTEGER);
+                                }
+                                if (itemEditFCU != null && !itemEditFCU.isEmpty()) {
+                                    stmt.setInt(13, Integer.parseInt(itemEditFCU));
+                                } else {
+                                    stmt.setNull(13, java.sql.Types.INTEGER);
+                                }
+                                if (itemEditACINVERTER != null && !itemEditACINVERTER.isEmpty()) {
+                                    stmt.setInt(14, Integer.parseInt(itemEditACINVERTER));
+                                } else {
+                                    stmt.setNull(14, java.sql.Types.INTEGER);
+                                }
+                            } else {
+                                // Set all values to NULL if itemEditCat is not "1"
+                                stmt.setNull(12, java.sql.Types.INTEGER);
+                                stmt.setNull(13, java.sql.Types.INTEGER);
+                                stmt.setNull(14, java.sql.Types.INTEGER);
+                            }
+
                         if (itemEditCapacity != null && !itemEditCapacity.isEmpty()) {
                             stmt.setInt(15, Integer.parseInt(itemEditCapacity));
                         } else {
@@ -211,13 +234,19 @@ public class itemController extends HttpServlet {
                 }else if(maintStatID != null && !maintStatID.isEmpty()){
                     stmt.setInt(1, Integer.parseInt(maintStatus));
                     stmt.setInt(2, Integer.parseInt(maintStatID));
+                } else if(itemAID != null && !itemAID.isEmpty()){
+                    stmt.setInt(1, Integer.parseInt(itemAID));
                 }else{
                     stmt.setInt(1, Integer.parseInt(itemType));
                     stmt.setString(2, itemName);
                     stmt.setInt(3, Integer.parseInt(itemBuilding));
                     stmt.setString(4, locText);
                     stmt.setString(5, itemFloor);
-                    stmt.setString(6, itemRoom);
+                    if ("Non-Room Equipment".equals(itemRoom)) {
+                        stmt.setNull(6, java.sql.Types.VARCHAR);
+                    } else {
+                        stmt.setString(6, itemRoom);
+                    }
                     stmt.setDate(7, sqlDate);
                     stmt.setString(8, itemBrand);
                     stmt.setDate(9, sqlExpire);
@@ -269,12 +298,50 @@ public class itemController extends HttpServlet {
                 
                 stmt.executeUpdate();
             }
+            
+            // Check conditions for FMO_ITEM_REPAIRS
+                if ("3".equals(oldMaintStat) && "1".equals(maintStatus)) {
+                    String currentMonth = String.valueOf(java.time.LocalDate.now().getMonthValue());
+                    String currentYear = String.valueOf(java.time.LocalDate.now().getYear());
+
+                    // Check if an entry for the current month and year exists
+                    String selectRepairsSql = "SELECT NUM_OF_REPAIRS FROM C##FMO_ADM.FMO_ITEM_REPAIRS WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
+                    try (PreparedStatement selectStmt = conn.prepareStatement(selectRepairsSql)) {
+                        selectStmt.setInt(1, Integer.parseInt(currentMonth));
+                        selectStmt.setInt(2, Integer.parseInt(currentYear));
+                        selectStmt.setInt(3, Integer.parseInt(loc));
+                        try (ResultSet rs = selectStmt.executeQuery()) {
+                            if (rs.next()) {
+                                // Update NUM_OF_REPAIRS if entry exists
+                                int repairCount = rs.getInt("NUM_OF_REPAIRS");
+                                String updateRepairsSql = "UPDATE C##FMO_ADM.FMO_ITEM_REPAIRS SET NUM_OF_REPAIRS = ? WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
+                                try (PreparedStatement updateStmt = conn.prepareStatement(updateRepairsSql)) {
+                                    updateStmt.setInt(1, repairCount + 1);
+                                    updateStmt.setInt(2, Integer.parseInt(currentMonth));
+                                    updateStmt.setInt(3, Integer.parseInt(currentYear));
+                                    updateStmt.setInt(4, Integer.parseInt(loc));
+                                    updateStmt.executeUpdate();
+                                }
+                            } else {
+                                // Insert a new row if no entry exists
+                                String insertRepairsSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPAIRS (REPAIR_MONTH, REPAIR_YEAR, NUM_OF_REPAIRS, ITEM_LOC_ID) VALUES (?, ?, ?, ?)";
+                                try (PreparedStatement insertStmt = conn.prepareStatement(insertRepairsSql)) {
+                                    insertStmt.setInt(1, Integer.parseInt(currentMonth));
+                                    insertStmt.setInt(2, Integer.parseInt(currentYear));
+                                    insertStmt.setInt(3, 1);
+                                    insertStmt.setInt(4, Integer.parseInt(loc));
+                                    insertStmt.executeUpdate();
+                                }
+                            }
+                        }
+                    }
+                }
 
             // Redirect to homepage after processing
             response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr);
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new ServletException("Database error while adding/editing item.");
+            throw new ServletException("Database error while adding/editing/archiving item.");
         }
 
             

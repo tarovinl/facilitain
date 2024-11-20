@@ -8,6 +8,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,6 +32,7 @@ import sample.model.Location;
 import sample.model.Item;
 
 import sample.model.PooledConnection;
+import sample.model.Repairs;
 import sample.model.SharedData;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification",
@@ -45,7 +49,11 @@ public class mainController extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(CONTENT_TYPE);
-        
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+        int currentYear = currentDate.getYear();
+        int currentMonth = currentDate.getMonthValue();
+
         List<Location> locations = new ArrayList<>();
         ArrayList<Location> listFloor = new ArrayList<>();
         ArrayList<Item> listItem = new ArrayList<>();
@@ -56,7 +64,21 @@ public class mainController extends HttpServlet {
         ArrayList<Item> listMaintStat = new ArrayList<>();
         ArrayList<Item> listMaintSched = new ArrayList<>();
         
-
+        ArrayList<Repairs> listRepairs = new ArrayList<>();
+        
+        List<String> months = new ArrayList<>();
+            months.add("January");
+            months.add("February");
+            months.add("March");
+            months.add("April");
+            months.add("May");
+            months.add("June");
+            months.add("July");
+            months.add("August");
+            months.add("September");
+            months.add("October");
+            months.add("November");
+            months.add("December");
 
         
         try (
@@ -69,12 +91,9 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME")){
              PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
              PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 ORDER BY ITEM_MS_ID");
-
+             PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
 
             ResultSet rs = statement.executeQuery();
-            
-            
-
             
             while (rs.next()) {
                 Location location = new Location();
@@ -190,7 +209,19 @@ public class mainController extends HttpServlet {
             }
             rsMaintSched.close();
 
+            ResultSet rsRepairs = stmntRepairs.executeQuery();
+            while (rsRepairs.next()) {
+                Repairs reps = new Repairs();
+                reps.setRepairID(rsRepairs.getInt("REPAIR_ID"));
+                reps.setRepairLocID(rsRepairs.getInt("ITEM_LOC_ID"));
+                reps.setRepairMonth(rsRepairs.getInt("REPAIR_MONTH"));
+                reps.setRepairYear(rsRepairs.getInt("REPAIR_YEAR"));
+                reps.setRepairCount(rsRepairs.getInt("NUM_OF_REPAIRS"));
+                listRepairs.add(reps);
+            }
+            rsRepairs.close();
 
+            
         } catch (SQLException error) {
             error.printStackTrace();
         }
@@ -268,6 +299,12 @@ public class mainController extends HttpServlet {
         request.setAttribute("FMO_BRANDS_LIST", listBrands);
         request.setAttribute("maintenanceList", listMaintSched);
         request.setAttribute("FMO_MAINTSTAT_LIST", listMaintStat);
+
+        request.setAttribute("currentYear", currentYear);
+        request.setAttribute("currentMonth", currentMonth);
+        
+        request.setAttribute("monthsList", months);
+        request.setAttribute("REPAIRS_PER_MONTH", listRepairs);
         
 //        SharedData.getInstance().setItemsList(listItem);
 //        SharedData.getInstance().setMaintStat(listMaintStat);
