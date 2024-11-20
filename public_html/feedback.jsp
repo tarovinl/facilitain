@@ -1,102 +1,100 @@
-<%@ page import="java.util.ArrayList, java.util.List" %>
+<%@ page import="java.util.List" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Feedback</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="resources/feedback.css">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    />
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
-
 <body>
-<div class="container-fluid">
-      <div class="row min-vh-100">
-        
-          <jsp:include page="sidebar.jsp"/>
-    
-    <div class="col-md-10">
+    <div class="container-fluid">
+        <div class="row min-vh-100">
+            <jsp:include page="sidebar.jsp" />
+
+            <div class="col-md-10">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1>Feedback</h1>
-                    <button class="btn btn-warning">Generate Report</button>
+                    <button class="btn btn-warning" id="download-chart">Generate Report</button>
                 </div>
 
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Satisfaction Rate</h5>
-                        <div class="chart">
-                            <div class="d-flex justify-content-around align-items-end" style="height: 200px;">
-                                <div class="bar" style="width: 50px; height: 80%; background-color: green;">Jan</div>
-                                <div class="bar" style="width: 50px; height: 30%; background-color: yellow;">Feb</div>
-                                <div class="bar" style="width: 50px; height: 60%; background-color: green;">Mar</div>
-                                <div class="bar" style="width: 50px; height: 50%; background-color: yellow;">Apr</div>
-                                <div class="bar" style="width: 50px; height: 90%; background-color: green;">May</div>
-                                <div class="bar" style="width: 50px; height: 30%; background-color: red;">June</div>
-                                <div class="bar" style="width: 50px; height: 20%; background-color: red;">July</div>
-                                <div class="bar" style="width: 50px; height: 70%; background-color: green;">Aug</div>
-                                <div class="bar" style="width: 50px; height: 40%; background-color: yellow;">Sep</div>
-                            </div>
-                        </div>
+                        <h5 class="card-title">Satisfaction Rate (Monthly)</h5>
+                        <div id="chart_div" style="width: 100%; height: 400px"></div>
                     </div>
                 </div>
-
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <select class="form-select w-auto" aria-label="Sort feedback">
-                        <option selected>Sort by</option>
-                        <option value="1">Rating</option>
-                        <option value="2">Date</option>
-                    </select>
-                </div>
-
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Rating</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Building</th>
-                            <th scope="col">Suggestions</th>
-                            <th scope="col">Date</th>
+                            <th>Rating</th>
+                            <th>Room</th>
+                            <th>Location</th>
+                            <th>Suggestions</th>
+                            <th>Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <%
-                            class Feedback {
-                                String rating, type, building, suggestions, date;
-
-                                public Feedback(String rating, String type, String building, String suggestions, String date) {
-                                    this.rating = rating;
-                                    this.type = type;
-                                    this.building = building;
-                                    this.suggestions = suggestions;
-                                    this.date = date;
-                                }
-                            }
-
-                            List<Feedback> feedbackList = new ArrayList<>();
-                            feedbackList.add(new Feedback("5", "Classroom", "Albertus Magnus", "Need more maintenance in classrooms", "07/13/2024"));
-                            feedbackList.add(new Feedback("3", "Auditorium", "Frassati", "Aircon is not felt throughout the auditorium", "07/12/2024"));
-                            feedbackList.add(new Feedback("1", "Classroom", "Benevides", "Need more maintenance in classrooms", "07/11/2024"));
-
-                            for (Feedback feedback : feedbackList) {
-                        %>
-                        <tr>
-                            <td><%= feedback.rating %></td>
-                            <td><%= feedback.type %></td>
-                            <td><%= feedback.building %></td>
-                            <td><%= feedback.suggestions %></td>
-                            <td><%= feedback.date %></td>
-                        </tr>
-                        <%
-                            }
-                        %>
+                        <c:forEach var="feedback" items="${feedbackList}">
+                            <tr>
+                                <td>${feedback.rating}</td>
+                                <td>${feedback.room}</td>
+                                <td>${feedback.location}</td>
+                                <td>${feedback.suggestions}</td>
+                                <td>
+                                    <fmt:formatDate
+                                        value="${feedback.recInsDt}"
+                                        pattern="yyyy-MM-dd HH:mm:ss"
+                                    />
+                                </td>
+                            </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
+    <script>
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
 
+        let chart;
+
+        function drawChart() {
+            const generalAverage = ${generalAverage};
+            const data = google.visualization.arrayToDataTable([
+                ['Month', 'Satisfaction Rate', { role: 'style' }],
+                <c:forEach var="rate" items="${satisfactionRates}">
+                    ['${rate[0]}', ${rate[1]}, '${rate[1] >= generalAverage ? "green" : "red"}'],
+                </c:forEach>
+            ]);
+
+            const options = {
+                title: 'Monthly Satisfaction Rates',
+                hAxis: { title: 'Month' },
+                vAxis: { title: 'Average Rating', minValue: 0, maxValue: 5 },
+                legend: 'none',
+            };
+
+            chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+
+        document.getElementById('download-chart').addEventListener('click', function () {
+            const chartImage = chart.getImageURI();
+            const downloadLink = document.createElement('a');
+            downloadLink.href = chartImage;
+            downloadLink.download = 'satisfaction_rate_report.png';
+            downloadLink.click();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

@@ -13,6 +13,7 @@
         <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
     <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
@@ -53,13 +54,14 @@
                 </c:forEach>
 
 
-<body>
-<div class="container-fluid">
-      <div class="row vh-100 d-flex">
-        
-          <jsp:include page="sidebar.jsp"/>
+    <body>
+<div class="container-fluid d-flex">
+    <div class="col-md-3 p-0">
+        <jsp:include page="sidebar.jsp"/>
+    </div>
     
-    <div class="col-md-10">
+    <div class="col-md-9">
+            <jsp:include page="quotations.jsp"><jsp:param name="locID" value="${locID}" /></jsp:include>
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
@@ -183,6 +185,7 @@
                                         data-itemtype="${itemEditType}"
                                         data-itemloctext="${item.itemLocText}"
                                         data-itemremarks="${item.itemRemarks}"
+
                                         data-itempcc="${item.itemPCC}"
                                         data-accu="${item.acACCU}"
                                         data-fcu="${item.acFCU}"
@@ -221,16 +224,25 @@
                                     </c:forEach>
                                     <td >${item.itemBrand != null ? item.itemBrand : 'N/A'}</td>
                                     <td >${item.dateInstalled}</td>
-                                    <td style="display: flex; justify-content: center; align-items: center; margin-top: 8px;">
-                                        <input type="image"
-                                        src="resources/images/quotationsIcon.svg"
-                                        id="quotModalButton"
-                                        alt="Open Modal" width="24" height="24"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#quotEquipment"
-                                        data-itemid="${item.itemID}"
-                                        onclick="populateQuotModal(this)">
-                                    </td>
+                                  <!-- Quotation Icon Button in manageBuilding.jsp -->
+<!-- Quotation Icon Button in manageBuilding.jsp -->
+<td style="display: flex; justify-content: center; align-items: center; margin-top: 8px;">
+    <form id="quotForm" method="GET" action="quotations.jsp" style="display: none;">
+        <input type="hidden" name="displayQuotItemID" id="hiddenItemID">
+    </form>
+    <input type="image"
+        src="resources/images/quotationsIcon.svg"
+        id="quotModalButton"
+        alt="Open Quotation Modal"
+        width="24"
+        height="24"
+        data-itemid="${item.itemID}"
+        data-bs-toggle="modal"
+        data-bs-target="#quotEquipmentModal"
+        onclick="openQuotModal(this)">
+</td>
+
+
                                     <td >
                                       <form action="itemcontroller" method="POST">
                                         <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}"/>
@@ -267,11 +279,9 @@
             
             <div id="paginationControls"></div>
          </div>
-        </div>
      </div>
-    </div>   
-    
-    
+    </div> 
+    </div>
     <!--add equipment modal-->
     <div class="modal fade" id="addEquipment" tabindex="-1" role="dialog" aria-labelledby="equipmentAdd" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -746,7 +756,6 @@ function QOLLocSet(){
         }
 }
 
-
 function floorRender() {
     // Get selected building ID
     const selectedBuilding = document.querySelector('[name="itemBuilding"]').value;
@@ -791,7 +800,6 @@ function floorERender() {
         option.textContent = floor;
         floorDropdown.appendChild(option);
     });
-    
     roomEditRenderCopy();
 }
 
@@ -835,8 +843,6 @@ function roomRender() {
     const roomNames = filteredRooms.map(room => room.roomName); // Extract room names as strings
     awesompleteAddR.list = roomNames;
 }
-
-
 //    same as roomRender but for edit modal pancakes
 const inputER = document.querySelector("#itemEditRoom");
     const awesompleteER = new Awesomplete(inputER, {
@@ -972,6 +978,7 @@ const inputER = document.querySelector("#itemEditRoom");
     
     function setFloorSelection(button) {
     var itemRoom = button.getAttribute('data-itemroom');
+    console.log(itemRoom);
     const flrName = '${floorName}';
     console.log(flrName);
     const itemEditFloor = document.getElementById('itemEditFloor');
@@ -983,7 +990,6 @@ const inputER = document.querySelector("#itemEditRoom");
             break; 
         }
     }
-    
 
     roomEditRender(itemRoom);
 }
@@ -1045,13 +1051,21 @@ const inputER = document.querySelector("#itemEditRoom");
     showPage(1);
 });
 
-function populateQuotModal(button) {
-    // Get data from the button's data-* attributes
-    var itemId = button.getAttribute("data-itemid");
 
-    // Populate the modal fields with the data
-    document.getElementById("modalItemId").innerText = itemId;
+function populateQuotModal(button) {
+    // Retrieve the itemID from the clicked button
+    const itemId = button.getAttribute("data-itemid");
+
+    // Set the item ID in a hidden field within the modal or display it as needed
+    document.querySelector('#hiddenItemId').value = itemId;
+    document.getElementById('modalItemIdDisplay').innerText = "Quotations for Item ID: " + itemId;
+
+    // Show the modal
+    const modalElement = new bootstrap.Modal(document.getElementById('quotEquipmentModal'));
+    modalElement.show();
 }
+
+
 
 function roomEditRenderCopy() {
     const selectedBuilding = document.querySelector('[name="itemEditLoc"]').value;
@@ -1070,7 +1084,6 @@ function roomEditRenderCopy() {
     });
  
 }
-
 
     </script>
     

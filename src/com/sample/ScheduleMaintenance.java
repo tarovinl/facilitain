@@ -24,6 +24,7 @@ public class ScheduleMaintenance {
         private ArrayList<Item> maintSched;
 
     public void startScheduler() {
+
         // Schedule performMaintenance to run once, immediately on startup
         //scheduler.schedule(this::performMaintenance, 0, TimeUnit.SECONDS);
     }

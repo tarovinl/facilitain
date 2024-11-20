@@ -3,6 +3,7 @@ package com.sample;
 import java.io.IOException;
 
 
+import java.sql.Blob;
 import java.sql.Connection;
 
 import java.sql.PreparedStatement;
@@ -32,11 +33,14 @@ import sample.model.Location;
 import sample.model.Item;
 
 import sample.model.PooledConnection;
+
 import sample.model.Repairs;
+import sample.model.Quotation;
+
 import sample.model.SharedData;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification",
-                                                     "/calendar", "/history", "/feedback", "/reports", "/settings", "/maintenanceSchedule" })
+                                                     "/calendar", "/history", "/settings", "/maintenanceSchedule" })
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
@@ -49,12 +53,16 @@ public class mainController extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(CONTENT_TYPE);
+      
         // Get the current date
         LocalDate currentDate = LocalDate.now();
         int currentYear = currentDate.getYear();
         int currentMonth = currentDate.getMonthValue();
 
+        
+        List<Quotation> quotations = new ArrayList<>();
         List<Location> locations = new ArrayList<>();
+        
         ArrayList<Location> listFloor = new ArrayList<>();
         ArrayList<Item> listItem = new ArrayList<>();
         ArrayList<Item> listTypes = new ArrayList<>();
@@ -92,6 +100,7 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
              PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 ORDER BY ITEM_MS_ID");
              PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
+             PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
 
             ResultSet rs = statement.executeQuery();
             
@@ -208,6 +217,26 @@ public class mainController extends HttpServlet {
                 listMaintSched.add(msched);
             }
             rsMaintSched.close();
+            
+            ResultSet rsQuot = stmntQuotations.executeQuery();
+            while (rsQuot.next()) {
+                Quotation quotation = new Quotation();
+                quotation.setQuotationId(rsQuot.getInt("QUOTATION_ID"));
+                quotation.setDescription(rsQuot.getString("DESCRIPTION"));
+                quotation.setDateUploaded(rsQuot.getDate("DATE_UPLOADED"));
+                quotation.setItemId(rsQuot.getInt("ITEM_ID"));
+                Blob blob = rsQuot.getBlob("QUOTATION_IMAGE");
+                byte[] imageBytes = null;
+
+                if (blob != null) {
+                    // Convert Blob to byte[]
+                    imageBytes = blob.getBytes(1, (int) blob.length());
+                }
+                // Use the setter to store the image as byte[]
+                quotation.setQuotationImage(imageBytes);
+                quotations.add(quotation);
+            }
+            rsQuot.close();
 
             ResultSet rsRepairs = stmntRepairs.executeQuery();
             while (rsRepairs.next()) {
@@ -306,6 +335,9 @@ public class mainController extends HttpServlet {
         request.setAttribute("monthsList", months);
         request.setAttribute("REPAIRS_PER_MONTH", listRepairs);
         
+        request.setAttribute("quotations", quotations);
+        getServletContext().setAttribute("quotations", quotations);
+
 //        SharedData.getInstance().setItemsList(listItem);
 //        SharedData.getInstance().setMaintStat(listMaintStat);
 //        SharedData.getInstance().setMaintSched(listMaintSched);
@@ -382,7 +414,6 @@ public class mainController extends HttpServlet {
                 break;
         }
         
+    }}
 
-
-    }
-}
+    

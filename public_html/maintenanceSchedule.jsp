@@ -22,20 +22,20 @@
             <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
                 <h1>Maintenance Schedule</h1>
                 <!-- Trigger Modal Button -->
-                <button class="btn btn-warning" data-toggle="modal" data-target="#maintenanceModal">
-                    <i class="bi bi-plus-lg"></i> Add
+                <button class="btn btn-warning" data-toggle="modal" data-target="#maintenanceModal" onclick="clearModal()">
+                    <i class="bi bi-plus-lg"></i> Add Schedule
                 </button>
             </div>
 
-            <!-- Maintenance List -->
+            <!-- Maintenance List Table -->
             <table class="table table-striped">
                 <thead class="thead-dark">
                     <tr>
-                        <th>ITEM_MS_ID</th>
-                        <th>ITEM_TYPE</th>
-                        <th>NO_OF_DAYS</th>
-                        <th>REMARKS</th>
-                        <th>NO_OF_DAYS_WARNING</th>
+                        <th>ID</th>
+                        <th>Item Type</th>
+                        <th>Number of Days</th>
+                        <th>Remarks</th>
+                        <th>Warning Days</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -75,15 +75,16 @@
 <!-- Maintenance Modal -->
 <div class="modal fade" id="maintenanceModal" tabindex="-1" role="dialog" aria-labelledby="maintenanceModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form action="maintenanceSave" method="post"> <!-- Form action for saving -->
+        <form action="maintenanceSave" method="post">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="maintenanceModalLabel">Maintenance Schedule</h5>
+                    <h5 class="modal-title" id="maintenanceModalLabel">Add/Edit Maintenance Schedule</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
+
                     <input type="hidden" id="itemMsId" name="itemMsId">
                     
                     <!-- Item Type Dropdown -->
@@ -96,12 +97,56 @@
                             </c:forEach>
                         </select>
                     </div>
+<!-- Number of Days -->
+<div class="form-group">
+    <label for="noOfDays">Number of Days</label>
+    <input 
+        type="number" 
+        class="form-control" 
+        id="noOfDays" 
+        name="noOfDays" 
+        required 
+        oninput="toggleQuarterlyOptions()">
+</div>
 
-                    <!-- Number of Days -->
-                    <div class="form-group">
-                        <label for="noOfDays">Number of Days</label>
-                        <input type="number" class="form-control" id="noOfDays" name="noOfDays" required>
-                    </div>
+<!-- Quarterly Options -->
+<div id="quarterlyOptionsGroup" style="display: none;">
+    <label>Quarterly Schedule</label>
+    <div>
+        <input type="radio" id="quarterly1" name="quarterlySchedule" value="1">
+        <label for="quarterly1">January, April, July, October</label>
+    </div>
+    <div>
+        <input type="radio" id="quarterly2" name="quarterlySchedule" value="2">
+        <label for="quarterly2">February, May, August, November</label>
+    </div>
+    <div>
+        <input type="radio" id="quarterly3" name="quarterlySchedule" value="3">
+        <label for="quarterly3">March, June, September, December</label>
+    </div>
+</div>
+
+<!-- Yearly Options -->
+<div id="annualOptionsGroup" style="display: none;">
+    <label for="month">Yearly Month Schedule</label>
+    <select id="month" name="yearlySchedule" class="form-control">
+        <option value="" disabled selected>-- Select Month --</option>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+</div>
+
+
 
                     <!-- Remarks -->
                     <div class="form-group">
@@ -129,6 +174,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 
 <script>
+
     $('#maintenanceModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); 
         var itemMsId = button.data('id');
@@ -143,10 +189,48 @@
         modal.find('.modal-body input#noOfDays').val(noOfDays);
         modal.find('.modal-body input#remarks').val(remarks);
         modal.find('.modal-body input#noOfDaysWarning').val(warning);
-        
-        console.warn("Item ID value not found in dropdown options:", itemMsId);
-        
+                
     });
+
+//     function editSchedule(itemMsId, itemTypeId, noOfDays, remarks, noOfDaysWarning) {
+//         document.getElementById("itemMsId").value = itemMsId;
+//         document.getElementById("itemTypeId").value = itemTypeId;
+//         document.getElementById("noOfDays").value = noOfDays;
+//         document.getElementById("remarks").value = remarks;
+//         document.getElementById("noOfDaysWarning").value = noOfDaysWarning;
+//     }
+
+//     function clearModal() {
+//         document.getElementById("itemMsId").value = "";
+//         document.getElementById("itemTypeId").value = "";
+//         document.getElementById("noOfDays").value = "";
+//         document.getElementById("remarks").value = "";
+//         document.getElementById("noOfDaysWarning").value = "";
+//     }
+
+ function toggleQuarterlyOptions() {
+    const value = document.getElementById('noOfDays').value;
+    const quarterlyOptionsGroup = document.getElementById('quarterlyOptionsGroup');
+    const annualOptionsGroup = document.getElementById('annualOptionsGroup');
+
+    if (value == 90) {
+        quarterlyOptionsGroup.style.display = 'block';
+        annualOptionsGroup.style.display = 'none';
+        document.getElementById('month').value = ""; 
+    } else if (value == 365) {
+        annualOptionsGroup.style.display = 'block';
+        quarterlyOptionsGroup.style.display = 'none';
+        document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false); // Clear quarterly selection
+    } else {
+        quarterlyOptionsGroup.style.display = 'none';
+        annualOptionsGroup.style.display = 'none';
+        document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
+        document.getElementById('month').value = "";
+    }
+}
+
+
+
 </script>
 
 </body>
