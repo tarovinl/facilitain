@@ -54,16 +54,33 @@ public class ScheduleMaintenance {
         }
 
     private void performMaintenance() {
-        System.out.println("Calling stored procedure...");
-//        try (
-//            Connection con = PooledConnection.getConnection();
-//            CallableStatement stmt = con.prepareCall("{CALL C##FMO_ADM.UPDATETESTSCHEDCALL}");) {
-//            
-//            stmt.execute();
-//            System.out.println("DBMS Scheduler job enabled successfully.");
-//        } catch (SQLException error) {
-//            error.printStackTrace();
-//        }
+        System.out.println("Calling stored procedures...");
+        try (Connection con = PooledConnection.getConnection()) {
+            
+            // Call first procedure: CALL_GEN_AUTO_ITEMS
+            try (CallableStatement stmt = con.prepareCall("{CALL C##FMO_ADM.CALL_GEN_AUTO_ITEMS}")) {
+                stmt.execute();
+                System.out.println("CALL_GEN_AUTO_ITEMS executed successfully.");
+            }
+
+            // Call second procedure: CALL_RUN_AUTO_ITEMS
+            try (CallableStatement stmt = con.prepareCall("{CALL C##FMO_ADM.CALL_RUN_AUTO_ITEMS}")) {
+                stmt.execute();
+                System.out.println("CALL_RUN_AUTO_ITEMS executed successfully.");
+            }
+
+            // Call third procedure: CALL_U_FE
+            try (CallableStatement stmt = con.prepareCall("{CALL C##FMO_ADM.CALL_U_FE}")) {
+                stmt.execute();
+                System.out.println("CALL_U_FE executed successfully.");
+            }
+
+            System.out.println("All procedures executed successfully.");
+            
+        } catch (SQLException error) {
+            error.printStackTrace();
+        }
     }
+
 
 }

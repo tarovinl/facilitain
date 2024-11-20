@@ -126,6 +126,8 @@
                         <div class="roomDTblDiv">
                             <table aria-label="history logs table">
                                 <tr style="margin-bottom: 120px;">
+                                    <!--<th ></th>-->
+                                    <th ></th>
                                     <th ></th>
                                     <th >ID</th>
                                     <th >Codename</th>
@@ -157,7 +159,13 @@
                                     </c:if>
                                 </c:forEach>
                                 
-                                    <td style="display: flex; justify-content: center; align-items: center; margin-bottom: 8px;">
+                                    <!--<td style="margin-left: 4px; margin-right: 4px; text-align:center;">
+                                        <input type="image" 
+                                        src="resources/images/itemInfo.svg" 
+                                        width="24" 
+                                        height="24"/>
+                                    </td>-->
+                                    <td style="margin-left: 4px; margin-right: 4px; text-align:center;">
                                         <input type="image" 
                                         src="resources/images/editItem.svg" 
                                         id="editModalButton" 
@@ -187,7 +195,20 @@
                                         data-itemev="${item.itemEV}"
                                         data-itemeph="${item.itemEPH}"
                                         data-itemehz="${item.itemEHZ}"
-                                        onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/>
+                                        onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/> 
+                                    </td>
+                                    <td style="margin-left: 4px; margin-right: 4px; text-align:center;">
+                                        <input type="image" 
+                                        src="resources/images/archiveItem.svg" 
+                                        id="archiveModalButton" 
+                                        alt="Open Archive Modal" 
+                                        width="24" 
+                                        height="24"
+                                        data-toggle="modal"
+                                        data-itemaid="${item.itemID}"
+                                        data-itemaname="${item.itemName}"
+                                        data-target="#archiveEquipment"
+                                        onclick="populateArchModal(this)"/>
                                     </td>
                                     <td >${item.itemID}</td>
                                     <td >${item.itemName}</td>
@@ -227,6 +248,7 @@
                                         <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}"/>
                                         <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}"/>
                                         <input type="hidden" name="maintStatID" value="${item.itemID}" />
+                                        <input type="hidden" name="oldMaintStat" value="${item.itemMaintStat}" />
                                         <select name="statusDropdown" class="statusDropdown" onchange="this.form.submit()">
                                             <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
                                                 <option value="${status.itemMaintStat}" 
@@ -387,7 +409,7 @@
                                     <label for="" class="form-label">Expiration Date</label>
                                     <input type="date" name="itemExpiration" id="" class="form-control">
                                 </div>
-                                <div class="col">
+                                <!--<div class="col">
                                     <div class="row"><label for="itemSched" class="form-label">Maintenance Cycle: Every...</label></div>
                                     <div class="row">
                                         <div class="col">
@@ -403,7 +425,7 @@
                                         </div>
                                     </div>
                                     
-                                </div>
+                                </div>-->
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
@@ -560,7 +582,7 @@
                                     <label for="" class="form-label">Expiration Date</label>
                                     <input type="date" name="itemEditExpiration" id="" class="form-control">
                                 </div>
-                                <div class="col">
+                                <!--<div class="col">
                                     <div class="row"><label for="itemEditSched" class="form-label">Maintenance Cycle: Every...</label></div>
                                     <div class="row">
                                         <div class="col">
@@ -576,7 +598,7 @@
                                         </div>
                                     </div>
                                     
-                                </div>
+                                </div>-->
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
@@ -605,6 +627,37 @@
     </div>
     <!--end of edit equipment modal-->
     
+    <!--archive equipment modal-->
+<div class="modal fade" id="archiveEquipment" tabindex="-1" role="dialog" aria-labelledby="archiveEquipment" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="centered-div bg-white">
+                <div class="container p-4 mt-4 mb-4">
+                    <form action="itemcontroller" method="POST">
+                        <div class="row">
+                            <div class="col text-center">
+                                <h2 class="fw-bold" id="archYouSure"></h2>
+                            </div>
+                        </div>
+                        <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}">
+                        <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}">
+                        <input type="hidden" name="itemArchiveID" id="itemArchiveID" class="form-control">
+                        <div class="row">
+                            <div class="col text-center">
+                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
+                            </div> 
+                            <div class="col text-center">
+                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 fw-bold" data-dismiss="modal">Cancel</button>
+                            </div> 
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!--end of archive equipment modal-->
+    
     <jsp:include page="quotations.jsp" />
     
     <c:if test="${locMatchFound == false || flrMatchFound == false}">
@@ -620,15 +673,15 @@
             // Toggle the display property of the specific .roomDTblDiv
             tblDiv.style.display = (tblDiv.style.display === 'none' || tblDiv.style.display === '') ? 'block' : 'none';
             // Store the state in localStorage
-            localStorage.setItem('tblDivVisible', tblDiv.style.display === 'block' ? 'true' : 'false');
+            //localStorage.setItem('tblDivVisible', tblDiv.style.display === 'block' ? 'true' : 'false');
         }
-        window.onload = function() {
-            const isTblDivVisible = localStorage.getItem('tblDivVisible');
-            const tblDiv = document.querySelector('.roomDTblDiv');
-            if (isTblDivVisible === 'true') {
-                tblDiv.style.display = 'block';
-            }
-        };
+//        window.onload = function() {
+//            const isTblDivVisible = localStorage.getItem('tblDivVisible');
+//            const tblDiv = document.querySelector('.roomDTblDiv');
+//            if (isTblDivVisible === 'true') {
+//                tblDiv.style.display = 'block';
+//            }
+//        };
 //        const statusDropdowns = document.querySelectorAll('.statusDropdown');
 //
 //        function updateDropdownColor(dropdown) {
@@ -661,6 +714,11 @@ function toggleAirconDiv() {
             onlyAirDiv.style.removeProperty('display'); // Removes "display: none"
         } else {
             onlyAirDiv.style.display = "none";
+            
+          // Clear checkbox values
+            document.querySelectorAll('.onlyAir .form-check-input').forEach(function(checkbox) {
+                checkbox.checked = false;
+            });  
         }
     }
 function toggleEAirconDiv(editVal) {
@@ -935,6 +993,16 @@ const inputER = document.querySelector("#itemEditRoom");
 
     roomEditRender(itemRoom);
 }
+
+    function populateArchModal(button){
+        var itemAID = button.getAttribute('data-itemaid');
+        var itemAName = button.getAttribute('data-itemaname');
+        
+        document.getElementById('itemArchiveID').value = itemAID;
+        var modalMessage = document.getElementById("archYouSure");
+        modalMessage.innerText = "Are you sure you want to archive " + itemAName + "?";
+        
+    }
 
     
     document.addEventListener("DOMContentLoaded", function() {
