@@ -72,30 +72,48 @@
                 <button class="buttonsBuilding" data-toggle="modal" data-target="#archiveLocation" type="button" onclick="">Archive Location</button>
             </div>
         </div>
-            <div class="container mt-1 ms-2 me-2">
-                <form action="buildingController" method="POST">    
-                <input type="hidden" name="locID" value="${locID}">
-                <div class="row mt-4">
-                    <div class="col">
-                        <label for="locName" class="form-label fw-bold h4">Location Name</label>
-                        <input type="text" class="form-control" id="locName" name="locName" value="${locName}">
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col">
-                        <label for="" class="form-label fw-bold h4">Description</label>
-                        <textarea class="form-control" id="locDescription" name="locDescription" rows="3">${locDescription}</textarea>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col text-center">
-                        <input type="submit" value="Save Name & Description" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold">
-                    </div> 
-                    <div class="col text-center">
-                        <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold" onclick="location.reload()">Reset</button>
-                    </div> 
-                </div>
-                </form>
+        <form action="buildingController" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="locID" value="${locID}"> <!-- Ensure this value is correctly set -->
+
+    <!-- Location Name Section -->
+    <div class="row mt-4">
+        <div class="col">
+            <label for="locName" class="form-label fw-bold h4">Location Name</label>
+            <input type="text" class="form-control" id="locName" name="locName" value="${locName}" required>
+        </div>
+    </div>
+
+    <!-- Description Section -->
+    <div class="row mt-3">
+        <div class="col">
+            <label for="locDescription" class="form-label fw-bold h4">Description</label>
+            <textarea class="form-control" id="locDescription" name="locDescription" rows="3" required>${locDescription}</textarea>
+        </div>
+    </div>
+
+    <!-- Image Upload Section -->
+    <div class="row mt-3">
+        <div class="col">
+            <h4 class="fw-bold mt-3">Change Location Image</h4>
+            <!-- File Input -->
+            <div class="mb-3">
+                <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
+            </div>
+        </div>
+    </div>
+
+    <!-- Save & Reset Buttons Section -->
+    <div class="row mt-2">
+        <div class="col text-center">
+            <input type="submit" value="Save Changes" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold">
+        </div> 
+        <div class="col text-center">
+            <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold" onclick="location.reload()">Reset</button>
+        </div> 
+    </div>
+</form>
+
+
                 <div class="row mt-4">
                     <div class="col dropTbl">
                         <div class="floorDLblDiv">
