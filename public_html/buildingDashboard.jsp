@@ -157,30 +157,31 @@
           </div>
 
           <!-- Building Banner -->
-          <div class="buildingBanner rounded-4" style=" margin-top: 14px; margin-bottom: 14px; background-image: 
-                                        linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
-                                        url('resources/images/samplebuilding2.jpg');background-size: cover;background-position: center;">
-            <div class="statusDiv">
-              <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
-            </div>
-            <div class="buildingName text-light" style=" font-family: NeueHaasMedium, sans-serif;">
-              <h1>${locName}</h1>
-            </div>
-            <div>
-              <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
-                <c:if test="${floors.key == locID}">
-                  <c:forEach var="floor" items="${floors.value}" varStatus="status">
+<div class="buildingBanner rounded-4" style="margin-top: 14px; margin-bottom: 14px; background-image: 
+                                    linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
+                                    url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center;">
+    <div class="statusDiv">
+        <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
+    </div>
+    <div class="buildingName text-light" style="font-family: NeueHaasMedium, sans-serif;">
+        <h1>${locName}</h1>
+    </div>
+    <div>
+        <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
+            <c:if test="${floors.key == locID}">
+                <c:forEach var="floor" items="${floors.value}" varStatus="status">
                     <c:if test="${status.first}">
-                      <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" class="buildingManage d-flex align-items-center" style=" font-family: NeueHaasMedium, sans-serif;">
-                        Manage
-                        <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
-                      </a>
+                        <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" class="buildingManage d-flex align-items-center" style="font-family: NeueHaasMedium, sans-serif;">
+                            Manage
+                            <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
+                        </a>
                     </c:if>
-                  </c:forEach>
-                </c:if>
-              </c:forEach>
-            </div>
-          </div>
+                </c:forEach>
+            </c:if>
+        </c:forEach>
+    </div>
+</div>
+
 
           <!-- Graphs and Charts -->
           <div class="buildingDiagrams" >
