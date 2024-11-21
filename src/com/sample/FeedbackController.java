@@ -26,13 +26,13 @@ public class FeedbackController extends HttpServlet {
 
         String feedbackQuery = 
             "SELECT F.FEEDBACK_ID, L.NAME AS LOCATION, F.ROOM, F.RATING, F.SUGGESTIONS, F.REC_INS_DT " +
-            "FROM C##FMO_ADM.FMO_ITEM_FEEDBACK F " +
-            "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS L ON F.ITEM_LOC_ID = L.ITEM_LOC_ID " +
+            "FROM FMO_ITEM_FEEDBACK F " +
+            "JOIN FMO_ITEM_LOCATIONS L ON F.ITEM_LOC_ID = L.ITEM_LOC_ID " +
             "ORDER BY F.REC_INS_DT DESC";
 
         String satisfactionQuery =
             "SELECT TO_CHAR(REC_INS_DT, 'Mon') AS MONTH, AVG(RATING) AS AVERAGE_RATING " +
-            "FROM C##FMO_ADM.FMO_ITEM_FEEDBACK " +
+            "FROM FMO_ITEM_FEEDBACK " +
             "GROUP BY TO_CHAR(REC_INS_DT, 'Mon') " +
             "ORDER BY TO_DATE(MONTH, 'Mon')";
 

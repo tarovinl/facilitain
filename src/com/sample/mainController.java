@@ -91,19 +91,36 @@ public class mainController extends HttpServlet {
         
         try (
              Connection con = PooledConnection.getConnection();
-             PreparedStatement statement = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY NAME");
-             PreparedStatement stmntFloor = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOC_FLOORS ORDER BY ITEM_LOC_ID, CASE WHEN REGEXP_LIKE(NAME, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(NAME, '^[0-9]+')) ELSE 9999 END, NAME");
-             PreparedStatement stmntItems = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEMS ORDER BY LOCATION_ID, CASE WHEN REGEXP_LIKE(FLOOR_NO, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(FLOOR_NO, '^[0-9]+')) ELSE 9999 END, ROOM_NO, ITEM_ID");
-             PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME");
-             PreparedStatement stmntICats = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
-             PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME")){
-             PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
-             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 ORDER BY ITEM_MS_ID");
-             PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
-             PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
+             PreparedStatement statement = con.prepareCall("SELECT * FROM FMO_ITEM_LOCATIONS ORDER BY NAME");
+             PreparedStatement stmntFloor = con.prepareCall("SELECT * \n" + 
+             "FROM FMO_ITEM_LOC_FLOORS \n" + 
+             "ORDER BY \n" + 
+             "    ITEM_LOC_ID, \n" + 
+             "    CASE \n" + 
+             "        WHEN NAME REGEXP '^[0-9]+F' THEN CAST(SUBSTRING_INDEX(NAME, 'F', 1) AS UNSIGNED) \n" + 
+             "        ELSE 9999 \n" + 
+             "    END, \n" + 
+             "    NAME;\n");
+             PreparedStatement stmntItems = con.prepareCall("SELECT * \n" + 
+             "FROM FMO_ITEMS \n" + 
+             "ORDER BY \n" + 
+             "    LOCATION_ID, \n" + 
+             "    CASE \n" + 
+             "        WHEN FLOOR_NO REGEXP '^[0-9]+F' THEN CAST(SUBSTRING_INDEX(FLOOR_NO, 'F', 1) AS UNSIGNED) \n" + 
+             "        ELSE 9999 \n" + 
+             "    END, \n" + 
+             "    ROOM_NO, \n" + 
+             "    ITEM_ID;\n");
+             PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM FMO_ITEM_TYPES ORDER BY NAME");
+             PreparedStatement stmntICats = con.prepareCall("SELECT * FROM FMO_ITEM_CATEGORIES ORDER BY NAME");
+             PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME")){
+             PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
+             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 ORDER BY ITEM_MS_ID");
+             PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
+             PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
 
             ResultSet rs = statement.executeQuery();
-            
+
             while (rs.next()) {
                 Location location = new Location();
                 location.setItemLocId(rs.getInt("ITEM_LOC_ID"));
@@ -111,9 +128,20 @@ public class mainController extends HttpServlet {
                 location.setLocDescription(rs.getString("DESCRIPTION"));
                 location.setActiveFlag(rs.getInt("ACTIVE_FLAG"));
                 location.setLocArchive(rs.getInt("ARCHIVED_FLAG"));
+
+                // Check if the image exists for this location
+                Blob imageBlob = rs.getBlob("IMAGE");
+                if (imageBlob != null && imageBlob.length() > 0) {
+                    location.setHasImage(true);
+                    byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+                    location.setLocationImage(imageBytes); // Set the image bytes
+                } else {
+                    location.setHasImage(false);
+                }
+
                 locations.add(location);
-                
             }
+
             rs.close();
 
             ResultSet rsFlr = stmntFloor.executeQuery();

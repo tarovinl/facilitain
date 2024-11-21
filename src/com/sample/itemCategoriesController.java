@@ -24,7 +24,7 @@ public class itemCategoriesController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try (Connection conn = PooledConnection.getConnection()) {
-            String query = "SELECT ITEM_CAT_ID, NAME, DESCRIPTION, ACTIVE_FLAG, ARCHIVED_FLAG FROM C##FMO_ADM.FMO_ITEM_CATEGORIES";
+            String query = "SELECT ITEM_CAT_ID, NAME, DESCRIPTION, ACTIVE_FLAG, ARCHIVED_FLAG FROM FMO_ITEM_CATEGORIES";
             try (PreparedStatement stmt = conn.prepareStatement(query);
                  ResultSet rs = stmt.executeQuery()) {
 
@@ -61,14 +61,14 @@ public class itemCategoriesController extends HttpServlet {
         try (Connection conn = PooledConnection.getConnection()) {
             if (action != null && action.equals("archive") && itemCID != null) {
                 // Archive action: Update ARCHIVED_FLAG to 2
-                String archiveSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET ARCHIVED_FLAG = 2 WHERE ITEM_CAT_ID = ?";
+                String archiveSql = "UPDATE FMO_ITEM_CATEGORIES SET ARCHIVED_FLAG = 2 WHERE ITEM_CAT_ID = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(archiveSql)) {
                     stmt.setInt(1, itemCID);
                     stmt.executeUpdate();
                 }
             } else if (itemCID != null && existsInDatabase(conn, itemCID)) {
                 // Edit action
-                String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET NAME = ?, DESCRIPTION = ?, ACTIVE_FLAG = ? WHERE ITEM_CAT_ID = ?";
+                String updateSql = "UPDATE FMO_ITEM_CATEGORIES SET NAME = ?, DESCRIPTION = ?, ACTIVE_FLAG = ? WHERE ITEM_CAT_ID = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
                     stmt.setString(1, categoryName);
                     stmt.setString(2, description);
@@ -78,7 +78,7 @@ public class itemCategoriesController extends HttpServlet {
                 }
             } else {
                 // Add action
-                String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_CATEGORIES (NAME, DESCRIPTION, ACTIVE_FLAG) VALUES (?, ?, ?)";
+                String insertSql = "INSERT INTO FMO_ITEM_CATEGORIES (NAME, DESCRIPTION, ACTIVE_FLAG) VALUES (?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
                     stmt.setString(1, categoryName);
                     stmt.setString(2, description);
@@ -96,7 +96,7 @@ public class itemCategoriesController extends HttpServlet {
 
     // CID check
     private boolean existsInDatabase(Connection conn, int itemCID) throws SQLException {
-        String checkSql = "SELECT 1 FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE ITEM_CAT_ID = ?";
+        String checkSql = "SELECT 1 FROM FMO_ITEM_CATEGORIES WHERE ITEM_CAT_ID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
             stmt.setInt(1, itemCID);
             try (ResultSet rs = stmt.executeQuery()) {

@@ -68,7 +68,7 @@ public class quotationcontroller extends HttpServlet {
 
     
     private boolean insertIntoDatabase(Connection conn, BigDecimal itemID, String description, BigDecimal quotationID, InputStream fileInputStream) {
-        String sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_QUOTATIONS (ITEM_ID, DESCRIPTION, QUOTATION_ID, QUOTATION_IMAGE, DATE_UPLOADED) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO FMO_ITEM_QUOTATIONS (ITEM_ID, DESCRIPTION, QUOTATION_ID, QUOTATION_IMAGE, DATE_UPLOADED) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setBigDecimal(1, itemID);
             pstmt.setString(2, description);
@@ -87,7 +87,7 @@ public class quotationcontroller extends HttpServlet {
 
     private BigDecimal generateQuotationID(Connection conn) {
         BigDecimal newID = BigDecimal.ONE; // Start with 1 if no records are found
-        String query = "SELECT MAX(QUOTATION_ID) FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS";
+        String query = "SELECT MAX(QUOTATION_ID) FROM FMO_ITEM_QUOTATIONS";
 
         try (PreparedStatement pstmt = conn.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {

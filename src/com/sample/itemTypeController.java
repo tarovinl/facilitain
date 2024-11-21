@@ -26,8 +26,8 @@ public class itemTypeController extends HttpServlet {
         List<ItemType> itemTypeList = new ArrayList<>();
         List<Map.Entry<Integer, String>> categoryList = new ArrayList<>();
 
-        String itemTypeQuery = "SELECT ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION FROM C##FMO_ADM.FMO_ITEM_TYPES";
-        String categoryQuery = "SELECT ITEM_CAT_ID, NAME FROM C##FMO_ADM.FMO_ITEM_CATEGORIES";
+        String itemTypeQuery = "SELECT ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION FROM FMO_ITEM_TYPES";
+        String categoryQuery = "SELECT ITEM_CAT_ID, NAME FROM FMO_ITEM_CATEGORIES";
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement itemTypeStatement = connection.prepareStatement(itemTypeQuery);
@@ -71,7 +71,7 @@ public class itemTypeController extends HttpServlet {
         String query;
         if ("true".equals(editMode)) {
             int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
-            query = "UPDATE C##FMO_ADM.FMO_ITEM_TYPES SET ITEM_CAT_ID = ?, NAME = ?, DESCRIPTION = ? WHERE ITEM_TYPE_ID = ?";
+            query = "UPDATE FMO_ITEM_TYPES SET ITEM_CAT_ID = ?, NAME = ?, DESCRIPTION = ? WHERE ITEM_TYPE_ID = ?";
             try (Connection connection = PooledConnection.getConnection();
                  PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, itemCatId);
@@ -83,7 +83,7 @@ public class itemTypeController extends HttpServlet {
                 e.printStackTrace();
             }
         } else {
-            query = "INSERT INTO C##FMO_ADM.FMO_ITEM_TYPES (ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (ITEM_TYPE_SEQ.NEXTVAL, ?, ?, ?)";
+            query = "INSERT INTO FMO_ITEM_TYPES (ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (ITEM_TYPE_SEQ.NEXTVAL, ?, ?, ?)";
             try (Connection connection = PooledConnection.getConnection();
                  PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, itemCatId);

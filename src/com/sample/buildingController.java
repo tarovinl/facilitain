@@ -26,10 +26,10 @@ public class buildingController extends HttpServlet {
 
             if (locID == null || locID.isEmpty()) {
                 //  add new building if locID is not provided
-                sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_LOCATIONS (NAME, DESCRIPTION) VALUES (?, ?)";
+                sql = "INSERT INTO FMO_ITEM_LOCATIONS (NAME, DESCRIPTION) VALUES (?, ?)";
             } else {
                 // Update existing building if locID is provided
-                sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ? WHERE ITEM_LOC_ID = ?";
+                sql = "UPDATE FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ? WHERE ITEM_LOC_ID = ?";
             }
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {

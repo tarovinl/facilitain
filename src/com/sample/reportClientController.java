@@ -1,24 +1,29 @@
 package com.sample;
 
-import sample.model.Location;
-import sample.model.Report;
-import sample.model.PooledConnection;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.AbstractMap;
+import java.util.Arrays;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+
+import sample.model.PooledConnection;
 
 @WebServlet(name="/reportClientController", urlPatterns = {"/reportsClient"})
+@MultipartConfig(maxFileSize = 1024 * 1024 * 5) // 5 MB file size limit
 public class reportClientController extends HttpServlet {
 
     @Override
@@ -26,7 +31,7 @@ public class reportClientController extends HttpServlet {
             throws ServletException, IOException {
         List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
 
-        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
+        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement locationStatement = connection.prepareStatement(locationQuery)) {
@@ -50,40 +55,64 @@ public class reportClientController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Retrieve parameters from the request
-        String equipment = request.getParameter("equipment"); // Equipment type
-        String locationId = request.getParameter("location"); // ITEM_LOC_ID (passed directly)
+        request.setCharacterEncoding("UTF-8");
+
+        // Extract form fields from request
+        String equipment = request.getParameter("equipment");
+        String locationId = request.getParameter("location");
         String floor = request.getParameter("floor");
         String room = request.getParameter("room");
         String issue = request.getParameter("issue");
+        Part imagePart = request.getPart("imageUpload");
 
-        // Create the Report object (excluding the file upload)
-        Report report = new Report(equipment, locationId, floor, room, issue, null); // No file upload
+        String insertedBy = "C##FMO";
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
-        // SQL query to insert the report
-        String insertReportQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPORTS " +
-                "(EQUIPMENT_TYPE, ITEM_LOC_ID, REPORT_FLOOR, REPORT_ROOM, REPORT_ISSUE, REPORT_PICTURE, REC_INST_DT, REC_INST_BY) " +
-                "VALUES (?, ?, ?, ?, ?, NULL, SYSDATE, 'USER')"; // Setting REPORT_PICTURE as NULL
+        InputStream inputStream = null;
+        if (imagePart != null && imagePart.getSize() > 0) {
+            inputStream = imagePart.getInputStream();
+        }
 
-        try (Connection connection = PooledConnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(insertReportQuery)) {
+        try (Connection connection = PooledConnection.getConnection()) {
+            // Get the max REPORT_ID and increment it by 1
+            String getMaxIdQuery = "SELECT COALESCE(MAX(REPORT_ID), 0) + 1 AS NEXT_ID FROM FMO_ITEM_REPORTS";
+            int reportId = 0;
+            try (Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery(getMaxIdQuery)) {
+                if (rs.next()) {
+                    reportId = rs.getInt("NEXT_ID");
+                }
+            }
 
-            // Set parameters for the query
-            stmt.setString(1, report.getRepEquipment());
-            stmt.setInt(2, Integer.parseInt(report.getLocName())); // ITEM_LOC_ID is an integer
-            stmt.setString(3, report.getRepfloor());
-            stmt.setString(4, report.getReproom());
-            stmt.setString(5, report.getRepissue());
-            // REPORT_PICTURE is set to NULL since we are excluding file upload for now
+            // Insert the new report
+            String insertQuery = "INSERT INTO FMO_ITEM_REPORTS (REPORT_ID, EQUIPMENT_TYPE, ITEM_LOC_ID, REPORT_FLOOR, REPORT_ROOM, REPORT_ISSUE, REPORT_PICTURE, REC_INST_DT, REC_INST_BY) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
+                pstmt.setInt(1, reportId);
+                pstmt.setString(2, equipment);
+                pstmt.setInt(3, Integer.parseInt(locationId));
+                pstmt.setString(4, floor);
+                pstmt.setString(5, room);
+                pstmt.setString(6, issue);
+                if (inputStream != null) {
+                    pstmt.setBlob(7, inputStream);
+                } else {
+                    pstmt.setNull(7, java.sql.Types.BLOB);
+                }
+                pstmt.setTimestamp(8, currentTimestamp);
+                pstmt.setString(9, insertedBy);
 
-            // Execute the query to insert the data
-            int rowsInserted = stmt.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("Report inserted successfully.");
+                int rowsInserted = pstmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Report inserted successfully.");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // Optionally, redirect to an error page or log the error
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
         }
 
         // Redirect to the reportsThanksClient.jsp

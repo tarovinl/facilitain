@@ -25,7 +25,7 @@ public class FeedbackClientController extends HttpServlet {
             throws ServletException, IOException {
         List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
 
-        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
+        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement locationStatement = connection.prepareStatement(locationQuery)) {
@@ -60,7 +60,7 @@ public class FeedbackClientController extends HttpServlet {
         Feedback feedback = new Feedback( locationId, room, rating, suggestions, new java.util.Date()); 
 
         // Query to insert the feedback
-        String insertFeedbackQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_FEEDBACK (ITEM_LOC_ID, ROOM, RATING, SUGGESTIONS, REC_INS_DT, REC_INS_BY) " +
+        String insertFeedbackQuery = "INSERT INTO FMO_ITEM_FEEDBACK (ITEM_LOC_ID, ROOM, RATING, SUGGESTIONS, REC_INS_DT, REC_INS_BY) " +
                                      "VALUES (?, ?, ?, ?, SYSDATE, USER)";
 
 
