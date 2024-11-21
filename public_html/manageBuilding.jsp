@@ -299,7 +299,7 @@
                             <div class="row mt-1">
                                 <div class="col">
                                     <label for="" class="form-label">Codename</label>
-                                    <input type="text" name="itemCode" id="" class="form-control" required>
+                                    <input type="text" name="itemCode" id="" class="form-control" maxlength="20" required>
                                 </div>
                                 <div class="col">
                                     <label for="" class="form-label">Building</label>
@@ -311,7 +311,7 @@
                                 </div>
                                 <div class="col">
                                     <label for="itemPCC" class="form-label">PC Code</label>
-                                    <input class="form-control" id="itemPCC" type="number" name="itemPCC">
+                                    <input class="form-control" id="itemPCC" type="number" name="itemPCC" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==10) return false;">
                                 </div>
                             </div>
                             <div class="row mt-2">
@@ -333,7 +333,7 @@
                                 </div>
                                 <div class="col">
                                     <label for="itemBrand" class="form-label">Brand</label>
-                                    <input class="form-control awesomplete" id="brandName" data-list="${brandListString}" name="itemBrand">
+                                    <input class="form-control awesomplete" id="brandName" data-list="${brandListString}" name="itemBrand" maxlength="55">
                                 </div>
                             </div>
                             <div class="row mt-2 onlyAir">
@@ -360,25 +360,25 @@
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="itemCapacity" class="form-label">Capacity</label>
-                                    <input class="form-control" id="itemCapacity" type="number" name="itemCapacity">
+                                    <input class="form-control" id="itemCapacity" type="number" name="itemCapacity" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==5) return false;">
                                 </div>
                                 <div class="col">
                                     <label for="itemUnitMeasure" class="form-label">Unit of Measure</label>
-                                    <input class="form-control" id="itemUnitMeasure" name="itemUnitMeasure">
+                                    <input class="form-control" id="itemUnitMeasure" name="itemUnitMeasure" type="text" maxlength="10">
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="itemElecV" class="form-label">Electrical V</label>
-                                    <input class="form-control" id="itemElecV" name="itemElecV" type="number">
+                                    <input class="form-control" id="itemElecV" name="itemElecV" type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==5) return false;">
                                 </div>
                                 <div class="col">
                                     <label for="itemElecPH" class="form-label">Electrical PH</label>
-                                    <input class="form-control" id="itemElecPH" name="itemElecPH" type="number">
+                                    <input class="form-control" id="itemElecPH" name="itemElecPH" type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==2) return false;">
                                 </div>
                                 <div class="col">
                                     <label for="itemElecHZ" class="form-label">Electrical HZ</label>
-                                    <input class="form-control" id="itemElecHZ" name="itemElecHZ" type="number">
+                                    <input class="form-control" id="itemElecHZ" name="itemElecHZ" type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==3) return false;">
                                 </div>
                             </div>
                             <div class="row mt-2">
@@ -396,7 +396,7 @@
                                 </div>
                                 <div class="col">
                                     <label for="itemAddRoom" class="form-label">Room</label>
-                                    <input class="form-control awesomplete" list="roomOptions" id="itemAddRoom" name="itemAddRoom">
+                                    <input class="form-control awesomplete" list="roomOptions" id="itemAddRoom" name="itemAddRoom" maxlength="50">
                                     <datalist id="roomOptions"></datalist>
                                 </div>
                             </div>
@@ -430,11 +430,11 @@
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="locText">Location Text</label>
-                                    <textarea class="form-control" id="locText" name="locText" rows="2"></textarea>
+                                    <textarea class="form-control" id="locText" name="locText" rows="2" maxlength="200"></textarea>
                                 </div>
                                 <div class="col">
                                     <label for="remarks">Remarks</label>
-                                    <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
+                                    <textarea class="form-control" id="remarks" name="remarks" rows="2" maxlength="200"></textarea>
                                 </div>
                             </div>
                             <div class="row">
@@ -472,7 +472,7 @@
                             <div class="row mt-1">
                                 <div class="col">
                                     <label for="" class="form-label">Codename</label>
-                                    <input type="text" name="itemEditCode" id="" class="form-control">
+                                    <input type="text" name="itemEditCode" id="" class="form-control" maxlength="20" required>
                                 </div>
                                 <div class="col">
                                     <label for="" class="form-label">Building</label>
@@ -484,7 +484,7 @@
                                 </div>
                                 <div class="col">
                                     <label for="itemEditPCC" class="form-label">PC Code</label>
-                                    <input class="form-control" id="itemEditPCC" type="number" name="itemEditPCC">
+                                    <input class="form-control" id="itemEditPCC" type="number" name="itemEditPCC" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==10) return false;">
                                 </div>
                             </div>
                             <div class="row mt-2">
@@ -506,7 +506,7 @@
                                 </div>
                                 <div class="col">
                                     <label for="itemEditBrand" class="form-label">Brand</label>
-                                    <input class="form-control awesomplete" name="itemEditBrand" id="brandName" data-list="${brandListString}">
+                                    <input class="form-control awesomplete" name="itemEditBrand" id="brandName" data-list="${brandListString}" maxlength="55">
                                 </div>
                             </div>
                             <div class="row mt-2 onlyEditAir">
@@ -533,25 +533,25 @@
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="itemECapacity" class="form-label">Capacity</label>
-                                    <input class="form-control" id="itemECapacity" type="number" name="itemECapacity">
+                                    <input class="form-control" id="itemECapacity" type="number" name="itemECapacity" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==5) return false;">
                                 </div>
                                 <div class="col">
                                     <label for="itemEUnitMeasure" class="form-label">Unit of Measure</label>
-                                    <input class="form-control" id="itemEUnitMeasure" name="itemEUnitMeasure">
+                                    <input class="form-control" id="itemEUnitMeasure" name="itemEUnitMeasure"type="text" maxlength="10">
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="" class="form-label">Electrical V</label>
-                                    <input class="form-control" id="itemElecV" name="itemEditElecV" type="number">
+                                    <input class="form-control" id="itemElecV" name="itemEditElecV" type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==5) return false;">
                                 </div>
                                 <div class="col">
                                     <label for="" class="form-label">Electrical PH</label>
-                                    <input class="form-control" id="itemElecPH" name="itemEditElecPH" type="number">
+                                    <input class="form-control" id="itemElecPH" name="itemEditElecPH" type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==2) return false;">
                                 </div>
                                 <div class="col">
                                     <label for="" class="form-label">Electrical HZ</label>
-                                    <input class="form-control" id="itemElecHZ" name="itemEditElecHZ" type="number">
+                                    <input class="form-control" id="itemElecHZ" name="itemEditElecHZ" type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==3) return false;">
                                 </div>
                             </div>
                             <div class="row mt-2">
@@ -569,14 +569,14 @@
                                 </div>
                                 <div class="col">
                                     <label for="itemEditRoom" class="form-label">Room</label>
-                                    <input class="form-control" list="editRoomOptions" id="itemEditRoom" name="itemEditRoom">
+                                    <input class="form-control" list="editRoomOptions" id="itemEditRoom" name="itemEditRoom" maxlength="50">
                                     <datalist id="editRoomOptions"></datalist>
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="" class="form-label">Date Installed</label>
-                                    <input type="date" name="itemEditInstalled" id="itemEditInstalled" class="form-control">
+                                    <input type="date" name="itemEditInstalled" id="itemEditInstalled" class="form-control" required>
                                 </div>
                                 <div class="col">
                                     <label for="" class="form-label">Expiration Date</label>
@@ -603,11 +603,11 @@
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="locText">Location Text</label>
-                                    <textarea class="form-control" name="editLocText" id="locText" rows="2"></textarea>
+                                    <textarea class="form-control" name="editLocText" id="locText" rows="2" maxlength="200"></textarea>
                                 </div>
                                 <div class="col">
                                     <label for="remarks">Remarks</label>
-                                    <textarea class="form-control" id="remarks" name="editRemarks" rows="2"></textarea>
+                                    <textarea class="form-control" id="remarks" name="editRemarks" rows="2" maxlength="200"></textarea>
                                 </div>
                             </div>
                             <div class="row">
@@ -874,18 +874,24 @@ const inputER = document.querySelector("#itemEditRoom");
             }
         });
         
+        if (itemRoom) {
         for (let i = 0; i < roomSelect.options.length; i++) {
-        if (roomSelect.options[i].value === itemRoom) {
-//            roomSelect.options[i].selected = true;
-            roomField.value = roomSelect.options[i].value
-            break;
+            if (roomSelect.options[i].value === itemRoom) {
+                roomSelect.options[i].selected = true;
+                roomField.value = roomSelect.options[i].value;
+                break;
+            }
         }
-        
-        const roomENames = filteredRooms.map(room => room.roomName); // Extract room names as strings
-        awesompleteER.list = roomENames;
+    } else {
+        // Set "Non-Room Equipment" as the default value
+        roomSelect.value = null; // Ensure default option is selected
+        roomField.value = "Non-Room Equipment";
     }
-        
-    }
+
+    // Populate autocomplete list
+    const roomENames = filteredRooms.map(room => room.roomName); // Extract room names as strings
+    awesompleteER.list = roomENames;
+}
     
     
     function populateEditModal(button) {

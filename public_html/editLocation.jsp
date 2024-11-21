@@ -78,7 +78,7 @@
                 <div class="row mt-4">
                     <div class="col">
                         <label for="locName" class="form-label fw-bold h4">Location Name</label>
-                        <input type="text" class="form-control" id="locName" name="locName" value="${locName}">
+                        <input type="text" class="form-control" id="locName" name="locName" value="${locName}" maxlength="64" required>
                     </div>
                 </div>
                 <div class="row mt-3">
@@ -107,10 +107,10 @@
                             <thead class="table-dark">
                               <tr>
                                 <th scope="col"></th>
+                                <th scope="col"></th>
                                 <th scope="col">Floor ID</th>
                                 <th scope="col">Floor Name</th>
                                 <th scope="col">Description</th>
-                                <th scope="col"></th>
                               </tr>
                             </thead>
                             <tbody>
@@ -118,7 +118,7 @@
                                     <c:if test="${floors.itemLocId == locID}">
                                         <c:if test="${floors.locArchive == 1}">
                                      <tr>
-                                        <th scope="row">
+                                        <th scope="row" style="text-align:center;">
                                             <input type="image" 
                                                 src="resources/images/editItem.svg" 
                                                 id="editModalButton" 
@@ -132,7 +132,7 @@
                                                 data-target="#editFloor"
                                                 onclick="populateEditModal(this)">
                                         </th>
-                                        <th scope="row">
+                                        <th scope="row" style="text-align:center;">
                                             <input type="image" 
                                                 src="resources/images/archiveItem.svg" 
                                                 id="archFlrModalButton" 
@@ -248,7 +248,7 @@
                         <div class="row mt-3">
                             <div class="col">
                                 <label for="flrName" class="fw-bold">Floor Name</label>
-                                <input type="text" name="editFlrName" id="editFlrName" class="form-control mt-3" required>
+                                <input type="text" name="editFlrName" id="editFlrName" class="form-control mt-3" maxlength="15" required>
                             </div>
                         </div>
                         <input type="hidden" name="editFlrLocID" id="editFlrLocID" class="form-control" value="${locID}">
@@ -292,7 +292,7 @@
                         <div class="row mt-3">
                             <div class="col">
                                 <label for="flrName" class="fw-bold">Floor Name</label>
-                                <input type="text" name="addFlrName" id="addFlrName" class="form-control mt-3" required>
+                                <input type="text" name="addFlrName" id="addFlrName" class="form-control mt-3" maxlength="15" required>
                             </div>
                         </div>
                         <input type="hidden" name="addFlrLocID" id="addFlrLocID" class="form-control" value="${locID}">
