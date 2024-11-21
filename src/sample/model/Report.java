@@ -14,7 +14,7 @@ public class Report {
     private Date recInstDt; 
     
     public Report() {}
-    
+//    for report submission
     public Report(String equipment, String building, String floor, String room, String issue, String fileName) {
             this.repEquipment = equipment;
             this.locName = building;
@@ -23,7 +23,7 @@ public class Report {
             this.repissue = issue;
             this.repfileName = fileName;
         }
-
+//for report display
     public Report(int reportId, String equipment, String locationId, String floor, 
                      String room, String issue, String fileName, Date recInstDt) {
            this.reportId = reportId;
