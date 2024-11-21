@@ -105,16 +105,28 @@ public class mainController extends HttpServlet {
             ResultSet rs = statement.executeQuery();
             
             while (rs.next()) {
-                Location location = new Location();
-                location.setItemLocId(rs.getInt("ITEM_LOC_ID"));
-                location.setLocName(rs.getString("NAME"));
-                location.setLocDescription(rs.getString("DESCRIPTION"));
-                location.setActiveFlag(rs.getInt("ACTIVE_FLAG"));
-                location.setLocArchive(rs.getInt("ARCHIVED_FLAG"));
-                locations.add(location);
-                
-            }
-            rs.close();
+                           Location location = new Location();
+                           location.setItemLocId(rs.getInt("ITEM_LOC_ID"));
+                           location.setLocName(rs.getString("NAME"));
+                           location.setLocDescription(rs.getString("DESCRIPTION"));
+                           location.setActiveFlag(rs.getInt("ACTIVE_FLAG"));
+                           location.setLocArchive(rs.getInt("ARCHIVED_FLAG"));
+
+                           // Check if the image exists for this location
+                           Blob imageBlob = rs.getBlob("IMAGE");
+                           if (imageBlob != null && imageBlob.length() > 0) {
+                               location.setHasImage(true);
+                               byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+                               location.setLocationImage(imageBytes); // Set the image bytes
+                           } else {
+                               location.setHasImage(false);
+                           }
+
+                           locations.add(location);
+                       }
+
+                       rs.close();
+
 
             ResultSet rsFlr = stmntFloor.executeQuery();
             while (rsFlr.next()) {

@@ -10,94 +10,97 @@ public class Report {
     private String repfloor;    
     private String reproom;      
     private String repissue;     
-    private String repfileName;
+    private byte[] reportImage; // Store image as bytes
     private Date recInstDt; 
     
+    // Flag to check if image exists
+    private boolean hasImage;
+
     public Report() {}
-//    for report submission
-    public Report(String equipment, String building, String floor, String room, String issue, String fileName) {
-            this.repEquipment = equipment;
-            this.locName = building;
-            this.repfloor = floor;
-            this.reproom = room;
-            this.repissue = issue;
-            this.repfileName = fileName;
-        }
-//for report display
-    public Report(int reportId, String equipment, String locationId, String floor, 
-                     String room, String issue, String fileName, Date recInstDt) {
-           this.reportId = reportId;
-           this.repEquipment = equipment;
-           this.locName = locationId;
-           this.repfloor = floor;
-           this.reproom = room;
-           this.repissue = issue;
-           this.repfileName = fileName;
-           this.recInstDt = recInstDt;
-       }
-    
+
+    public Report(int reportId, String equipment, String building, String floor, 
+                      String room, String issue, byte[] reportImage, Date recInstDt) {
+        this.reportId = reportId;
+        this.repEquipment = equipment;
+        this.locName = building;
+        this.repfloor = floor;
+        this.reproom = room;
+        this.repissue = issue;
+        this.reportImage = reportImage;
+        this.recInstDt = recInstDt;
+        this.hasImage = reportImage != null;
+    }
+
     public int getReportId() {
-           return reportId;
-       }
+        return reportId;
+    }
 
-       public void setReportId(int reportId) {
-           this.reportId = reportId;
-       }
-
-    public void setRepEquipment(String repEquipment) {
-        this.repEquipment = repEquipment;
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
     }
 
     public String getRepEquipment() {
         return repEquipment;
     }
 
-    public void setLocName(String locName) {
-        this.locName = locName;
+    public void setRepEquipment(String repEquipment) {
+        this.repEquipment = repEquipment;
     }
 
     public String getLocName() {
         return locName;
     }
 
-    public void setRepfloor(String repfloor) {
-        this.repfloor = repfloor;
+    public void setLocName(String locName) {
+        this.locName = locName;
     }
 
     public String getRepfloor() {
         return repfloor;
     }
 
-    public void setReproom(String reproom) {
-        this.reproom = reproom;
+    public void setRepfloor(String repfloor) {
+        this.repfloor = repfloor;
     }
 
     public String getReproom() {
         return reproom;
     }
 
-    public void setRepissue(String repissue) {
-        this.repissue = repissue;
+    public void setReproom(String reproom) {
+        this.reproom = reproom;
     }
 
     public String getRepissue() {
         return repissue;
     }
 
-    public void setRepfileName(String repfileName) {
-        this.repfileName = repfileName;
+    public void setRepissue(String repissue) {
+        this.repissue = repissue;
     }
 
-    public String getRepfileName() {
-        return repfileName;
+    public byte[] getReportImage() {
+        return reportImage;
     }
+
+    public void setReportImage(byte[] reportImage) {
+        this.reportImage = reportImage;
+        this.hasImage = reportImage != null;
+    }
+
     public Date getRecInstDt() {
-           return recInstDt;
-       }
+        return recInstDt;
+    }
 
-       public void setRecInstDt(Date recInstDt) {
-           this.recInstDt = recInstDt;
-       }
+    public void setRecInstDt(Date recInstDt) {
+        this.recInstDt = recInstDt;
+    }
+
+    public boolean isHasImage() {
+        return hasImage;
+    }
+
+    public void setHasImage(boolean hasImage) {
+        this.hasImage = hasImage;
+    }
 }
-
-
