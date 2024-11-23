@@ -39,7 +39,7 @@ import sample.model.Quotation;
 
 import sample.model.SharedData;
 
-@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification",
+@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
                                                      "/calendar", "/history", "/settings", "/maintenanceSchedule" })
 public class mainController extends HttpServlet {
 
