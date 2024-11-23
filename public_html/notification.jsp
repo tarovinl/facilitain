@@ -1,77 +1,64 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   
-     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"/>
-
-    
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap-icons/1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-
     <title>Notifications</title>
 </head>
 <body>
 <div class="container-fluid">
-      <div class="row min-vh-100">
-        
-          <jsp:include page="sidebar.jsp"/>
-    
-    <div class="col-md-10">
+    <div class="row min-vh-100">
+        <jsp:include page="sidebar.jsp"/>
+
+        <div class="col-md-10 p-4">
             <h1 class="mb-4">Notifications</h1>
 
-            <!-- Hardcoded array of notifications (for now) -->
-            <%
-                class Notification {
-                    int id;
-                    String title;
-                    String description;
-                    String date;
-                    String icon;
-                    String link;
-
-                    Notification(int id, String title, String description, String date, String icon, String link) {
-                        this.id = id;
-                        this.title = title;
-                        this.description = description;
-                        this.date = date;
-                        this.icon = icon;
-                        this.link = link;
-                    }
-                }
-
-                Notification[] notifications = new Notification[]{
-                    new Notification(1, "Upcoming Maintenance", "Aircons at Frassati Building", "July 24", "bi-clock-history", "equipment.jsp?id=1"),
-                    new Notification(2, "Quotation Uploaded", "Aircon Quotation for Building", "July 14", "bi-file-earmark-text", "equipment.jsp?id=2")
-                };
-            %>
-
-            <!-- Iterate over the notifications and display them -->
-            <%
-                for (Notification notification : notifications) {
-            %>
-            <a href="<%=notification.link%>" class="text-decoration-none">
-                <div class="d-flex justify-content-between align-items-center border-bottom py-3 clickable">
-                    <div class="d-flex align-items-center">
-                        <i class="bi <%=notification.icon%> fs-3 me-3"></i>
-                        <div>
-                            <h5 class="mb-0"><%=notification.title%></h5>
-                            <p class="text-muted"><%=notification.description%></p>
-                        </div>
+            <h2 class="mb-3">Reports</h2>
+            <c:choose>
+                <c:when test="${empty reportNotifications}">
+                    <div class="alert alert-info" role="alert">
+                        No report notifications available.
                     </div>
-                    <div>
-                        <span class="text-muted"><%=notification.date%></span>
-                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="list-group">
+    <c:forEach var="notification" items="${reportNotifications}">
+        <form action="${pageContext.request.contextPath}/notification" method="post" class="list-group-item p-0">
+            <button type="submit" class="list-group-item-action w-100 text-start border-0 ${notification.isRead ? 'list-group-item-secondary' : 'list-group-item-light'}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-bell-fill text-${notification.isRead ? 'secondary' : 'primary'}"></i>
+                        ${notification.message}
+                    </h5>
+                    <span class="badge badge-${notification.isRead ? 'secondary' : 'primary'}">
+                        ${notification.isRead ? 'Read' : 'Unread'}
+                    </span>
                 </div>
-            </a>
-            <%
-                }
-            %>
+                <p class="mb-0"><strong>Type:</strong> ${notification.type}</p>
+                <p class="mb-0"><strong>Created At:</strong> ${notification.createdAt}</p>
+                <p class="mb-0"><strong>Location:</strong> ${notification.locName}</p>
+            </button>
+            <input type="hidden" name="id" value="${notification.notificationId}">
+            <c:choose>
+                <c:when test="${notification.type == 'REPORT'}">
+                    <input type="hidden" name="redirectUrl" value="${pageContext.request.contextPath}/reports">
+                </c:when>
+                <c:otherwise>
+                    <input type="hidden" name="redirectUrl" value="${pageContext.request.contextPath}/defaultPage">
+                </c:otherwise>
+            </c:choose>
+        </form>
+    </c:forEach>
+</div>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
-
-    <!-- StackPath Bootstrap JS -->
-     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+</div>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

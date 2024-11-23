@@ -26,9 +26,10 @@
          We will handle this issue immediately.
           </p>
             <!-- Example Bootstrap Button -->
+            <a href="<%=request.getContextPath()%>/reportsClient">
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
-        <button class="btn btn-primary w-100">Back</button>
-    </div>
+         <button class="btn btn-primary w-100">Back</button>
+    </div></a>
     
             </div>
         </div>
