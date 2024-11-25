@@ -26,8 +26,8 @@
                     <label for="room">Evaluation for</label>
                     <div class="mt-1">
                         <select name="room" id="room" class="form-control w-100">
-                            <option value="classroom">Classroom</option>
-                            <option value="auditorium">Auditorium</option>
+                            <option value="Classroom">Classroom</option>
+                            <option value="Auditorium">Auditorium</option>
                         </select>
                     </div>
 
