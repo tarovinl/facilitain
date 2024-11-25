@@ -63,6 +63,38 @@
         </div>
     </div>
 </div>
+<!-- Add Modal with Images -->
+<div class="modal fade" id="addBuildingModal" tabindex="-1" aria-labelledby="addBuildingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="addbuildingcontroller" method="post" enctype="multipart/form-data">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBuildingModalLabel">Add Building</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="locName" class="form-label">Building Name</label>
+                        <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter building name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="locDescription" class="form-label">Building Description</label>
+                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter building description" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="buildingImage" class="form-label">Building Image</label>
+                        <input type="file" class="form-control" id="buildingImage" name="buildingImage" accept="image/*">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <!-- Notification Popup -->
 <div class="modal fade" id="notificationPopup" tabindex="-1" aria-labelledby="notificationPopupLabel" aria-hidden="true">
