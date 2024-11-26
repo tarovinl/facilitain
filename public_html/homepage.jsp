@@ -109,6 +109,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <a href="<%=request.getContextPath()%>/notification" class="btn btn-primary">View Notifications</a>
+            
+                
             </div>
         </div>
     </div>

@@ -151,7 +151,7 @@
                     <!-- Remarks -->
                     <div class="form-group">
                         <label for="remarks">Remarks</label>
-                        <input type="text" class="form-control" id="remarks" name="remarks" required>
+                        <input type="text" class="form-control" id="remarks" name="remarks" >
                     </div>
 
                     <!-- Number of Days Warning -->
