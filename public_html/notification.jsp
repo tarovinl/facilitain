@@ -60,33 +60,38 @@
         </div>
     </c:when>
     <c:otherwise>
-    <div class="overflow-auto" style="max-height: 400px;">
-        <ul class="list-group">
-            <c:forEach var="notification" items="${quotationNotifications}">
-                <form action="notification" method="POST">
-                    <input type="hidden" name="id" value="${notification.notificationId}"/>
-                    <input type="hidden" name="redirectUrl" value="<%=request.getContextPath()%>/buildingDashboard?locID=${notification.itemLocId}"/>
+        <div class="overflow-auto" style="max-height: 400px;">
+            <ul class="list-group">
+                <c:forEach var="notification" items="${quotationNotifications}">
+                    <form action="notification" method="POST">
+                        <input type="hidden" name="id" value="${notification.notificationId}"/>
+                        <input type="hidden" name="redirectUrl" value="<%=request.getContextPath()%>/buildingDashboard?locID=${notification.itemLocId}"/>
 
-                    <button type="submit" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center ${notification.isRead ? 'list-group-item-secondary' : ''}">
-                        <div>
-                            <h6 class="mb-1">
-                                <i class="bi bi-bell-fill text-${notification.isRead ? 'secondary' : 'primary'} me-2"></i>
-                                ${notification.message}
-                            </h6>
-                            <small class="text-muted">Created At: ${notification.createdAt}</small>
-                            <br>
-                            <small class="text-muted">Location: ${notification.locName}</small>
-                        </div>
-                        <span class="badge badge-${notification.isRead ? 'secondary' : 'primary'}">
-                            ${notification.isRead ? 'Read' : 'Unread'}
-                        </span>
-                    </button>
-                </form>
-            </c:forEach>
-        </ul>
+                        <button type="submit" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center ${notification.isRead ? 'list-group-item-secondary' : ''}">
+                            <div>
+                                <h6 class="mb-1">
+                                    <i class="bi bi-bell-fill text-${notification.isRead ? 'secondary' : 'primary'} me-2"></i>
+                                    ${notification.message}
+                                </h6>
+                                <small class="text-muted">Created At: ${notification.createdAt}</small>
+                                <br>
+                                <small class="text-muted">Location: ${notification.locName}</small>
+                                <br>
+                                <small class="text-muted">Item Name: ${notification.itemName}</small>
+                                <br>
+                                <small class="text-muted">Room: ${notification.roomNo}, Floor: ${notification.floorNo}</small>
+                            </div>
+                            <span class="badge badge-${notification.isRead ? 'secondary' : 'primary'}">
+                                ${notification.isRead ? 'Read' : 'Unread'}
+                            </span>
+                        </button>
+                    </form>
+                </c:forEach>
+            </ul>
         </div>
     </c:otherwise>
 </c:choose>
+
 
 
 

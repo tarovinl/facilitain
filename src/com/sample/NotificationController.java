@@ -24,22 +24,29 @@ public class NotificationController extends HttpServlet {
         List<Notification> reportNotifications = new ArrayList<>();
         List<Notification> quotationNotifications = new ArrayList<>();
 
-        String sql = "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
-                     "l.NAME AS locName, n.ITEM_LOC_ID " +
-                     "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
-                     "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
-                     "WHERE n.TYPE = ? " +
-                     "ORDER BY n.IS_READ ASC, n.CREATED_AT DESC";
+        String reportSql = "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
+                           "l.NAME AS locName, n.ITEM_LOC_ID " +
+                           "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
+                           "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
+                           "WHERE n.TYPE = ? " +
+                           "ORDER BY n.IS_READ ASC, n.CREATED_AT DESC";
+
+        String quotationSql = "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
+                              "l.NAME AS locName, n.ITEM_LOC_ID, n.ROOM_NO AS roomNo, n.FLOOR_NO AS floorNo, n.ITEM_NAME " +
+                              "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
+                              "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
+                              "WHERE n.TYPE = ? " +
+                              "ORDER BY n.IS_READ ASC, n.CREATED_AT DESC";
 
         try (Connection conn = PooledConnection.getConnection()) {
             // Fetch report notifications
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            try (PreparedStatement stmt = conn.prepareStatement(reportSql)) {
                 stmt.setString(1, "REPORT");
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
                         reportNotifications.add(new Notification(
                             rs.getInt("NOTIFICATION_ID"),
-                            rs.getString("MESSAGE") + " (Location: " + rs.getString("locName") + ")",
+                            rs.getString("MESSAGE"),
                             rs.getString("TYPE"),
                             rs.getInt("IS_READ") == 1,
                             rs.getTimestamp("CREATED_AT"),
@@ -51,18 +58,21 @@ public class NotificationController extends HttpServlet {
             }
 
             // Fetch quotation notifications
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            try (PreparedStatement stmt = conn.prepareStatement(quotationSql)) {
                 stmt.setString(1, "QUOTATION");
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
                         quotationNotifications.add(new Notification(
                             rs.getInt("NOTIFICATION_ID"),
-                            rs.getString("MESSAGE") + " (Location: " + rs.getString("locName") + ")",
+                            rs.getString("MESSAGE"),
                             rs.getString("TYPE"),
                             rs.getInt("IS_READ") == 1,
                             rs.getTimestamp("CREATED_AT"),
                             rs.getString("locName"),
-                            rs.getInt("ITEM_LOC_ID")
+                            rs.getInt("ITEM_LOC_ID"),
+                            rs.getString("roomNo"),
+                            rs.getString("floorNo"),
+                            rs.getString("ITEM_NAME")
                         ));
                     }
                 }
@@ -78,6 +88,7 @@ public class NotificationController extends HttpServlet {
         request.setAttribute("quotationNotifications", quotationNotifications);
         request.getRequestDispatcher("notification.jsp").forward(request, response);
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
