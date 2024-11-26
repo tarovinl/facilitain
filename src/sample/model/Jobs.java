@@ -7,6 +7,7 @@ public class Jobs {
     private String jobAction;
     private Date startDate;
     private String repeatInterval;
+    private Date jobCreated;
 
     public void setJobName(String jobName) {
         this.jobName = jobName;
@@ -38,5 +39,13 @@ public class Jobs {
 
     public String getRepeatInterval() {
         return repeatInterval;
+    }
+
+    public void setJobCreated(Date jobCreated) {
+        this.jobCreated = jobCreated;
+    }
+
+    public Date getJobCreated() {
+        return jobCreated;
     }
 }

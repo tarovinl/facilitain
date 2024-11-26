@@ -130,6 +130,32 @@
                 
                 
             }
+            
+            <c:forEach var="job" items="${calendarSched}">
+            <c:if test="${fn:contains(job.repeatInterval, 'DAILY')}">
+                <c:set var="interval" value="${fn:substringAfter(job.repeatInterval, 'INTERVAL=')}" />
+                var jobCreated = new Date("${job.jobCreated}");
+                var repeatInterval = ${interval};
+                var currentDate = new Date(jobCreated);
+                var endDate = new Date(new Date().getFullYear() + 10, 11, 31); // 10 years after current year
+                <c:set var="jobNumber" value="${fn:substringBefore(fn:substringAfter(job.jobName, 'CAT'), '_')}" />
+                <c:set var="jobNumberInt" value="${jobNumber + 0}" />
+                
+                while (currentDate <= endDate) {
+                    <c:forEach var="cat" items="${FMO_CATEGORIES_LIST}">
+                    <c:if test="${cat.itemCID == jobNumberInt}">            
+                    recurringEvents.push({
+                        title: 'Maintenance for '+'${cat.itemCat}',
+                        start: currentDate.toISOString().split('T')[0],
+                        allDay: true
+                    });
+                    </c:if>
+                    </c:forEach>      
+                    // Increment the current date by the interval
+                    currentDate.setDate(currentDate.getDate() + repeatInterval);
+                }
+            </c:if>
+            </c:forEach>
 
             // Other static events
             var events = [
