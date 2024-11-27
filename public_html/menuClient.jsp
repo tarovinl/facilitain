@@ -23,10 +23,14 @@
           
             <!-- Example Bootstrap Button -->
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
+        <a href="<%=request.getContextPath()%>/feedbackClient">
         <button class="btn btn-primary w-100">Make a Feedback</button>
+        </a>
     </div>
     <div class="container mt-3 w-100 d-flex justify-content-center"> <!-- Centering with flexbox -->
+    <a href="<%=request.getContextPath()%>/reportsClient">
         <button class="btn btn-primary w-100">Report a Problem</button>
+        </a>
     </div>
     <div class="">
     <button class="btn text-white p-2" style="background-color: transparent;">

@@ -6,10 +6,10 @@ public class Maintenance {
     private int noOfDays;
     private String remarks;
     private int noOfDaysWarning;
-    private int activeFlag;
     private String itemTypeName;
     private Integer quarterlySchedNo; // Can be NULL
     private Integer yearlySchedNo; // Can be NULL
+    private int archiveFlag; // Archive flag
 
     // Getters and Setters
     public int getItemMsId() {
@@ -60,14 +60,6 @@ public class Maintenance {
         this.noOfDaysWarning = noOfDaysWarning;
     }
 
-    public int getActiveFlag() {
-        return activeFlag;
-    }
-
-    public void setActiveFlag(int activeFlag) {
-        this.activeFlag = activeFlag;
-    }
-
     public Integer getQuarterlySchedNo() {
         return quarterlySchedNo;
     }
@@ -82,5 +74,13 @@ public class Maintenance {
 
     public void setYearlySchedNo(Integer yearlySchedNo) {
         this.yearlySchedNo = yearlySchedNo;
+    }
+
+    public int getArchiveFlag() {
+        return archiveFlag;
+    }
+
+    public void setArchiveFlag(int archiveFlag) {
+        this.archiveFlag = archiveFlag;
     }
 }

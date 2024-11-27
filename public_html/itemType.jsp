@@ -16,41 +16,49 @@
             </div>
             <div class="col-md-9 col-lg-10 p-4">
                 <h1>Item Types</h1>
-                <button class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">Add Item Type</button>
+                <button class="btn btn-warning my-3" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">Add Item Type</button>
 
                 <!-- Display Table -->
-                <table class="table table-striped mt-4">
-                    <thead>
-                        <tr>
-                            <th>Type ID</th>
-                            <th>Category Name</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="type" items="${itemTypeList}">
-                            <tr>
-                                <td>${type.itemTypeId}</td>
-                                <td>
-                                    <c:forEach var="category" items="${categoryList}">
-                                        <c:if test="${category.key == type.itemCatId}">
-                                            ${category.value}
-                                        </c:if>
-                                    </c:forEach>
-                                </td>
-                                <td>${type.name}</td>
-                                <td>${type.description}</td>
-                                <td>
-                                    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editItemTypeModal"
-                                            data-itemtypeid="${type.itemTypeId}" data-itemcatid="${type.itemCatId}"
-                                            data-name="${type.name}" data-description="${type.description}">Edit</button>
-                                </td>
-                            </tr>
+            <table class="table table-striped mt-4">
+    <thead>
+        <tr>
+            <th>Type ID</th>
+            <th>Category Name</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <c:forEach var="type" items="${itemTypeList}">
+            <c:if test="${type.archivedFlag == 1}">
+                <tr>
+                    <td>${type.itemTypeId}</td>
+                    <td>
+                        <c:forEach var="category" items="${categoryList}">
+                            <c:if test="${category.key == type.itemCatId}">
+                                ${category.value}
+                            </c:if>
                         </c:forEach>
-                    </tbody>
-                </table>
+                    </td>
+                    <td>${type.name}</td>
+                    <td>${type.description}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editItemTypeModal"
+                                data-itemtypeid="${type.itemTypeId}" data-itemcatid="${type.itemCatId}"
+                                data-name="${type.name}" data-description="${type.description}">Edit</button>
+
+                        <form action="itemType" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to archive this item type?');">
+                            <input type="hidden" name="itemTypeId" value="${type.itemTypeId}">
+                            <input type="hidden" name="action" value="archive">
+                            <button type="submit" class="btn btn-danger btn-sm">Archive</button>
+                        </form>
+                    </td>
+                </tr>
+            </c:if>
+        </c:forEach>
+    </tbody>
+</table>
 
                 <!-- Add Item Type Modal -->
                 <div class="modal fade" id="addItemTypeModal" tabindex="-1" aria-labelledby="addItemTypeModalLabel" aria-hidden="true">

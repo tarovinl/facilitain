@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.AbstractMap;
 
-@WebServlet("/feedbackClientController")
+@WebServlet(name = "FeedbackClientController", urlPatterns = { "/feedbackClient" })
 public class FeedbackClientController extends HttpServlet {
 
     @Override
@@ -25,7 +25,8 @@ public class FeedbackClientController extends HttpServlet {
             throws ServletException, IOException {
         List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
 
-        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
+        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG != 2";
+
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement locationStatement = connection.prepareStatement(locationQuery)) {
@@ -57,22 +58,21 @@ public class FeedbackClientController extends HttpServlet {
         String suggestions = request.getParameter("suggestions");
 
         // Create the Feedback object
-        Feedback feedback = new Feedback( locationId, room, rating, suggestions, new java.util.Date()); 
+        Feedback feedback = new Feedback(locationId, room, rating, suggestions, new java.util.Date());  // Adding current date for REC_INS_DT
 
         // Query to insert the feedback
-        String insertFeedbackQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_FEEDBACK (ITEM_LOC_ID, ROOM, RATING, SUGGESTIONS, REC_INS_DT, REC_INS_BY) " +
-                                     "VALUES (?, ?, ?, ?, SYSDATE, USER)";
-
+        String insertFeedbackQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_FEEDBACK (FEEDBACK_ID, ITEM_LOC_ID, ROOM, RATING, SUGGESTIONS, REC_INS_DT, REC_INS_BY) " +
+                                     "VALUES (?, ?, ?, ?, ?, SYSDATE, USER)"; 
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(insertFeedbackQuery)) {
 
             
-            stmt.setInt(1, feedback.getItemLocId());
-            stmt.setString(2, feedback.getRoom());
-            stmt.setInt(3, feedback.getRating());
-            stmt.setString(4, feedback.getSuggestions());
-
+            stmt.setInt(1, feedback.getFeedbackId()); 
+            stmt.setInt(2, feedback.getItemLocId());
+            stmt.setString(3, feedback.getRoom());
+            stmt.setInt(4, feedback.getRating());
+            stmt.setString(5, feedback.getSuggestions());
 
             // Execute the query to insert the data
             stmt.executeUpdate();
