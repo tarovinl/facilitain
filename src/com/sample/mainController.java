@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import sample.model.Location;
 import sample.model.Item;
 
+import sample.model.Maintenance;
 import sample.model.PooledConnection;
 
 import sample.model.Repairs;
@@ -70,7 +71,7 @@ public class mainController extends HttpServlet {
         ArrayList<Item> listBrands = new ArrayList<>();
 
         ArrayList<Item> listMaintStat = new ArrayList<>();
-        ArrayList<Item> listMaintSched = new ArrayList<>();
+        ArrayList<Maintenance> listMaintSched = new ArrayList<>();
         
         ArrayList<Repairs> listRepairs = new ArrayList<>();
         
@@ -98,7 +99,7 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntICats = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
              PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME")){
              PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
-             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 ORDER BY ITEM_MS_ID");
+             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
              PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
              PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
 
@@ -220,12 +221,14 @@ public class mainController extends HttpServlet {
             
             ResultSet rsMaintSched = stmntMaintSched.executeQuery();
             while (rsMaintSched.next()) {
-                Item msched = new Item();
-                msched.setItemID(rsMaintSched.getInt("ITEM_MS_ID"));
-                msched.setItemTID(rsMaintSched.getInt("ITEM_TYPE_ID"));
-                msched.setMaintSchedDays(rsMaintSched.getInt("NO_OF_DAYS"));
-                msched.setItemRemarks(rsMaintSched.getString("REMARKS"));
-                msched.setMaintSchedWarn(rsMaintSched.getInt("NO_OF_DAYS_WARNING"));
+                Maintenance msched = new Maintenance();
+                msched.setItemMsId(rsMaintSched.getInt("ITEM_MS_ID"));
+                msched.setItemTypeId(rsMaintSched.getInt("ITEM_TYPE_ID"));
+                msched.setNoOfDays(rsMaintSched.getInt("NO_OF_DAYS"));
+                msched.setRemarks(rsMaintSched.getString("REMARKS"));
+                msched.setNoOfDaysWarning(rsMaintSched.getInt("NO_OF_DAYS_WARNING"));
+                msched.setQuarterlySchedNo(rsMaintSched.getInt("QUARTERLY_SCHED_NO"));
+                msched.setYearlySchedNo(rsMaintSched.getInt("YEARLY_SCHED_NO"));
                 listMaintSched.add(msched);
             }
             rsMaintSched.close();
