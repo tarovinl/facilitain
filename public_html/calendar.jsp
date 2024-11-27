@@ -101,6 +101,7 @@
                             </c:forEach>
                     </c:if>
                     </c:forEach>
+                    
                 }
                 
                 var startOfYear = new Date(year, 0, 1); 
@@ -159,12 +160,7 @@
 
             // Other static events
             var events = [
-                ...recurringEvents,
-            {
-                title: 'Meeting with Team',
-                start: '2024-11-24T10:00:00',
-                end: '2024-11-24T12:00:00'
-            }
+                ...recurringEvents
             ];
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
@@ -208,6 +204,35 @@
             margin: 0.2rem; /* Add spacing around buttons */
         }
     }
+    
+    .fc-button.fc-dayGridMonth-button,
+    .fc-button.fc-timeGridWeek-button,
+    .fc-button.fc-timeGridDay-button {
+        background-color: #fccc4c;
+        color: black;
+    }
+    .fc-button.fc-today-button,
+    .fc-button.fc-prev-button,
+    .fc-button.fc-next-button{
+        background-color: #fccc4c;
+        color: black;
+        border: none;
+    }
+    .fc-button.fc-prev-button:hover,
+    .fc-button.fc-next-button:hover {
+        background-color: #ffcc00;
+    }
+    
+    .fc .fc-col-header-cell a,
+    .fc .fc-daygrid-day-number a,
+    .fc .fc-daygrid-day-top a {
+        text-decoration: none; /* Remove underline */
+        color: inherit; /* Use the inherited color */
+        cursor: default; /* Change cursor to default arrow */
+    }
+
+    
+    
     </style>
 
 </head>

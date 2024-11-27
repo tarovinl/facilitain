@@ -42,11 +42,11 @@
                 <tbody>
                     <c:forEach var="maintenance" items="${maintenanceList}">
                         <tr>
-                            <td>${maintenance.itemID}</td>
-                            <td>${maintenance.itemTID}</td>
-                            <td>${maintenance.maintSchedDays}</td>
-                            <td>${maintenance.itemRemarks}</td>
-                            <td>${maintenance.maintSchedWarn}</td>
+                            <td>${maintenance.itemMsId}</td>
+                            <td>${maintenance.itemTypeId}</td>
+                            <td>${maintenance.noOfDays}</td>
+                            <td>${maintenance.remarks}</td>
+                            <td>${maintenance.noOfDaysWarning}</td>
                             <td>
                                 <input type="image" 
                                         src="resources/images/editItem.svg" 
@@ -55,11 +55,11 @@
                                         height="24" 
                                     data-toggle="modal" 
                                     data-target="#maintenanceModal" 
-                                    data-id="${maintenance.itemID}"
-                                    data-item-type-id="${maintenance.itemTID}"
-                                    data-no-of-days="${maintenance.maintSchedDays}"
-                                    data-remarks="${maintenance.itemRemarks}"
-                                    data-warning="${maintenance.maintSchedWarn}">
+                                    data-id="${maintenance.itemMsId}"
+                                    data-item-type-id="${maintenance.itemTypeId}"
+                                    data-no-of-days="${maintenance.noOfDays}"
+                                    data-remarks="${maintenance.remarks}"
+                                    data-warning="${maintenance.noOfDaysWarning}">
                                    <!--<button> Edit
                                 </button>-->
                             </td>

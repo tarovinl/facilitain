@@ -36,6 +36,7 @@ import sample.model.PooledConnection;
 
 import sample.model.Repairs;
 import sample.model.Jobs;
+import sample.model.Maintenance;
 import sample.model.Quotation;
 
 import sample.model.SharedData;
@@ -71,12 +72,24 @@ public class mainController extends HttpServlet {
         ArrayList<Item> listBrands = new ArrayList<>();
 
         ArrayList<Item> listMaintStat = new ArrayList<>();
-        ArrayList<Item> listMaintSched = new ArrayList<>();
+        ArrayList<Maintenance> listMaintSched = new ArrayList<>();
         
         ArrayList<Repairs> listRepairs = new ArrayList<>();
         ArrayList<Jobs> listJobs = new ArrayList<>();
         
-
+        List<String> months = new ArrayList<>();
+                    months.add("January");
+                    months.add("February");
+                    months.add("March");
+                    months.add("April");
+                    months.add("May");
+                    months.add("June");
+                    months.add("July");
+                    months.add("August");
+                    months.add("September");
+                    months.add("October");
+                    months.add("November");
+                    months.add("December");
         
         try (
              Connection con = PooledConnection.getConnection();
@@ -198,12 +211,14 @@ public class mainController extends HttpServlet {
             
             ResultSet rsMaintSched = stmntMaintSched.executeQuery();
             while (rsMaintSched.next()) {
-                Item msched = new Item();
-                msched.setItemID(rsMaintSched.getInt("ITEM_MS_ID"));
-                msched.setItemTID(rsMaintSched.getInt("ITEM_TYPE_ID"));
-                msched.setMaintSchedDays(rsMaintSched.getInt("NO_OF_DAYS"));
-                msched.setItemRemarks(rsMaintSched.getString("REMARKS"));
-                msched.setMaintSchedWarn(rsMaintSched.getInt("NO_OF_DAYS_WARNING"));
+                Maintenance msched = new Maintenance();
+                msched.setItemMsId(rsMaintSched.getInt("ITEM_MS_ID"));
+                msched.setItemTypeId(rsMaintSched.getInt("ITEM_TYPE_ID"));
+                msched.setNoOfDays(rsMaintSched.getInt("NO_OF_DAYS"));
+                msched.setRemarks(rsMaintSched.getString("REMARKS"));
+                msched.setNoOfDaysWarning(rsMaintSched.getInt("NO_OF_DAYS_WARNING"));
+                msched.setQuarterlySchedNo(rsMaintSched.getInt("QUARTERLY_SCHED_NO"));
+                msched.setYearlySchedNo(rsMaintSched.getInt("YEARLY_SCHED_NO"));
                 listMaintSched.add(msched);
             }
             rsMaintSched.close();
@@ -332,6 +347,7 @@ public class mainController extends HttpServlet {
         request.setAttribute("currentYear", currentYear);
         request.setAttribute("currentMonth", currentMonth);
         
+        request.setAttribute("monthsList", months);
         request.setAttribute("REPAIRS_PER_MONTH", listRepairs);
         request.setAttribute("calendarSched", listJobs);
         
