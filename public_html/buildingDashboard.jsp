@@ -190,8 +190,8 @@
               <div class="diagramTitle">
                 <h2 style=" font-family: NeueHaasMedium, sans-serif;">Repairs per Month</h2>
               </div>
-              <div style="background: green;">
-                <div id="repairNoChart" style="height:100%; width: 100%; "></div>
+              <div style="background: green; height: 280px; ">
+                <div id="repairNoChart" style="height: 100%; width: 100%;"></div>
               </div>
             </div>
             <!-- Pending Maintenance -->

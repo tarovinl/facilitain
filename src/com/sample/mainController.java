@@ -36,6 +36,8 @@ import sample.model.Maintenance;
 import sample.model.PooledConnection;
 
 import sample.model.Repairs;
+import sample.model.Jobs;
+import sample.model.Maintenance;
 import sample.model.Quotation;
 
 import sample.model.SharedData;
@@ -74,21 +76,21 @@ public class mainController extends HttpServlet {
         ArrayList<Maintenance> listMaintSched = new ArrayList<>();
         
         ArrayList<Repairs> listRepairs = new ArrayList<>();
+        ArrayList<Jobs> listJobs = new ArrayList<>();
         
         List<String> months = new ArrayList<>();
-            months.add("January");
-            months.add("February");
-            months.add("March");
-            months.add("April");
-            months.add("May");
-            months.add("June");
-            months.add("July");
-            months.add("August");
-            months.add("September");
-            months.add("October");
-            months.add("November");
-            months.add("December");
-
+                    months.add("January");
+                    months.add("February");
+                    months.add("March");
+                    months.add("April");
+                    months.add("May");
+                    months.add("June");
+                    months.add("July");
+                    months.add("August");
+                    months.add("September");
+                    months.add("October");
+                    months.add("November");
+                    months.add("December");
         
         try (
              Connection con = PooledConnection.getConnection();
@@ -102,6 +104,7 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
              PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
              PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
+             PreparedStatement stmntJobs = con.prepareCall("SELECT a.JOB_NAME, a.JOB_ACTION, a.START_DATE, a.REPEAT_INTERVAL, b.CREATED FROM DBA_SCHEDULER_JOBS a JOIN ALL_OBJECTS b ON a.JOB_NAME = b.OBJECT_NAME WHERE a.JOB_NAME LIKE 'UPDATE_ITEM_JOB_CAT%'");
 
             ResultSet rs = statement.executeQuery();
             
@@ -265,7 +268,17 @@ public class mainController extends HttpServlet {
             }
             rsRepairs.close();
 
-            
+            ResultSet rsJobs = stmntJobs.executeQuery();
+            while (rsJobs.next()) {
+                Jobs jobs = new Jobs();
+                jobs.setJobName(rsJobs.getString("JOB_NAME"));
+                jobs.setJobAction(rsJobs.getString("JOB_ACTION"));
+                jobs.setStartDate(rsJobs.getDate("START_DATE"));
+                jobs.setRepeatInterval(rsJobs.getString("REPEAT_INTERVAL"));
+                jobs.setJobCreated(rsJobs.getDate("CREATED"));
+                listJobs.add(jobs);
+            }
+            rsJobs.close();
         } catch (SQLException error) {
             error.printStackTrace();
         }
@@ -349,6 +362,7 @@ public class mainController extends HttpServlet {
         
         request.setAttribute("monthsList", months);
         request.setAttribute("REPAIRS_PER_MONTH", listRepairs);
+        request.setAttribute("calendarSched", listJobs);
         
         request.setAttribute("quotations", quotations);
         getServletContext().setAttribute("quotations", quotations);
