@@ -22,7 +22,7 @@
                 <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" style="height: 4rem;"/>
                 <h3 class="text-center">Feedback Form</h3>
 
-                <form action="feedbackClientController" method="POST">
+                <form action="feedbackClient" method="POST">
                     <label for="room">Evaluation for</label>
                     <div class="mt-1">
                         <select name="room" id="room" class="form-control w-100">
