@@ -25,11 +25,12 @@
          Thank you for reporting!<br/>
          We will handle this issue immediately.
           </p>
-            <!-- Example Bootstrap Button -->
-            <a href="<%=request.getContextPath()%>/reportsClient">
-             <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
-         <button class="btn btn-primary w-100">Back</button>
-    </div></a>
+           
+          
+       <div class="container mt-3 d-flex flex-column justify-content-center"> 
+    <button class="btn btn-primary w-100 mb-3" onclick="window.location.href='menuClient.jsp';">Back to Menu</button>
+    <button class="btn btn-primary w-100" onclick="window.location.href='reportsClient';">Back to Report</button>
+</div>
     
             </div>
         </div>

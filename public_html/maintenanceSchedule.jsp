@@ -15,8 +15,10 @@
                 <jsp:include page="sidebar.jsp"></jsp:include>
             </div>
             <div class="col-md-9 col-lg-10 p-4">
-                <h1>Maintenance Schedule</h1>
-                <button class="btn btn-warning my-3" data-bs-toggle="modal" data-bs-target="#maintenanceModal">Add Schedule</button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1>Maintenance Schedule</h1>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#maintenanceModal">Add Schedule</button>
+                </div>
 
                 <!-- Maintenance List Table -->
                 <table class="table table-striped mt-4">

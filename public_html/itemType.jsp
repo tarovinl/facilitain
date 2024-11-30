@@ -15,9 +15,10 @@
                 <jsp:include page="sidebar.jsp"></jsp:include>
             </div>
             <div class="col-md-9 col-lg-10 p-4">
+             <div class="d-flex justify-content-between align-items-center">
                 <h1>Item Types</h1>
                 <button class="btn btn-warning my-3" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">Add Item Type</button>
-
+                </div>
                 <!-- Display Table -->
             <table class="table table-striped mt-4">
     <thead>
@@ -72,11 +73,12 @@
                                 <div class="modal-body">
                                     <div class="mb-3">
                                         <label for="itemCatId" class="form-label">Category</label>
-                                        <select class="form-select" id="itemCatId" name="itemCatId" required>
+                                       <select class="form-select" id="itemCatId" name="itemCatId" required>
+                                         <option value="" disabled selected>--Choose Item Type--</option>
                                             <c:forEach var="category" items="${categoryList}">
-                                                <option value="${category.key}">${category.value}</option>
-                                            </c:forEach>
-                                        </select>
+                                            <option value="${category.key}">${category.value}</option>
+                                        </c:forEach>
+                                    </select>
                                     </div>
                                     <div class="mb-3">
                                         <label for="name" class="form-label">Name</label>
