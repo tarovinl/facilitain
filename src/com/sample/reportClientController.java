@@ -65,7 +65,10 @@ public class reportClientController extends HttpServlet {
         String issue = request.getParameter("issue");
         Part imagePart = request.getPart("imageUpload");
 
-        String insertedBy = "C##FMO";
+        String insertedBy = request.getParameter("email");
+        if (insertedBy == null || insertedBy.trim().isEmpty()) {
+            insertedBy = "No email provided";
+        }
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
         InputStream inputStream = null;
@@ -84,9 +87,11 @@ public class reportClientController extends HttpServlet {
                 }
             }
 
-            // Insert the new report
-            String insertQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPORTS (REPORT_ID, EQUIPMENT_TYPE, ITEM_LOC_ID, REPORT_FLOOR, REPORT_ROOM, REPORT_ISSUE, REPORT_PICTURE, REC_INST_DT, REC_INST_BY) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            // Generate REPORT_CODE (e.g., abbreviation of equipment, floor, and room, plus unique ID)
+            String reportCode = generateReportCode(equipment, floor, room, reportId);
+            // Insert the new report, including STATUS and REPORT_CODE
+            String insertQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPORTS (REPORT_ID, EQUIPMENT_TYPE, ITEM_LOC_ID, REPORT_FLOOR, REPORT_ROOM, REPORT_ISSUE, REPORT_PICTURE, REC_INST_DT, REC_INST_BY, STATUS, REPORT_CODE) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
                 pstmt.setInt(1, reportId);
                 pstmt.setString(2, equipment);
@@ -101,10 +106,12 @@ public class reportClientController extends HttpServlet {
                 }
                 pstmt.setTimestamp(8, currentTimestamp);
                 pstmt.setString(9, insertedBy);
+                pstmt.setInt(10, 0); // STATUS: 0 means Not Resolved
+                pstmt.setString(11, reportCode);
 
                 int rowsInserted = pstmt.executeUpdate();
                 if (rowsInserted > 0) {
-                    System.out.println("Report inserted successfully.");
+                    System.out.println("Report inserted successfully with Report Code: " + reportCode);
                 }
             }
         } catch (Exception e) {
@@ -118,4 +125,15 @@ public class reportClientController extends HttpServlet {
         // Redirect to the reportsThanksClient.jsp
         response.sendRedirect("reportsThanksClient.jsp");
     }
+
+
+    private String generateReportCode(String equipment, String floor, String room, int reportId) {
+        String equipmentAbbr = equipment != null ? equipment.substring(0, Math.min(equipment.length(), 3)).toUpperCase() : "EQP";
+        String floorAbbr = floor != null ? floor.toUpperCase() : "FLR";
+        String roomAbbr = room != null ? room.substring(0, Math.min(room.length(), 3)).toUpperCase() : "RM";
+
+        // Add a unique suffix using the reportId to ensure uniqueness
+        return equipmentAbbr + "-" + floorAbbr + "-" + roomAbbr + "-" + reportId;
+    }
+
 }

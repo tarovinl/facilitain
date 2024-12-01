@@ -31,6 +31,10 @@
                         <th scope="col">Describe the Issue</th>
                         <th scope="col">Proof</th>
                         <th scope="col">Date</th>
+                        <th scope="col">Email</th>
+                        <th scope="col"></th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Report Code</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,6 +53,24 @@
                                 </form>
                             </td>
                             <td><fmt:formatDate value="${report.recInstDt}" pattern="yyyy-MM-dd"/></td>
+                            <td>${report.instBy}</td>
+                            <td><form action="emailresolve" method="post">
+                                    <input type="hidden" name="reportId" value="${report.reportId}">
+                                    <button type="submit" class="btn btn-link">Resolve</button>
+                                </form></td>
+                            <td>
+                            
+    <c:choose>
+        <c:when test="${report.status == 1}">
+            <span style="color: green;">Resolved</span>
+        </c:when>
+        <c:otherwise>
+            <span style="color: red;">Not Resolved</span>
+        </c:otherwise>
+    </c:choose>
+</td>
+<td>${report.reportCode}</td>
+
                         </tr>
                     </c:forEach>
                 </tbody>

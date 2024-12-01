@@ -128,7 +128,24 @@
             <value n="id" v="JSTL 1.2 Tags"/>
             <value n="isJDK" v="false"/>
          </hash>
+         <hash>
+            <value n="id" v="Javax.mail-1.6.2.jar"/>
+            <value n="isJDK" v="false"/>
+         </hash>
       </list>
+      <hash n="internalDefinitions">
+         <list n="libraryDefinitions">
+            <hash>
+               <list n="classPath">
+                  <url path="../../../../Users/Tacula Family/Downloads/javax.mail-1.6.2.jar" jar-entry=""/>
+               </list>
+               <value n="deployedByDefault" v="true"/>
+               <value n="description" v="Javax.mail-1.6.2.jar"/>
+               <value n="id" v="Javax.mail-1.6.2.jar"/>
+               <value n="locked" v="true"/>
+            </hash>
+         </list>
+      </hash>
       <list n="libraryReferences">
          <hash>
             <value n="id" v="JSP Runtime"/>
@@ -144,6 +161,10 @@
          </hash>
          <hash>
             <value n="id" v="JSTL 1.2 Tags"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <value n="id" v="Javax.mail-1.6.2.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
