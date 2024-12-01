@@ -62,6 +62,13 @@
                         <input type="text" name="room" id="room" class="form-control w-100" placeholder="Enter room">
                         <div id="roomError" class="error-message"></div>
                     </div>
+                    
+<!-- Optional Email for Notification -->
+<label for="email" class="mt-3">Email Address (Optional: to be notified when resolved)</label>
+<div class="mt-1">
+    <input type="email" name="email" id="email" class="form-control w-100" placeholder="Enter your email address if you wish to be notified">
+    <div id="emailError" class="error-message"></div>
+</div>
 
                     <label for="issue" class="text-center d-block mt-3 mb-3">Describe the Issue</label>
                     <textarea id="issue" name="issue" rows="4" cols="50" class="form-control"></textarea>
@@ -129,6 +136,14 @@
 
                 return valid;
             }
+           // Validate Email (optional)
+const email = document.getElementById('email').value.trim();
+if (email && !/\S+@\S+\.\S+/.test(email)) {
+    document.getElementById('emailError').textContent = 'Please enter a valid email address.';
+    valid = false;
+}
+
+
         </script>
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

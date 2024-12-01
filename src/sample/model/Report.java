@@ -12,6 +12,9 @@ public class Report {
     private String repissue;     
     private byte[] reportImage; // Store image as bytes
     private Date recInstDt; 
+    private String instBy;
+    private int status;
+    private String reportCode;
     
     // Flag to check if image exists
     private boolean hasImage;
@@ -19,7 +22,7 @@ public class Report {
     public Report() {}
 
     public Report(int reportId, String equipment, String building, String floor, 
-                      String room, String issue, byte[] reportImage, Date recInstDt) {
+                      String room, String issue, byte[] reportImage, Date recInstDt, String instBy, int status, String reportCode) {
         this.reportId = reportId;
         this.repEquipment = equipment;
         this.locName = building;
@@ -29,6 +32,9 @@ public class Report {
         this.reportImage = reportImage;
         this.recInstDt = recInstDt;
         this.hasImage = reportImage != null;
+        this.instBy = instBy;
+        this.status = status;
+        this.reportCode = reportCode;
     }
 
     public int getReportId() {
@@ -103,4 +109,28 @@ public class Report {
     public void setHasImage(boolean hasImage) {
         this.hasImage = hasImage;
     }
+    
+    public void setInstBy(String instBy) {
+        this.instBy = instBy;
+    }
+    
+    public String getInstBy() {
+        return instBy;
+    }
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+    
+    public String getReportCode() {
+        return reportCode;
+    }
+
+    public void setReportCode(String reportCode) {
+        this.reportCode = reportCode;
+    }
+    
 }
