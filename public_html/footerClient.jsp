@@ -7,8 +7,9 @@
          <link rel="stylesheet" href="./resources/css/custom-styles.css">
     </head>
     <body>
-    <footer class="bg-facilGray fixed-bottom p-3 d-flex justify-content-between align-items-center w-100">
-    <img src="./resources/images/FACILITAIN.png" alt="USTLOGO" class="img-fluid" style="height: 3rem;" />
+    <footer class="bg-facilGray sticky-bottom p-3 d-flex justify-content-between align-items-center w-100">
+    <img src="./resources/images/FACILITAIN.png" alt="USTLOGO" class="img-fluid d-none d-md-block" style="max-height: 4rem;" />
+    <img src="./resources/images/FACILITAIN.png" alt="USTLOGO" class="img-fluid d-md-none" style="max-height: 2rem;" />
     <div >
     <a href="<%=request.getContextPath()%>/termsClient.jsp" class="${page == 'termsClient.jsp' ? 'active' : ''} pr-5">
              Terms and Conditions

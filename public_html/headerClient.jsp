@@ -9,9 +9,13 @@
         <link rel="stylesheet" href="resources/css/custom-styles.css"/>
     </head>
     <body>
-        <header class="bg-facilGray sticky-top p-3 d-flex justify-content-between align-items-center w-100">
-            <img src="resources/images/USTLogo.png" alt="USTLOGO"
-                 style="height: 6rem;"/>
+        <header class=" container bg-facilGray sticky-top p-3 d-flex justify-content-between align-items-center w-100">
+            <!-- For large devices -->
+        <img src="resources/images/USTLogo.png" alt="UST Logo" class="img-fluid d-none d-md-block" style="max-height: 6rem;">
+
+            <!-- For small devices -->
+        <img src="resources/images/USTLogo.png" alt="UST Logo" class="img-fluid d-md-none" style="max-height: 3rem;">
+
         </header>
         
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
