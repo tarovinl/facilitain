@@ -41,7 +41,7 @@ public class EmailSender {
                 "EQUIPMENT TYPE: " + eqmtType + "\n" +
                 "ISSUE: " + issue + "\n" +
                 "DATE ISSUED: " + dateIssued + "\n\n" +
-                "is now RESOLVED" +" Kevin Panget Kevin Panget");
+                "is now RESOLVED");
 
             Transport.send(message);
 

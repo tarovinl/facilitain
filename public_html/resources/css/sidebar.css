@@ -27,7 +27,11 @@
     .hamburger-menu {
         display: none; /* Hide hamburger on desktop */
     }
-
+ .col-md-10 {
+        margin-left: 250px; /* Shift main content to make room for sidebar */
+        width: calc(100% - 250px);
+    }
+}
    
 }
 /* Hamburger menu icon */
