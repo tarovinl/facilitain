@@ -5,10 +5,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="./resources/css/sidebar.css">
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+ 
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
+       <link rel="stylesheet" href="./resources/css/sidebar.css">
 </head>
 <body>
     <div class="sidebar">
@@ -69,6 +71,7 @@
             </div>
             <hr class="bg-light border-2 border-top border-light"/>
         </div>
+     <!--   Log out to Portal -->
         <a href="#" class="btn"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
     </div>
 

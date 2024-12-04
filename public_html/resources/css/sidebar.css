@@ -18,44 +18,35 @@
 .sidebar.active {
     left: 0; /* Slide in when active */
 }
-@media (min-width: 800px) {
-    .sidebar {
-        left: 0; /* Always visible on desktop */
-        width: 250px;
-    }
 
-    .hamburger-menu {
-        display: none; /* Hide hamburger on desktop */
-    }
- .col-md-10 {
-        margin-left: 250px; /* Shift main content to make room for sidebar */
-        width: calc(100% - 250px);
-    }
-}
-   
-}
-/* Hamburger menu icon */
-.hamburger-menu {
-    display: none;
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 1100;
-    background: none;
-    border: none;
-    cursor: pointer;
+/* Sidebar Header Styles */
+.sidebar h2, 
+.sidebar p {
+    text-align: center;
 }
 
-.hamburger-menu span {
+/* Navigation Links */
+.sidebar a {
+    color: white;
+    text-decoration: none;
     display: block;
-    width: 25px;
-    height: 3px;
-    background-color: #000;
-    margin: 5px 0;
-    transition: 0.4s;
+    padding: 10px 15px; 
+    margin-bottom: 10px;
+    text-align: left;
 }
 
-/* Overlay effect when sidebar is open */
+.sidebar a:hover {
+    background-color: #444;
+    border-radius: 5px;
+}
+
+.sidebar a.active {
+    background-color: #ffca2c;
+    color: black;
+    border-radius: 5px;
+}
+
+/* Overlay */
 .sidebar-overlay {
     display: none;
     position: fixed;
@@ -71,42 +62,7 @@
     display: block;
 }
 
-/* Media query for mobile responsiveness */
-@media (max-width: 800px) {
-    .sidebar {
-        width: 250px;
-    }
-
-    .hamburger-menu {
-        display: block;
-    }
-
-    .col-md-10 {
-        margin-left: 0;
-        width: 100%;
-    }
-}
-
-/* Existing sidebar link and content styles remain the same */
-.sidebar a {
-    color: white;
-    text-decoration: none;
-    display: block;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.sidebar a:hover {
-    background-color: #444;
-    border-radius: 5px;
-}
-
-.sidebar .active {
-    background-color: #ffca2c;
-    color: yellow;
-    border-radius: 5px;
-}
-
+/* Todo List */
 .todo-list {
     margin-top: 20px;
 }
@@ -118,14 +74,73 @@
     margin-bottom: 10px;
 }
 
-  
+/* Hamburger Menu */
+/*Adjust the postion of the hamburger as needed*/
+.hamburger-menu {
+    display: none;
+    position: fixed;
+    bottom: 89%; 
+    left: 20px;
+    z-index: 1100;
+    background-color: #2c2c2c;
+    border: none;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column; /* Changed to column to stack lines vertically */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: background-color 0.3s ease;
+}
 
-    .sidebar a {
-        float: none; /* Avoid floating elements */
-        text-align: center; /* Center text on smaller screens */
+.hamburger-menu:hover {
+    background-color: #444;
+}
+
+.hamburger-menu span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 3px 0;
+    transition: 0.4s;
+}
+
+/* Responsive Design */
+@media (max-width: 800px) {
+    .sidebar {
+        width: 250px;
     }
 
-    .sidebar h2, .sidebar p {
-        text-align: center; /* Center heading and text */
+    .hamburger-menu {
+        display: flex;
+    }
+
+    .col-md-10 {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .sidebar a {
+        text-align: left;
+    }
+}
+
+@media (min-width: 800px) {
+    .sidebar {
+        left: 0; /* Always visible on desktop */
+        width: 250px;
+    }
+
+    .hamburger-menu {
+        display: none;
+    }
+
+    .col-md-10 {
+        margin-left: 250px;
+        width: calc(100% - 250px);
     }
 }

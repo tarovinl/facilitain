@@ -11,9 +11,10 @@
        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
         <!-- Optional: Add a custom title -->
-        <title>Agreement</title>
+        <title>FMO Report and Feedback</title>
     </head>
     <body>
+   <!-- Respondent Landing Page-->
      <jsp:include page="headerClient.jsp"/>
         <!-- Bootstrap Container Example -->
         <div class="w-100 h-100  bg-white d-flex flex-column justify-content-center align-items-center p-3">
