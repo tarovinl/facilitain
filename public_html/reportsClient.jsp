@@ -23,9 +23,12 @@
     </head>
     <body>
         <jsp:include page="headerClient.jsp"/>
-        <div class="w-100 h-100 bg-white d-flex flex-column justify-content-center align-items-center p-3">
-            <div class="mw-50 h-75 bg-facilGray text-white p-5">
-                <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" style="height: 4rem;"/>
+       <div class="container justify-content-center align-items-center flex-grow-1 my-5 montserrat-regular">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
+                <div class="card">
+                    <div class="card-body ">
+                <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4" style="max-height: 4rem;">
                 <h3 class="text-center">Report a Problem</h3>
 
                 <!-- Form Starts Here -->
@@ -90,6 +93,9 @@
                         <i class="bi bi-arrow-left-short"></i>Back
                     </button>
                 </div>
+            </div>
+            </div>
+            </div>
             </div>
         </div>
             <script>

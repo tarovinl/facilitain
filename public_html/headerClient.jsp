@@ -9,7 +9,8 @@
         <link rel="stylesheet" href="resources/css/custom-styles.css"/>
     </head>
     <body>
-        <header class=" container bg-facilGray sticky-top p-3 d-flex justify-content-between align-items-center w-100">
+        <header class=" bg-facilGray sticky-top p-3 d-flex justify-content-between align-items-center" style="overflow-x: hidden;">
+
             <!-- For large devices -->
         <img src="resources/images/USTLogo.png" alt="UST Logo" class="img-fluid d-none d-md-block" style="max-height: 6rem;">
 
