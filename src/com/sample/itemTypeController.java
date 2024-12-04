@@ -98,7 +98,7 @@ public class itemTypeController extends HttpServlet {
                         statement.executeUpdate();
                     }
                 } else {
-                    String insertQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_TYPES (ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (ITEM_TYPE_SEQ.NEXTVAL, ?, ?, ?)";
+                    String insertQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_TYPES (ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (C##FMO_ADM.ITEM_TYPE_SEQ.NEXTVAL, ?, ?, ?)";
                     try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
                         statement.setInt(1, itemCatId);
                         statement.setString(2, name);
