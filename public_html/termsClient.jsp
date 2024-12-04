@@ -13,7 +13,7 @@
         <!-- Optional: Add a custom title -->
         <title>Terms and Conditions</title>
     </head>
-    <body>
+    <body class="d-flex flex-column min-vh-100" >
      <jsp:include page="headerClient.jsp"/>
         <!-- Bootstrap Container Example -->
         <div class="w-100 h-100  bg-white d-flex flex-column  p-3">
@@ -41,9 +41,12 @@ We reserve the right to modify these Terms at any time. Any changes will be effe
             • Maintain the confidentiality of your account credentials and restrict access to your account.
           </p>
             <!-- Example Bootstrap Button -->
-             <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
-        <button class="btn btn-primary w-100">Back</button>
-    </div>
+             <div>
+                <button type="button" onclick="window.location.href='menuClient.jsp';" class="btn w-100 py-3 fs-5" 
+                                style="background-color: #fbbe15; border: none;">
+                    <i class="bi bi-arrow-left-short"></i>Back
+                </button>
+            </div>
     
             
         </div>

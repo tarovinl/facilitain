@@ -13,13 +13,15 @@
         <!-- Optional: Add a custom title -->
         <title>Agreement</title>
     </head>
-    <body>
+    <body class="d-flex flex-column min-vh-100" >
      <jsp:include page="headerClient.jsp"/>
         <!-- Bootstrap Container Example -->
-        <div class="w-100 h-100  bg-white d-flex flex-column justify-content-center align-items-center p-3">
-        <div class="mw-50 h-75 bg-facilGray text-white p-5">
-             <img src="resources/images/FACILITAIN.png" alt="FACILITAIN"
-                 style="height: 4rem;"/>
+        <div class="container justify-content-center align-items-center flex-grow-1 my-5 montserrat-regular">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
+                <div class="card">
+                    <div class="card-body ">
+            <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
             <h3 class="text-center p-5 ">AGREEMENT REMINDER:</h3>
           <p class=" text-center p-5"> 
           Filling up the form abides by the <br/>
@@ -28,18 +30,29 @@
           record-keeping purposes only
           </p>
             <!-- Example Bootstrap Button -->
-             <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
-        <button class="btn btn-primary w-100">Agree</button>
-    </div>
-    <div class="container mt-3 w-100 d-flex justify-content-center"> <!-- Centering with flexbox -->
-        <button class="btn btn-primary w-100">Disagree</button>
-    </div>
+             <div class="mt-3 d-flex justify-content-center px-0">
+                <button type ="button" onclick="window.location.href='menuClient.jsp';" class="btn w-100 py-3 fs-5"  style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
+        onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
+        onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
+                Agree
+                </button>
+            </div>
+            <div class="mt-3 d-flex justify-content-center px-0">
+                 <button type ="button" onclick="window.location.href='#';" class="btn w-100 py-3 fs-5"  style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
+        onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
+        onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
+                Disagree
+                </button>
+            </div>
     <div class="">
     <button class="btn text-white p-2" style="background-color: transparent;">
         <i class="bi bi-arrow-left-short"></i>Back
     </button>
 </div>
             </div>
+        </div>
+        </div>
+        </div>
         </div>
 
         <!-- Bootstrap JS, Popper.js, and jQuery -->
