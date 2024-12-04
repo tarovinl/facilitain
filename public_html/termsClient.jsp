@@ -31,15 +31,16 @@
     <body class="d-flex flex-column min-vh-100" >
      <jsp:include page="headerClient.jsp"/>
         <!-- Bootstrap Container Example -->
-        <div class="w-100 h-100  bg-white d-flex flex-column  p-3">
+        <div class="w-100 h-100  bg-white d-flex flex-column  p-5">
         
+       
            
             <h1 class="text-center pt-3 fw-bold montserrat-bold">Terms and Conditions</h1>
-          <h2 class="text-left p-5 montserrat-bold"> 
+          <h2 class="text-left  montserrat-bold"> 
          Effective October 2024
           </h2>
           
-          <p class="pl-5 pr-5 montserrat-regular">
+          <p class=" montserrat-regular">
           Welcome to FACILITAIN, the Academic Facility Maintenance Tracker for the Facilities Management Office of the
           University of Santo Tomas ("UST", "we", "our", or "us"). By accessing or using our website, you agree to comply 
           with and be bound by the following terms and conditions ("Terms"). If you do not agree to these Terms, please do not use our website.<br/> <br/>
@@ -56,9 +57,11 @@ We reserve the right to modify these Terms at any time. Any changes will be effe
             • Maintain the confidentiality of your account credentials and restrict access to your account.
           </p>
             <!-- Example Bootstrap Button -->
-             <div>
+             <div class="mt-5">
                 <button type="button" onclick="window.location.href='menuClient.jsp';" class="btn w-100 py-3 fs-5" 
-                                style="background-color: #fbbe15; border: none;">
+                                style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
+        onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
+        onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
                     <i class="bi bi-arrow-left-short"></i>Back
                 </button>
             </div>

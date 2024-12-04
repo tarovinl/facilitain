@@ -33,15 +33,15 @@
     <body class="d-flex flex-column min-vh-100">
      <jsp:include page="headerClient.jsp"/>
         <!-- Bootstrap Container Example -->
-        <div class="w-100 h-100  bg-white d-flex flex-column  p-3">
+        <div class="w-100 h-100  bg-white d-flex flex-column  p-5">
         
            
-            <h1 class="text-center pt-3 fw-bold">Privacy Policy</h1>
-          <h2 class="text-left p-5"> 
+            <h1 class="text-center pt-3 fw-bold montserrat-bold">Privacy Policy</h1>
+          <h2 class="text-left montserrat-bold"> 
          Effective October 2024
           </h2>
           
-          <p class="pl-5 pr-5">
+          <p class=" montserrat-regular">
          Welcome to FACILITAIN, the Academic Facility Maintenance Tracker for the Facilities Management Office of the University of Santo Tomas ("UST", "we", "our", or "us"). 
          We are committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner. 
          This Privacy Policy outlines how we collect, use, and protect your information when you use our website.<br/> <br/>
@@ -53,9 +53,11 @@
             Cookies and Similar Technologies: We use cookies and similar technologies to collect information about your browsing activities over time and across different websites following your use of our website. <br/>
            </p>
             <!-- Example Bootstrap Button -->
-             <div>
+             <div class="mt-5">
                 <button type="button" onclick="window.location.href='menuClient.jsp';" class="btn w-100 py-3 fs-5" 
-                                style="background-color: #fbbe15; border: none;">
+                                style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
+        onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
+        onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
                     <i class="bi bi-arrow-left-short"></i>Back
                 </button>
             </div>

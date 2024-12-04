@@ -61,6 +61,7 @@
                 <div class="card">
                     <div class="card-body  ">
                         <!-- Logo -->
+                        <img src="resources/images/FMO-Logo.png" alt="FMO Logo" class="img-fluid  d-block mx-auto" style="max-height: 10rem;">
                         <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
                     <p class="fs-5 montserrat-bold text-center"> Welcome to Facilitain! </p>
                         
