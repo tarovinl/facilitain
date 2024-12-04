@@ -55,12 +55,12 @@
 
 
     <body>
-<div class="container-fluid d-flex">
-    <div class="col-md-3 p-0">
+<div class="container-fluid">
+  <div class="row min-vh-100">
         <jsp:include page="sidebar.jsp"/>
-    </div>
     
-    <div class="col-md-9">
+    
+    <div class="col-md-10">
             <jsp:include page="quotations.jsp"><jsp:param name="locID" value="${locID}" /></jsp:include>
         <div class="topButtons"> <!-- top buttons -->
             <div>
@@ -280,8 +280,8 @@
             <div id="paginationControls"></div>
          </div>
      </div>
-    </div> 
-    </div>
+   </div>
+</div>
     <!--add equipment modal-->
     <div class="modal fade" id="addEquipment" tabindex="-1" role="dialog" aria-labelledby="equipmentAdd" aria-hidden="true">
     <div class="modal-dialog" role="document">

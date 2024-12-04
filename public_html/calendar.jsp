@@ -160,7 +160,16 @@
 
             // Other static events
             var events = [
-                ...recurringEvents
+                ...recurringEvents,
+            <c:forEach var="todos" items="${FMO_TO_DO_LIST}">
+            <c:if test="${todos.empNumber == 1234}">
+                {
+                    title: '${todos.listContent}', 
+                    start: '${todos.startDate}',
+                    end: '${todos.endDate}'
+                },
+            </c:if>
+            </c:forEach>
             ];
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
