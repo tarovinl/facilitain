@@ -56,6 +56,7 @@ public class ItemUserController extends HttpServlet {
         List<Map.Entry<Integer, String>> userTypeList = new ArrayList<>();
         userTypeList.add(new AbstractMap.SimpleEntry<>(1, "Admin"));
         userTypeList.add(new AbstractMap.SimpleEntry<>(2, "View Only"));
+        userTypeList.add(new AbstractMap.SimpleEntry<>(3, "Support Staff"));
 
         // Set attributes for the JSP
         request.setAttribute("itemUserList", itemUserList);
