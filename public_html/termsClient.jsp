@@ -9,9 +9,24 @@
         
         <!-- Bootstrap CSS -->
        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
         <!-- Optional: Add a custom title -->
         <title>Terms and Conditions</title>
+        <style>
+        .montserrat-regular {
+         font-family: "Montserrat", sans-serif;
+         font-weight: 400;
+         font-style: normal;
+                            }
+        
+        .montserrat-bold {
+         font-family: "Montserrat", sans-serif;
+         font-weight: 600;
+         font-style: normal;
+                            }
+    </style>
     </head>
     <body class="d-flex flex-column min-vh-100" >
      <jsp:include page="headerClient.jsp"/>
@@ -19,12 +34,12 @@
         <div class="w-100 h-100  bg-white d-flex flex-column  p-3">
         
            
-            <h1 class="text-center pt-3 fw-bold">Terms and Conditions</h1>
-          <h2 class="text-left p-5"> 
+            <h1 class="text-center pt-3 fw-bold montserrat-bold">Terms and Conditions</h1>
+          <h2 class="text-left p-5 montserrat-bold"> 
          Effective October 2024
           </h2>
           
-          <p class="pl-5 pr-5">
+          <p class="pl-5 pr-5 montserrat-regular">
           Welcome to FACILITAIN, the Academic Facility Maintenance Tracker for the Facilities Management Office of the
           University of Santo Tomas ("UST", "we", "our", or "us"). By accessing or using our website, you agree to comply 
           with and be bound by the following terms and conditions ("Terms"). If you do not agree to these Terms, please do not use our website.<br/> <br/>

@@ -74,9 +74,10 @@
             style="border: none;">
                 <!-- Image on top of the text -->
                 <img src="resources/images/icons/message-solid.svg" alt="Feedback Icon" class="mb-5" style="max-height: 5rem;">
-                <span class=" montserrat-bold">Make a Feedback</span>
+                <span class=" montserrat-bold text-wrap">Make a Feedback</span>
             </button>
         </a>
+        
     </div>
 
     <!-- Report Button -->
@@ -86,7 +87,7 @@
             style=" border: none;">
             <!-- Image on top of the text -->
                 <img src="resources/images/icons/triangle-exclamation-solid.svg" alt="Report Icon" class="mb-5" style="max-height: 5rem;">
-               <span class=" montserrat-bold"> Report a Problem</span>
+               <span class=" montserrat-bold text-wrap"> Report a Problem</span>
             </button>
         </a>
     </div>

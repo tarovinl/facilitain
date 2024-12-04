@@ -10,8 +10,25 @@
         <!-- Bootstrap CSS -->
        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+         <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
         <!-- Optional: Add a custom title -->
         <title>Agreement</title>
+        <style>
+        .montserrat-regular {
+         font-family: "Montserrat", sans-serif;
+         font-weight: 400;
+         font-style: normal;
+                            }
+        
+        .montserrat-bold {
+         font-family: "Montserrat", sans-serif;
+         font-weight: 600;
+         font-style: normal;
+                            }
+    
+    </style>
     </head>
     <body class="d-flex flex-column min-vh-100" >
      <jsp:include page="headerClient.jsp"/>
