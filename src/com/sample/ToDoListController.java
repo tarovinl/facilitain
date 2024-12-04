@@ -98,13 +98,13 @@ public class ToDoListController extends HttpServlet {
             String sql;
             
             if ("delete".equals(tdAction)) {
-                sql = "DELETE FROM C##FMO_ADM.FMO_TO_DO_LIST WHERE LIST_ITEM_ID = ?";
+                sql = "DELETE FROM FMO_ADM.FMO_TO_DO_LIST WHERE LIST_ITEM_ID = ?";
             }else if ("check".equals(tdAction)) {
-                sql = "UPDATE C##FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 1 WHERE LIST_ITEM_ID = ?";
+                sql = "UPDATE FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 1 WHERE LIST_ITEM_ID = ?";
             }else if ("uncheck".equals(tdAction)) {
-                sql = "UPDATE C##FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 0 WHERE LIST_ITEM_ID = ?";
+                sql = "UPDATE FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 0 WHERE LIST_ITEM_ID = ?";
             }else{
-                sql = "INSERT INTO C##FMO_ADM.FMO_TO_DO_LIST (EMP_NUMBER, LIST_CONTENT, START_DATE, END_DATE) VALUES (1234, ?, ?, ?)";
+                sql = "INSERT INTO FMO_ADM.FMO_TO_DO_LIST (EMP_NUMBER, LIST_CONTENT, START_DATE, END_DATE) VALUES (1234, ?, ?, ?)";
             }
                 
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {

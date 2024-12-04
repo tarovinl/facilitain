@@ -27,8 +27,8 @@ public class ItemUserController extends HttpServlet {
 
         // Query for ItemUser data
         String query = "SELECT iu.EMP_NUMBER, iu.USER_TYPE, e.FIRST_NAME, e.SURNAME " +
-                       "FROM C##FMO_ADM.FMO_ITEM_USERS iu " +
-                       "LEFT JOIN C##FMO_ADM.FMO_EMPLOYEES e ON iu.EMP_NUMBER = e.EMP_NUMBER";
+                       "FROM FMO_ADM.FMO_ITEM_USERS iu " +
+                       "LEFT JOIN FMO_ADM.FMO_EMPLOYEES e ON iu.EMP_NUMBER = e.EMP_NUMBER";
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
@@ -74,7 +74,7 @@ public class ItemUserController extends HttpServlet {
 
         // SQL MERGE statement for insert or update
         String insertOrUpdateQuery = 
-            "MERGE INTO C##FMO_ADM.FMO_ITEM_USERS iu " +
+            "MERGE INTO FMO_ADM.FMO_ITEM_USERS iu " +
             "USING (SELECT ? AS EMP_NUMBER, ? AS USER_TYPE FROM dual) new_values " +
             "ON (iu.EMP_NUMBER = new_values.EMP_NUMBER) " +
             "WHEN MATCHED THEN UPDATE SET iu.USER_TYPE = new_values.USER_TYPE " +

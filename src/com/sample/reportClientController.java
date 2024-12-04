@@ -31,7 +31,7 @@ public class reportClientController extends HttpServlet {
             throws ServletException, IOException {
         List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
 
-        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
+        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement locationStatement = connection.prepareStatement(locationQuery)) {
@@ -78,7 +78,7 @@ public class reportClientController extends HttpServlet {
 
         try (Connection connection = PooledConnection.getConnection()) {
             // Get the max REPORT_ID and increment it by 1
-            String getMaxIdQuery = "SELECT COALESCE(MAX(REPORT_ID), 0) + 1 AS NEXT_ID FROM C##FMO_ADM.FMO_ITEM_REPORTS";
+            String getMaxIdQuery = "SELECT COALESCE(MAX(REPORT_ID), 0) + 1 AS NEXT_ID FROM FMO_ADM.FMO_ITEM_REPORTS";
             int reportId = 0;
             try (Statement stmt = connection.createStatement();
                  ResultSet rs = stmt.executeQuery(getMaxIdQuery)) {
@@ -90,7 +90,7 @@ public class reportClientController extends HttpServlet {
             // Generate REPORT_CODE (e.g., abbreviation of equipment, floor, and room, plus unique ID)
             String reportCode = generateReportCode(equipment, floor, room, reportId);
             // Insert the new report, including STATUS and REPORT_CODE
-            String insertQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPORTS (REPORT_ID, EQUIPMENT_TYPE, ITEM_LOC_ID, REPORT_FLOOR, REPORT_ROOM, REPORT_ISSUE, REPORT_PICTURE, REC_INST_DT, REC_INST_BY, STATUS, REPORT_CODE) " +
+            String insertQuery = "INSERT INTO FMO_ADM.FMO_ITEM_REPORTS (REPORT_ID, EQUIPMENT_TYPE, ITEM_LOC_ID, REPORT_FLOOR, REPORT_ROOM, REPORT_ISSUE, REPORT_PICTURE, REC_INST_DT, REC_INST_BY, STATUS, REPORT_CODE) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
                 pstmt.setInt(1, reportId);
