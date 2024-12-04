@@ -16,7 +16,7 @@
 
         <div class="col-md-10">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1>Reports</h1>
+                <h1 >Reports</h1>
             </div>
 
             <table class="table table-striped table-hover">
@@ -49,12 +49,21 @@
                                 </c:choose>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-link toggle-btn" data-target="details-${report.reportId}">
+                                <!-- Details Button -->
+                                <button class="btn btn-sm btn-info toggle-btn" data-target="details-${report.reportId}">
                                     Details
                                 </button>
+                                
+                                <!-- Resolve Form -->
                                 <form action="emailresolve" method="post" style="display:inline;">
                                     <input type="hidden" name="reportId" value="${report.reportId}">
-                                    <button type="submit" class="btn btn-sm btn-link">✔ Resolve</button>
+                                    <button type="submit" class="btn btn-sm btn-success">Resolve</button>
+                                </form>
+
+                                <!-- Archive Form -->
+                                <form action="reports" method="post" style="display:inline;">
+                                    <input type="hidden" name="reportId" value="${report.reportId}">
+                                    <button type="submit" class="btn btn-sm btn-danger">Archive</button>
                                 </form>
                             </td>
                         </tr>

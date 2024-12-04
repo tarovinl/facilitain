@@ -15,6 +15,7 @@ public class Report {
     private String instBy;
     private int status;
     private String reportCode;
+    private int archivedFlag;
     
     // Flag to check if image exists
     private boolean hasImage;
@@ -35,6 +36,7 @@ public class Report {
         this.instBy = instBy;
         this.status = status;
         this.reportCode = reportCode;
+        
     }
 
     public int getReportId() {
@@ -132,5 +134,11 @@ public class Report {
     public void setReportCode(String reportCode) {
         this.reportCode = reportCode;
     }
-    
+    public int getArchivedFlag() {
+        return archivedFlag;
+    }
+
+    public void setArchivedFlag(int archivedFlag) {
+        this.archivedFlag = archivedFlag;
+    }
 }

@@ -16,7 +16,7 @@
             </div>
             <div class="col-md-9 col-lg-10 p-4">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h1>Maintenance Schedule</h1>
+                    <h1 style="font-family: 'NeueHaasMedium', sans-serif; >Maintenance Schedule</h1>
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#maintenanceModal">Add Schedule</button>
                 </div>
 

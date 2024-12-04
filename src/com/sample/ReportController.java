@@ -25,12 +25,13 @@ public class ReportController extends HttpServlet {
         List<Report> reportsList = new ArrayList<>();
 
         // SQL query to retrieve all reports
-        String retrieveReportsQuery = "SELECT " +
-            "REPORT_ID, EQUIPMENT_TYPE, ITEM_LOC_ID, REPORT_FLOOR, " +
-            "REPORT_ROOM, REPORT_ISSUE, REPORT_PICTURE, " +
-            "REC_INST_DT, REC_INST_BY, STATUS, REPORT_CODE " +
-            "FROM C##FMO_ADM.FMO_ITEM_REPORTS " +
-            "ORDER BY REC_INST_DT DESC";
+        String retrieveReportsQuery = "SELECT R.REPORT_ID, R.EQUIPMENT_TYPE, L.NAME AS LOC_NAME, R.REPORT_FLOOR, " +
+            "R.REPORT_ROOM, R.REPORT_ISSUE, R.REPORT_PICTURE, R.REC_INST_DT, R.REC_INST_BY, R.STATUS, R.REPORT_CODE, R.ARCHIVED_FLAG " +
+            "FROM C##FMO_ADM.FMO_ITEM_REPORTS R " +
+            "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS L ON R.ITEM_LOC_ID = L.ITEM_LOC_ID " +
+            "WHERE R.ARCHIVED_FLAG = 1 " +
+            "ORDER BY R.REC_INST_DT DESC";
+
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(retrieveReportsQuery);
@@ -45,7 +46,7 @@ public class ReportController extends HttpServlet {
                 Report report = new Report(
                     rs.getInt("REPORT_ID"),
                     rs.getString("EQUIPMENT_TYPE"),
-                    rs.getString("ITEM_LOC_ID"),
+                    rs.getString("LOC_NAME"),
                     rs.getString("REPORT_FLOOR"),
                     rs.getString("REPORT_ROOM"),
                     rs.getString("REPORT_ISSUE"),
@@ -54,7 +55,9 @@ public class ReportController extends HttpServlet {
                     rs.getString("REC_INST_BY"),
                     rs.getInt("STATUS"),
                     rs.getString("REPORT_CODE")
+                    
                 );
+                report.setArchivedFlag(rs.getInt("ARCHIVED_FLAG"));  
                 reportsList.add(report);
             }
         } catch (Exception e) {
@@ -66,5 +69,24 @@ public class ReportController extends HttpServlet {
 
         // Forward to the JSP page
         request.getRequestDispatcher("/reports.jsp").forward(request, response);
+        
+        
     }
+    @Override
+       protected void doPost(HttpServletRequest request, HttpServletResponse response)
+               throws ServletException, IOException {
+           String reportId = request.getParameter("reportId");
+           if (reportId != null) {
+               try (Connection connection = PooledConnection.getConnection()) {
+                   String archiveReportQuery = "UPDATE C##FMO_ADM.FMO_ITEM_REPORTS SET ARCHIVED_FLAG = 2 WHERE REPORT_ID = ?";
+                   try (PreparedStatement stmt = connection.prepareStatement(archiveReportQuery)) {
+                       stmt.setInt(1, Integer.parseInt(reportId));
+                       stmt.executeUpdate();
+                   }
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+           }
+           response.sendRedirect("reports");
 }
+    }
