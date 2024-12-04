@@ -10,12 +10,12 @@
         <!-- Bootstrap CSS -->
        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         
-        <!-- Optional: Add a custom title -->
+        
         <title>Thank you!</title>
     </head>
     <body>
      <jsp:include page="headerClient.jsp"/>
-        <!-- Bootstrap Container Example -->
+        
         <div class="w-100 h-100  bg-white d-flex flex-column justify-content-center align-items-center p-3">
         <div class="mw-50 h-75 bg-facilGray text-white p-5">
              <img src="resources/images/FACILITAIN.png" alt="FACILITAIN"
@@ -24,10 +24,10 @@
           <p class=" text-center p-5"> 
          Thank you for your feedback!
           </p>
-            <!-- Example Bootstrap Button -->
+            
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
-        
-         <button class="btn btn-primary w-100" onclick="window.location.href='feedbackClientController';">Back</button>
+         <button class="btn btn-primary w-100" onclick="window.location.href='menuClient.jsp';">Back to Menu</button>
+         <button class="btn btn-primary w-100" onclick="window.location.href='feedbackClient';">Back to Feedback</button>
     </div>
     
             </div>
