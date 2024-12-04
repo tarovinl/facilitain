@@ -13,24 +13,32 @@
         
         <title>Thank you!</title>
     </head>
-    <body>
+    <body class="d-flex flex-column min-vh-100">
      <jsp:include page="headerClient.jsp"/>
         
-        <div class="w-100 h-100  bg-white d-flex flex-column justify-content-center align-items-center p-3">
-        <div class="mw-50 h-75 bg-facilGray text-white p-5">
-             <img src="resources/images/FACILITAIN.png" alt="FACILITAIN"
-                 style="height: 4rem;"/>
+    <div class="container justify-content-center align-items-center flex-grow-1 my-5 montserrat-regular">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+                <div class="card">
+                    <div class="card-body   text-center ">
+             <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4" style="max-height: 4rem;">
             <h3 class="text-center ">Feedback Form</h3>
           <p class=" text-center p-5"> 
-         Thank you for your feedback!
+         Thank you for your feedback! <br/>
+         We greatly appreciate you taking the time to complete the form. Your input helps us improve our services.
           </p>
             
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
-         <button class="btn btn-primary w-100" onclick="window.location.href='menuClient.jsp';">Back to Menu</button>
-         <button class="btn btn-primary w-100" onclick="window.location.href='feedbackClient';">Back to Feedback</button>
-    </div>
-    
+         <button class="btn btn-primary w-100 text-dark" style="background-color: #fbbe15;border: none;" onclick="window.location.href='menuClient.jsp';">Back to Menu</button>
             </div>
+            <div class="container mt-3 d-flex justify-content-center">
+         <button class="btn btn-primary w-100 text-dark"  style="background-color: #fbbe15;border: none;" onclick="window.location.href='feedbackClient';">Back to Feedback</button>
+            </div>
+    
+         </div>
+        </div>
+        </div>
+        </div>
         </div>
 
         <!-- Bootstrap JS, Popper.js, and jQuery -->

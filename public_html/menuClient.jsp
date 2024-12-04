@@ -34,31 +34,32 @@
         <div class="row justify-content-center align-items-center">
             <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
                 <div class="card">
-                    <div class="card-body   text-center ">
+                    <div class="card-body  ">
                         <!-- Logo -->
                         <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4" style="max-height: 4rem;">
-                    <p> Welcome to Facilitain! </p>
+                    <p class="fs-1 text-center"> Welcome to Facilitain! </p>
                         <!-- Feedback Button -->
                         <div class="mt-3 d-flex justify-content-center px-0">
-                            <a href="<%=request.getContextPath()%>/feedbackClient" class="w-100 ">
-                                <button class="btn w-100" 
-                                style="background-color: #fbbe15; border: none;">Make a Feedback</button>
-
+                            <a href="<%=request.getContextPath()%>/feedbackClient" class="w-100">
+                            <button class="btn w-100 py-3 fs-5" style="background-color: #fbbe15; border: none;">
+                                Make a Feedback
+                             </button>
                             </a>
                         </div>
+
 
                         <!-- Report Button -->
                         <div class="mt-3 d-flex justify-content-center px-0">
                             <a href="<%=request.getContextPath()%>/reportsClient" class="w-100">
-                                <button class="btn w-100" 
+                                <button class="btn w-100 py-3 fs-5" 
                                 style="background-color: #fbbe15; border: none;">Report a Problem</button>
                             </a>
                         </div>
 
                         <!-- Back Button -->
-                        <div class="d-flex justify-content-center mt-3">
-                             <button class="btn w-100" 
-                                style="background-color: #fbbe15; border: none;">
+                        <div class="d-flex  mt-3">
+                             <button class="btn p-2" 
+                                style="background-color: transparent; border: none;">
                                 <i class="bi bi-arrow-left-short"></i>Back
                             </button>
                         </div>

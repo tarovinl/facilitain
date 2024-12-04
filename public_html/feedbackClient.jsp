@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="./resources/css/rating.css">
     <title>Feedback</title>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <jsp:include page="headerClient.jsp"/>
 
 
@@ -25,24 +25,24 @@
             <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
                 <div class="card">
                     <div class="card-body ">
-        <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4" style="max-height: 4rem;">
+        <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
         <h3 class="text-center">Feedback Form</h3>
 
         <form action="feedbackClient" method="POST" onsubmit="return validateForm()">
             <label for="room">Evaluation for</label>
             <div class="mt-1">
                 <select name="room" id="room" class="form-control w-100" required>
-                    <option value="" disabled selected>-- Choose Room --</option>
-                    <option value="Classroom">Classroom</option>
+                    <option value="" disabled selected >Choose type of room</option>
+                    <option value="Classroom" >Classroom</option>
                     <option value="Auditorium">Auditorium</option>
                 </select>
                 <small class="text-danger" id="roomError"></small>
             </div>
 
-            <label for="location">Location</label>
+            <label for="location" class="mt-2">Location</label>
             <div class="mt-1">
                 <select name="location" id="location" class="form-control w-100" required>
-                    <option value="" disabled selected>-- Choose Location --</option>
+                    <option value="" disabled selected >Choose a Location</option>
                     <c:forEach var="location" items="${locationList}">
                         <option value="${location.key}">${location.value}</option>
                     </c:forEach>
@@ -100,24 +100,26 @@
     </div>
 
                 <small class="text-danger" id="ratingError"></small>
-            </div>
+            
 
             <label for="suggestions" class="text-center d-block mt-3 mb-3">
                 Feedback and Suggestions (Optional)
             </label>
-            <textarea id="suggestions" name="suggestions" rows="4" cols="50" class="d-block"></textarea>
+            <textarea id="suggestions" name="suggestions" rows="4" cols="50" class="d-block p-3 mx-auto rounded border"
+    style="width: 100%; max-width: 500px;"placeholder="Enter your feedback and suggestions here..."></textarea>
 
             <div class="container mt-3 d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary"
+                <button type="submit" class="btn w-100 btn-primary text-dark"
                 style="background-color: #fbbe15; border: none;">Submit</button>
             </div>
-            <div class="">
+            <div>
                 <button type="button" onclick="window.location.href='menuClient.jsp';" class="btn  p-2"
-                        style="background-color: transparent;">
+                        style="background-color: transparent;border: none;">
                     <i class="bi bi-arrow-left-short"></i>Back
                 </button>
             </div>
         </form>
+        </div>
     </div>
     </div>
     </div>

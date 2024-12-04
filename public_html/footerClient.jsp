@@ -17,9 +17,9 @@
         </style>
     </head>
     <body>
-    <footer class="bg-facilGray sticky-bottom p-3 d-flex justify-content-between align-items-center w-auto" style="overflow-x: hidden;">
-    <img src="./resources/images/FACILITAIN.png" alt="USTLOGO" class="img-fluid d-none d-md-block" style="max-height: 3rem;" />
-    <img src="./resources/images/FACILITAIN.png" alt="USTLOGO" class="img-fluid d-md-none" style="max-height: 1.5rem;" />
+    <footer class="bg-facilGray p-3 d-flex justify-content-between align-items-center w-auto" style="overflow-x: hidden;">
+    <img src="./resources/images/FACILITAIN.png" alt="USTLOGO" class="img-fluid d-none d-md-block px-2" style="max-height: 3rem;" />
+    <img src="./resources/images/FACILITAIN.png" alt="USTLOGO" class="img-fluid d-md-none px-2" style="max-height: 1.5rem;" />
     
     <ul class ="nav col-md-4 justify-content-end">
     <li class="nav-item">

@@ -21,14 +21,14 @@
         </style>
       
     </head>
-    <body>
+    <body class="d-flex flex-column min-vh-100">
         <jsp:include page="headerClient.jsp"/>
        <div class="container justify-content-center align-items-center flex-grow-1 my-5 montserrat-regular">
         <div class="row justify-content-center align-items-center">
             <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
                 <div class="card">
                     <div class="card-body ">
-                <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4" style="max-height: 4rem;">
+                <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
                 <h3 class="text-center">Report a Problem</h3>
 
                 <!-- Form Starts Here -->
@@ -41,7 +41,7 @@
                     </div>
 
                     <!-- Location -->
-                    <label for="location">Location</label>
+                    <label for="location" class="mt-2">Location</label>
                     <div class="mt-1">
                         <select name="location" id="location" class="form-control w-100">
                             <option value="">Select a location</option>
@@ -53,46 +53,52 @@
                     </div>
 
                     <!-- Floor -->
-                    <label for="floor">Floor</label>
+                    <label for="floor"class="mt-2">Floor</label>
                     <div class="mt-1">
                         <input type="text" name="floor" id="floor" class="form-control w-100" placeholder="Enter floor">
                         <div id="floorError" class="error-message"></div>
                     </div>
 
              
-                    <label for="room">Room</label>
+                    <label for="room"class="mt-2">Room</label>
                     <div class="mt-1">
                         <input type="text" name="room" id="room" class="form-control w-100" placeholder="Enter room">
                         <div id="roomError" class="error-message"></div>
                     </div>
                     
 <!-- Optional Email for Notification -->
-<label for="email" class="mt-3">Email Address (Optional: to be notified when resolved)</label>
+<label for="email" class="mt-3">Email Address (Optional)</label>
 <div class="mt-1">
-    <input type="email" name="email" id="email" class="form-control w-100" placeholder="Enter your email address if you wish to be notified">
+    <input type="email" name="email" id="email" class="form-control w-100" placeholder="Enter your email address here...">
     <div id="emailError" class="error-message"></div>
 </div>
 
                     <label for="issue" class="text-center d-block mt-3 mb-3">Describe the Issue</label>
-                    <textarea id="issue" name="issue" rows="4" cols="50" class="form-control"></textarea>
+                    <textarea id="issue" name="issue" rows="4" cols="50" class="form-control"placeholder="Describe the issue here..."></textarea>
                     <div id="issueError" class="error-message"></div>
 
                 
-                    <label for="imageUpload" class="text-center d-block mt-3 mb-3">Upload an Image (optional)</label>
+                    <label for="imageUpload" class="text-center d-block mt-3 mb-3">Upload an Image</label>
                     <input type="file" name="imageUpload" id="imageUpload" class="form-control" accept="image/*">
 
                     <!-- Submit Button -->
-                    <div class="container mt-3 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                    <div class="container mt-3 px-0">
+                    <button type="submit" 
+                     class="btn btn-primary text-dark w-100" 
+                    style="background-color: #fbbe15; border: none;">
+                    Submit
+                    </button>
                     </div>
+
                 </form>
 
             
                 <div>
-                    <button class="btn text-white p-2" style="background-color: transparent;" onclick="window.history.back();">
-                        <i class="bi bi-arrow-left-short"></i>Back
-                    </button>
-                </div>
+                <button type="button" onclick="window.location.href='menuClient.jsp';" class="btn  p-2"
+                        style="background-color: transparent;border: none;">
+                    <i class="bi bi-arrow-left-short"></i>Back
+                </button>
+            </div>
             </div>
             </div>
             </div>
