@@ -16,7 +16,12 @@
 
         <div class="col-md-10">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1 >Reports</h1>
+                <h1>Reports</h1>
+                <select id="sortStatus" class="form-select w-auto">
+                    <option value="all" selected>All</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="unresolved">Unresolved</option>
+                </select>
             </div>
 
             <table class="table table-striped table-hover">
@@ -30,37 +35,24 @@
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="reportsTable">
                     <c:forEach var="report" items="${reportsList}">
-                        <!-- Main Row -->
-                        <tr>
+                        <tr class="report-row" data-status="${report.status == 1 ? 'resolved' : 'unresolved'}">
                             <td>${report.reportId}</td>
                             <td>${report.repEquipment}</td>
                             <td>${report.locName}</td>
                             <td><fmt:formatDate value="${report.recInstDt}" pattern="yyyy-MM-dd"/></td>
                             <td>
-                                <c:choose>
-                                    <c:when test="${report.status == 1}">
-                                        <span class="badge bg-success">Resolved</span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span class="badge bg-danger">Not Resolved</span>
-                                    </c:otherwise>
-                                </c:choose>
+                                <span class="badge ${report.status == 1 ? 'bg-success' : 'bg-danger'}">
+                                    ${report.status == 1 ? 'Resolved' : 'Not Resolved'}
+                                </span>
                             </td>
                             <td>
-                                <!-- Details Button -->
-                                <button class="btn btn-sm btn-info toggle-btn" data-target="details-${report.reportId}">
-                                    Details
-                                </button>
-                                
-                                <!-- Resolve Form -->
+                                <button class="btn btn-sm btn-info toggle-btn" data-target="details-${report.reportId}">Details</button>
                                 <form action="emailresolve" method="post" style="display:inline;">
                                     <input type="hidden" name="reportId" value="${report.reportId}">
                                     <button type="submit" class="btn btn-sm btn-success">Resolve</button>
                                 </form>
-
-                                <!-- Archive Form -->
                                 <form action="reports" method="post" style="display:inline;">
                                     <input type="hidden" name="reportId" value="${report.reportId}">
                                     <button type="submit" class="btn btn-sm btn-danger">Archive</button>
@@ -68,7 +60,6 @@
                             </td>
                         </tr>
 
-                        <!-- Collapsible Detail Row -->
                         <tr class="detail-row" id="details-${report.reportId}" style="display: none;">
                             <td colspan="6">
                                 <div class="p-3">
@@ -92,13 +83,27 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const toggleButtons = document.querySelectorAll('.toggle-btn');
+        const sortStatus = document.getElementById('sortStatus');
+        const reportRows = document.querySelectorAll('.report-row');
+
         toggleButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const targetId = button.getAttribute('data-target');
                 const targetElement = document.getElementById(targetId);
                 if (targetElement) {
-                    targetElement.style.display = 
-                        targetElement.style.display === 'none' ? 'table-row' : 'none';
+                    targetElement.style.display = targetElement.style.display === 'none' ? 'table-row' : 'none';
+                }
+            });
+        });
+
+        sortStatus.addEventListener('change', () => {
+            const selectedStatus = sortStatus.value;
+            reportRows.forEach(row => {
+                const rowStatus = row.getAttribute('data-status');
+                if (selectedStatus === 'all' || rowStatus === selectedStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
                 }
             });
         });

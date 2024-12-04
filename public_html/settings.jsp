@@ -18,7 +18,7 @@
             <div class="container">
                 <h1 class="my-4">Settings</h1>
                 <div class="row">
-                    <!-- Service Providers Card -->
+                    <!----><!-- Service Providers Card --><!--
                     <div class="col-md-6">
                         <div class="card text-center mb-4">
                             <a href="serviceProviders">
@@ -27,6 +27,19 @@
                                         <span class="display-1"><i class="fas fa-cogs"></i></span>
                                     </div>
                                     <h5 class="card-title">Service Providers</h5>
+                                </div>
+                            </a>
+                        </div>
+                    </div>-->
+                     <div class="row">
+                    <div class="col-md-6">
+                        <div class="card text-center mb-4">
+                          <a href="<%=request.getContextPath()%>/itemUser">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <span class="display-1"><i class="fas fa-users"></i></span>
+                                    </div>
+                                    <h5 class="card-title">Users</h5>
                                 </div>
                             </a>
                         </div>
@@ -39,7 +52,7 @@
                             <a href="<%=request.getContextPath()%>/itemCategories">
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <span class="display-1"><i class="fas fa-users"></i></span>
+                                        <span class="display-1"><i class="fas fa-cogs"></i></span>
                                     </div>
                                     <h5 class="card-title">Item Category</h5>
                                 </div>
@@ -48,19 +61,7 @@
                     </div>
                 </div>
                 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card text-center mb-4">
-                          <a href="<%=request.getContextPath()%>/itemUser">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <span class="display-1"><i class="fas fa-print"></i></span>
-                                    </div>
-                                    <h5 class="card-title">Users</h5>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+               
                     
                     <div class="col-md-6">
                         <div class="card text-center mb-4">
