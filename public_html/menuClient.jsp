@@ -14,6 +14,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
         <!-- Optional: Add a custom title -->
+
         <title>Menu</title>
         <style>
         .montserrat-regular {
@@ -77,6 +78,7 @@
                 <img src="resources/images/icons/message-solid.svg" alt="Feedback Icon" class="mb-5" style="max-height: 5rem;">
                 <span class=" montserrat-bold text-wrap">Make a Feedback</span>
             </button>
+
         </a>
         
     </div>
