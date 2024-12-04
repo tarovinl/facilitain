@@ -126,26 +126,32 @@ public class NotificationController extends HttpServlet {
         String action = request.getParameter("action");
         
         if ("delete".equals(action)) {
-            deleteNotification(notificationId, response);
+            deleteNotification(notificationId, response, request);
         } else {
             markAsRead(notificationId, request, response);
         }
     }
 
-    private void deleteNotification(int notificationId, HttpServletResponse response) throws IOException {
+    private void deleteNotification(int notificationId, HttpServletResponse response, HttpServletRequest request) throws IOException {
         String sql = "DELETE FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS WHERE NOTIFICATION_ID = ?";
         
         try (Connection conn = PooledConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, notificationId);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            
+            if (rowsAffected == 0) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Notification not found or already deleted.");
+                return;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error deleting notification.");
             return;
         }
-        
-        response.sendRedirect("notification.jsp"); // Refresh page after deletion
+
+        // Redirect back to the notifications page after deletion
+        response.sendRedirect(request.getContextPath() + "/notification");
     }
 
     private void markAsRead(int notificationId, HttpServletRequest request, HttpServletResponse response) throws IOException {
