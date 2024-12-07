@@ -157,6 +157,20 @@
     padding: 5px;
     width: 160px;
 }
+
+.roomDTblDiv2 table {
+    width: 100%; /* Ensure the table takes up the full width of the div */
+    font-weight: bold;
+}
+.roomDTblDiv2 th {
+    background-color: black;
+    color: white;
+    border: solid 1px black;
+}
+.roomDTblDiv2 tr {
+    border: solid 1px black;
+}
+
 /*.working {
     background-color: green;
     color: white;

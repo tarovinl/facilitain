@@ -2,6 +2,15 @@
 <%@ page contentType="text/html;charset=windows-1252"%>
 <%@ page import="java.util.ArrayList" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="java.time.temporal.ChronoUnit" %>
+
+<%
+    // Current date for calculations
+    LocalDate currentDate = LocalDate.now();
+    request.setAttribute("currentDate", currentDate);
+%>
 
 <%
     request.setAttribute("locID", request.getParameter("locID"));
@@ -161,7 +170,7 @@
                                         linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
                                         url('resources/images/samplebuilding2.jpg');background-size: cover;background-position: center;">
             <div class="statusDiv">
-              <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
+              <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56" style="display:none;">
             </div>
             <div class="buildingName text-light" style=" font-family: NeueHaasMedium, sans-serif;">
               <h1>${locName}</h1>
@@ -219,20 +228,56 @@
               <div class="actCategories">
                 <h2 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h2>
               </div>
-              <div class="actContainer">
-                <a href="#" style="text-decoration: none; color: black;">
-                  <div class="actItem">
-                    <img src="resources/images/greenDot.png" alt="activity status indicator" width="28" height="28">
-                    <h3>|type| for |unit number| - |room| in |time|.</h3>
-                  </div>
-                </a>
+              <div class="actContainer" id="upcoming-activities">
+                <c:forEach items="${FMO_ITEMS_LIST}" var="item">
+                <c:if test="${item.itemLID == locID}">
+                    <c:forEach items="${maintenanceList}" var="maint">
+                    <c:if test="${maint.activeFlag == 1}">
+                        <c:if test="${item.itemTID == maint.itemTypeId}">
+                            <%-- Pass data to HTML elements using data-* attributes --%>
+                            <div class="actItem"
+                                 data-item-name="${item.itemName}" 
+                                 data-item-room="${item.itemRoom}" 
+                                 data-last-maintenance-date="${item.lastMaintDate}" 
+                                 data-no-of-days="${maint.noOfDays}" 
+                                 data-no-of-days-warning="${maint.noOfDaysWarning}">
+                                <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
+                                <h3 class="activity-text">
+                                    Maintenance for ${item.itemName} ${not empty item.itemRoom ? '- ' + item.itemRoom : ''} in <span class="remaining-days">calculating...</span> days.
+                                </h3>
+                            </div>
+            
+                        </c:if>
+                    </c:if>
+                    </c:forEach>
+                </c:if>
+                </c:forEach>
               </div>
             </div>
             <div class="activity">
               <div class="actCategories">
                 <h2 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h2>
               </div>
-              <div class="actContainer"></div>
+              <div class="actContainer" id="recent-activities">
+                <c:forEach items="${FMO_ITEMS_LIST}" var="item">
+                <c:if test="${item.itemLID == locID}">
+                    <c:forEach items="${maintenanceList}" var="maint">
+                    <c:if test="${maint.activeFlag == 1}">
+                        <c:if test="${item.itemTID == maint.itemTypeId}">
+                            <%-- Pass data to HTML elements using data-* attributes --%>
+                            <div class="actItem"
+                                 data-last-maintenance-date="${item.lastMaintDate}">
+                                <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
+                                <h3 class="activity-text">
+                                    Maintenance for ${item.itemName} ${not empty item.itemRoom ? '- ' + item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
+                                </h3>
+                            </div>
+                        </c:if>
+                    </c:if>    
+                    </c:forEach>
+                </c:if>
+                </c:forEach>
+              </div>
             </div>
           </div>
         </div>
@@ -268,7 +313,57 @@
         </div>
       </div>
     </div>-->
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Convert the server-side current date to a JavaScript Date object
+        const currentDate = new Date('<%= currentDate %>');
+        console.log('Current Date:', currentDate);
 
+        // Loop through each item and calculate the remaining days
+        document.querySelectorAll('#upcoming-activities .actItem').forEach(function (itemDiv) {
+            // Accessing data attributes from the div
+            const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
+            const noOfDays = parseInt(itemDiv.getAttribute('data-no-of-days'));
+            const noOfDaysWarning = parseInt(itemDiv.getAttribute('data-no-of-days-warning'));
+
+            // Parse the last maintenance date into a Date object
+            const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
+
+            // Calculate the difference in days
+            const timeDifference = currentDate - lastMaintenanceDate;
+            const daysSinceLastMaintenance = timeDifference / (1000 * 60 * 60 * 24);
+            const daysRemaining = noOfDays - daysSinceLastMaintenance;
+
+            // Update the text with the remaining days, if within the warning threshold
+            if (daysRemaining > 0 && daysRemaining <= noOfDaysWarning) {
+                const remainingDaysElement = itemDiv.querySelector('.remaining-days');
+                remainingDaysElement.textContent = Math.floor(daysRemaining);  // Display as an integer
+            } else {
+                itemDiv.style.display = "none";
+            }
+        });
+        
+        document.querySelectorAll('#recent-activities .actItem').forEach(function (itemDiv) {
+            const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
+    
+            if (lastMaintenanceDateStr) {
+                const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
+                const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
+
+                if (daysSinceLastMaintenance >= 0 && daysSinceLastMaintenance <= 30) {
+                    itemDiv.querySelector('.remaining-days').textContent = Math.floor(daysSinceLastMaintenance);
+                } else {
+                    itemDiv.style.display = "none"; // Hide items not within 30 days
+                }
+            } else {
+                itemDiv.style.display = "none"; // Hide items with no maintenance date
+            }
+        });
+    });
+</script>
+
+</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>
