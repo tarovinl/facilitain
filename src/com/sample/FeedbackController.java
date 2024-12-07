@@ -73,4 +73,23 @@ public class FeedbackController extends HttpServlet {
         request.setAttribute("generalAverage", generalAverage);
         request.getRequestDispatcher("feedback.jsp").forward(request, response);
     }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String feedbackIdStr = request.getParameter("feedbackId");
+        if (feedbackIdStr != null && !feedbackIdStr.isEmpty()) {
+            int feedbackId = Integer.parseInt(feedbackIdStr);
+            String deleteQuery = "DELETE FROM C##FMO_ADM.FMO_ITEM_FEEDBACK WHERE FEEDBACK_ID = ?";
+
+            try (Connection conn = PooledConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(deleteQuery)) {
+                stmt.setInt(1, feedbackId);
+                stmt.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Redirect to avoid form resubmission
+        response.sendRedirect("feedback");
+    }
 }

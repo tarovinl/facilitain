@@ -135,6 +135,66 @@
         var chart = new google.visualization.ColumnChart(document.getElementById('repairNoChart'));
         chart.draw(data, options);
         }
+          function generateReport() {
+        // Capture chart elements more robustly
+        var repairChartDiv = document.getElementById('repairNoChart');
+        var maintenanceChartDiv = document.getElementById('pendingMainChart');
+        
+        // Get SVG elements directly
+        var repairChartSvg = repairChartDiv.querySelector('svg');
+        var maintenanceChartSvg = maintenanceChartDiv.querySelector('svg');
+        
+        // Verify SVGs exist
+        if (!repairChartSvg || !maintenanceChartSvg) {
+            alert('Charts are not yet loaded. Please refresh the page and try again.');
+            return;
+        }
+        
+        // Create a canvas to combine charts
+        var canvas = document.createElement('canvas');
+        canvas.width = 800;
+        canvas.height = 600;
+        var ctx = canvas.getContext('2d');
+        
+        // Create image from SVGs
+        var img1 = new Image();
+        var img2 = new Image();
+        
+        img1.onload = function() {
+            img2.onload = function() {
+                // Clear canvas with white background
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw title
+                ctx.font = '24px Arial';
+                ctx.fillStyle = 'black';
+                ctx.fillText('${locName} - Location Dashboard', 50, 40);
+                
+                // Draw charts
+                ctx.drawImage(img1, 0, 100, 400, 300);
+                ctx.drawImage(img2, 400, 100, 400, 300);
+                
+                // Create download link
+                var downloadLink = document.createElement('a');
+                downloadLink.href = canvas.toDataURL('image/png');
+                downloadLink.download = '${locName}_dashboard_report.png';
+                downloadLink.click();
+            };
+            img2.src = 'data:image/svg+xml;base64,' + btoa(new XMLSerializer().serializeToString(maintenanceChartSvg));
+        };
+        img1.src = 'data:image/svg+xml;base64,' + btoa(new XMLSerializer().serializeToString(repairChartSvg));
+    }
+    
+    // Attach event listener after page load
+    document.addEventListener('DOMContentLoaded', function() {
+        var generateReportButton = document.querySelector('.buttonsBuilding:nth-child(2)');
+        if (generateReportButton) {
+            generateReportButton.addEventListener('click', generateReport);
+        } else {
+            console.error('Generate Report button not found');
+        }
+    });
         </script>
     </head>
     <body>
@@ -166,30 +226,31 @@
           </div>
 
           <!-- Building Banner -->
-          <div class="buildingBanner rounded-4" style=" margin-top: 14px; margin-bottom: 14px; background-image: 
-                                        linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
-                                        url('resources/images/samplebuilding2.jpg');background-size: cover;background-position: center;">
-            <div class="statusDiv">
-              <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56" style="display:none;">
-            </div>
-            <div class="buildingName text-light" style=" font-family: NeueHaasMedium, sans-serif;">
-              <h1>${locName}</h1>
-            </div>
-            <div>
-              <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
-                <c:if test="${floors.key == locID}">
-                  <c:forEach var="floor" items="${floors.value}" varStatus="status">
+<div class="buildingBanner rounded-4" style="margin-top: 14px; margin-bottom: 14px; background-image: 
+                                    linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
+                                    url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center;">
+    <div class="statusDiv">
+        <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
+    </div>
+    <div class="buildingName text-light" style="font-family: NeueHaasMedium, sans-serif;">
+        <h1>${locName}</h1>
+    </div>
+    <div>
+        <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
+            <c:if test="${floors.key == locID}">
+                <c:forEach var="floor" items="${floors.value}" varStatus="status">
                     <c:if test="${status.first}">
-                      <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" class="buildingManage d-flex align-items-center" style=" font-family: NeueHaasMedium, sans-serif;">
-                        Manage
-                        <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
-                      </a>
+                        <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" class="buildingManage d-flex align-items-center" style="font-family: NeueHaasMedium, sans-serif;">
+                            Manage
+                            <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
+                        </a>
                     </c:if>
-                  </c:forEach>
-                </c:if>
-              </c:forEach>
-            </div>
-          </div>
+                </c:forEach>
+            </c:if>
+        </c:forEach>
+    </div>
+</div>
+
 
           <!-- Graphs and Charts -->
           <div class="buildingDiagrams" >

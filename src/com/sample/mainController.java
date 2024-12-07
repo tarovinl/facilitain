@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import sample.model.Location;
 import sample.model.Item;
 
+import sample.model.Maintenance;
 import sample.model.PooledConnection;
 
 import sample.model.Repairs;
@@ -42,8 +43,8 @@ import sample.model.Quotation;
 import sample.model.SharedData;
 import sample.model.ToDo;
 
-@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification",
-                                                     "/calendar", "/history", "/settings", "/maintenanceSchedule" })
+@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
+                                                     "/calendar", "/settings", "/maintenanceSchedule" })
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
@@ -102,7 +103,7 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntICats = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
              PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME")){
              PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
-             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 ORDER BY ITEM_MS_ID");
+             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
              PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
              PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
              PreparedStatement stmntJobs = con.prepareCall("SELECT a.JOB_NAME, a.JOB_ACTION, a.START_DATE, a.REPEAT_INTERVAL, b.CREATED FROM DBA_SCHEDULER_JOBS a JOIN ALL_OBJECTS b ON a.JOB_NAME = b.OBJECT_NAME WHERE a.JOB_NAME LIKE 'UPDATE_ITEM_JOB_CAT%'");
@@ -111,16 +112,28 @@ public class mainController extends HttpServlet {
             ResultSet rs = statement.executeQuery();
             
             while (rs.next()) {
-                Location location = new Location();
-                location.setItemLocId(rs.getInt("ITEM_LOC_ID"));
-                location.setLocName(rs.getString("NAME"));
-                location.setLocDescription(rs.getString("DESCRIPTION"));
-                location.setActiveFlag(rs.getInt("ACTIVE_FLAG"));
-                location.setLocArchive(rs.getInt("ARCHIVED_FLAG"));
-                locations.add(location);
-                
-            }
-            rs.close();
+                           Location location = new Location();
+                           location.setItemLocId(rs.getInt("ITEM_LOC_ID"));
+                           location.setLocName(rs.getString("NAME"));
+                           location.setLocDescription(rs.getString("DESCRIPTION"));
+                           location.setActiveFlag(rs.getInt("ACTIVE_FLAG"));
+                           location.setLocArchive(rs.getInt("ARCHIVED_FLAG"));
+
+                           // Check if the image exists for this location
+                           Blob imageBlob = rs.getBlob("IMAGE");
+                           if (imageBlob != null && imageBlob.length() > 0) {
+                               location.setHasImage(true);
+                               byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+                               location.setLocationImage(imageBytes); // Set the image bytes
+                           } else {
+                               location.setHasImage(false);
+                           }
+
+                           locations.add(location);
+                       }
+
+                       rs.close();
+
 
             ResultSet rsFlr = stmntFloor.executeQuery();
             while (rsFlr.next()) {

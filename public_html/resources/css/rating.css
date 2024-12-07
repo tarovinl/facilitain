@@ -1,0 +1,53 @@
+@charset "windows-1252";
+
+// containers //
+.container-wrapper {
+  background-color: #EDF0F9;
+}
+
+
+
+.rating-wrapper {
+  align-self: center; 
+  border-radius: 5rem;
+  display: inline-flex;
+  direction: rtl !important;
+  margin-left: auto;
+  
+
+  label {
+    color: #E1E6F6;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 2rem;
+    padding: 1rem .6rem;
+    transition: color 0.5s;
+  }
+  
+   svg {
+     -webkit-text-fill-color: transparent;
+     -webkit-filter: drop-shadow (4px 1px 6px rgba(198, 206, 237, 1));
+     filter:drop-shadow(5px 1px 3px rgba(198, 206, 237, 1));
+  }
+
+  input {
+    height: 100%;
+    width: 100%;
+  }
+  
+  input {
+    display: none;
+  }
+
+  label:hover,
+  label:hover ~ label,
+  input:checked ~ label  {
+    color: #fbbe15;
+  }
+
+  label:hover,
+  label:hover ~ label,
+  input:checked ~ label  {
+    color: #fbbe15;
+  }
+}

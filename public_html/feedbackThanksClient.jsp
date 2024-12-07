@@ -9,28 +9,59 @@
         
         <!-- Bootstrap CSS -->
        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+         <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
         
-        <!-- Optional: Add a custom title -->
         <title>Thank you!</title>
+         <style>
+        .montserrat-regular {
+         font-family: "Montserrat", sans-serif;
+         font-weight: 400;
+         font-style: normal;
+                            }
+        
+        .montserrat-bold {
+         font-family: "Montserrat", sans-serif;
+         font-weight: 600;
+         font-style: normal;
+                            }
+    
+    </style>
     </head>
-    <body>
+   <body class="d-flex flex-column min-vh-100" style="background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('resources/images/ust-bg.jpg'); 
+             background-size: cover; 
+             background-position: center; 
+             background-repeat: no-repeat;">
      <jsp:include page="headerClient.jsp"/>
-        <!-- Bootstrap Container Example -->
-        <div class="w-100 h-100  bg-white d-flex flex-column justify-content-center align-items-center p-3">
-        <div class="mw-50 h-75 bg-facilGray text-white p-5">
-             <img src="resources/images/FACILITAIN.png" alt="FACILITAIN"
-                 style="height: 4rem;"/>
+        
+    <div class="container justify-content-center align-items-center flex-grow-1 my-5 montserrat-regular">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+                <div class="card">
+                    <div class="card-body   text-center ">
+             <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4" style="max-height: 4rem;">
             <h3 class="text-center ">Feedback Form</h3>
           <p class=" text-center p-5"> 
-         Thank you for your feedback!
+         Thank you for your feedback! <br/>
+         We greatly appreciate you taking the time to complete the form. Your input helps us improve our services.
           </p>
-            <!-- Example Bootstrap Button -->
+            
              <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
-        
-         <button class="btn btn-primary w-100" onclick="window.location.href='feedbackClientController';">Back</button>
-    </div>
-    
+         <button class="btn  w-100 " style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
+                     onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
+                    onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';" onclick="window.location.href='menuClient.jsp';">Back to Menu</button>
             </div>
+            <div class="container mt-3 d-flex justify-content-center">
+         <button class="btn  w-100"  style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
+                     onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
+                    onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';" onclick="window.location.href='feedbackClient';">Back to Feedback</button>
+            </div>
+    
+         </div>
+        </div>
+        </div>
+        </div>
         </div>
 
         <!-- Bootstrap JS, Popper.js, and jQuery -->

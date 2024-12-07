@@ -7,10 +7,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Feedback</title>
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
@@ -30,6 +27,7 @@
                         <div id="chart_div" style="width: 100%; height: 400px"></div>
                     </div>
                 </div>
+
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -38,6 +36,7 @@
                             <th>Location</th>
                             <th>Suggestions</th>
                             <th>Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,16 +46,38 @@
                                 <td>${feedback.room}</td>
                                 <td>${feedback.location}</td>
                                 <td>${feedback.suggestions}</td>
+                                <td><fmt:formatDate value="${feedback.recInsDt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                                 <td>
-                                    <fmt:formatDate
-                                        value="${feedback.recInsDt}"
-                                        pattern="yyyy-MM-dd HH:mm:ss"
-                                    />
+                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setFeedbackId(${feedback.feedbackId})">
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this feedback?
+                </div>
+                <div class="modal-footer">
+                    <form id="deleteForm" action="feedback" method="post">
+                        <input type="hidden" name="feedbackId" id="feedbackId">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -94,6 +115,10 @@
             downloadLink.download = 'satisfaction_rate_report.png';
             downloadLink.click();
         });
+
+        function setFeedbackId(id) {
+            document.getElementById('feedbackId').value = id;
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

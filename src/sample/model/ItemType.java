@@ -5,7 +5,7 @@ public class ItemType {
     private int itemCatId;
     private String name;
     private String description;
-    private int activeFlag;
+    private int archivedFlag;
 
     // Getters and Setters
     public int getItemTypeId() { return itemTypeId; }
@@ -20,6 +20,6 @@ public class ItemType {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public int getActiveFlag() { return activeFlag; }
-    public void setActiveFlag(int activeFlag) { this.activeFlag = activeFlag; }
+    public int getArchivedFlag() { return archivedFlag; }
+    public void setArchivedFlag(int archivedFlag) { this.archivedFlag = archivedFlag; }
 }
