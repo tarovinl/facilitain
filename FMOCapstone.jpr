@@ -103,12 +103,21 @@
    </hash>
    <hash n="oracle.jdeveloper.runner.RunConfigurations">
       <hash n="runConfigurationDefinitions">
+         <hash n="Copy of Default">
+            <value n="custom" v="false"/>
+            <value n="name" v="Copy of Default"/>
+            <url n="targetURL" path="src/com/sample/mainController.java"/>
+         </hash>
          <hash n="Default">
             <value n="custom" v="false"/>
             <value n="name" v="Default"/>
             <url n="targetURL" path="src/com/sample/mainController.java"/>
          </hash>
       </hash>
+      <list n="runConfigurationList">
+         <string v="Copy of Default"/>
+         <string v="Default"/>
+      </list>
    </hash>
    <hash n="oracle.jdevimpl.config.JProjectLibraries">
       <list n="exportedReferences">
