@@ -21,38 +21,48 @@ public class NotificationController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Notification> reportNotifications = new ArrayList<>();
-        List<Notification> quotationNotifications = new ArrayList<>();
-        List<Notification> maintenanceNotifications = new ArrayList<>();
+        List<Notification> notifications = new ArrayList<>();
 
-        String reportSql = "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
-                           "l.NAME AS locName, n.ITEM_LOC_ID " +
-                           "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
-                           "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
-                           "WHERE n.TYPE = ? " +
-                           "ORDER BY n.IS_READ ASC, n.CREATED_AT DESC";
+        // Get the sorting and filtering parameters from request
+        String sortBy = request.getParameter("sortBy");  // Possible values: "date", "read", "unread"
+        String filterBy = request.getParameter("filterBy");  // Possible values: "report", "quotation", "maintenance", "read", "unread"
+        
+        String orderBy = "ORDER BY n.IS_READ ASC, n.CREATED_AT DESC";  // Default sorting
 
-        String quotationSql = "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
-                              "l.NAME AS locName, n.ITEM_LOC_ID, n.ROOM_NO AS roomNo, n.FLOOR_NO AS floorNo, n.ITEM_NAME " +
-                              "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
-                              "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
-                              "WHERE n.TYPE = ? " +
-                              "ORDER BY n.IS_READ ASC, n.CREATED_AT DESC";
+        if ("date".equals(sortBy)) {
+            orderBy = "ORDER BY n.CREATED_AT DESC";
+        } else if ("read".equals(sortBy)) {
+            orderBy = "ORDER BY n.IS_READ DESC, n.CREATED_AT DESC";
+        } else if ("unread".equals(sortBy)) {
+            orderBy = "ORDER BY n.IS_READ ASC, n.CREATED_AT DESC";
+        }
 
-        String maintenanceSql = "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
-                                "l.NAME AS locName, n.ITEM_LOC_ID, n.ROOM_NO AS roomNo, n.FLOOR_NO AS floorNo, n.ITEM_NAME " +
-                                "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
-                                "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
-                                "WHERE n.TYPE = ? " +
-                                "ORDER BY n.IS_READ ASC, n.CREATED_AT DESC";
+        // Define filter criteria for the different notification types
+        String filterSql = "";
+        if ("report".equals(filterBy)) {
+            filterSql = "AND n.TYPE = 'REPORT'";
+        } else if ("quotation".equals(filterBy)) {
+            filterSql = "AND n.TYPE = 'QUOTATION'";
+        } else if ("maintenance".equals(filterBy)) {
+            filterSql = "AND n.TYPE = 'MAINTENANCE'";
+        } else if ("read".equals(filterBy)) {
+            filterSql = "AND n.IS_READ = 1";
+        } else if ("unread".equals(filterBy)) {
+            filterSql = "AND n.IS_READ = 0";
+        }
+
+        // Base SQL query for all notification types
+        String baseSql = "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
+                         "l.NAME AS locName, n.ITEM_LOC_ID " +
+                         "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
+                         "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
+                         "WHERE 1=1 " + filterSql + " " + orderBy;
 
         try (Connection conn = PooledConnection.getConnection()) {
-            // Fetch report notifications
-            try (PreparedStatement stmt = conn.prepareStatement(reportSql)) {
-                stmt.setString(1, "REPORT");
+            try (PreparedStatement stmt = conn.prepareStatement(baseSql)) {
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
-                        reportNotifications.add(new Notification(
+                        notifications.add(new Notification(
                             rs.getInt("NOTIFICATION_ID"),
                             rs.getString("MESSAGE"),
                             rs.getString("TYPE"),
@@ -64,48 +74,6 @@ public class NotificationController extends HttpServlet {
                     }
                 }
             }
-
-            // Fetch quotation notifications
-            try (PreparedStatement stmt = conn.prepareStatement(quotationSql)) {
-                stmt.setString(1, "QUOTATION");
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        quotationNotifications.add(new Notification(
-                            rs.getInt("NOTIFICATION_ID"),
-                            rs.getString("MESSAGE"),
-                            rs.getString("TYPE"),
-                            rs.getInt("IS_READ") == 1,
-                            rs.getTimestamp("CREATED_AT"),
-                            rs.getString("locName"),
-                            rs.getInt("ITEM_LOC_ID"),
-                            rs.getString("roomNo"),
-                            rs.getString("floorNo"),
-                            rs.getString("ITEM_NAME")
-                        ));
-                    }
-                }
-            }
-
-            // Fetch maintenance notifications
-            try (PreparedStatement stmt = conn.prepareStatement(maintenanceSql)) {
-                stmt.setString(1, "MAINTENANCE");
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        maintenanceNotifications.add(new Notification(
-                            rs.getInt("NOTIFICATION_ID"),
-                            rs.getString("MESSAGE"),
-                            rs.getString("TYPE"),
-                            rs.getInt("IS_READ") == 1,
-                            rs.getTimestamp("CREATED_AT"),
-                            rs.getString("locName"),
-                            rs.getInt("ITEM_LOC_ID"),
-                            rs.getString("roomNo"),
-                            rs.getString("floorNo"),
-                            rs.getString("ITEM_NAME")
-                        ));
-                    }
-                }
-            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error fetching notifications.");
@@ -113,9 +81,9 @@ public class NotificationController extends HttpServlet {
         }
 
         // Pass notifications to JSP
-        request.setAttribute("reportNotifications", reportNotifications);
-        request.setAttribute("quotationNotifications", quotationNotifications);
-        request.setAttribute("maintenanceNotifications", maintenanceNotifications);
+        request.setAttribute("notifications", notifications);
+        request.setAttribute("sortBy", sortBy);
+        request.setAttribute("filterBy", filterBy);
         request.getRequestDispatcher("notification.jsp").forward(request, response);
     }
 
@@ -125,6 +93,7 @@ public class NotificationController extends HttpServlet {
         int notificationId = Integer.parseInt(request.getParameter("id"));
         String action = request.getParameter("action");
         
+        // Handle notification actions: Delete or Mark as Read
         if ("delete".equals(action)) {
             deleteNotification(notificationId, response, request);
         } else {
@@ -155,20 +124,33 @@ public class NotificationController extends HttpServlet {
     }
 
     private void markAsRead(int notificationId, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String sql = "UPDATE C##FMO_ADM.FMO_ITEM_NOTIFICATIONS SET IS_READ = 1 WHERE NOTIFICATION_ID = ?";
-        
-        try (Connection conn = PooledConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, notificationId);
-            stmt.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating notification.");
-            return;
-        }
-        
         String redirectUrl = request.getParameter("redirectUrl");
-        response.sendRedirect(redirectUrl);
+
+        // Ensure redirectUrl is safe and does not contain CRLF characters
+        if (redirectUrl != null && !redirectUrl.trim().isEmpty()) {
+            redirectUrl = redirectUrl.trim();  // Remove leading/trailing spaces
+            if (redirectUrl.contains("\r") || redirectUrl.contains("\n")) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
+                return;
+            }
+
+            // Mark as read in the database
+            String sql = "UPDATE C##FMO_ADM.FMO_ITEM_NOTIFICATIONS SET IS_READ = 1 WHERE NOTIFICATION_ID = ?";
+            try (Connection conn = PooledConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, notificationId);
+                stmt.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating notification.");
+                return;
+            }
+
+            // Redirect to the specified URL
+            response.sendRedirect(redirectUrl);
+        } else {
+            // Fallback if no redirect URL is found
+            response.sendRedirect(request.getContextPath() + "/notification");
+        }
     }
-    
 }
