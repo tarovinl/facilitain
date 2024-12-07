@@ -30,24 +30,41 @@ public class reportClientController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
+        List<Map.Entry<Integer, String>> equipmentList = new ArrayList<>();
 
         String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
+        String equipmentQuery = "SELECT ITEM_CAT_ID, NAME FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1";
 
-        try (Connection connection = PooledConnection.getConnection();
-             PreparedStatement locationStatement = connection.prepareStatement(locationQuery)) {
+        try (Connection connection = PooledConnection.getConnection()) {
 
-            try (ResultSet locationResult = locationStatement.executeQuery()) {
+            // Fetch locations
+            try (PreparedStatement locationStatement = connection.prepareStatement(locationQuery);
+                 ResultSet locationResult = locationStatement.executeQuery()) {
                 while (locationResult.next()) {
                     int locationId = locationResult.getInt("ITEM_LOC_ID");
                     String locationName = locationResult.getString("NAME");
                     locationList.add(new AbstractMap.SimpleEntry<>(locationId, locationName));
                 }
             }
+
+            // Fetch equipment types
+            try (PreparedStatement equipmentStatement = connection.prepareStatement(equipmentQuery);
+                 ResultSet equipmentResult = equipmentStatement.executeQuery()) {
+                while (equipmentResult.next()) {
+                    int itemCatId = equipmentResult.getInt("ITEM_CAT_ID");
+                    String itemCatName = equipmentResult.getString("NAME");
+                    equipmentList.add(new AbstractMap.SimpleEntry<>(itemCatId, itemCatName));
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        // Set attributes for the JSP page
         request.setAttribute("locationList", locationList);
+        request.setAttribute("equipmentList", equipmentList);
+
+        // Forward the request to the JSP page
         request.getRequestDispatcher("/reportsClient.jsp").forward(request, response);
     }
 
@@ -59,6 +76,9 @@ public class reportClientController extends HttpServlet {
 
         // Extract form fields from request
         String equipment = request.getParameter("equipment");
+        if ("Other".equals(equipment)) {
+            equipment = request.getParameter("otherEquipment"); // If 'Other' is selected, take the custom input
+        }
         String locationId = request.getParameter("location");
         String floor = request.getParameter("floor");
         String room = request.getParameter("room");
@@ -94,7 +114,7 @@ public class reportClientController extends HttpServlet {
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
                 pstmt.setInt(1, reportId);
-                pstmt.setString(2, equipment);
+                pstmt.setString(2, equipment);  // This will store the selected equipment, including 'Other'
                 pstmt.setInt(3, Integer.parseInt(locationId));
                 pstmt.setString(4, floor);
                 pstmt.setString(5, room);
@@ -125,6 +145,7 @@ public class reportClientController extends HttpServlet {
         // Redirect to the reportsThanksClient.jsp
         response.sendRedirect("reportsThanksClient.jsp");
     }
+
 
 
     private String generateReportCode(String equipment, String floor, String room, int reportId) {

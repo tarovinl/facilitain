@@ -53,11 +53,24 @@
                 <!-- Form Starts Here -->
                 <form action="reportsClient" method="post" enctype="multipart/form-data" onsubmit="return validateForm();">
                     <!-- Equipment -->
-                    <label for="equipment">Type of Equipment</label>
-                    <div class="mt-1">
-                        <input type="text" name="equipment" id="equipment" class="form-control w-100" placeholder="Enter equipment type">
-                        <div id="equipmentError" class="error-message"></div>
-                    </div>
+                   <label for="equipment">Type of Equipment</label>
+<div class="mt-1">
+    <select name="equipment" id="equipment" class="form-control w-100" onchange="toggleOtherOption()">
+        <option value="">Select equipment type</option>
+        <c:forEach var="equipment" items="${equipmentList}">
+            <option value="${equipment.key}">${equipment.value}</option>
+        </c:forEach>
+        <option value="Other">Other</option>
+    </select>
+    <div id="equipmentError" class="error-message"></div>
+
+    <!-- Input field for "Other" option -->
+    <div id="otherEquipmentDiv" style="display:none;">
+        <label for="otherEquipment">Please specify:</label>
+        <input type="text" id="otherEquipment" name="otherEquipment" class="form-control w-100" />
+    </div>
+</div>
+
 
                     <!-- Location -->
                     <label for="location" class="mt-2">Location</label>
@@ -125,6 +138,21 @@
             </div>
             </div>
         </div>
+        <script>
+   function toggleOtherOption() {
+    var equipmentSelect = document.getElementById("equipment");
+    var otherEquipmentDiv = document.getElementById("otherEquipmentDiv");
+    var selectedValue = equipmentSelect.value;
+
+    // Show the input field when "Other" is selected
+    if (selectedValue === "Other") {
+        otherEquipmentDiv.style.display = "block";
+    } else {
+        otherEquipmentDiv.style.display = "none";
+    }
+}
+
+</script>
             <script>
             function validateForm() {
                 let valid = true;
