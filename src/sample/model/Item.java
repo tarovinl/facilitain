@@ -34,7 +34,8 @@ public class Item {
     private String maintStatName;
     private int maintSchedDays;
     private int maintSchedWarn;
-    private Date expiration;  
+    private Date expiration;
+    private Date lastMaintDate;
 
     // Getters and Setters
     public void setItemID(int itemID) {
@@ -277,5 +278,13 @@ public class Item {
 
     public int getItemEHZ() {
         return itemEHZ;
+    }
+
+    public void setLastMaintDate(Date lastMaintDate) {
+        this.lastMaintDate = lastMaintDate;
+    }
+
+    public Date getLastMaintDate() {
+        return lastMaintDate;
     }
 }

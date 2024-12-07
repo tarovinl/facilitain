@@ -81,6 +81,12 @@
             <h1>${locName}</h1>
         </div>
         <div class="container">
+                    <a href="./buildingDashboard?locID=${locID}/manage?floor=all" class="floorLinks">
+                        All Items
+                    </a>
+                    <c:if test="${floorName == 'all'}">
+                        <c:set var="flrMatchFound" value="true" />
+                    </c:if>
         <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
             <c:if test="${floors.key == locID}">
                 <c:forEach var="floor" items="${floors.value}">
@@ -93,11 +99,10 @@
                 </c:forEach>
             </c:if>
         </c:forEach>    
-       
         </div>
         <div class="floorAndButtons">
             <div class="floorName">
-              <h1>${floorName}</h1>
+              <h1>${floorName == 'all' ? 'All Items' : floorName}</h1>
             </div>
             <div>
               <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'"><!--hidden if acc is not admin-->
@@ -107,11 +112,151 @@
               <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender(); toggleAirconDiv();">Add Equipment</button>
             </div>
         </div>
+        <c:if test="${floorName == 'all'}">
+        <div class="roomDropsdiv">
+            <div style="overflow-x: auto; overflow-y: hidden; white-space: nowrap;">
+            <table aria-label="history logs table" style="border: 1px solid black;">
+                                <tr style="margin-bottom: 120px; background-color: black; color: white;">
+                                    <!--<th ></th>-->
+                                    <th ></th>
+                                    <th ></th>
+                                    <th >ID</th>
+                                    <th >Codename</th>
+                                    <th >Category</th>
+                                    <th >Type</th>
+                                    <th >Brand</th>
+                                    <th >Date Installed</th>
+                                    <th>
+                                        Quotation
+                                    </th>
+                                    <th >Status</th>
+                                </tr>
+                                
+                            <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
+                                <c:if test="${item.itemLID == locID}">
+                                <tr style="border: solid 1px black;">
+                                
+                                <c:forEach items="${FMO_TYPES_LIST}" var="type" >
+                                    <c:if test="${type.itemTID == item.itemTID}">
+                                    <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
+                                        <c:if test="${cat.itemCID == type.itemCID}">
+                                        <!-- Store cat.itemCat and type.itemType in scoped variables -->
+                                            <c:set var="itemEditCat" value="${cat.itemCID}" />
+                                            <c:set var="itemEditType" value="${type.itemTID}" />
+                                        </c:if>
+                                    </c:forEach>
+                                    </c:if>
+                                </c:forEach>
+                                
+                                    <!--<td style="margin-left: 4px; margin-right: 4px; text-align:center;">
+                                        <input type="image" 
+                                        src="resources/images/itemInfo.svg" 
+                                        width="24" 
+                                        height="24"/>
+                                    </td>-->
+                                    <td style="margin-left: 4px; margin-right: 4px; text-align:center;">
+                                        <input type="image" 
+                                        src="resources/images/editItem.svg" 
+                                        id="editModalButton" 
+                                        alt="Open Edit Modal" 
+                                        width="24" 
+                                        height="24" 
+                                        data-toggle="modal" 
+                                        data-target="#editEquipment"
+                                        data-itemid="${item.itemID}"
+                                        data-itemname="${item.itemName}"
+                                        data-itembrand="${item.itemBrand}"
+                                        data-dateinst="${item.dateInstalled}"
+                                        data-itemexpiry="${item.expiration}"
+                                        data-itemcat="${itemEditCat}"
+                                        data-itemfloor="${item.itemFloor}"
+                                        data-itemroom="${item.itemRoom}"
+                                        data-itemtype="${itemEditType}"
+                                        data-itemloctext="${item.itemLocText}"
+                                        data-itemremarks="${item.itemRemarks}"
+
+                                        data-itempcc="${item.itemPCC}"
+                                        data-accu="${item.acACCU}"
+                                        data-fcu="${item.acFCU}"
+                                        data-inverter="${item.acINVERTER}"
+                                        data-itemcapacity="${item.itemCapacity}"
+                                        data-itemmeasure="${item.itemUnitMeasure}"
+                                        data-itemev="${item.itemEV}"
+                                        data-itemeph="${item.itemEPH}"
+                                        data-itemehz="${item.itemEHZ}"
+                                        onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/> 
+                                    </td>
+                                    <td style="margin-left: 4px; margin-right: 4px; text-align:center;">
+                                        <input type="image" 
+                                        src="resources/images/archiveItem.svg" 
+                                        id="archiveModalButton" 
+                                        alt="Open Archive Modal" 
+                                        width="24" 
+                                        height="24"
+                                        data-toggle="modal"
+                                        data-itemaid="${item.itemID}"
+                                        data-itemaname="${item.itemName}"
+                                        data-target="#archiveEquipment"
+                                        onclick="populateArchModal(this)"/>
+                                    </td>
+                                    <td >${item.itemID}</td>
+                                    <td >${item.itemName}</td>
+                                    <c:forEach items="${FMO_TYPES_LIST}" var="type" >
+                                        <c:if test="${type.itemTID == item.itemTID}">
+                                        <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
+                                            <c:if test="${cat.itemCID == type.itemCID}">
+                                            <td >${cat.itemCat}</td>
+                                            </c:if>
+                                        </c:forEach>
+                                            <td >${type.itemType}</td>
+                                        </c:if>
+                                    </c:forEach>
+                                    <td >${item.itemBrand != null ? item.itemBrand : 'N/A'}</td>
+                                    <td >${item.dateInstalled}</td>
+                                    <!-- Quotation Icon Button in manageBuilding.jsp -->
+                                    <td style="display: flex; justify-content: center; align-items: center; margin-top: 8px;">
+                                        <form id="quotForm" method="GET" action="quotations.jsp" style="display: none;">
+                                            <input type="hidden" name="displayQuotItemID" id="hiddenItemID">
+                                        </form>
+                                        <input type="image"
+                                            src="resources/images/quotationsIcon.svg"
+                                            id="quotModalButton"
+                                            alt="Open Quotation Modal"
+                                            width="24"
+                                            height="24"
+                                            data-itemid="${item.itemID}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#quotEquipmentModal"
+                                            onclick="openQuotModal(this)">
+                                    </td>
+                                    <td >
+                                      <form action="itemcontroller" method="POST">
+                                        <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}"/>
+                                        <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}"/>
+                                        <input type="hidden" name="maintStatID" value="${item.itemID}" />
+                                        <input type="hidden" name="oldMaintStat" value="${item.itemMaintStat}" />
+                                        <select name="statusDropdown" class="statusDropdown" onchange="this.form.submit()">
+                                            <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
+                                                <option value="${status.itemMaintStat}" 
+                                                <c:if test="${status.itemMaintStat == item.itemMaintStat}">selected</c:if>>
+                                                ${status.maintStatName}
+                                                </option>
+                                            </c:forEach>
+                                        </select>
+                                      </form>
+                                    </td>
+                                </tr>
+                                </c:if>
+                            </c:forEach>    
+                                
+            </table>
+            </div>
+        </div>
+        </c:if>
         
         <!-- list of room dropdowns  (turn roomDropdown <li> into foreach)-->
         <div class="roomDropsdiv">
             <ul class="roomDropdowns" id="roomDropdowns">
-          
           <c:forEach items="${uniqueRooms}" var="room" >
             <c:if test="${room.itemLID == locID}">
                 <c:if test="${room.itemFloor == floorName}">  
