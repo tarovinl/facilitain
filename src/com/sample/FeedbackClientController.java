@@ -25,7 +25,7 @@ public class FeedbackClientController extends HttpServlet {
             throws ServletException, IOException {
         List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
 
-        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG != 2";
+        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ARCHIVED_FLAG = 1";
 
 
         try (Connection connection = PooledConnection.getConnection();

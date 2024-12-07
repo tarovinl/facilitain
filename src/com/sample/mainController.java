@@ -44,7 +44,7 @@ import sample.model.SharedData;
 import sample.model.ToDo;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
-                                                     "/calendar", "/history", "/settings", "/maintenanceSchedule" })
+                                                     "/calendar", "/settings", "/maintenanceSchedule" })
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
