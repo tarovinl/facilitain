@@ -126,6 +126,66 @@
         var chart = new google.visualization.ColumnChart(document.getElementById('repairNoChart'));
         chart.draw(data, options);
         }
+          function generateReport() {
+        // Capture chart elements more robustly
+        var repairChartDiv = document.getElementById('repairNoChart');
+        var maintenanceChartDiv = document.getElementById('pendingMainChart');
+        
+        // Get SVG elements directly
+        var repairChartSvg = repairChartDiv.querySelector('svg');
+        var maintenanceChartSvg = maintenanceChartDiv.querySelector('svg');
+        
+        // Verify SVGs exist
+        if (!repairChartSvg || !maintenanceChartSvg) {
+            alert('Charts are not yet loaded. Please refresh the page and try again.');
+            return;
+        }
+        
+        // Create a canvas to combine charts
+        var canvas = document.createElement('canvas');
+        canvas.width = 800;
+        canvas.height = 600;
+        var ctx = canvas.getContext('2d');
+        
+        // Create image from SVGs
+        var img1 = new Image();
+        var img2 = new Image();
+        
+        img1.onload = function() {
+            img2.onload = function() {
+                // Clear canvas with white background
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw title
+                ctx.font = '24px Arial';
+                ctx.fillStyle = 'black';
+                ctx.fillText('${locName} - Location Dashboard', 50, 40);
+                
+                // Draw charts
+                ctx.drawImage(img1, 0, 100, 400, 300);
+                ctx.drawImage(img2, 400, 100, 400, 300);
+                
+                // Create download link
+                var downloadLink = document.createElement('a');
+                downloadLink.href = canvas.toDataURL('image/png');
+                downloadLink.download = '${locName}_dashboard_report.png';
+                downloadLink.click();
+            };
+            img2.src = 'data:image/svg+xml;base64,' + btoa(new XMLSerializer().serializeToString(maintenanceChartSvg));
+        };
+        img1.src = 'data:image/svg+xml;base64,' + btoa(new XMLSerializer().serializeToString(repairChartSvg));
+    }
+    
+    // Attach event listener after page load
+    document.addEventListener('DOMContentLoaded', function() {
+        var generateReportButton = document.querySelector('.buttonsBuilding:nth-child(2)');
+        if (generateReportButton) {
+            generateReportButton.addEventListener('click', generateReport);
+        } else {
+            console.error('Generate Report button not found');
+        }
+    });
         </script>
     </head>
     <body>
