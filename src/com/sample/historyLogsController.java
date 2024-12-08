@@ -18,7 +18,7 @@ import java.util.List;
 @WebServlet(name = "historyLogsController", urlPatterns = {"/history"})
 public class historyLogsController extends HttpServlet {
 
-    private static final int PAGE_SIZE = 8;
+    private static final int PAGE_SIZE = 12;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

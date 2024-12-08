@@ -45,6 +45,8 @@ public class NotificationController extends HttpServlet {
             filterSql = "AND n.TYPE = 'QUOTATION'";
         } else if ("maintenance".equals(filterBy)) {
             filterSql = "AND n.TYPE = 'MAINTENANCE'";
+        }else if ("warning".equals(filterBy)) { 
+                filterSql = "AND n.TYPE = 'WARNING'";
         } else if ("read".equals(filterBy)) {
             filterSql = "AND n.IS_READ = 1";
         } else if ("unread".equals(filterBy)) {

@@ -69,11 +69,12 @@
 
                 <!-- Pagination Controls -->
                 <div class="pagination">
+                    <!-- Previous Button -->
                     <c:if test="${page > 1}">
                         <a href="?page=${page - 1}" class="btn btn-secondary">Previous</a>
                     </c:if>
 
-                    <!-- Show page numbers -->
+                    <!-- Page Numbers -->
                     <c:forEach begin="1" end="${totalPages}" var="pageNum">
                         <c:choose>
                             <c:when test="${pageNum == page}">
@@ -85,7 +86,8 @@
                         </c:choose>
                     </c:forEach>
 
-                    <c:if test="${page * pageSize < totalLogs}">
+                    <!-- Next Button -->
+                    <c:if test="${page < totalPages}">
                         <a href="?page=${page + 1}" class="btn btn-secondary">Next</a>
                     </c:if>
                 </div>
