@@ -29,6 +29,12 @@ public class historyLogsController extends HttpServlet {
             page = Integer.parseInt(pageParam);
         }
 
+        // Get search keyword from the request, default is empty string
+        String searchKeyword = request.getParameter("search");
+        if (searchKeyword == null) {
+            searchKeyword = ""; // Ensure it's not null if it's not provided
+        }
+
         // Calculate the range for pagination
         int startRow = (page - 1) * PAGE_SIZE + 1;
         int endRow = page * PAGE_SIZE;
@@ -37,11 +43,21 @@ public class historyLogsController extends HttpServlet {
         int totalLogs = 0;
         int totalPages = 0;
 
-        // Query to fetch the total number of logs
-        String countQuery = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS";
+        // Query to fetch the total number of logs, considering the search keyword
+        String countQuery = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS WHERE " +
+                             "LOG_ID LIKE ? OR " +
+                             "TABLE_NAME LIKE ? OR " +
+                             "OPERATION_TYPE LIKE ? OR " +
+                             "OPERATION_TIMESTAMP LIKE ? OR " +
+                             "USERNAME LIKE ? OR " +
+                             "ROW_DATA LIKE ?";
         try (Connection conn = PooledConnection.getConnection();
-             PreparedStatement countStmt = conn.prepareStatement(countQuery);
-             ResultSet rsCount = countStmt.executeQuery()) {
+             PreparedStatement countStmt = conn.prepareStatement(countQuery)) {
+            String searchValue = "%" + searchKeyword + "%"; // Use search keyword with wildcards
+            for (int i = 1; i <= 6; i++) {
+                countStmt.setString(i, searchValue);
+            }
+            ResultSet rsCount = countStmt.executeQuery();
             if (rsCount.next()) {
                 totalLogs = rsCount.getInt(1);
                 totalPages = (int) Math.ceil((double) totalLogs / PAGE_SIZE);
@@ -50,20 +66,30 @@ public class historyLogsController extends HttpServlet {
             e.printStackTrace();
         }
 
-        // Query to fetch the logs for the current page
+        // Query to fetch the logs for the current page, considering the search keyword
         String query = 
             "SELECT LOG_ID, TABLE_NAME, OPERATION_TYPE, OPERATION_TIMESTAMP, USERNAME, ROW_DATA " +
             "FROM (" +
             "   SELECT LOG_ID, TABLE_NAME, OPERATION_TYPE, OPERATION_TIMESTAMP, USERNAME, ROW_DATA, " +
             "          ROW_NUMBER() OVER (ORDER BY OPERATION_TIMESTAMP DESC) AS row_num " +
-            "   FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS" +
+            "   FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS " +
+            "   WHERE LOG_ID LIKE ? OR " +
+            "         TABLE_NAME LIKE ? OR " +
+            "         OPERATION_TYPE LIKE ? OR " +
+            "         OPERATION_TIMESTAMP LIKE ? OR " +
+            "         USERNAME LIKE ? OR " +
+            "         ROW_DATA LIKE ?" +
             ") " +
             "WHERE row_num BETWEEN ? AND ?";
 
         try (Connection conn = PooledConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, startRow);
-            stmt.setInt(2, endRow);
+            String searchValue = "%" + searchKeyword + "%"; // Use search keyword with wildcards
+            for (int i = 1; i <= 6; i++) {
+                stmt.setString(i, searchValue);
+            }
+            stmt.setInt(7, startRow);
+            stmt.setInt(8, endRow);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -86,7 +112,7 @@ public class historyLogsController extends HttpServlet {
         request.setAttribute("totalLogs", totalLogs);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("currentPage", page);
-        request.setAttribute("pageSize", PAGE_SIZE);
+        request.setAttribute("searchKeyword", searchKeyword);
 
         // Forward the request to the JSP page
         request.getRequestDispatcher("history.jsp").forward(request, response);
