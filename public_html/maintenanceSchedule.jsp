@@ -119,7 +119,7 @@
 
                                     <!-- Yearly Options -->
                                     <div id="annualOptionsGroup" class="mb-3" style="display: none;">
-                                        <label for="month" class="form-label">Yearly Month Schedule</label>
+                                        <label for="month" class="form-label">Month Schedule</label>
                                         <select id="month" name="yearlySchedule" class="form-select">
                                             <option value="" disabled selected>-- Select Month --</option>
                                             <option value="1">January</option>
@@ -198,7 +198,7 @@
                 quarterlyOptionsGroup.style.display = 'block';
                 annualOptionsGroup.style.display = 'none';
                 document.getElementById('month').value = ""; 
-            } else if (value == 365) {
+            } else if (value == 365 || value == 180) {
                 annualOptionsGroup.style.display = 'block';
                 quarterlyOptionsGroup.style.display = 'none';
                 document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);

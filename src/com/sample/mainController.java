@@ -163,6 +163,7 @@ public class mainController extends HttpServlet {
                 items.setExpiration(rsItem.getDate("EXPIRY_DATE"));
                 items.setItemArchive(rsItem.getInt("ITEM_STAT_ID"));
                 items.setItemMaintStat(rsItem.getInt("MAINTENANCE_STATUS"));
+                items.setLastMaintDate(rsItem.getDate("LAST_MAINTENANCE_DATE"));
                 
                 items.setItemPCC(rsItem.getInt("PC_CODE"));
                 items.setAcACCU(rsItem.getInt("AC_ACCU"));
