@@ -3,13 +3,23 @@ package sample.model;
 import java.util.Date;
 
 public class Quotation {
-    private int quotationId;         
+    private int quotationId;       
+    private int archiveFlag; 
     private String description;      
     private Date dateUploaded;     
     private int itemId;              
     private byte[] quotationImage;    
    
     // Getters and Setters
+    
+    public int getArchiveFlag() {
+         return archiveFlag;
+     }
+
+     public void setArchiveFlag(int archiveFlag) {
+         this.archiveFlag = archiveFlag;
+     }
+     
     public int getQuotationId() {
         return quotationId;
     }
