@@ -18,18 +18,53 @@ import java.util.List;
 @WebServlet(name = "historyLogsController", urlPatterns = {"/history"})
 public class historyLogsController extends HttpServlet {
 
+    private static final int PAGE_SIZE = 8;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<HistoryLog> historyLogs = new ArrayList<>();
+        // Get current page number from the request, default is 1
+        int page = 1;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
 
+        // Calculate the range for pagination
+        int startRow = (page - 1) * PAGE_SIZE + 1;
+        int endRow = page * PAGE_SIZE;
+
+        List<HistoryLog> historyLogs = new ArrayList<>();
+        int totalLogs = 0;
+        int totalPages = 0;
+
+        // Query to fetch the total number of logs
+        String countQuery = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS";
+        try (Connection conn = PooledConnection.getConnection();
+             PreparedStatement countStmt = conn.prepareStatement(countQuery);
+             ResultSet rsCount = countStmt.executeQuery()) {
+            if (rsCount.next()) {
+                totalLogs = rsCount.getInt(1);
+                totalPages = (int) Math.ceil((double) totalLogs / PAGE_SIZE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Query to fetch the logs for the current page
         String query = 
             "SELECT LOG_ID, TABLE_NAME, OPERATION_TYPE, OPERATION_TIMESTAMP, USERNAME, ROW_DATA " +
-            "FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS " +
-            "ORDER BY OPERATION_TIMESTAMP DESC";
+            "FROM (" +
+            "   SELECT LOG_ID, TABLE_NAME, OPERATION_TYPE, OPERATION_TIMESTAMP, USERNAME, ROW_DATA, " +
+            "          ROW_NUMBER() OVER (ORDER BY OPERATION_TIMESTAMP DESC) AS row_num " +
+            "   FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS" +
+            ") " +
+            "WHERE row_num BETWEEN ? AND ?";
 
         try (Connection conn = PooledConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, startRow);
+            stmt.setInt(2, endRow);
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 HistoryLog log = new HistoryLog(
@@ -46,7 +81,14 @@ public class historyLogsController extends HttpServlet {
             e.printStackTrace();
         }
 
+        // Set the request attributes
         request.setAttribute("historyLogs", historyLogs);
+        request.setAttribute("totalLogs", totalLogs);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("pageSize", PAGE_SIZE);
+
+        // Forward the request to the JSP page
         request.getRequestDispatcher("history.jsp").forward(request, response);
     }
 }

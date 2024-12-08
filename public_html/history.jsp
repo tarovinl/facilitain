@@ -7,6 +7,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>History Logs</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            margin: 0 5px;
+        }
+        .pagination .active a {
+            background-color: #007bff;
+            color: white;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+        .row-data {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid">
@@ -26,7 +45,7 @@
                             <th>Operation Type</th>
                             <th>Operation Timestamp</th>
                             <th>Username</th>
-                            <th>Row Data</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,14 +56,54 @@
                                 <td>${log.operationType}</td>
                                 <td>${log.operationTimestamp}</td>
                                 <td>${log.username}</td>
-                                <td><c:out value="${log.formattedRowData}" escapeXml="false" /></td>
+                                <td>
+                                    <button class="btn btn-info btn-sm" onclick="toggleDetails('${log.logId}')">View Detail</button>
+                                </td>
+                            </tr>
+                            <tr class="row-data" id="details-${log.logId}">
+                                <td colspan="6">${log.formattedRowData}</td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
+
+                <!-- Pagination Controls -->
+                <div class="pagination">
+                    <c:if test="${page > 1}">
+                        <a href="?page=${page - 1}" class="btn btn-secondary">Previous</a>
+                    </c:if>
+
+                    <!-- Show page numbers -->
+                    <c:forEach begin="1" end="${totalPages}" var="pageNum">
+                        <c:choose>
+                            <c:when test="${pageNum == page}">
+                                <span class="btn btn-primary active">${pageNum}</span>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="?page=${pageNum}" class="btn btn-outline-primary">${pageNum}</a>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+
+                    <c:if test="${page * pageSize < totalLogs}">
+                        <a href="?page=${page + 1}" class="btn btn-secondary">Next</a>
+                    </c:if>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // Function to toggle the visibility of row data
+        function toggleDetails(logId) {
+            const rowData = document.getElementById('details-' + logId);
+            if (rowData.style.display === '' || rowData.style.display === 'none') {
+                rowData.style.display = 'table-row';
+            } else {
+                rowData.style.display = 'none';
+            }
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
