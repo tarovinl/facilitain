@@ -109,7 +109,7 @@
                 Edit Location
               </button>
                
-              <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender(); toggleAirconDiv();">Add Equipment</button>
+              <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender(); toggleAirconDiv(); filterTypes();">Add Equipment</button>
             </div>
         </div>
         <c:if test="${floorName == 'all'}">
@@ -133,6 +133,7 @@
                                 </tr>
                                 
                             <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
+                            <c:if test="${item.itemArchive == 1}">
                                 <c:if test="${item.itemLID == locID}">
                                 <tr style="border: solid 1px black;">
                                 
@@ -247,6 +248,7 @@
                                     </td>
                                 </tr>
                                 </c:if>
+                            </c:if>
                             </c:forEach>    
                                 
             </table>
@@ -287,6 +289,7 @@
                                 </tr>
                                 
                             <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
+                            <c:if test="${item.itemArchive == 1}">
                                 <c:if test="${item.itemLID == locID}">
                                     <c:if test="${item.itemFloor == floorName}">
                                     <c:if test="${item.itemRoom == room.itemRoom}">
@@ -340,7 +343,7 @@
                                         data-itemev="${item.itemEV}"
                                         data-itemeph="${item.itemEPH}"
                                         data-itemehz="${item.itemEHZ}"
-                                        onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/> 
+                                        onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});filterETypes();"/> 
                                     </td>
                                     <td style="margin-left: 4px; margin-right: 4px; text-align:center;">
                                         <input type="image" 
@@ -408,6 +411,7 @@
                                     </c:if>
                                     </c:if>
                                 </c:if>
+                            </c:if>    
                             </c:forEach>    
                                 
                             </table>
@@ -462,7 +466,7 @@
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="itemCat" class="form-label">Category</label>
-                                    <select class="form-select" name="itemCat" onchange="toggleAirconDiv()">
+                                    <select class="form-select" name="itemCat" id="itemCat" onchange="toggleAirconDiv();filterTypes();">
                                         <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
                                             <option value="${cat.itemCID}" selected>${cat.itemCat}</option>
                                         </c:forEach>
@@ -470,9 +474,9 @@
                                 </div>
                                 <div class="col">
                                     <label for="itemType" class="form-label">Type</label>
-                                    <select class="form-select" name="itemType">
+                                    <select class="form-select" name="itemType" id="itemType">
                                         <c:forEach items="${FMO_TYPES_LIST}" var="type" >
-                                            <option value="${type.itemTID}" selected>${type.itemType}</option>
+                                            <option value="${type.itemTID}" data-item-cid="${type.itemCID}" selected>${type.itemType}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -635,7 +639,7 @@
                             <div class="row mt-2">
                                 <div class="col">
                                     <label for="itemEditCat" class="form-label">Category</label>
-                                    <select class="form-select" name="itemEditCat" onchange="toggleEAirconDiv()">
+                                    <select class="form-select" name="itemEditCat" id="itemECat" onchange="toggleEAirconDiv();filterETypes();">
                                         <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
                                             <option value="${cat.itemCID}" selected>${cat.itemCat}</option>
                                         </c:forEach>
@@ -643,9 +647,9 @@
                                 </div>
                                 <div class="col">
                                     <label for="itemEditType" class="form-label">Type</label>
-                                    <select class="form-select" name="itemEditType">
+                                    <select class="form-select" name="itemEditType" id="itemEType">
                                         <c:forEach items="${FMO_TYPES_LIST}" var="type" >
-                                            <option value="${type.itemTID}" selected>${type.itemType}</option>
+                                            <option value="${type.itemTID}" data-item-cid="${type.itemCID}" selected>${type.itemType}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -850,6 +854,59 @@
 //                updateDropdownColor(dropdown);
 //            });
 //        });
+
+function filterTypes() {
+    // Get the selected category's itemCID
+    const selectedCategoryId = document.getElementById('itemCat').value;
+
+    // Get all itemType options
+    const typeOptions = document.querySelectorAll('#itemType option');
+
+    // Loop through all type options
+    typeOptions.forEach(option => {
+        // Check if the option's data-item-cid matches the selected category ID
+        if (option.getAttribute('data-item-cid') === selectedCategoryId) {
+            option.style.display = 'block'; // Show the option
+        } else {
+            option.style.display = 'none'; // Hide the option
+        }
+    });
+
+    // Reset the selected option to the first visible option
+    const typeDropdown = document.getElementById('itemType');
+    const firstVisibleOption = Array.from(typeOptions).find(option => option.style.display === 'block');
+    if (firstVisibleOption) {
+        typeDropdown.value = firstVisibleOption.value;
+    } else {
+        typeDropdown.value = ''; // No valid options available
+    }
+}
+function filterETypes() {
+    // Get the selected category's itemCID
+    const selectedCategoryId = document.getElementById('itemECat').value;
+
+    // Get all itemType options
+    const typeOptions = document.querySelectorAll('#itemEType option');
+
+    // Loop through all type options
+    typeOptions.forEach(option => {
+        // Check if the option's data-item-cid matches the selected category ID
+        if (option.getAttribute('data-item-cid') === selectedCategoryId) {
+            option.style.display = 'block'; // Show the option
+        } else {
+            option.style.display = 'none'; // Hide the option
+        }
+    });
+
+    // Reset the selected option to the first visible option
+    const typeDropdown = document.getElementById('itemEType');
+    const firstVisibleOption = Array.from(typeOptions).find(option => option.style.display === 'block');
+    if (firstVisibleOption) {
+        typeDropdown.value = firstVisibleOption.value;
+    } else {
+        typeDropdown.value = ''; // No valid options available
+    }
+}
 
 function toggleAirconDiv() {
         const selectedCat = document.querySelector('[name="itemCat"]').value;
