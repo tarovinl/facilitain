@@ -30,6 +30,7 @@
                         <option value="report" <c:if test="${filterBy == 'report'}">selected</c:if>>Reports</option>
                         <option value="quotation" <c:if test="${filterBy == 'quotation'}">selected</c:if>>Quotations</option>
                         <option value="maintenance" <c:if test="${filterBy == 'maintenance'}">selected</c:if>>Maintenance</option>
+                        <option value="warning" <c:if test="${filterBy == 'warning'}">selected</c:if>>Warnings</option>
                         <option value="read" <c:if test="${filterBy == 'read'}">selected</c:if>>Read Only</option>
                         <option value="unread" <c:if test="${filterBy == 'unread'}">selected</c:if>>Unread Only</option>
                     </select>
@@ -48,7 +49,7 @@
                                         <c:when test="${notification.type == 'MAINTENANCE'}"><%=request.getContextPath()%>/buildingDashboard?locID=${notification.itemLocId}</c:when>
                                         <c:when test="${notification.type == 'REPORT'}"><%=request.getContextPath()%>/reports</c:when>
                                         <c:when test="${notification.type == 'QUOTATION'}"><%=request.getContextPath()%>/buildingDashboard?locID=${notification.itemLocId}</c:when>
-                                        
+                                         <c:when test="${notification.type == 'WARNING'}"><%=request.getContextPath()%>//buildingDashboard?locID=${notification.itemLocId}</c:when>
                                     </c:choose>
                                 "/>
                                 <button type="submit" class="btn btn-block text-left p-0 bg-transparent border-0">

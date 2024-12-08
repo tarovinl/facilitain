@@ -241,24 +241,26 @@ public class mainController extends HttpServlet {
             rsMaintSched.close();
             
             ResultSet rsQuot = stmntQuotations.executeQuery();
-            while (rsQuot.next()) {
-                Quotation quotation = new Quotation();
-                quotation.setQuotationId(rsQuot.getInt("QUOTATION_ID"));
-                quotation.setDescription(rsQuot.getString("DESCRIPTION"));
-                quotation.setDateUploaded(rsQuot.getDate("DATE_UPLOADED"));
-                quotation.setItemId(rsQuot.getInt("ITEM_ID"));
-                Blob blob = rsQuot.getBlob("QUOTATION_IMAGE");
-                byte[] imageBytes = null;
+                       while (rsQuot.next()) {
+                           Quotation quotation = new Quotation();
+                           quotation.setQuotationId(rsQuot.getInt("QUOTATION_ID"));
+                           quotation.setDescription(rsQuot.getString("DESCRIPTION"));
+                           quotation.setDateUploaded(rsQuot.getDate("DATE_UPLOADED"));
+                           quotation.setItemId(rsQuot.getInt("ITEM_ID"));
+                           Blob blob = rsQuot.getBlob("QUOTATION_IMAGE");
+                           quotation.setArchiveFlag(rsQuot.getInt("ARCHIVED_FLAG"));
 
-                if (blob != null) {
-                    // Convert Blob to byte[]
-                    imageBytes = blob.getBytes(1, (int) blob.length());
-                }
-                // Use the setter to store the image as byte[]
-                quotation.setQuotationImage(imageBytes);
-                quotations.add(quotation);
-            }
-            rsQuot.close();
+                           byte[] imageBytes = null;
+
+                           if (blob != null) {
+                               // Convert Blob to byte[]
+                               imageBytes = blob.getBytes(1, (int) blob.length());
+                           }
+                           // Use the setter to store the image as byte[]
+                           quotation.setQuotationImage(imageBytes);
+                           quotations.add(quotation);
+                       }
+                       rsQuot.close();
 
             ResultSet rsRepairs = stmntRepairs.executeQuery();
             while (rsRepairs.next()) {
