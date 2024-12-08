@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>Maintenance Schedule</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="./resources/css/custom-fonts.css">
 </head>
 <body>
     <div class="container-fluid">
@@ -16,7 +17,7 @@
             </div>
             <div class="col-md-9 col-lg-10 p-4">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h1  >Maintenance Schedule</h1>
+                    <h1  style="font-family: 'NeueHaasMedium', sans-serif;">Maintenance Schedule</h1>
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#maintenanceModal">Add Schedule</button>
                 </div>
 

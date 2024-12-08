@@ -112,6 +112,8 @@
                 
                     <label for="imageUpload" class=" d-block mt-3 mb-3">Upload an Image</label>
                     <input type="file" name="imageUpload" id="imageUpload" class="form-control" accept="image/*">
+                    <div id="imageUploadError" class="error-message"></div>
+
 
                     <!-- Submit Button -->
                     <div class="container mt-3 px-0">
@@ -194,6 +196,18 @@
                     document.getElementById('issueError').textContent = 'Please describe the issue.';
                     valid = false;
                 }
+                //validate image
+                const imageUpload = document.getElementById('imageUpload').files[0];
+                if (!imageUpload) {
+                document.getElementById('imageUploadError').textContent = 'Please upload an image.';
+                valid = false;
+                } else if (!imageUpload.type.startsWith('image/')) {
+                 document.getElementById('imageUploadError').textContent = 'Only image files are allowed.';
+                valid = false;
+                } else if (imageUpload.size > 5 * 1024 * 1024) { // Check file size in bytes
+                document.getElementById('imageUploadError').textContent = 'Image size must be below 5MB.';
+                valid = false;
+}
 
                 return valid;
             }
