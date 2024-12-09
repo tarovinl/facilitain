@@ -64,7 +64,7 @@ public class quotationdisplaycontroller extends HttpServlet {
 
         try (Connection conn = PooledConnection.getConnection()) {
             // SQL query to update the archiveFlag
-            String updateQuery = "UPDATE C##FMO_ADM.FMO_ITEM_QUOTATIONS SET ARCHIVED_FLAG = 2 WHERE QUOTATION_ID = ?";
+            String updateQuery = "UPDATE FMO_ADM.FMO_ITEM_QUOTATIONS SET ARCHIVED_FLAG = 2 WHERE QUOTATION_ID = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(updateQuery)) {
                 pstmt.setInt(1, Integer.parseInt(quotationIdParam));
 

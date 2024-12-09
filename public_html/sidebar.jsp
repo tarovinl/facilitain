@@ -65,7 +65,7 @@
                 </button>
                 </div>
             </div>
-            <hr class="bg-light border-2 border-top border-light"/>
+            <!--<hr class="bg-light border-2 border-top border-light"/>
             <div class="todo-item d-flex justify-content-between align-items-center">
                 <div class="ps-2">
                     <p>
@@ -79,7 +79,7 @@
                     <button class="btn btn-sm"><img src="resources/images/icons/xmark-solid.svg" alt="X" class="icon" style="width: 1.5em; height: 1.5em; vertical-align: middle;"></button>
                 </div>
             </div>
-            <hr class="bg-light border-2 border-top border-light"/>
+            <hr class="bg-light border-2 border-top border-light"/>-->
         </div>
      <!--   Log out to Portal -->
         <a href="#" class="btn"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>

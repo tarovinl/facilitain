@@ -26,7 +26,7 @@ public class ScheduleMaintenance {
     public void startScheduler() {
 
         // Schedule performMaintenance to run once, immediately on startup
-        scheduler.schedule(this::performMaintenance, 0, TimeUnit.SECONDS);
+//        scheduler.schedule(this::performMaintenance, 0, TimeUnit.SECONDS);
     }
 
 
@@ -34,7 +34,7 @@ public class ScheduleMaintenance {
             // Disable the DBMS Scheduler job on application undeploy
 //            try (
 //            Connection con = PooledConnection.getConnection();
-//            CallableStatement stmt = con.prepareCall("{CALL C##FMO_ADM.UPDATETESTSCHEDCALL}");) {
+//            CallableStatement stmt = con.prepareCall("{CALL FMO_ADM.UPDATETESTSCHEDCALL}");) {
 //                
 //                stmt.execute();
 //                System.out.println("DBMS Scheduler job disabled successfully on application undeploy.");
@@ -58,19 +58,19 @@ public class ScheduleMaintenance {
         try (Connection con = PooledConnection.getConnection()) {
             
             // Call first procedure: CALL_GEN_AUTO_ITEMS
-            try (CallableStatement stmt = con.prepareCall("{CALL C##FMO_ADM.CALL_GEN_AUTO_ITEMS}")) {
+            try (CallableStatement stmt = con.prepareCall("{CALL FMO_ADM.CALL_GEN_AUTO_ITEMS}")) {
                 stmt.execute();
                 System.out.println("CALL_GEN_AUTO_ITEMS executed successfully.");
             }
 
             // Call second procedure: CALL_RUN_AUTO_ITEMS
-            try (CallableStatement stmt = con.prepareCall("{CALL C##FMO_ADM.CALL_RUN_AUTO_ITEMS}")) {
+            try (CallableStatement stmt = con.prepareCall("{CALL FMO_ADM.CALL_RUN_AUTO_ITEMS}")) {
                 stmt.execute();
                 System.out.println("CALL_RUN_AUTO_ITEMS executed successfully.");
             }
 
             // Call third procedure: CALL_U_FE
-            try (CallableStatement stmt = con.prepareCall("{CALL C##FMO_ADM.CALL_U_FE}")) {
+            try (CallableStatement stmt = con.prepareCall("{CALL FMO_ADM.CALL_U_FE}")) {
                 stmt.execute();
                 System.out.println("CALL_U_FE executed successfully.");
             }

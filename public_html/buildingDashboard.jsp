@@ -80,7 +80,7 @@
             
                 <c:if test="${category.itemCID == itemCID}">
                     <c:if test="${itemz.itemArchive == 1}">
-                    <c:if test="${itemz.itemMaintStat == 1}">
+                    <c:if test="${itemz.itemMaintStat == 2}">
                         <c:set var="itemCount" value="${itemCount + 1}" />
                     </c:if>
                     </c:if>
@@ -425,7 +425,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </c:forEach>
               </div>
             </div>
-            <div class="activity">
+                       <div class="activity">
               <div class="actCategories">
                 <h2 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h2>
               </div>
@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
                 <c:if test="${item.itemLID == locID}">
                     <c:forEach items="${maintenanceList}" var="maint">
-                    <c:if test="${maint.activeFlag == 1}">
+                    <c:if test="${maint.archiveFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
                             <div class="actItem"
@@ -450,6 +450,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </c:forEach>
               </div>
             </div>
+
           </div>
         </div>
       </div>

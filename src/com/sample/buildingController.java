@@ -41,7 +41,7 @@ public class buildingController extends HttpServlet {
         }
 
         try (Connection conn = PooledConnection.getConnection()) {
-            String sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ?, IMAGE = ? WHERE ITEM_LOC_ID = ?";
+            String sql = "UPDATE FMO_ADM.FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ?, IMAGE = ? WHERE ITEM_LOC_ID = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, locName);
                 stmt.setString(2, locDescription);
