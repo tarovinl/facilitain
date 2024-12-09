@@ -43,7 +43,7 @@ import sample.model.SharedData;
 import sample.model.ToDo;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification",
-                                                     "/calendar", "/history", "/settings", "/maintenanceSchedule" })
+                                                     "/calendar", "/history", "/settings", "/maintenanceSchedule", "/mapView" })
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
@@ -462,6 +462,9 @@ public class mainController extends HttpServlet {
                 break;
             case "/maintenanceSchedule":
                 request.getRequestDispatcher("/maintenanceSchedule.jsp").forward(request, response);
+                break;
+            case "/mapView":
+                request.getRequestDispatcher("/mapView.jsp").forward(request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
