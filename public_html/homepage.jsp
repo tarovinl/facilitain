@@ -21,8 +21,7 @@
                <div class="d-flex justify-content-between align-items-center mb-4">
 
     <div>
-        <img src="resources/images/facilitain-home-logo.png" alt="Facilitain Home Logo" 
-             style="max-height: 80px; margin-bottom: 10px;"/>
+       
         <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
     </div>
     
