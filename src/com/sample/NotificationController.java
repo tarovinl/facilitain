@@ -56,8 +56,8 @@ public class NotificationController extends HttpServlet {
         // Base SQL query for all notification types
         String baseSql = "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
                          "l.NAME AS locName, n.ITEM_LOC_ID " +
-                         "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
-                         "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
+                         "FROM FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
+                         "JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
                          "WHERE 1=1 " + filterSql + " " + orderBy;
 
         try (Connection conn = PooledConnection.getConnection()) {
@@ -104,7 +104,7 @@ public class NotificationController extends HttpServlet {
     }
 
     private void deleteNotification(int notificationId, HttpServletResponse response, HttpServletRequest request) throws IOException {
-        String sql = "DELETE FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS WHERE NOTIFICATION_ID = ?";
+        String sql = "DELETE FROM FMO_ADM.FMO_ITEM_NOTIFICATIONS WHERE NOTIFICATION_ID = ?";
         
         try (Connection conn = PooledConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -137,7 +137,7 @@ public class NotificationController extends HttpServlet {
             }
 
             // Mark as read in the database
-            String sql = "UPDATE C##FMO_ADM.FMO_ITEM_NOTIFICATIONS SET IS_READ = 1 WHERE NOTIFICATION_ID = ?";
+            String sql = "UPDATE FMO_ADM.FMO_ITEM_NOTIFICATIONS SET IS_READ = 1 WHERE NOTIFICATION_ID = ?";
             try (Connection conn = PooledConnection.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, notificationId);

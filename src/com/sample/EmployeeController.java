@@ -23,7 +23,7 @@ public class EmployeeController extends HttpServlet {
             throws ServletException, IOException {
         List<Employee> employeeList = new ArrayList<>();
         String query = "SELECT FMO_EMP_ID, SURNAME, FIRST_NAME, MIDDLE_NAME, OTHER_NAME, SRVC_AREA_ID, " +
-                       "EMP_STATUS, EMP_NUMBER, ACTIVE_FLAG, COMPANY_NAME FROM C##FMO_ADM.FMO_EMPLOYEES";
+                       "EMP_STATUS, EMP_NUMBER, ACTIVE_FLAG, COMPANY_NAME FROM FMO_ADM.FMO_EMPLOYEES";
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);

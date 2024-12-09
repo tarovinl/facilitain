@@ -44,7 +44,7 @@ public class historyLogsController extends HttpServlet {
         int totalPages = 0;
 
         // Query to fetch the total number of logs, considering the search keyword
-        String countQuery = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS WHERE " +
+        String countQuery = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_HISTORY_LOGS WHERE " +
                              "LOG_ID LIKE ? OR " +
                              "TABLE_NAME LIKE ? OR " +
                              "OPERATION_TYPE LIKE ? OR " +
@@ -72,7 +72,7 @@ public class historyLogsController extends HttpServlet {
             "FROM (" +
             "   SELECT LOG_ID, TABLE_NAME, OPERATION_TYPE, OPERATION_TIMESTAMP, USERNAME, ROW_DATA, " +
             "          ROW_NUMBER() OVER (ORDER BY OPERATION_TIMESTAMP DESC) AS row_num " +
-            "   FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS " +
+            "   FROM FMO_ADM.FMO_ITEM_HISTORY_LOGS " +
             "   WHERE LOG_ID LIKE ? OR " +
             "         TABLE_NAME LIKE ? OR " +
             "         OPERATION_TYPE LIKE ? OR " +
