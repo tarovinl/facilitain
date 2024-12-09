@@ -350,6 +350,24 @@ public class mainController extends HttpServlet {
 //                    
 //                }
         
+        List<Item> filteredCategories = new ArrayList<>();
+        // Iterate over each category
+        for (Item cat : listCats) {
+            // Check if any type in listTypes matches the category's itemCID
+            boolean hasMatchingType = false;
+            for (Item type : listTypes) {
+                if (type.getItemCID() == cat.getItemCID()) {
+                    hasMatchingType = true;
+                    break;
+                }
+            }
+            // If a matching type is found, add the category to the filtered list
+            if (hasMatchingType) {
+                filteredCategories.add(cat);
+            }
+        }
+
+        
         // Store locations in the request scope to pass to JSP
         request.setAttribute("locations", locations);
         request.setAttribute("FMO_FLOORS_LIST", groupedFloors);
@@ -358,7 +376,7 @@ public class mainController extends HttpServlet {
         request.setAttribute("uniqueRooms", resultRoomList);
         request.setAttribute("uniqueRooms2", resultRoomList2);
         request.setAttribute("FMO_TYPES_LIST", listTypes);
-        request.setAttribute("FMO_CATEGORIES_LIST", listCats);
+        request.setAttribute("FMO_CATEGORIES_LIST", filteredCategories);
         request.setAttribute("FMO_BRANDS_LIST", listBrands);
         request.setAttribute("maintenanceList", listMaintSched);
         request.setAttribute("FMO_MAINTSTAT_LIST", listMaintStat);
