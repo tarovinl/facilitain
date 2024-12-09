@@ -43,8 +43,8 @@ import sample.model.Quotation;
 import sample.model.SharedData;
 import sample.model.ToDo;
 
-@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit", "/notification",
-                                                     "/calendar", "/history", "/settings", "/maintenanceSchedule", "/mapView" })
+@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
+                                                     "/calendar", "/settings", "/maintenanceSchedule", "/mapView" })
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
