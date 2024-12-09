@@ -14,6 +14,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @WebServlet(name = "feedbackController", urlPatterns = {"/feedback"})
 public class FeedbackController extends HttpServlet {
@@ -63,14 +65,35 @@ public class FeedbackController extends HttpServlet {
                 generalAverage += avgRating;
             }
             generalAverage = satisfactionRates.isEmpty() ? 0.0 : generalAverage / satisfactionRates.size();
+         
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        request.setAttribute("generatedDate", sdf.format(new Date()));
         // Set attributes for JSP
         request.setAttribute("feedbackList", feedbackList);
         request.setAttribute("satisfactionRates", satisfactionRates);
         request.setAttribute("generalAverage", generalAverage);
         request.getRequestDispatcher("feedback.jsp").forward(request, response);
+    }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String feedbackIdStr = request.getParameter("feedbackId");
+        if (feedbackIdStr != null && !feedbackIdStr.isEmpty()) {
+            int feedbackId = Integer.parseInt(feedbackIdStr);
+            String deleteQuery = "DELETE FROM C##FMO_ADM.FMO_ITEM_FEEDBACK WHERE FEEDBACK_ID = ?";
+
+            try (Connection conn = PooledConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(deleteQuery)) {
+                stmt.setInt(1, feedbackId);
+                stmt.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Redirect to avoid form resubmission
+        response.sendRedirect("feedback");
     }
 }

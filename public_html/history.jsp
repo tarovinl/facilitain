@@ -1,82 +1,171 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
-<%@ page contentType="text/html;charset=windows-1252" %>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>History Logs</title>
-    <!-- Bootstrap CSS from StackPath -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
- 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        .row-data {
+            display: none;
+        }
+        .log-details {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+    </style>
 </head>
 <body>
-<div class="container-fluid">
-      <div class="row min-vh-100">
-        
-          <jsp:include page="sidebar.jsp"/>
-    
-    <div class="col-md-10">
-                <!-- Page title and sort dropdown -->
+    <div class="container-fluid">
+        <div class="row vh-100">
+            <div class="col-md-3 col-lg-2 p-0">
+                <jsp:include page="sidebar.jsp"></jsp:include>
+            </div>
+            <div class="col-md-9 col-lg-10 p-4">
+                <h1 class="mb-4">History Logs</h1>
+
+                <!-- Search Bar -->
+                <form action="${pageContext.request.contextPath}/history" method="get" class="mb-4">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Search logs by any field" value="${searchKeyword != null ? searchKeyword : ''}">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+
+                <!-- Page Indicator -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h1>History Logs</h1>
-                    <select class="form-select w-auto" aria-label="Sort history logs">
-                        <option selected>Sort by</option>
-                        <option value="1">Date</option>
-                        <option value="2">By</option>
-                        <option value="3">Action</option>
-                    </select>
+                    <div class="text-muted">
+                        Page ${currentPage} of ${totalPages}
+                    </div>
                 </div>
 
-                <!-- Table structure -->
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Date</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">By</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- JSP mock data - using a custom class to store logs -->
-                        <%
-                            class HistoryLog {
-                                String date, time, by, action;
-                                HistoryLog(String date, String time, String by, String action) {
-                                    this.date = date;
-                                    this.time = time;
-                                    this.by = by;
-                                    this.action = action;
-                                }
-                            }
-                            HistoryLog[] logs = new HistoryLog[] {
-                                new HistoryLog("07/15/2024", "12:06 PM", "Administrator 1", "Manual status change"),
-                                new HistoryLog("07/12/2024", "1:04 PM", "Administrator 2", "Quotation of XY2010 uploaded"),
-                                new HistoryLog("06/28/2024", "11:24 AM", "Administrator 3", "Added building 'Henry Sy'"),
-                                new HistoryLog("06/20/2024", "9:05 AM", "System", "Auto status change to 'in maintenance'"),
-                                new HistoryLog("05/14/2024", "2:32 PM", "Administrator 1", "Manual status change"),
-                                new HistoryLog("05/09/2024", "12:30 PM", "Administrator 2", "Quotation of KC0100 uploaded"),
-                                new HistoryLog("05/07/2024", "7:04 AM", "Administrator 3", "Added building 'Parish'"),
-                                new HistoryLog("04/20/2024", "11:04 AM", "System", "Auto status change to 'in maintenance'")
-                            };
-                            for (HistoryLog log : logs) {
-                        %>
-                        <tr>
-                            <td><%= log.date %></td>
-                            <td><%= log.time %></td>
-                            <td><%= log.by %></td>
-                            <td><%= log.action %></td>
-                        </tr>
-                        <%
-                            }
-                        %>
-                    </tbody>
-                </table>
+                <!-- Display Table -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Log ID</th>
+                                <th>Table Name</th>
+                                <th>Operation Type</th>
+                                <th>Operation Timestamp</th>
+                                <th>Username</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:if test="${empty historyLogs}">
+                                <tr>
+                                    <td colspan="6" class="text-center">No logs found matching your search criteria.</td>
+                                </tr>
+                            </c:if>
+                            <c:forEach var="log" items="${historyLogs}">
+                                <tr>
+                                    <td>${log.logId}</td>
+                                    <td>${log.tableName}</td>
+                                    <td>${log.operationType}</td>
+                                    <td>${log.operationTimestamp}</td>
+                                    <td>${log.username}</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm" onclick="toggleDetails('${log.logId}')">
+                                            View Detail
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="row-data" id="details-${log.logId}">
+                                <td colspan="6">
+                                <div class="log-details">
+                                    <strong>Row Data:</strong>
+                                <ul>
+                                <c:forEach var="pair" items="${fn:split(log.rowData, ',')}">
+                                <li><strong>${fn:split(pair, '=')[0]}:</strong> ${fn:split(pair, '=')[1]}</li>
+                                </c:forEach>
+                                 </ul>
+                            </div>
+                        </td>
+                 </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Controls -->
+                <nav aria-label="History Logs Pagination">
+                    <ul class="pagination justify-content-center mt-3">
+                        <!-- Previous Button -->
+                        <c:choose>
+                            <c:when test="${currentPage > 1}">
+                                <li class="page-item">
+                                    <a class="page-link" href="${pageContext.request.contextPath}/history?page=1&search=${searchKeyword}" aria-label="First">
+                                        <span aria-hidden="true">&laquo;&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="${pageContext.request.contextPath}/history?page=${currentPage - 1}&search=${searchKeyword}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="page-item disabled">
+                                    <span class="page-link">&laquo;&laquo;</span>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">&laquo;</span>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <!-- Page Numbers -->
+                        <c:forEach begin="1" end="${totalPages}" var="pageNum">
+                            <li class="page-item ${pageNum == currentPage ? 'active' : ''}">
+                                <a class="page-link" href="${pageContext.request.contextPath}/history?page=${pageNum}&search=${searchKeyword}">${pageNum}</a>
+                            </li>
+                        </c:forEach>
+
+                        <!-- Next Button -->
+                        <c:choose>
+                            <c:when test="${currentPage < totalPages}">
+                                <li class="page-item">
+                                    <a class="page-link" href="${pageContext.request.contextPath}/history?page=${currentPage + 1}&search=${searchKeyword}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="${pageContext.request.contextPath}/history?page=${totalPages}&search=${searchKeyword}" aria-label="Last">
+                                        <span aria-hidden="true">&raquo;&raquo;</span>
+                                    </a>
+                                </li>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="page-item disabled">
+                                    <span class="page-link">&raquo;</span>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">&raquo;&raquo;</span>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 
-    <!-- StackPath Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        // Toggle row data visibility
+        function toggleDetails(logId) {
+            const row = document.getElementById('details-' + logId);
+            row.style.display = (row.style.display === 'none' || row.style.display === '') ? 'table-row' : 'none';
+        }
+    </script>
 </body>
 </html>
