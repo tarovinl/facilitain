@@ -19,7 +19,7 @@
                 <h1 class="my-4">Settings</h1>
                 <div class="row">
                     <!-- Service Providers Card -->
-                    <div class="col-md-6">
+                    <!--<div class="col-md-6">
                         <div class="card text-center mb-4">
                             <a href="serviceProviders">
                                 <div class="card-body">
@@ -30,7 +30,7 @@
                                 </div>
                             </a>
                         </div>
-                    </div>
+                    </div>-->
                     
                     <!-- Item Type Card -->
                     <div class="col-md-6">
