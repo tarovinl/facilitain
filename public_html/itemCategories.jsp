@@ -14,14 +14,14 @@
         <jsp:include page="sidebar.jsp"/>
         <div class="col-md-10">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>Item Categories</h1>
-                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <h1 class="font-medium">Item Categories</h1>
+                <button class="btn btn-warning font-light" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                     <i class="bi bi-plus-lg"></i> Add Item Category
                 </button>
             </div>
 
             <table class="table table-striped">
-                <thead>
+                <thead class="font-medium">
                     <tr>
                         <th scope="col">Category ID</th>
                         <th scope="col">Category Name</th>
@@ -29,7 +29,7 @@
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="font-light">
                     <c:forEach var="category" items="${categoryList}">
                         <c:if test="${category.archivedFlag == 1}">
                             <tr>

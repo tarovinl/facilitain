@@ -25,7 +25,7 @@
         <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
     </div>
     
-    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addBuildingModal">
+    <button class="btn btn-warning font-light" data-bs-toggle="modal" data-bs-target="#addBuildingModal">
         <i class="bi bi-plus-lg"></i> Add
     </button>
 </div>

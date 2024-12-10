@@ -15,9 +15,9 @@
         <jsp:include page="sidebar.jsp"/>
 
         <div class="col-md-10">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1>Reports</h1>
-                <select id="sortStatus" class="form-select w-auto">
+            <div class="d-flex justify-content-between align-items-center mb-3 ">
+                <h1 class="font-medium">Reports</h1>
+                <select id="sortStatus" class="form-select w-auto font-light">
                     <option value="all" selected>All</option>
                     <option value="resolved">Resolved</option>
                     <option value="unresolved">Unresolved</option>
@@ -25,7 +25,7 @@
             </div>
 
             <table class="table table-striped table-hover">
-                <thead>
+                <thead class="font-medium">
                     <tr>
                         <th scope="col">ID</th>
                         <th scope="col">Equipment Type</th>
@@ -35,7 +35,7 @@
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="reportsTable">
+                <tbody class="font-light" id="reportsTable">
                     <c:forEach var="report" items="${reportsList}">
                         <tr class="report-row" data-status="${report.status == 1 ? 'resolved' : 'unresolved'}">
                             <td>${report.reportId}</td>

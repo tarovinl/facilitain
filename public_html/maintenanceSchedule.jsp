@@ -18,12 +18,12 @@
             <div class="col-md-9 col-lg-10 p-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <h1  style="font-family: 'NeueHaasMedium', sans-serif;">Maintenance Schedule</h1>
-                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#maintenanceModal">Add Schedule</button>
+                    <button class="btn btn-warning font-light" data-bs-toggle="modal" data-bs-target="#maintenanceModal">Add Schedule</button>
                 </div>
 
                 <!-- Maintenance List Table -->
                 <table class="table table-striped mt-4">
-                    <thead>
+                    <thead class="font-medium">
                         <tr>
                             <th>ID</th>
                             <th>Item Type</th>
@@ -33,7 +33,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="font-light">
                         <c:forEach var="maintenance" items="${maintenanceList}">
                             <tr>
                                 <td>${maintenance.itemMsId}</td>

@@ -17,20 +17,20 @@
             <jsp:include page="sidebar.jsp" />
 
             <div class="col-md-10">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3 font-medium">
                     <h1>Feedback</h1>
                     <button class="btn btn-warning" id="download-chart">Generate Report</button>
                 </div>
 
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Satisfaction Rate (Monthly)</h5>
+                        <h5 class="card-title font-medium">Satisfaction Rate (Monthly)</h5>
                         <div id="chart_div" style="width: 100%; height: 400px"></div>
                     </div>
                 </div>
 
                 <table class="table table-striped">
-                    <thead>
+                    <thead class="font-medium">
                         <tr>
                             <th>Rating</th>
                             <th>Room</th>
@@ -40,7 +40,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="font-light">
                         <c:forEach var="feedback" items="${feedbackList}">
                             <tr>
                                 <td>${feedback.rating}</td>

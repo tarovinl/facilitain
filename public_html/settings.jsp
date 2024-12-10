@@ -14,7 +14,7 @@
         
     <jsp:include page="sidebar.jsp"/>
     
-    <div class="col-md-10">
+    <div class="col-md-10 font-medium">
             <div class="container">
                 <h1 class="my-4">Settings</h1>
                 <div class="row">

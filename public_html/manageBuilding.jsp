@@ -65,22 +65,21 @@
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
-                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;">
+                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack font-light" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;">
                 <img
-                        src="resources/images/backIcon.svg" 
-                        alt="next icon"
-                        width="16"
-                        height="16"
-                        style="transform: rotateY(180deg); margin-right: 8px;"
+                        src="resources/images/icons/angle-left-solid.svg" 
+                        alt="back icon"
+                        width="20"
+                        height="20"
                     /> <!-- change based on state of building -->
                     Back
                 </a>
             </div>
         </div>
-        <div class="buildingName">
+        <div class="buildingName font-medium">
             <h1>${locName}</h1>
         </div>
-        <div class="container">
+        <div class="container font-medium">
                     <a href="./buildingDashboard?locID=${locID}/manage?floor=all" class="floorLinks">
                         All Items
                     </a>
@@ -90,7 +89,7 @@
         <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
             <c:if test="${floors.key == locID}">
                 <c:forEach var="floor" items="${floors.value}">
-                    <a href="./buildingDashboard?locID=${locID}/manage?floor=${floor}" class="floorLinks">
+                    <a href="./buildingDashboard?locID=${locID}/manage?floor=${floor}" class="floorLinks font-medium">
                         ${floor}
                     </a>
                     <c:if test="${floor == floorName}">
@@ -100,7 +99,7 @@
             </c:if>
         </c:forEach>    
         </div>
-        <div class="floorAndButtons">
+        <div class="floorAndButtons font-medium">
             <div class="floorName">
               <h1>${floorName == 'all' ? 'All Items' : floorName}</h1>
             </div>
@@ -113,10 +112,10 @@
             </div>
         </div>
         <c:if test="${floorName == 'all'}">
-        <div class="roomDropsdiv">
+        <div class="roomDropsdiv ">
             <div style="overflow-x: auto; overflow-y: hidden; white-space: nowrap;">
             <table aria-label="history logs table" style="border: 1px solid black;">
-                                <tr style="margin-bottom: 120px; background-color: black; color: white;">
+                                <tr class="font-medium" style="margin-bottom: 120px; background-color: black; color: white;">
                                     <!--<th ></th>-->
                                     <th ></th>
                                     <th ></th>
@@ -264,7 +263,7 @@
                 <c:if test="${room.itemFloor == floorName}">  
                 <c:if test="${room.itemArchive == 1}">  
                 <li class="roomDropdown">
-                    <div class="roomDropDiv">
+                    <div class="roomDropDiv font-medium">
                         <div class="roomDLblDiv">
                             <h3>
                                 <button onclick="showTblDiv(this)" >${room.itemRoom != null ? room.itemRoom : 'Non-Room Equipment'}</button>
@@ -426,7 +425,7 @@
                 <!--<li>room 808</li>-->
             </ul>
             
-            <div id="paginationControls"></div>
+            <div class="font-medium" id="paginationControls"></div>
          </div>
      </div>
    </div>

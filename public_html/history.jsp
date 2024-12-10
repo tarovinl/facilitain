@@ -31,18 +31,18 @@
                 <jsp:include page="sidebar.jsp"></jsp:include>
             </div>
             <div class="col-md-9 col-lg-10 p-4">
-                <h1 class="mb-4">History Logs</h1>
+                <h1 class="mb-4 font-medium">History Logs</h1>
 
                 <!-- Search Bar -->
                 <form action="${pageContext.request.contextPath}/history" method="get" class="mb-4">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="Search logs by any field" value="${searchKeyword != null ? searchKeyword : ''}">
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <input type="text" name="search" class="form-control font-light" placeholder="Search logs by any field" value="${searchKeyword != null ? searchKeyword : ''}">
+                        <button type="submit" class="btn btn-primary font-medium">Search</button>
                     </div>
                 </form>
 
                 <!-- Page Indicator -->
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3 font-light">
                     <div class="text-muted">
                         Page ${currentPage} of ${totalPages}
                     </div>
@@ -51,7 +51,7 @@
                 <!-- Display Table -->
                 <div class="table-responsive">
                     <table class="table table-striped table-hover">
-                        <thead class="table-light">
+                        <thead class="table-light font-medium">
                             <tr>
                                 <th>Log ID</th>
                                 <th>Table Name</th>
@@ -61,7 +61,7 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="font-light">
                             <c:if test="${empty historyLogs}">
                                 <tr>
                                     <td colspan="6" class="text-center">No logs found matching your search criteria.</td>
@@ -99,7 +99,7 @@
 
                 <!-- Pagination Controls -->
                 <nav aria-label="History Logs Pagination">
-                    <ul class="pagination justify-content-center mt-3">
+                    <ul class="pagination justify-content-center mt-3 font-light">
                         <!-- Previous Button -->
                         <c:choose>
                             <c:when test="${currentPage > 1}">

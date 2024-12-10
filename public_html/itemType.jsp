@@ -16,12 +16,12 @@
             </div>
             <div class="col-md-9 col-lg-10 p-4">
              <div class="d-flex justify-content-between align-items-center">
-                <h1>Item Types</h1>
-                <button class="btn btn-warning my-3" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">Add Item Type</button>
+                <h1 class="font-medium">Item Types</h1>
+                <button class="btn btn-warning my-3 font-light" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">Add Item Type</button>
                 </div>
                 <!-- Display Table -->
             <table class="table table-striped mt-4">
-    <thead>
+    <thead class="font-medium">
         <tr>
             <th>Type ID</th>
             <th>Category Name</th>
@@ -30,7 +30,7 @@
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="font-light">
         <c:forEach var="type" items="${itemTypeList}">
             <c:if test="${type.archivedFlag == 1}">
                 <tr>

@@ -15,16 +15,16 @@
           <jsp:include page="sidebar.jsp"/>
     
     <div class="col-md-10">
-                <h1>Item Users</h1>
+                <h1 class="font-medium">Item Users</h1>
                 <table class="table table-striped mt-4">
-                    <thead>
+                    <thead class="font-medium">
                         <tr>
                             <th>Employee Number</th>
                             <th>Full Name</th>
                             <th>User Type</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="font-light">
                         <c:forEach var="user" items="${itemUserList}">
                             <tr>
                                 <td>${user.empNumber}</td>

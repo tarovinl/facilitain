@@ -47,24 +47,24 @@
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
-                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;">
+                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack font-light" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;">
                 <img
-                        src="resources/images/backIcon.svg" 
-                        alt="next icon"
-                        width="16"
-                        height="16"
-                        style="transform: rotateY(180deg); margin-right: 8px;"
+                        src="resources/images/icons/angle-left-solid.svg" 
+                        alt="back icon"
+                        width="20"
+                        height="20"
+                      
                     /> 
                     Back
                 </a>
             </div>
         </div>
-        <div class="editbuildingName container">
+        <div class="editbuildingName container font-medium">
             <h1>Edit Location</h1>
         </div>
-        <div class="floorAndButtons container">
+        <div class="floorAndButtons container font-medium">
             <div class="locName">
-              <h3 class="fw-bold">${locName}</h3>
+              <h3 class="font-medium">${locName}</h3>
             </div>
             <div>
                 <button class="buttonsBuilding" data-toggle="modal" data-target="#addFloor" type="button" onclick="">Add Floor</button>
@@ -77,39 +77,39 @@
     <input type="hidden" name="locID" value="${locID}"> <!-- Ensure this value is correctly set -->
 
     <!-- Location Name Section -->
-    <div class="row mt-4">
+    <div class="row mt-4 ">
         <div class="col">
-            <label for="locName" class="form-label fw-bold h4">Location Name</label>
-            <input type="text" class="form-control" id="locName" name="locName" value="${locName}" required>
+            <label for="locName" class="form-label font-medium font-medium h4">Location Name</label>
+            <input type="text" class="form-control font-light" id="locName" name="locName" value="${locName}" required>
         </div>
     </div>
 
     <!-- Description Section -->
     <div class="row mt-3">
         <div class="col">
-            <label for="locDescription" class="form-label fw-bold h4">Description</label>
-            <textarea class="form-control" id="locDescription" name="locDescription" rows="3" required>${locDescription}</textarea>
+            <label for="locDescription" class="form-label font-medium font-medium h4">Description</label>
+            <textarea class="form-control font-light" id="locDescription" name="locDescription" rows="3" required>${locDescription}</textarea>
         </div>
     </div>
 
     <!-- Image Upload Section -->
-    <div class="row mt-3">
+    <div class="row mt-3 ">
         <div class="col">
-            <h4 class="fw-bold mt-3">Change Location Image</h4>
+            <h4 class="font-medium mt-3 font-medium">Change Location Image</h4>
             <!-- File Input -->
             <div class="mb-3">
-                <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
+                <input type="file" class="form-control font-light" id="imageFile" name="imageFile" accept="image/*">
             </div>
         </div>
     </div>
 
     <!-- Save & Reset Buttons Section -->
-    <div class="row mt-2">
+    <div class="row mt-2 font-medium">
         <div class="col text-center">
-            <input type="submit" value="Save Changes" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold">
+            <input type="submit" value="Save Changes" class="btn btn-dark text-warning btn-lg mt-4 w-75 font-medium">
         </div> 
         <div class="col text-center">
-            <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold" onclick="location.reload()">Reset</button>
+            <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 font-medium" onclick="location.reload()">Reset</button>
         </div> 
     </div>
 </form>
@@ -117,12 +117,12 @@
                 <div class="row mt-4">
                     <div class="col dropTbl">
                         <div class="floorDLblDiv">
-                            <h4 class="fw-bold mt-2">
+                            <h4 class="font-medium mt-2 font-medium">
                                 <button onclick="showActiveTbl()">Active Floors</button>
                             </h4>
                         </div>
                         <table class="activeFloorTbl table table-striped table-bordered border border-dark">
-                            <thead class="table-dark">
+                            <thead class="table-dark font-medium">
                               <tr>
                                 <th scope="col"></th>
                                 <th scope="col"></th>
@@ -163,9 +163,9 @@
                                                 data-target="#archiveFloor"
                                                 onclick="populateArchFlrModal(this)">
                                         </th>
-                                        <td>${floors.itemLocFlrId}</td>
-                                        <td>${floors.locFloor}</td>
-                                        <td>${floors.locDescription != null ? floors.locDescription : 'N/A'}</td>
+                                        <td class="font-light">${floors.itemLocFlrId}</td>
+                                        <td class="font-light">${floors.locFloor}</td>
+                                        <td class="font-light">${floors.locDescription != null ? floors.locDescription : 'N/A'}</td>
                                      </tr>
                                         </c:if>
                                     </c:if>
@@ -184,7 +184,7 @@
                 <!--<div class="row mt-3 mb-4">
                     <div class="col dropTbl mb-4">
                         <div class="floorDLblDiv">
-                            <h4 class="fw-bold mt-2 archivedLbl">
+                            <h4 class="font-medium mt-2 archivedLbl">
                                 <button onclick="showArchivedTbl()">Archived Floors</button>
                             </h4>
                         </div>
@@ -260,13 +260,13 @@
                     <form action="floorcontroller" method="POST">
                         <div class="row">
                             <div class="col">
-                                <h3 class="fw-bold">Edit Floor</h3>
+                                <h3 class="font-medium font-medium">Edit Floor</h3>
                             </div>
                         </div>
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="flrName" class="fw-bold">Floor Name</label>
-                                <input type="text" name="editFlrName" id="editFlrName" class="form-control mt-3" maxlength="15" required>
+                                <label for="flrName" class="font-medium font-medium">Floor Name</label>
+                                <input type="text" name="editFlrName" id="editFlrName" class="form-control mt-3 font-light" maxlength="15" required>
                             </div>
                         </div>
                         <input type="hidden" name="editFlrLocID" id="editFlrLocID" class="form-control" value="${locID}">
@@ -274,16 +274,16 @@
                         <input type="hidden" name="locID" value="${locID}">
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="flrDesc" class="fw-bold">Floor Description</label>
-                                <textarea class="form-control mt-3" name="editFlrDesc" id="editFlrDesc" rows="2"></textarea>
+                                <label for="flrDesc" class="font-medium font-medium">Floor Description</label>
+                                <textarea class="form-control mt-3 font-light" name="editFlrDesc" id="editFlrDesc" rows="2"></textarea>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row font-medium">
                             <div class="col text-center">
-                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
+                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 font-medium">
                             </div> 
                             <div class="col text-center">
-                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 fw-bold" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 font-medium" data-dismiss="modal">Cancel</button>
                             </div> 
                         </div>
                     </form>
@@ -304,29 +304,29 @@
                     <form action="floorcontroller" method="POST">
                         <div class="row">
                             <div class="col">
-                                <h3 class="fw-bold">Add Floor</h3>
+                                <h3 class="font-medium font-medium">Add Floor</h3>
                             </div>
                         </div>
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="flrName" class="fw-bold">Floor Name</label>
-                                <input type="text" name="addFlrName" id="addFlrName" class="form-control mt-3" maxlength="15" required>
+                                <label for="flrName" class="font-medium font-medium">Floor Name</label>
+                                <input type="text" name="addFlrName" id="addFlrName" class="form-control mt-3 font-light" maxlength="15" required>
                             </div>
                         </div>
                         <input type="hidden" name="addFlrLocID" id="addFlrLocID" class="form-control" value="${locID}">
                         <input type="hidden" name="locID" value="${locID}">
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="flrDesc" class="fw-bold">Floor Description</label>
-                                <textarea class="form-control mt-3" name="addFlrDesc" id="addFlrDesc" rows="2"></textarea>
+                                <label for="flrDesc" class="font-medium font-medium">Floor Description</label>
+                                <textarea class="form-control mt-3 font-light" name="addFlrDesc" id="addFlrDesc" rows="2"></textarea>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col text-center">
-                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
+                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 font-medium font-medium">
                             </div> 
                             <div class="col text-center">
-                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 fw-bold" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 font-medium font-medium" data-dismiss="modal">Cancel</button>
                             </div> 
                         </div>
                     </form>
@@ -341,13 +341,13 @@
 <!-- archive floor modal -->
 <div class="modal fade" id="archiveFloor" tabindex="-1" role="dialog" aria-labelledby="archiveFloor" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="centered-div bg-white">
-                <div class="container p-4 mt-4 mb-4">
+        <div class="modal-content ">
+            <div class="centered-div bg-white ">
+                <div class="container p-4 mt-4 mb-4 ">
                     <form action="floorcontroller" method="POST">
                         <div class="row">
-                            <div class="col text-center">
-                                <h2 class="fw-bold" id="archYouSure"></h2>
+                            <div class="col text-center ">
+                                <h2 class="font-medium " id="archYouSure"></h2>
                             </div>
                         </div>
                         <input type="hidden" name="locID" value="${locID}">
@@ -355,11 +355,11 @@
                         <input type="hidden" name="archiveFlrID" id="archiveFlrID" class="form-control">
                         <input type="hidden" name="archiveFlr" id="archiveFlr" class="form-control">
                         <div class="row">
-                            <div class="col text-center">
-                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
+                            <div class="col text-center font-medium">
+                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 font-medium">
                             </div> 
-                            <div class="col text-center">
-                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 fw-bold" data-dismiss="modal">Cancel</button>
+                            <div class="col text-center font-medium">
+                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 font-medium" data-dismiss="modal">Cancel</button>
                             </div> 
                         </div>
                     </form>
@@ -379,7 +379,7 @@
                     <form action="floorcontroller" method="POST">
                         <div class="row">
                             <div class="col text-center">
-                                <h2 class="fw-bold" id="actYouSure"></h2>
+                                <h2 class="font-medium" id="actYouSure"></h2>
                             </div>
                         </div>
                         <input type="hidden" name="locID" value="${locID}">
@@ -388,10 +388,10 @@
                         <input type="hidden" name="activateFlr" id="archiveFlr" class="form-control">
                         <div class="row">
                             <div class="col text-center">
-                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
+                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 font-medium">
                             </div> 
                             <div class="col text-center">
-                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 fw-bold" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 font-medium" data-dismiss="modal">Cancel</button>
                             </div> 
                         </div>
                     </form>
@@ -412,17 +412,17 @@
                     <form action="buildingcontroller" method="POST">
                         <div class="row">
                             <div class="col text-center">
-                                <h2 class="fw-bold">Are you sure you want to archive ${locName}?</h2>
+                                <h2 class="font-medium">Are you sure you want to archive ${locName}?</h2>
                             </div>
                         </div>
                         <input type="hidden" name="locID" value="${locID}">
                         <input type="hidden" name="archiveLocID" id="archiveLocID" class="form-control" value="${locID}">
                         <div class="row">
                             <div class="col text-center">
-                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
+                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 font-medium">
                             </div> 
                             <div class="col text-center">
-                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 fw-bold" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 font-medium" data-dismiss="modal">Cancel</button>
                             </div> 
                         </div>
                     </form>

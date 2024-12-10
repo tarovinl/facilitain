@@ -246,13 +246,13 @@
 
 </head>
 <body>
-<div class="container-fluid">
+<div class="container-fluid font-medium">
 <div class="row min-vh-100">
     <jsp:include page="sidebar.jsp"/>
     
     <div class="col-md-10">
         <div class="mt-4">
-            <h1>Maintenance Calendar</h1>
+            <h1 class="font-medium">Maintenance Calendar</h1>
         </div>
         <div class="mb-4">
         <div id='calendar'></div>
