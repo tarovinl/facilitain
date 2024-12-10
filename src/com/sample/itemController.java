@@ -108,8 +108,10 @@ public class itemController extends HttpServlet {
                 java.util.Date parsedEDate = dateFormat.parse(itemEditDateInst);
                 sqlEditDate = new Date(parsedEDate.getTime());
 
-                java.util.Date parsedEditExpireDate = dateFormat.parse(itemEditExpiry);
-                sqlEditExpire = new Date(parsedEditExpireDate.getTime());
+                if (itemEditExpiry != null && !itemEditExpiry.isEmpty()) {
+                                    java.util.Date parsedEditExpireDate = dateFormat.parse(itemEditExpiry);
+                                    sqlEditExpire = new Date(parsedEditExpireDate.getTime());
+                                }
             } else if(maintStatID != null && !maintStatID.isEmpty()){
                 
             } else if(itemAID != null && !itemAID.isEmpty()){

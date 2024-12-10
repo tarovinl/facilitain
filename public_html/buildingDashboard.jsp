@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <%-- Pass data to HTML elements using data-* attributes --%>
                             <div class="actItem"
                                  data-last-maintenance-date="${item.lastMaintDate}">
-                                <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
+                                <img src="resources/images/greenDot.png" alt="activity status indicator" width="28" height="28">
                                 <h3 class="activity-text">
                                     Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
                                 </h3>
