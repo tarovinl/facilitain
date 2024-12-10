@@ -27,7 +27,7 @@ public class maintenanceController extends HttpServlet {
 //             throws ServletException, IOException {
 //         List<Maintenance> maintenanceList = new ArrayList<>();
 //         List<ItemType> itemTypeList = new ArrayList<>();
-
+//
 //         try (Connection con = PooledConnection.getConnection()) {
 //             // Fetch maintenance schedule data
 //             PreparedStatement ps = con.prepareStatement(
@@ -35,7 +35,7 @@ public class maintenanceController extends HttpServlet {
 //                 "FROM FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED m " +
 //                 "LEFT JOIN FMO_ADM.FMO_ITEM_TYPES t ON m.ITEM_TYPE_ID = t.ITEM_TYPE_ID");
 //             ResultSet rs = ps.executeQuery();
-
+//
 //             while (rs.next()) {
 //                 Maintenance maintenance = new Maintenance();
 //                 maintenance.setItemMsId(rs.getInt("ITEM_MS_ID"));
@@ -46,26 +46,26 @@ public class maintenanceController extends HttpServlet {
 //                 maintenance.setNoOfDaysWarning(rs.getInt("NO_OF_DAYS_WARNING"));
 //                 maintenanceList.add(maintenance);
 //             }
-
+//
 //             // Fetch item type data for dropdown
 //             ps = con.prepareStatement("SELECT ITEM_TYPE_ID, NAME FROM FMO_ADM.FMO_ITEM_TYPES WHERE ACTIVE_FLAG = 1");
 //             rs = ps.executeQuery();
-
+//
 //             while (rs.next()) {
 //                 ItemType itemType = new ItemType();
 //                 itemType.setItemTypeId(rs.getInt("ITEM_TYPE_ID"));
 //                 itemType.setName(rs.getString("NAME"));
 //                 itemTypeList.add(itemType);
 //             }
-
+//
 //         } catch (Exception e) {
 //             e.printStackTrace();
 //         }
-
+//
 //         request.setAttribute("maintenanceList", maintenanceList);
 //         request.setAttribute("itemTypeList", itemTypeList);
 //         request.getRequestDispatcher("/maintenanceSchedule.jsp").forward(request, response);
-//     }
+//   }
 
    @Override
 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

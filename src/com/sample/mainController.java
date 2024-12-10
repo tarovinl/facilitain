@@ -236,6 +236,7 @@ public class mainController extends HttpServlet {
                 msched.setNoOfDaysWarning(rsMaintSched.getInt("NO_OF_DAYS_WARNING"));
                 msched.setQuarterlySchedNo(rsMaintSched.getInt("QUARTERLY_SCHED_NO"));
                 msched.setYearlySchedNo(rsMaintSched.getInt("YEARLY_SCHED_NO"));
+                msched.setArchiveFlag(rsMaintSched.getInt("ARCHIVED_FLAG"));
                 listMaintSched.add(msched);
             }
             rsMaintSched.close();
@@ -457,21 +458,21 @@ public class mainController extends HttpServlet {
                     request.getRequestDispatcher("/buildingDashboard.jsp").forward(request, response);
                 }
                 break;
-            case "/notification":
-                request.getRequestDispatcher("/notification.jsp").forward(request, response);
-                break;
+//            case "/notification":
+//                request.getRequestDispatcher("/notification.jsp").forward(request, response);
+//                break;
             case "/calendar":
                 request.getRequestDispatcher("/calendar.jsp").forward(request, response);
                 break;
-            case "/history":
-                request.getRequestDispatcher("/history.jsp").forward(request, response);
-                break;
-            case "/feedback":
-                request.getRequestDispatcher("/feedback.jsp").forward(request, response);
-                break;
-            case "/reports":
-                request.getRequestDispatcher("/reports.jsp").forward(request, response);
-                break;
+//            case "/history":
+//                request.getRequestDispatcher("/history.jsp").forward(request, response);
+//                break;
+//            case "/feedback":
+//                request.getRequestDispatcher("/feedback.jsp").forward(request, response);
+//                break;
+//            case "/reports":
+//                request.getRequestDispatcher("/reports.jsp").forward(request, response);
+//                break;
             case "/settings":
                 request.getRequestDispatcher("/settings.jsp").forward(request, response);
                 break;

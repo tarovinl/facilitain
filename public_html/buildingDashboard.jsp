@@ -80,7 +80,7 @@
             
                 <c:if test="${category.itemCID == itemCID}">
                     <c:if test="${itemz.itemArchive == 1}">
-                    <c:if test="${itemz.itemMaintStat == 1}">
+                    <c:if test="${itemz.itemMaintStat == 2}">
                         <c:set var="itemCount" value="${itemCount + 1}" />
                     </c:if>
                     </c:if>
@@ -339,9 +339,9 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="buildingBanner rounded-4" style="margin-top: 14px; margin-bottom: 14px; background-image: 
                                     linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
                                     url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center;">
-    <div class="statusDiv">
+    <!--<div class="statusDiv">
         <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
-    </div>
+    </div>-->
     <div class="buildingName text-light" style="font-family: NeueHaasMedium, sans-serif;">
         <h1>${locName}</h1>
     </div>
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
                 <c:if test="${item.itemLID == locID}">
                     <c:forEach items="${maintenanceList}" var="maint">
-                    <c:if test="${maint.activeFlag == 1}">
+                    <c:if test="${maint.archiveFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
                             <div class="actItem"
@@ -437,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
                             <div class="actItem"
-                                 data-last-maintenance-date="${item.lastMaintDate}">
+                                 data-last-maintenance-date2="${item.lastMaintDate}">
                                 <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
                                 <h3 class="activity-text">
                                     Maintenance for ${item.itemName} ${not empty item.itemRoom ? '- ' + item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
@@ -516,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         document.querySelectorAll('#recent-activities .actItem').forEach(function (itemDiv) {
-            const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
+            const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date2');
     
             if (lastMaintenanceDateStr) {
                 const lastMaintenanceDate = new Date(lastMaintenanceDateStr);

@@ -103,49 +103,7 @@
    </hash>
    <hash n="oracle.jdeveloper.deploy.dt.DeploymentProfiles">
       <hash n="profileDefinitions">
-         <hash n="facilitain_test">
-            <hash n="archiveOptions">
-               <value n="hasManifest" v="true"/>
-            </hash>
-            <hash n="dependencies">
-               <list n="dependencyList">
-                  <hash>
-                     <value n="adapterClass" v="oracle.jdevimpl.deploy.common.DataContainerNodeDependable"/>
-                     <url n="ownerURL" path="FMOCapstone.jpr"/>
-                     <url n="sourceURL" path="javax.mail-1.6.2.jar"/>
-                  </hash>
-               </list>
-            </hash>
-            <hash n="fileGroups">
-               <list n="groups">
-                  <hash>
-                     <list n="contributors">
-                        <hash>
-                           <value n="type" v="2"/>
-                        </hash>
-                        <hash>
-                           <value n="type" v="7"/>
-                        </hash>
-                     </list>
-                     <value n="displayName" v="Project Output"/>
-                     <hash n="filters">
-                        <list n="rules">
-                           <hash>
-                              <value n="pattern" v="**"/>
-                              <value n="type" v="0"/>
-                           </hash>
-                        </list>
-                     </hash>
-                     <value n="internalName" v="project-output"/>
-                     <value n="type" v="1"/>
-                  </hash>
-               </list>
-            </hash>
-            <url n="jarURL" path="deploy/facilitain_test.jar"/>
-            <value n="profileClass" v="oracle.jdeveloper.deploy.jar.ArchiveProfile"/>
-            <value n="profileName" v="facilitain_test"/>
-         </hash>
-         <hash n="facilitain_testt">
+         <hash n="facilitain_uat">
             <hash n="appletArchives"/>
             <hash n="appletFiles">
                <value n="autoInclude" v="true"/>
@@ -156,7 +114,8 @@
             <hash n="archiveOptions">
                <value n="hasManifest" v="false"/>
             </hash>
-            <value n="enterpriseAppName" v="facilitain_testt"/>
+            <value n="contextRoot"/>
+            <value n="enterpriseAppName" v="facilitain_uat"/>
             <hash n="fileGroups">
                <list n="groups">
                   <hash>
@@ -190,6 +149,26 @@
                      <hash n="filters">
                         <list n="rules">
                            <hash>
+                              <value n="pattern" v="quotationsController.class"/>
+                              <value n="type" v="1"/>
+                           </hash>
+                           <hash>
+                              <value n="pattern" v="PooledConnection.class"/>
+                              <value n="type" v="1"/>
+                           </hash>
+                           <hash>
+                              <value n="pattern" v="ItemUser.class"/>
+                              <value n="type" v="1"/>
+                           </hash>
+                           <hash>
+                              <value n="pattern" v="sample/controller/EmployeeController.class"/>
+                              <value n="type" v="1"/>
+                           </hash>
+                           <hash>
+                              <value n="pattern" v="FeedbackClientController.class"/>
+                              <value n="type" v="1"/>
+                           </hash>
+                           <hash>
                               <value n="pattern" v="**"/>
                               <value n="type" v="0"/>
                            </hash>
@@ -210,26 +189,23 @@
                         </list>
                      </hash>
                      <value n="internalName" v="libraries"/>
-                     <list n="selectedLibraries">
-                        <string v="JSP Runtime"/>
-                        <string v="Servlet Runtime"/>
-                        <string v="JSTL 1.2"/>
-                        <string v="JSTL 1.2 Tags"/>
-                     </list>
                      <value n="targetWithinJar" v="WEB-INF/lib"/>
                      <value n="type" v="3"/>
                   </hash>
                </list>
             </hash>
-            <url n="jarURL" path="deploy/facilitain_testt.war"/>
+            <url n="jarURL" path="../../../../Users/Tacula Family/OneDrive - ust.edu.ph/Desktop/UAT_DEPLOYMENT/facilitain_uat.war"/>
             <value n="profileClass" v="oracle.jdeveloper.deploy.war.WarProfile"/>
-            <value n="profileName" v="facilitain_testt"/>
+            <value n="profileName" v="facilitain_uat"/>
          </hash>
       </hash>
       <list n="profileList">
-         <string v="facilitain_test"/>
-         <string v="facilitain_testt"/>
+         <string v="facilitain_uat"/>
       </list>
+   </hash>
+   <hash n="oracle.jdeveloper.model.J2eeSettings">
+      <value n="j2eeWebAppName" v="FMOCapstone"/>
+      <value n="j2eeWebContextRoot" v="FMOCapstone"/>
    </hash>
    <hash n="oracle.jdeveloper.runner.RunConfigurations">
       <hash n="runConfigurationDefinitions">
@@ -408,5 +384,8 @@
             <value n="version" v="1.2"/>
          </hash>
       </list>
+   </hash>
+   <hash n="ResourceBundleOptions">
+      <list n="RegisteredResourceBundles"/>
    </hash>
 </jpr:project>

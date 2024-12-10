@@ -19,7 +19,9 @@
     <div class="sidebar">
         <div class="text-center pt-4">
             <a href="<%=request.getContextPath()%>/homepage" class="p-0">
-                <h2 style="font-family: NeueHaasMedium, sans-serif;">Facilitain</h2>
+               <img src="resources/images/facilitain-home-logo.png" 
+             alt="Facilitain Home Logo" 
+             style="max-width: 100%; max-height: 100px; margin: 0 auto; display: block;" />
             </a>
             <p>Welcome, Admin</p>
         </div>
@@ -65,7 +67,7 @@
                 </button>
                 </div>
             </div>
-            <hr class="bg-light border-2 border-top border-light"/>
+            <!--<hr class="bg-light border-2 border-top border-light"/>
             <div class="todo-item d-flex justify-content-between align-items-center">
                 <div class="ps-2">
                     <p>
@@ -79,7 +81,7 @@
                     <button class="btn btn-sm"><img src="resources/images/icons/xmark-solid.svg" alt="X" class="icon" style="width: 1.5em; height: 1.5em; vertical-align: middle;"></button>
                 </div>
             </div>
-            <hr class="bg-light border-2 border-top border-light"/>
+            <hr class="bg-light border-2 border-top border-light"/>-->
         </div>
      <!--   Log out to Portal -->
         <a href="#" class="btn"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
