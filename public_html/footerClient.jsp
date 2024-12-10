@@ -24,12 +24,12 @@
     <ul class ="nav col-md-4 justify-content-end">
     <li class="nav-item">
     <a href="<%=request.getContextPath()%>/termsClient.jsp" class="${page == 'termsClient.jsp' ? 'active' : ''} montserrat-regular text-light px-2 fs-6 fs-sm-6 fs-md-6">
-        Terms and Conditions
+        Terms
     </a>
 </li>
 <li class="nav-item">
     <a href="<%=request.getContextPath()%>/privacyClient.jsp" class="${page == 'privacyClient.jsp' ? 'active' : ''} montserrat-regular text-light px-2 fs-6 fs-sm-6 fs-md-6">
-        Privacy Policy
+        Privacy
     </a>
 </li>
 
