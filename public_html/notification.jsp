@@ -15,12 +15,12 @@
         <jsp:include page="sidebar.jsp"/>
 
         <div class="col-md-10 p-4">
-            <h1 class="mb-4">Notifications</h1>
+            <h1 class="mb-4 font-medium">Notifications</h1>
 
             <!-- Sorting and Filtering controls -->
             <div class="d-flex justify-content-between mb-3">
                 <form action="notification" method="get" class="d-flex" id="notificationForm">
-                    <select name="sortBy" class="form-control mr-2" onchange="this.form.submit()">
+                    <select name="sortBy" class="form-control mr-2 font-light" onchange="this.form.submit()">
                         <option value="date" <c:if test="${sortBy == 'date'}">selected</c:if>>Sort by Date</option>
                         <option value="read" <c:if test="${sortBy == 'read'}">selected</c:if>>Sort by Read Status</option>
                         <option value="unread" <c:if test="${sortBy == 'unread'}">selected</c:if>>Sort by Unread Status</option>
@@ -86,17 +86,17 @@
                     <div class="modal-content">
                         <form action="notification" method="POST">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                                <h5 class="modal-title font-medium" id="deleteModalLabel">Confirm Deletion</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body font-medium">
                                 Are you sure you want to delete this notification?
                                 <input type="hidden" name="id" id="notificationId" value="">
                                 <input type="hidden" name="action" value="delete">
                             </div>
-                            <div class="modal-footer">
+                            <div class="modal-footer font-medium">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </div>

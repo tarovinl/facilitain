@@ -107,15 +107,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="notificationPopupLabel">Unread Notifications</h5>
+                <h5 class="modal-title font-medium" id="notificationPopupLabel">Unread Notifications</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body font-light">
                 <p id="notificationMessage"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-    <a href="<%=request.getContextPath()%>/notification" class="btn btn-primary">View Notifications</a>
+                <button type="button" class="btn btn-secondary font-light" data-bs-dismiss="modal">Close</button>
+    <a href="<%=request.getContextPath()%>/notification" class="btn btn-warning font-light">View Notifications</a>
             
                 
             </div>
