@@ -56,8 +56,8 @@ public class ToDoListController extends HttpServlet {
         
         String tdAction = request.getParameter("tdAction");
         
-        System.out.println("-------------------------------" );
-        System.out.println(fullUrl);
+//        System.out.println("-------------------------------" );
+//        System.out.println(fullUrl);
 
 //        // Early check for tdListID validity only if tdAction is not null
 //        if (tdAction != null && (tdAction.equals("check") || tdAction.equals("uncheck") || tdAction.equals("delete"))) {

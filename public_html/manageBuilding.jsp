@@ -813,139 +813,484 @@
         <meta http-equiv="refresh" content="0; URL=./homepage" /> 
     </c:if>
     <script>
-   package com.sample;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.text.ParseException;
-
-import java.time.format.DateTimeParseException;
-
-import javax.servlet.*;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
-
-import sample.model.PooledConnection;
-
-@WebServlet(name = "ToDoListController", urlPatterns = { "/todolistcontroller" })
-public class ToDoListController extends HttpServlet {
-    private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
-
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType(CONTENT_TYPE);
-        
-        String fullUrl = request.getParameter("originalUrl");
-        if (fullUrl != null) {
-            // Remove "?null" if it exists
-            if (fullUrl.contains("?null")) {
-                fullUrl = fullUrl.replace("?null", "");
-            }
-
-            // Remove ".jsp" from anywhere in the URL
-            fullUrl = fullUrl.replace(".jsp", "");
-
-            // Replace "manageBuilding" with "buildingDashboard"
-            fullUrl = fullUrl.replace("manageBuilding", "buildingDashboard");
-            fullUrl = fullUrl.replace("editLocation", "buildingDashboard");
+    
+        function showTblDiv(button) {
+            var roomDropDiv = button.closest('.roomDropDiv');
+            // Find the .roomDTblDiv inside the parent container
+            var tblDiv = roomDropDiv.querySelector('.roomDTblDiv');
+    
+            // Toggle the display property of the specific .roomDTblDiv
+            tblDiv.style.display = (tblDiv.style.display === 'none' || tblDiv.style.display === '') ? 'block' : 'none';
+            // Store the state in localStorage
+            //localStorage.setItem('tblDivVisible', tblDiv.style.display === 'block' ? 'true' : 'false');
         }
-        
-        String tdListID = request.getParameter("tdListId");
-        
-        String tdListContent = request.getParameter("tdListContent");
-        String tdListStart = request.getParameter("tdListStart");
-        String tdListEnd = request.getParameter("tdListEnd");
-        String tdListChecked = request.getParameter("tdListChecked");
-        String tdListCreationDate = request.getParameter("tdListCreationDate");
-        
-        String tdAction = request.getParameter("tdAction");
-        
-        System.out.println("-------------------------------" );
-        System.out.println(fullUrl);
-
-//        // Early check for tdListID validity only if tdAction is not null
-//        if (tdAction != null && (tdAction.equals("check") || tdAction.equals("uncheck") || tdAction.equals("delete"))) {
-//            if (tdListID == null || tdListID.isEmpty()) {
-//                throw new ServletException("LIST_ITEM_ID is missing or invalid for the action: " + tdAction);
+//        window.onload = function() {
+//            const isTblDivVisible = localStorage.getItem('tblDivVisible');
+//            const tblDiv = document.querySelector('.roomDTblDiv');
+//            if (isTblDivVisible === 'true') {
+//                tblDiv.style.display = 'block';
+//            }
+//        };
+//        const statusDropdowns = document.querySelectorAll('.statusDropdown');
+//
+//        function updateDropdownColor(dropdown) {
+//            const selectedValue = dropdown.value;
+//
+//            dropdown.classList.remove('working', 'nwork', 'maintenance');
+//
+//            if (selectedValue === 'working') {
+//                dropdown.classList.add('working');
+//            } else if (selectedValue === 'nwork') {
+//                dropdown.classList.add('nwork');
+//            } else if (selectedValue === 'maintenance') {
+//                dropdown.classList.add('maintenance');
 //            }
 //        }
-        
-//        System.out.println("-------------------------------" );
-//        System.out.println("tdListID: " + tdListID);
-//        System.out.println("tdListContent: " + tdListContent);
-//        System.out.println("tdListStart: " + tdListStart);
-//        System.out.println("tdListEnd: " + tdListEnd);
-//        System.out.println("tdListChecked: " + tdListChecked);
-//        System.out.println("tdListCreationDate: " + tdListCreationDate);
-//        System.out.println("tdAction: " + tdAction);
-        
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME; // For "yyyy-MM-dd'T'HH:mm"
-        
-        Timestamp sqlStartTimestamp = null;
-        Timestamp sqlEndTimestamp = null;
-        
-        if (tdAction == null) {
-            try {
-                LocalDateTime startDateTime = LocalDateTime.parse(tdListStart, formatter);
-                LocalDateTime endDateTime = LocalDateTime.parse(tdListEnd, formatter);
+//        statusDropdowns.forEach(function(dropdown) {
+//            updateDropdownColor(dropdown);
+//
+//            // Add event listener to each dropdown
+//            dropdown.addEventListener('change', function() {
+//                updateDropdownColor(dropdown);
+//            });
+//        });
 
-                sqlStartTimestamp = Timestamp.valueOf(startDateTime);
-                sqlEndTimestamp = Timestamp.valueOf(endDateTime);
-            } catch (DateTimeParseException e) {
-                throw new ServletException("Invalid date format for start or end date.", e);
-            }
+function filterTypes() {
+    // Get the selected category's itemCID
+    const selectedCategoryId = document.getElementById('itemCat').value;
+
+    // Get all itemType options
+    const typeOptions = document.querySelectorAll('#itemType option');
+
+    // Loop through all type options
+    typeOptions.forEach(option => {
+        // Check if the option's data-item-cid matches the selected category ID
+        if (option.getAttribute('data-item-cid') === selectedCategoryId) {
+            option.style.display = 'block'; // Show the option
+        } else {
+            option.style.display = 'none'; // Hide the option
         }
+    });
 
+    // Reset the selected option to the first visible option
+    const typeDropdown = document.getElementById('itemType');
+    const firstVisibleOption = Array.from(typeOptions).find(option => option.style.display === 'block');
+    if (firstVisibleOption) {
+        typeDropdown.value = firstVisibleOption.value;
+    } else {
+        typeDropdown.value = ''; // No valid options available
+    }
+}
+function filterETypes() {
+    // Get the selected category's itemCID
+    const selectedCategoryId = document.getElementById('itemECat').value;
+
+    // Get all itemType options
+    const typeOptions = document.querySelectorAll('#itemEType option');
+
+    // Loop through all type options
+    typeOptions.forEach(option => {
+        // Check if the option's data-item-cid matches the selected category ID
+        if (option.getAttribute('data-item-cid') === selectedCategoryId) {
+            option.style.display = 'block'; // Show the option
+        } else {
+            option.style.display = 'none'; // Hide the option
+        }
+    });
+
+    // Reset the selected option to the first visible option
+    const typeDropdown = document.getElementById('itemEType');
+    const firstVisibleOption = Array.from(typeOptions).find(option => option.style.display === 'block');
+    if (firstVisibleOption) {
+        typeDropdown.value = firstVisibleOption.value;
+    } else {
+        typeDropdown.value = ''; // No valid options available
+    }
+}
+
+function toggleAirconDiv() {
+        const selectedCat = document.querySelector('[name="itemCat"]').value;
+        const onlyAirDiv = document.querySelector('.onlyAir');
         
-        
-        try (Connection conn = PooledConnection.getConnection()) {
-            String sql;
+        if (selectedCat === "1") {
+            onlyAirDiv.style.removeProperty('display'); // Removes "display: none"
+        } else {
+            onlyAirDiv.style.display = "none";
             
-            if ("delete".equals(tdAction)) {
-                sql = "DELETE FROM FMO_ADM.FMO_TO_DO_LIST WHERE LIST_ITEM_ID = ?";
-            }else if ("check".equals(tdAction)) {
-                sql = "UPDATE FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 1 WHERE LIST_ITEM_ID = ?";
-            }else if ("uncheck".equals(tdAction)) {
-                sql = "UPDATE FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 0 WHERE LIST_ITEM_ID = ?";
-            }else{
-                sql = "INSERT INTO FMO_ADM.FMO_TO_DO_LIST (EMP_NUMBER, LIST_CONTENT, START_DATE, END_DATE) VALUES (1234, ?, ?, ?)";
-            }
-                
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    if ("delete".equals(tdAction)) {
-                        stmt.setInt(1, Integer.parseInt(tdListID));
-                    }else if ("check".equals(tdAction)) {
-                        stmt.setInt(1, Integer.parseInt(tdListID));
-                    }else if ("uncheck".equals(tdAction)) {
-                        stmt.setInt(1, Integer.parseInt(tdListID));
-                    }else{
-                        stmt.setString(1, tdListContent);
-                        stmt.setTimestamp(2, sqlStartTimestamp);
-                        stmt.setTimestamp(3, sqlEndTimestamp);
-                    }
-                    
-                    stmt.executeUpdate();
+          // Clear checkbox values
+            document.querySelectorAll('.onlyAir .form-check-input').forEach(function(checkbox) {
+                checkbox.checked = false;
+            });  
+        }
+    }
+function toggleEAirconDiv(editVal) {
+        const selectedECat = document.querySelector('[name="itemEditCat"]').value;
+        const onlyEAirDiv = document.querySelector('.onlyEditAir');
+        
+        if (selectedECat === "1" || editVal === 1) {
+            onlyEAirDiv.style.removeProperty('display'); // Removes "display: none"
+        } else {
+            onlyEAirDiv.style.display = "none";
+        }
+    }
+
+const buildingFloors = {
+        <c:forEach var="entry" items="${FMO_FLOORS_LIST}">
+            "${entry.key}": [
+                <c:forEach var="floor" items="${entry.value}">
+                    "${floor}",
+                </c:forEach>
+            ],
+        </c:forEach>
+    };
+
+function QOLLocSet(){
+    var itemLID = parseInt(${locID}); 
+        var selectLoc = document.querySelector('select[name="itemBuilding"]');
+        if (selectLoc) {
+            var options = selectLoc.options;
+            for (var i = 0; i < options.length; i++) {
+                if (parseInt(options[i].value) === itemLID) {
+                    options[i].selected = true;
+                    break;
                 }
-            
-            // Redirect to homepage after the action is performed
-            response.sendRedirect(fullUrl);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new ServletException("Database error while adding/editing/deleting to do list item.");
+            }
         }
+}
+
+function floorRender() {
+    // Get selected building ID
+    const selectedBuilding = document.querySelector('[name="itemBuilding"]').value;
+
+    // Get the itemAddFloor dropdown
+    const floorDropdown = document.getElementById('itemAddFloor');
+
+    // Clear existing options
+    floorDropdown.innerHTML = '';
+
+    // Fetch floors for the selected building from buildingFloors
+    const floors = buildingFloors[selectedBuilding] || [];
+
+    // Populate the dropdown with the fetched floors
+    floors.forEach(floor => {
+        const option = document.createElement('option');
+        option.value = floor;
+        option.textContent = floor;
+        floorDropdown.appendChild(option);
+    });
+
+    roomRender();
+}
+
+function floorERender() {
+    // Get selected building ID
+    const selectedBuilding = document.querySelector('[name="itemEditLoc"]').value;
+
+    // Get the itemAddFloor dropdown
+    const floorDropdown = document.getElementById('itemEditFloor');
+
+    // Clear existing options
+    floorDropdown.innerHTML = '';
+
+    // Fetch floors for the selected building from buildingFloors
+    const floors = buildingFloors[selectedBuilding] || [];
+
+    // Populate the dropdown with the fetched floors
+    floors.forEach(floor => {
+        const option = document.createElement('option');
+        option.value = floor;
+        option.textContent = floor;
+        floorDropdown.appendChild(option);
+    });
+    roomEditRenderCopy();
+}
+
+
+        const roomsData = [
+        <c:forEach items="${uniqueRooms}" var="room">
+            {
+                floor: '${room.itemFloor}', // Assuming room has an 'itemFloor' property
+                lid: '${room.itemLID}',     // Assuming room has an 'itemLID' property
+                roomName: '${room.itemRoom != null ? room.itemRoom : "Non-Room Equipment"}'
+            },
+        </c:forEach>
+        ];
+
+const inputAddR = document.querySelector("#itemAddRoom");
+    const awesompleteAddR = new Awesomplete(inputAddR, {
+        list: "#roomOptions"
+    });
+
+function roomRender() {
+    
+    const selectedBuilding = document.querySelector('[name="itemBuilding"]').value;
+    const selectedFloor = document.getElementById('itemAddFloor').value;
+    const roomSelect = document.getElementById('roomOptions');
+
+    roomSelect.innerHTML = '';    
+
+    const filteredRooms = roomsData.filter(function(room) {
+            return room.floor === selectedFloor && room.lid === selectedBuilding;
+        });
+    console.log(filteredRooms);
+
+    filteredRooms.forEach(room => {
+        const option = document.createElement('option');
+        option.value = room.roomName;  
+        option.text = room.roomName; 
+        roomSelect.appendChild(option); 
+    });
+            console.log(roomSelect);
+
+    const roomNames = filteredRooms.map(room => room.roomName); // Extract room names as strings
+    awesompleteAddR.list = roomNames;
+}
+//    same as roomRender but for edit modal pancakes
+const inputER = document.querySelector("#itemEditRoom");
+    const awesompleteER = new Awesomplete(inputER, {
+        list: "#editRoomOptions"
+    });
+    function roomEditRender(itemRoom) {
+        const selectedBuilding = document.querySelector('[name="itemEditLoc"]').value;
+        const selectedFloor = document.getElementById('itemEditFloor').value;
+        const roomField = document.getElementById('itemEditRoom')
+        const roomSelect = document.getElementById('editRoomOptions');
+
+        roomSelect.innerHTML = '';
+
+        const defaultOption = document.createElement('option');
+        defaultOption.value = null; 
+        defaultOption.text = "Non-Room Equipment";
+        defaultOption.selected = true;
+        roomSelect.appendChild(defaultOption);
+        
+        const filteredRooms = roomsData.filter(function(room) {
+            return room.floor === selectedFloor && room.lid === selectedBuilding;
+        });
+        filteredRooms.forEach(function(room) {
+            if(room.roomName !== "Non-Room Equipment"){
+            const option = document.createElement('option');
+            option.value = room.roomName
+            option.text = room.roomName;
+            roomSelect.appendChild(option);
+            }
+        });
+        
+        if (itemRoom) {
+        for (let i = 0; i < roomSelect.options.length; i++) {
+            if (roomSelect.options[i].value === itemRoom) {
+                roomSelect.options[i].selected = true;
+                roomField.value = roomSelect.options[i].value;
+                break;
+            }
+        }
+    } else {
+        // Set "Non-Room Equipment" as the default value
+        roomSelect.value = null; // Ensure default option is selected
+        roomField.value = "Non-Room Equipment";
+    }
+
+    // Populate autocomplete list
+    const roomENames = filteredRooms.map(room => room.roomName); // Extract room names as strings
+    awesompleteER.list = roomENames;
+}
+    
+    
+    function populateEditModal(button) {
+        var itemID = button.getAttribute('data-itemid');
+        var itemLID = parseInt(${locID});
+        var itemName = button.getAttribute('data-itemname');
+        var itemBrand = button.getAttribute('data-itembrand');
+        var itemFloor = button.getAttribute('data-itemfloor');
+        var itemDateInst = button.getAttribute('data-dateinst');
+        var itemExpiry = button.getAttribute('data-itemexpiry');
+        var itemCat = button.getAttribute('data-itemcat');
+        var itemType = button.getAttribute('data-itemtype');
+        var itemLocText = button.getAttribute('data-itemloctext');
+        var itemRemarks = button.getAttribute('data-itemremarks');
+        
+        var itemPCCode = button.getAttribute('data-itempcc');
+        var itemACaccu = button.getAttribute('data-accu');
+        var itemACfcu = button.getAttribute('data-fcu');
+        var itemACinverter = button.getAttribute('data-inverter');
+        var itemCapacity = button.getAttribute('data-itemcapacity');
+        var itemMeasure = button.getAttribute('data-itemmeasure');
+        var itemEV = button.getAttribute('data-itemev');
+        var itemEPH = button.getAttribute('data-itemeph');
+        var itemEHZ = button.getAttribute('data-itemehz');
+        
+        document.querySelector('input[name="itemEditID"]').value = itemID;
+
+        document.querySelector('input[name="itemEditCode"]').value = itemName;
+        document.querySelector('input[name="itemEditBrand"]').value = itemBrand;
+        document.querySelector('input[name="itemEditInstalled"]').value = itemDateInst;
+        document.querySelector('input[name="itemEditExpiration"]').value = itemExpiry;
+        document.querySelector('textarea[name="editLocText"]').value = itemLocText;
+        document.querySelector('textarea[name="editRemarks"]').value = itemRemarks;
+        
+        document.querySelector('input[name="itemEditPCC"]').value = itemPCCode;
+        document.querySelector('input[name="itemECapacity"]').value = itemCapacity;
+        document.querySelector('input[name="itemEUnitMeasure"]').value = itemMeasure;
+        document.querySelector('input[name="itemEditElecV"]').value = itemEV;
+        document.querySelector('input[name="itemEditElecPH"]').value = itemEPH;
+        document.querySelector('input[name="itemEditElecHZ"]').value = itemEHZ;
+        
+        var selectCat = document.querySelector('select[name="itemEditCat"]');
+        if (selectCat) {
+            var options = selectCat.options;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].value === itemCat) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
+        var selectType = document.querySelector('select[name="itemEditType"]');
+        if (selectType) {
+            var options = selectType.options;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].value === itemType) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
+        var selectLoc = document.querySelector('select[name="itemEditLoc"]');
+        if (selectLoc) {
+            var options = selectLoc.options;
+            for (var i = 0; i < options.length; i++) {
+                if (parseInt(options[i].value) === itemLID) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
+        
+        if (itemACaccu === '1') {
+            document.querySelector('[name="itemEditACCU"]').checked = true;
+        } else {
+            document.querySelector('[name="itemEditACCU"]').checked = false;
+        }
+        if (itemACfcu === '1') {
+            document.querySelector('[name="itemEditFCU"]').checked = true;
+        } else {
+            document.querySelector('[name="itemEditFCU"]').checked = false;
+        }
+        if (itemACinverter === '1') {
+            document.querySelector('[name="itemEditACINVERTER"]').checked = true;
+        } else {
+            document.querySelector('[name="itemEditACINVERTER"]').checked = false;
+        }
+            
+    }
+    
+    function setFloorSelection(button) {
+    var itemRoom = button.getAttribute('data-itemroom');
+    console.log(itemRoom);
+    const flrName = '${floorName}';
+    console.log(flrName);
+    const itemEditFloor = document.getElementById('itemEditFloor');
+
+    // Loop through options to find and select the one that matches floorName
+    for (let i = 0; i < itemEditFloor.options.length; i++) {
+        if (itemEditFloor.options[i].value === flrName) {
+            itemEditFloor.options[i].selected = true;
+            break; 
+        }
+    }
+
+    roomEditRender(itemRoom);
+}
+
+    function populateArchModal(button){
+        var itemAID = button.getAttribute('data-itemaid');
+        var itemAName = button.getAttribute('data-itemaname');
+        
+        document.getElementById('itemArchiveID').value = itemAID;
+        var modalMessage = document.getElementById("archYouSure");
+        modalMessage.innerText = "Are you sure you want to archive " + itemAName + "?";
         
     }
+
+    
+    document.addEventListener("DOMContentLoaded", function() {
+    const itemsPerPage = 5;  // Set how many items you want per page
+    const ul = document.getElementById("roomDropdowns");
+    const items = ul.getElementsByClassName("roomDropdown");  // Get all list items
+    const totalItems = items.length;
+    const paginationControls = document.getElementById("paginationControls");
+    
+    let currentPage = 1;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    function showPage(page) {
+        currentPage = page;
+        // Hide all items
+        for (let i = 0; i < totalItems; i++) {
+            items[i].style.display = "none";
+        }
+        // Show only the items for the current page
+        let start = (page - 1) * itemsPerPage;
+        let end = start + itemsPerPage;
+        for (let i = start; i < end && i < totalItems; i++) {
+            items[i].style.display = "block";
+        }
+        // Update pagination controls
+        updatePaginationControls();
+    }
+
+    function updatePaginationControls() {
+        paginationControls.innerHTML = "";  // Clear existing controls
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement("button");
+            button.textContent = i;
+            button.classList.add("page-btn");
+            if (i === currentPage) {
+                button.classList.add("active");
+            }
+            button.addEventListener("click", function() {
+                showPage(i);
+            });
+            paginationControls.appendChild(button);
+        }
+    }
+
+    // Initialize the first page
+    showPage(1);
+});
+
+
+function populateQuotModal(button) {
+    // Retrieve the itemID from the clicked button
+    const itemId = button.getAttribute("data-itemid");
+
+    // Set the item ID in a hidden field within the modal or display it as needed
+    document.querySelector('#hiddenItemId').value = itemId;
+    document.getElementById('modalItemIdDisplay').innerText = "Quotations for Item ID: " + itemId;
+
+    // Show the modal
+    const modalElement = new bootstrap.Modal(document.getElementById('quotEquipmentModal'));
+    modalElement.show();
+}
+
+
+
+function roomEditRenderCopy() {
+    const selectedBuilding = document.querySelector('[name="itemEditLoc"]').value;
+    const selectedFloor = document.getElementById('itemEditFloor').value;
+    const roomSelect = document.getElementById('editRoomOptions');
+    roomSelect.innerHTML = '';    
+
+    const filteredRooms = roomsData.filter(function(room) {
+            return room.floor === selectedFloor && room.lid === selectedBuilding;
+        });
+    filteredRooms.forEach(room => {
+        const option = document.createElement('option');
+        option.value = room.roomName;  
+        option.text = room.roomName; 
+        roomSelect.appendChild(option); 
+    });
+ 
 }
 
     </script>

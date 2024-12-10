@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
                 <c:if test="${item.itemLID == locID}">
                     <c:forEach items="${maintenanceList}" var="maint">
-                    <c:if test="${maint.archiveFlag == 1}">
+                    <c:if test="${maint.activeFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
                             <div class="actItem"
@@ -437,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
                             <div class="actItem"
-                                 data-last-maintenance-date2="${item.lastMaintDate}">
+                                 data-last-maintenance-date="${item.lastMaintDate}">
                                 <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
                                 <h3 class="activity-text">
                                     Maintenance for ${item.itemName} ${not empty item.itemRoom ? '- ' + item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
@@ -516,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         document.querySelectorAll('#recent-activities .actItem').forEach(function (itemDiv) {
-            const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date2');
+            const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
     
             if (lastMaintenanceDateStr) {
                 const lastMaintenanceDate = new Date(lastMaintenanceDateStr);

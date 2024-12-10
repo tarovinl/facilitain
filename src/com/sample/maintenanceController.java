@@ -96,7 +96,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             String sql;
             if (itemMsId == 0) {
                 // Insert new record
-                sql = "INSERT INTO FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED (ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, NO_OF_DAYS_WARNING, QUARTERLY_SCHED_NO, YEARLY_SCHED_NO) VALUES (?, ?, ?, ?, ?, ?)";
+                sql = "INSERT INTO FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED (ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, NO_OF_DAYS_WARNING, QUARTERLY_SCHED_NO, YEARLY_SCHED_NO, MAIN_TYPE_ID) VALUES (?, ?, ?, ?, ?, ?, 1)";
             } else {
                 // Update existing record
                 sql = "UPDATE FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ITEM_TYPE_ID = ?, NO_OF_DAYS = ?, REMARKS = ?, NO_OF_DAYS_WARNING = ?, QUARTERLY_SCHED_NO = ?, YEARLY_SCHED_NO = ? WHERE ITEM_MS_ID = ?";

@@ -107,7 +107,7 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
              PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
              PreparedStatement stmntJobs = con.prepareCall("SELECT a.JOB_NAME, a.JOB_ACTION, a.START_DATE, a.REPEAT_INTERVAL, b.CREATED FROM DBA_SCHEDULER_JOBS a JOIN ALL_OBJECTS b ON a.JOB_NAME = b.OBJECT_NAME WHERE a.JOB_NAME LIKE 'UPDATE_ITEM_JOB_CAT%'");
-            PreparedStatement stmntToDo = con.prepareCall("SELECT * FROM FMO_ADM.FMO_TO_DO_LIST");
+             PreparedStatement stmntToDo = con.prepareCall("SELECT * FROM FMO_ADM.FMO_TO_DO_LIST");
 
             ResultSet rs = statement.executeQuery();
             
