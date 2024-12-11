@@ -1011,7 +1011,7 @@ function floorERender() {
             {
                 floor: '${room.itemFloor}', // Assuming room has an 'itemFloor' property
                 lid: '${room.itemLID}',     // Assuming room has an 'itemLID' property
-                roomName: '${room.itemRoom != null ? room.itemRoom : "Non-Room Equipment"}'
+                roomName: '<c:out value="${room.itemRoom != null ? room.itemRoom : 'Non-Room Equipment'}" />'.replace(/'/g, "\\'")
             },
         </c:forEach>
         ];

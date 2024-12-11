@@ -149,6 +149,10 @@
                      <hash n="filters">
                         <list n="rules">
                            <hash>
+                              <value n="pattern" v="com/sample/FloorDataServlet.class"/>
+                              <value n="type" v="1"/>
+                           </hash>
+                           <hash>
                               <value n="pattern" v="quotationsController.class"/>
                               <value n="type" v="1"/>
                            </hash>
