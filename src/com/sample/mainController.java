@@ -96,18 +96,18 @@ public class mainController extends HttpServlet {
         
         try (
              Connection con = PooledConnection.getConnection();
-             PreparedStatement statement = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY NAME");
-             PreparedStatement stmntFloor = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOC_FLOORS ORDER BY ITEM_LOC_ID, CASE WHEN REGEXP_LIKE(NAME, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(NAME, '^[0-9]+')) ELSE 9999 END, NAME");
-             PreparedStatement stmntItems = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEMS ORDER BY LOCATION_ID, CASE WHEN REGEXP_LIKE(FLOOR_NO, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(FLOOR_NO, '^[0-9]+')) ELSE 9999 END, ROOM_NO, ITEM_ID");
-             PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME");
-             PreparedStatement stmntICats = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
-             PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME")){
-             PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
-             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
-             PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
-             PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
+             PreparedStatement statement = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY NAME");
+             PreparedStatement stmntFloor = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_LOC_FLOORS ORDER BY ITEM_LOC_ID, CASE WHEN REGEXP_LIKE(NAME, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(NAME, '^[0-9]+')) ELSE 9999 END, NAME");
+             PreparedStatement stmntItems = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEMS ORDER BY LOCATION_ID, CASE WHEN REGEXP_LIKE(FLOOR_NO, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(FLOOR_NO, '^[0-9]+')) ELSE 9999 END, ROOM_NO, ITEM_ID");
+             PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME");
+             PreparedStatement stmntICats = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
+             PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME")){
+             PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
+             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
+             PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
+             PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
+             PreparedStatement stmntToDo = con.prepareCall("SELECT * FROM FMO_ADM.FMO_TO_DO_LIST");
              PreparedStatement stmntJobs = con.prepareCall("SELECT a.JOB_NAME, a.JOB_ACTION, a.START_DATE, a.REPEAT_INTERVAL, b.CREATED FROM DBA_SCHEDULER_JOBS a JOIN ALL_OBJECTS b ON a.JOB_NAME = b.OBJECT_NAME WHERE a.JOB_NAME LIKE 'UPDATE_ITEM_JOB_CAT%'");
-            PreparedStatement stmntToDo = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_TO_DO_LIST");
 
             ResultSet rs = statement.executeQuery();
             
@@ -236,6 +236,7 @@ public class mainController extends HttpServlet {
                 msched.setNoOfDaysWarning(rsMaintSched.getInt("NO_OF_DAYS_WARNING"));
                 msched.setQuarterlySchedNo(rsMaintSched.getInt("QUARTERLY_SCHED_NO"));
                 msched.setYearlySchedNo(rsMaintSched.getInt("YEARLY_SCHED_NO"));
+                msched.setArchiveFlag(rsMaintSched.getInt("ARCHIVED_FLAG"));
                 listMaintSched.add(msched);
             }
             rsMaintSched.close();
@@ -274,18 +275,6 @@ public class mainController extends HttpServlet {
             }
             rsRepairs.close();
 
-            ResultSet rsJobs = stmntJobs.executeQuery();
-            while (rsJobs.next()) {
-                Jobs jobs = new Jobs();
-                jobs.setJobName(rsJobs.getString("JOB_NAME"));
-                jobs.setJobAction(rsJobs.getString("JOB_ACTION"));
-                jobs.setStartDate(rsJobs.getDate("START_DATE"));
-                jobs.setRepeatInterval(rsJobs.getString("REPEAT_INTERVAL"));
-                jobs.setJobCreated(rsJobs.getDate("CREATED"));
-                listJobs.add(jobs);
-            }
-            rsJobs.close();
-            
             ResultSet rsToDo = stmntToDo.executeQuery();
             while (rsToDo.next()) {
                 ToDo todo = new ToDo();
@@ -300,6 +289,18 @@ public class mainController extends HttpServlet {
                 listToDo.add(todo);
             }
             rsToDo.close();
+            
+            ResultSet rsJobs = stmntJobs.executeQuery();
+            while (rsJobs.next()) {
+                Jobs jobs = new Jobs();
+                jobs.setJobName(rsJobs.getString("JOB_NAME"));
+                jobs.setJobAction(rsJobs.getString("JOB_ACTION"));
+                jobs.setStartDate(rsJobs.getDate("START_DATE"));
+                jobs.setRepeatInterval(rsJobs.getString("REPEAT_INTERVAL"));
+                jobs.setJobCreated(rsJobs.getDate("CREATED"));
+                listJobs.add(jobs);
+            }
+            rsJobs.close();
         } catch (SQLException error) {
             error.printStackTrace();
         }
@@ -457,21 +458,21 @@ public class mainController extends HttpServlet {
                     request.getRequestDispatcher("/buildingDashboard.jsp").forward(request, response);
                 }
                 break;
-            case "/notification":
-                request.getRequestDispatcher("/notification.jsp").forward(request, response);
-                break;
+//            case "/notification":
+//                request.getRequestDispatcher("/notification.jsp").forward(request, response);
+//                break;
             case "/calendar":
                 request.getRequestDispatcher("/calendar.jsp").forward(request, response);
                 break;
-            case "/history":
-                request.getRequestDispatcher("/history.jsp").forward(request, response);
-                break;
-            case "/feedback":
-                request.getRequestDispatcher("/feedback.jsp").forward(request, response);
-                break;
-            case "/reports":
-                request.getRequestDispatcher("/reports.jsp").forward(request, response);
-                break;
+//            case "/history":
+//                request.getRequestDispatcher("/history.jsp").forward(request, response);
+//                break;
+//            case "/feedback":
+//                request.getRequestDispatcher("/feedback.jsp").forward(request, response);
+//                break;
+//            case "/reports":
+//                request.getRequestDispatcher("/reports.jsp").forward(request, response);
+//                break;
             case "/settings":
                 request.getRequestDispatcher("/settings.jsp").forward(request, response);
                 break;

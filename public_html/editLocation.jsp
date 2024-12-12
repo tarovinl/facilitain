@@ -409,7 +409,7 @@
         <div class="modal-content">
             <div class="centered-div bg-white">
                 <div class="container p-4 mt-4 mb-4">
-                    <form action="buildingcontroller" method="POST">
+                    <form action="archiveloccontroller" method="POST">
                         <div class="row">
                             <div class="col text-center">
                                 <h2 class="fw-bold">Are you sure you want to archive ${locName}?</h2>

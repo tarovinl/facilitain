@@ -58,7 +58,7 @@
     <select name="equipment" id="equipment" class="form-control w-100" onchange="toggleOtherOption()">
         <option value="">Select equipment type</option>
         <c:forEach var="equipment" items="${equipmentList}">
-            <option value="${equipment.key}">${equipment.value}</option>
+            <option value="${equipment.value}">${equipment.value}</option>
         </c:forEach>
         <option value="Other">Other</option>
     </select>

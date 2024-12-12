@@ -53,7 +53,7 @@ public class emailResolve extends HttpServlet {
 
         try (Connection connection = PooledConnection.getConnection()) {
             // Retrieve REPORT_CODE for the given reportId
-            String selectQuery = "SELECT * FROM C##FMO_ADM.FMO_ITEM_REPORTS WHERE REPORT_ID = ?";
+            String selectQuery = "SELECT * FROM FMO_ADM.FMO_ITEM_REPORTS WHERE REPORT_ID = ?";
             
 
             try (PreparedStatement selectStmt = connection.prepareStatement(selectQuery)) {
@@ -77,7 +77,7 @@ public class emailResolve extends HttpServlet {
                 
               
             }
-            String locationQuery = "SELECT NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ITEM_LOC_ID = ?";
+            String locationQuery = "SELECT NAME FROM FMO_ADM.FMO_ITEM_LOCATIONS WHERE ITEM_LOC_ID = ?";
                try (PreparedStatement locationStmt = connection.prepareStatement(locationQuery)) {
                    locationStmt.setInt(1, locID);
                    try (ResultSet locRs = locationStmt.executeQuery()) {
@@ -92,7 +92,7 @@ public class emailResolve extends HttpServlet {
 
 
             // Update STATUS to 1 for the given reportId
-            String updateQuery = "UPDATE C##FMO_ADM.FMO_ITEM_REPORTS SET STATUS = 1 WHERE REPORT_ID = ?";
+            String updateQuery = "UPDATE FMO_ADM.FMO_ITEM_REPORTS SET STATUS = 1 WHERE REPORT_ID = ?";
             try (PreparedStatement updateStmt = connection.prepareStatement(updateQuery)) {
                 updateStmt.setInt(1, Integer.parseInt(reportId));
                 int rowsUpdated = updateStmt.executeUpdate();

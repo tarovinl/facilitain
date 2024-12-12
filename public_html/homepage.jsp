@@ -30,7 +30,6 @@
     </button>
 </div>
 
-
                 <!-- Buildings Listing -->
                 <div class="row">
                     <c:forEach var="location" items="${locations}">
