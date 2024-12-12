@@ -19,7 +19,9 @@
     <div class="sidebar">
         <div class="text-center pt-4">
             <a href="<%=request.getContextPath()%>/homepage" class="p-0">
+
                <img src="resources/images/facilitain-home-logo.png" 
+
              alt="Facilitain Home Logo" 
              style="max-width: 100%; max-height: 100px; margin: 0 auto; display: block;" />
             </a>
