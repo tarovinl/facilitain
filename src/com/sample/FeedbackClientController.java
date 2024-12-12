@@ -20,31 +20,57 @@ import java.util.AbstractMap;
 @WebServlet(name = "FeedbackClientController", urlPatterns = { "/feedbackClient" })
 public class FeedbackClientController extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
+            List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
+            List<Map.Entry<Integer, String>> typeList = new ArrayList<>();
+            List<Map.Entry<Integer, String>> catList = new ArrayList<>();
 
-        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ARCHIVED_FLAG = 1";
+            String locationQuery = "SELECT * FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ARCHIVED_FLAG = 1 ORDER BY NAME";
+            String typeQuery = "SELECT * FROM C##FMO_ADM.FMO_ITEM_FEEDBACK_TYPE";
+            String categoryQuery = "SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE ARCHIVED_FLAG = 1 order by NAME";
 
-
-        try (Connection connection = PooledConnection.getConnection();
-             PreparedStatement locationStatement = connection.prepareStatement(locationQuery)) {
-
-            try (ResultSet locationResult = locationStatement.executeQuery()) {
-                while (locationResult.next()) {
-                    int locationId = locationResult.getInt("ITEM_LOC_ID");
-                    String locationName = locationResult.getString("NAME");
-                    locationList.add(new AbstractMap.SimpleEntry<>(locationId, locationName));
+            try (
+                Connection connection = PooledConnection.getConnection();
+                PreparedStatement locationStatement = connection.prepareStatement(locationQuery);
+                PreparedStatement typeStatement = connection.prepareStatement(typeQuery);
+                PreparedStatement categoryStatement = connection.prepareStatement(categoryQuery)
+            ) {
+                try (ResultSet locationResult = locationStatement.executeQuery()) {
+                    while (locationResult.next()) {
+                        int locationId = locationResult.getInt("ITEM_LOC_ID");
+                        String locationName = locationResult.getString("NAME");
+                        locationList.add(new AbstractMap.SimpleEntry<>(locationId, locationName));
+                    }
                 }
+
+                try (ResultSet typeResult = typeStatement.executeQuery()) {
+                    while (typeResult.next()) {
+                        int typeId = typeResult.getInt("FEEDBACK_TYPE_ID");
+                        String typeName = typeResult.getString("NAME");
+                        typeList.add(new AbstractMap.SimpleEntry<>(typeId, typeName));
+                    }
+                }
+
+                try (ResultSet categoryResult = categoryStatement.executeQuery()) {
+                    while (categoryResult.next()) {
+                        int categoryId = categoryResult.getInt("ITEM_CAT_ID");
+                        String categoryName = categoryResult.getString("NAME").toUpperCase();
+                        catList.add(new AbstractMap.SimpleEntry<>(categoryId, categoryName));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            request.setAttribute("locationList", locationList);
+            request.setAttribute("typeList", typeList);
+            request.setAttribute("catList", catList);
+            request.getRequestDispatcher("/feedbackClient.jsp").forward(request, response);
         }
 
-        request.setAttribute("locationList", locationList);
-        request.getRequestDispatcher("/feedbackClient.jsp").forward(request, response);
-    }
+
 
 
     @Override
