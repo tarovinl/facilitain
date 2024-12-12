@@ -6,7 +6,24 @@ public class Feedback {
     private int feedbackId;
     private int itemLocId;
     private String location;
-   
+    private int typeId;
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+    private String type;
     private String room;
     private int rating;
     private String suggestions;
