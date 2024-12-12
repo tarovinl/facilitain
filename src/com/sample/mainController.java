@@ -106,8 +106,8 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
              PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
              PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
-             PreparedStatement stmntJobs = con.prepareCall("SELECT a.JOB_NAME, a.JOB_ACTION, a.START_DATE, a.REPEAT_INTERVAL, b.CREATED FROM DBA_SCHEDULER_JOBS a JOIN ALL_OBJECTS b ON a.JOB_NAME = b.OBJECT_NAME WHERE a.JOB_NAME LIKE 'UPDATE_ITEM_JOB_CAT%'");
              PreparedStatement stmntToDo = con.prepareCall("SELECT * FROM FMO_ADM.FMO_TO_DO_LIST");
+             PreparedStatement stmntJobs = con.prepareCall("SELECT a.JOB_NAME, a.JOB_ACTION, a.START_DATE, a.REPEAT_INTERVAL, b.CREATED FROM DBA_SCHEDULER_JOBS a JOIN ALL_OBJECTS b ON a.JOB_NAME = b.OBJECT_NAME WHERE a.JOB_NAME LIKE 'UPDATE_ITEM_JOB_CAT%'");
 
             ResultSet rs = statement.executeQuery();
             
@@ -275,18 +275,6 @@ public class mainController extends HttpServlet {
             }
             rsRepairs.close();
 
-            ResultSet rsJobs = stmntJobs.executeQuery();
-            while (rsJobs.next()) {
-                Jobs jobs = new Jobs();
-                jobs.setJobName(rsJobs.getString("JOB_NAME"));
-                jobs.setJobAction(rsJobs.getString("JOB_ACTION"));
-                jobs.setStartDate(rsJobs.getDate("START_DATE"));
-                jobs.setRepeatInterval(rsJobs.getString("REPEAT_INTERVAL"));
-                jobs.setJobCreated(rsJobs.getDate("CREATED"));
-                listJobs.add(jobs);
-            }
-            rsJobs.close();
-            
             ResultSet rsToDo = stmntToDo.executeQuery();
             while (rsToDo.next()) {
                 ToDo todo = new ToDo();
@@ -301,6 +289,18 @@ public class mainController extends HttpServlet {
                 listToDo.add(todo);
             }
             rsToDo.close();
+            
+            ResultSet rsJobs = stmntJobs.executeQuery();
+            while (rsJobs.next()) {
+                Jobs jobs = new Jobs();
+                jobs.setJobName(rsJobs.getString("JOB_NAME"));
+                jobs.setJobAction(rsJobs.getString("JOB_ACTION"));
+                jobs.setStartDate(rsJobs.getDate("START_DATE"));
+                jobs.setRepeatInterval(rsJobs.getString("REPEAT_INTERVAL"));
+                jobs.setJobCreated(rsJobs.getDate("CREATED"));
+                listJobs.add(jobs);
+            }
+            rsJobs.close();
         } catch (SQLException error) {
             error.printStackTrace();
         }

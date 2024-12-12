@@ -50,6 +50,10 @@
                 <img src="resources/images/icons/circle-exclamation-solid.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Reports
             </a>
+              <a href="mapView" class="${page == 'mapView' ? 'active' : ''}">
+                <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                Map View
+            </a>
             <a href="settings" class="${page == 'settings' ? 'active' : ''}">
                 <img src="resources/images/icons/gear-solid.svg" alt="Settings" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Settings

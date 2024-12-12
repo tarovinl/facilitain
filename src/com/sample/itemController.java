@@ -143,208 +143,208 @@ public class itemController extends HttpServlet {
 //        System.out.println(sqlDate);
         
         
-        try (Connection conn = PooledConnection.getConnection()) {
-            String sql;
-            
-            if(itemEID != null && !itemEID.isEmpty()){
-                sql = "UPDATE FMO_ADM.FMO_ITEMS SET ITEM_TYPE_ID = ?, NAME = ?, LOCATION_ID = ?, LOCATION_TEXT = ?, FLOOR_NO = ?, ROOM_NO = ?, DATE_INSTALLED = ?, BRAND_NAME = ?, EXPIRY_DATE = ?, REMARKS = ?, PC_CODE = ?, AC_ACCU = ?, AC_FCU = ?, AC_INVERTER = ?, CAPACITY = ?, UNIT_OF_MEASURE = ?, ELECTRICAL_V = ?, ELECTRICAL_PH = ?, ELECTRICAL_HZ = ?  WHERE ITEM_ID = ?";
-                //System.out.println("edit this " + itemEditName);
-                
-            }else if(maintStatID != null && !maintStatID.isEmpty()){
-                sql = "UPDATE FMO_ADM.FMO_ITEMS SET MAINTENANCE_STATUS = ? WHERE ITEM_ID = ?";
-                //System.out.println("maint this " + maintStatus + " "+oldMaintStat+" "+loc);
-                
-            } else if(itemAID != null && !itemAID.isEmpty()){
-                sql = "UPDATE FMO_ADM.FMO_ITEMS SET ITEM_STAT_ID = 2 WHERE ITEM_ID = ?";
-                //System.out.println("archive this " + itemAID);
-            }else{
-                sql = "INSERT INTO FMO_ADM.FMO_ITEMS (ITEM_TYPE_ID,NAME,LOCATION_ID,LOCATION_TEXT,FLOOR_NO,ROOM_NO,DATE_INSTALLED,BRAND_NAME,EXPIRY_DATE,REMARKS,PC_CODE,AC_ACCU,AC_FCU,AC_INVERTER,CAPACITY,UNIT_OF_MEASURE,ELECTRICAL_V,ELECTRICAL_PH,ELECTRICAL_HZ,MAINTENANCE_STATUS,ITEM_STAT_ID,QUANTITY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,1,1)";
-                //System.out.println("add this " + itemName);
+       try (Connection conn = PooledConnection.getConnection()) {
+    String sql;
+
+    if (itemEID != null && !itemEID.isEmpty()) {
+        sql = "UPDATE FMO_ADM.FMO_ITEMS SET ITEM_TYPE_ID = ?, NAME = ?, LOCATION_ID = ?, LOCATION_TEXT = ?, FLOOR_NO = ?, ROOM_NO = ?, DATE_INSTALLED = ?, BRAND_NAME = ?, EXPIRY_DATE = ?, REMARKS = ?, PC_CODE = ?, AC_ACCU = ?, AC_FCU = ?, AC_INVERTER = ?, CAPACITY = ?, UNIT_OF_MEASURE = ?, ELECTRICAL_V = ?, ELECTRICAL_PH = ?, ELECTRICAL_HZ = ?  WHERE ITEM_ID = ?";
+    } else if (maintStatID != null && !maintStatID.isEmpty()) {
+        sql = "UPDATE FMO_ADM.FMO_ITEMS SET MAINTENANCE_STATUS = ? WHERE ITEM_ID = ?";
+    } else if (itemAID != null && !itemAID.isEmpty()) {
+        sql = "UPDATE FMO_ADM.FMO_ITEMS SET ITEM_STAT_ID = 2 WHERE ITEM_ID = ?";
+    } else {
+        sql = "INSERT INTO FMO_ADM.FMO_ITEMS (ITEM_TYPE_ID,NAME,LOCATION_ID,LOCATION_TEXT,FLOOR_NO,ROOM_NO,DATE_INSTALLED,BRAND_NAME,EXPIRY_DATE,REMARKS,PC_CODE,AC_ACCU,AC_FCU,AC_INVERTER,CAPACITY,UNIT_OF_MEASURE,ELECTRICAL_V,ELECTRICAL_PH,ELECTRICAL_HZ,MAINTENANCE_STATUS,ITEM_STAT_ID,QUANTITY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,1,1)";
+    }
+
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        if (itemEID != null && !itemEID.isEmpty()) {
+            stmt.setInt(1, Integer.parseInt(itemEditType));
+            stmt.setString(2, itemEditName);
+            stmt.setInt(3, Integer.parseInt(itemEditLoc));
+            stmt.setString(4, editLocText);
+            stmt.setString(5, itemEditFloor);
+            if ("Non-Room Equipment".equals(itemEditRoom)) {
+                stmt.setNull(6, java.sql.Types.VARCHAR);
+            } else {
+                stmt.setString(6, itemEditRoom);
             }
-            
-            
+            stmt.setDate(7, sqlEditDate);
+            stmt.setString(8, itemEditBrand);
+            stmt.setDate(9, sqlEditExpire);
+            stmt.setString(10, editRemarks);
+                if (itemEditPCC != null && !itemEditPCC.isEmpty()) {
+                                            stmt.setInt(11, Integer.parseInt(itemEditPCC));
+                                        } else {
+                                            stmt.setNull(11, java.sql.Types.INTEGER);
+                                        }
+                                        
+                                            if ("1".equals(itemEditCat)) {  // Check if itemEditCat is "1"
+                                                if (itemEditACCU != null && !itemEditACCU.isEmpty()) {
+                                                    stmt.setInt(12, Integer.parseInt(itemEditACCU));
+                                                } else {
+                                                    stmt.setNull(12, java.sql.Types.INTEGER);
+                                                }
+                                                if (itemEditFCU != null && !itemEditFCU.isEmpty()) {
+                                                    stmt.setInt(13, Integer.parseInt(itemEditFCU));
+                                                } else {
+                                                    stmt.setNull(13, java.sql.Types.INTEGER);
+                                                }
+                                                if (itemEditACINVERTER != null && !itemEditACINVERTER.isEmpty()) {
+                                                    stmt.setInt(14, Integer.parseInt(itemEditACINVERTER));
+                                                } else {
+                                                    stmt.setNull(14, java.sql.Types.INTEGER);
+                                                }
+                                            } else {
+                                                // Set all values to NULL if itemEditCat is not "1"
+                                                stmt.setNull(12, java.sql.Types.INTEGER);
+                                                stmt.setNull(13, java.sql.Types.INTEGER);
+                                                stmt.setNull(14, java.sql.Types.INTEGER);
+                                            }
 
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                if(itemEID != null && !itemEID.isEmpty()){
-                    stmt.setInt(1, Integer.parseInt(itemEditType));
-                    stmt.setString(2, itemEditName);
-                    stmt.setInt(3, Integer.parseInt(itemEditLoc));
-                    stmt.setString(4, editLocText);
-                    stmt.setString(5, itemEditFloor);
-                    if ("Non-Room Equipment".equals(itemEditRoom)) {
-                        stmt.setNull(6, java.sql.Types.VARCHAR); // Set the parameter to null if the condition is met
-                    } else {
-                        stmt.setString(6, itemEditRoom); // Set the value as is if the condition is not met
-                    }
-                    stmt.setDate(7, sqlEditDate);
-                    stmt.setString(8, itemEditBrand);
-                    stmt.setDate(9, sqlEditExpire);
-                    stmt.setString(10, editRemarks);
-                        if (itemEditPCC != null && !itemEditPCC.isEmpty()) {
-                            stmt.setInt(11, Integer.parseInt(itemEditPCC));
-                        } else {
-                            stmt.setNull(11, java.sql.Types.INTEGER);
-                        }
-                        
-                            if ("1".equals(itemEditCat)) {  // Check if itemEditCat is "1"
-                                if (itemEditACCU != null && !itemEditACCU.isEmpty()) {
-                                    stmt.setInt(12, Integer.parseInt(itemEditACCU));
-                                } else {
-                                    stmt.setNull(12, java.sql.Types.INTEGER);
-                                }
-                                if (itemEditFCU != null && !itemEditFCU.isEmpty()) {
-                                    stmt.setInt(13, Integer.parseInt(itemEditFCU));
-                                } else {
-                                    stmt.setNull(13, java.sql.Types.INTEGER);
-                                }
-                                if (itemEditACINVERTER != null && !itemEditACINVERTER.isEmpty()) {
-                                    stmt.setInt(14, Integer.parseInt(itemEditACINVERTER));
-                                } else {
-                                    stmt.setNull(14, java.sql.Types.INTEGER);
-                                }
-                            } else {
-                                // Set all values to NULL if itemEditCat is not "1"
-                                stmt.setNull(12, java.sql.Types.INTEGER);
-                                stmt.setNull(13, java.sql.Types.INTEGER);
-                                stmt.setNull(14, java.sql.Types.INTEGER);
-                            }
-
-                        if (itemEditCapacity != null && !itemEditCapacity.isEmpty()) {
-                            stmt.setInt(15, Integer.parseInt(itemEditCapacity));
-                        } else {
-                            stmt.setNull(15, java.sql.Types.INTEGER);
-                        }
-                        stmt.setString(16, itemEditUnitMeasure);
-                        if (itemEditEV != null && !itemEditEV.isEmpty()) {
-                            stmt.setInt(17, Integer.parseInt(itemEditEV));
-                        } else {
-                            stmt.setNull(17, java.sql.Types.INTEGER);
-                        }
-                        if (itemEditEPH != null && !itemEditEPH.isEmpty()) {
-                            stmt.setInt(18, Integer.parseInt(itemEditEPH));
-                        } else {
-                            stmt.setNull(18, java.sql.Types.INTEGER);
-                        }
-                        if (itemEditEHZ != null && !itemEditEHZ.isEmpty()) {
-                            stmt.setInt(19, Integer.parseInt(itemEditEHZ));
-                        } else {
-                            stmt.setNull(19, java.sql.Types.INTEGER);
-                        }
-
-                    
-                    stmt.setInt(20, Integer.parseInt(itemEID));
-                }else if(maintStatID != null && !maintStatID.isEmpty()){
-                    stmt.setInt(1, Integer.parseInt(maintStatus));
-                    stmt.setInt(2, Integer.parseInt(maintStatID));
-                } else if(itemAID != null && !itemAID.isEmpty()){
-                    stmt.setInt(1, Integer.parseInt(itemAID));
-                }else{
-                    stmt.setInt(1, Integer.parseInt(itemType));
-                    stmt.setString(2, itemName);
-                    stmt.setInt(3, Integer.parseInt(itemBuilding));
-                    stmt.setString(4, locText);
-                    stmt.setString(5, itemFloor);
-                    if ("Non-Room Equipment".equals(itemRoom)) {
-                        stmt.setNull(6, java.sql.Types.VARCHAR);
-                    } else {
-                        stmt.setString(6, itemRoom);
-                    }
-                    stmt.setDate(7, sqlDate);
-                    stmt.setString(8, itemBrand);
-                    stmt.setDate(9, sqlExpire);
-                    stmt.setString(10, remarks);
-                        if (itemPCC != null && !itemPCC.isEmpty()) {
-                            stmt.setInt(11, Integer.parseInt(itemPCC));
-                        } else {
-                            stmt.setNull(11, java.sql.Types.INTEGER);
-                        }
-                        if (itemACCU != null && !itemACCU.isEmpty()) {
-                            stmt.setInt(12, Integer.parseInt(itemACCU));
-                        } else {
-                            stmt.setNull(12, java.sql.Types.INTEGER);
-                        }
-                        if (itemFCU != null && !itemFCU.isEmpty()) {
-                            stmt.setInt(13, Integer.parseInt(itemFCU));
-                        } else {
-                            stmt.setNull(13, java.sql.Types.INTEGER);
-                        }
-                        if (itemACINVERTER != null && !itemACINVERTER.isEmpty()) {
-                            stmt.setInt(14, Integer.parseInt(itemACINVERTER));
-                        } else {
-                            stmt.setNull(14, java.sql.Types.INTEGER);
-                        }
-                        if (itemCapacity != null && !itemCapacity.isEmpty()) {
-                            stmt.setInt(15, Integer.parseInt(itemCapacity));
-                        } else {
-                            stmt.setNull(15, java.sql.Types.INTEGER);
-                        }
-                        stmt.setString(16, itemUnitMeasure);
-                        if (itemEV != null && !itemEV.isEmpty()) {
-                            stmt.setInt(17, Integer.parseInt(itemEV));
-                        } else {
-                            stmt.setNull(17, java.sql.Types.INTEGER);
-                        }
-                        if (itemEPH != null && !itemEPH.isEmpty()) {
-                            stmt.setInt(18, Integer.parseInt(itemEPH));
-                        } else {
-                            stmt.setNull(18, java.sql.Types.INTEGER);
-                        }
-                        if (itemEHZ != null && !itemEHZ.isEmpty()) {
-                            stmt.setInt(19, Integer.parseInt(itemEHZ));
-                        } else {
-                            stmt.setNull(19, java.sql.Types.INTEGER);
-                        }
-
-                }
-
-                
-                stmt.executeUpdate();
+                                        if (itemEditCapacity != null && !itemEditCapacity.isEmpty()) {
+                                            stmt.setInt(15, Integer.parseInt(itemEditCapacity));
+                                        } else {
+                                            stmt.setNull(15, java.sql.Types.INTEGER);
+                                        }
+                                        stmt.setString(16, itemEditUnitMeasure);
+                                        if (itemEditEV != null && !itemEditEV.isEmpty()) {
+                                            stmt.setInt(17, Integer.parseInt(itemEditEV));
+                                        } else {
+                                            stmt.setNull(17, java.sql.Types.INTEGER);
+                                        }
+                                        if (itemEditEPH != null && !itemEditEPH.isEmpty()) {
+                                            stmt.setInt(18, Integer.parseInt(itemEditEPH));
+                                        } else {
+                                            stmt.setNull(18, java.sql.Types.INTEGER);
+                                        }
+                                        if (itemEditEHZ != null && !itemEditEHZ.isEmpty()) {
+                                            stmt.setInt(19, Integer.parseInt(itemEditEHZ));
+                                        } else {
+                                            stmt.setNull(19, java.sql.Types.INTEGER);
+                                        }
+            stmt.setInt(20, Integer.parseInt(itemEID));
+        } else if (maintStatID != null && !maintStatID.isEmpty()) {
+            stmt.setInt(1, Integer.parseInt(maintStatus));
+            stmt.setInt(2, Integer.parseInt(maintStatID));
+        } else if (itemAID != null && !itemAID.isEmpty()) {
+            stmt.setInt(1, Integer.parseInt(itemAID));
+        } else {
+            stmt.setInt(1, Integer.parseInt(itemType));
+            stmt.setString(2, itemName);
+            stmt.setInt(3, Integer.parseInt(itemBuilding));
+            stmt.setString(4, locText);
+            stmt.setString(5, itemFloor);
+            if ("Non-Room Equipment".equals(itemRoom)) {
+                stmt.setNull(6, java.sql.Types.VARCHAR);
+            } else {
+                stmt.setString(6, itemRoom);
             }
-            
-            // Check conditions for FMO_ITEM_REPAIRS
-                if ("3".equals(oldMaintStat) && "1".equals(maintStatus)) {
-                    String currentMonth = String.valueOf(java.time.LocalDate.now().getMonthValue());
-                    String currentYear = String.valueOf(java.time.LocalDate.now().getYear());
+            stmt.setDate(7, sqlDate);
+            stmt.setString(8, itemBrand);
+            stmt.setDate(9, sqlExpire);
+            stmt.setString(10, remarks);
+            if (itemPCC != null && !itemPCC.isEmpty()) {
+                                        stmt.setInt(11, Integer.parseInt(itemPCC));
+                                    } else {
+                                        stmt.setNull(11, java.sql.Types.INTEGER);
+                                    }
+                                    if (itemACCU != null && !itemACCU.isEmpty()) {
+                                        stmt.setInt(12, Integer.parseInt(itemACCU));
+                                    } else {
+                                        stmt.setNull(12, java.sql.Types.INTEGER);
+                                    }
+                                    if (itemFCU != null && !itemFCU.isEmpty()) {
+                                        stmt.setInt(13, Integer.parseInt(itemFCU));
+                                    } else {
+                                        stmt.setNull(13, java.sql.Types.INTEGER);
+                                    }
+                                    if (itemACINVERTER != null && !itemACINVERTER.isEmpty()) {
+                                        stmt.setInt(14, Integer.parseInt(itemACINVERTER));
+                                    } else {
+                                        stmt.setNull(14, java.sql.Types.INTEGER);
+                                    }
+                                    if (itemCapacity != null && !itemCapacity.isEmpty()) {
+                                        stmt.setInt(15, Integer.parseInt(itemCapacity));
+                                    } else {
+                                        stmt.setNull(15, java.sql.Types.INTEGER);
+                                    }
+                                    stmt.setString(16, itemUnitMeasure);
+                                    if (itemEV != null && !itemEV.isEmpty()) {
+                                        stmt.setInt(17, Integer.parseInt(itemEV));
+                                    } else {
+                                        stmt.setNull(17, java.sql.Types.INTEGER);
+                                    }
+                                    if (itemEPH != null && !itemEPH.isEmpty()) {
+                                        stmt.setInt(18, Integer.parseInt(itemEPH));
+                                    } else {
+                                        stmt.setNull(18, java.sql.Types.INTEGER);
+                                    }
+                                    if (itemEHZ != null && !itemEHZ.isEmpty()) {
+                                        stmt.setInt(19, Integer.parseInt(itemEHZ));
+                                    } else {
+                                        stmt.setNull(19, java.sql.Types.INTEGER);
+                                    }
 
-                    // Check if an entry for the current month and year exists
-                    String selectRepairsSql = "SELECT NUM_OF_REPAIRS FROM FMO_ADM.FMO_ITEM_REPAIRS WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
-                    try (PreparedStatement selectStmt = conn.prepareStatement(selectRepairsSql)) {
-                        selectStmt.setInt(1, Integer.parseInt(currentMonth));
-                        selectStmt.setInt(2, Integer.parseInt(currentYear));
-                        selectStmt.setInt(3, Integer.parseInt(loc));
-                        try (ResultSet rs = selectStmt.executeQuery()) {
-                            if (rs.next()) {
-                                // Update NUM_OF_REPAIRS if entry exists
-                                int repairCount = rs.getInt("NUM_OF_REPAIRS");
-                                String updateRepairsSql = "UPDATE FMO_ADM.FMO_ITEM_REPAIRS SET NUM_OF_REPAIRS = ? WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
-                                try (PreparedStatement updateStmt = conn.prepareStatement(updateRepairsSql)) {
-                                    updateStmt.setInt(1, repairCount + 1);
-                                    updateStmt.setInt(2, Integer.parseInt(currentMonth));
-                                    updateStmt.setInt(3, Integer.parseInt(currentYear));
-                                    updateStmt.setInt(4, Integer.parseInt(loc));
-                                    updateStmt.executeUpdate();
-                                }
-                            } else {
-                                // Insert a new row if no entry exists
-                                String insertRepairsSql = "INSERT INTO FMO_ADM.FMO_ITEM_REPAIRS (REPAIR_MONTH, REPAIR_YEAR, NUM_OF_REPAIRS, ITEM_LOC_ID) VALUES (?, ?, ?, ?)";
-                                try (PreparedStatement insertStmt = conn.prepareStatement(insertRepairsSql)) {
-                                    insertStmt.setInt(1, Integer.parseInt(currentMonth));
-                                    insertStmt.setInt(2, Integer.parseInt(currentYear));
-                                    insertStmt.setInt(3, 1);
-                                    insertStmt.setInt(4, Integer.parseInt(loc));
-                                    insertStmt.executeUpdate();
-                                }
-                            }
-                        }
-                    }
-                }
-
-            // Redirect to homepage after processing
-            response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new ServletException("Database error while adding/editing/archiving item.");
         }
+
+        stmt.executeUpdate();
+    } catch (SQLException e) {
+        System.err.println("Error executing main SQL query: " + e.getMessage());
+        throw e;
+    }
+
+    // Check conditions for FMO_ITEM_REPAIRS
+    if ("3".equals(oldMaintStat) && "1".equals(maintStatus)) {
+        String currentMonth = String.valueOf(java.time.LocalDate.now().getMonthValue());
+        String currentYear = String.valueOf(java.time.LocalDate.now().getYear());
+
+        String selectRepairsSql = "SELECT NUM_OF_REPAIRS FROM FMO_ADM.FMO_ITEM_REPAIRS WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
+        try (PreparedStatement selectStmt = conn.prepareStatement(selectRepairsSql)) {
+            selectStmt.setInt(1, Integer.parseInt(currentMonth));
+            selectStmt.setInt(2, Integer.parseInt(currentYear));
+            selectStmt.setInt(3, Integer.parseInt(loc));
+            try (ResultSet rs = selectStmt.executeQuery()) {
+                if (rs.next()) {
+                    int repairCount = rs.getInt("NUM_OF_REPAIRS");
+                    String updateRepairsSql = "UPDATE FMO_ADM.FMO_ITEM_REPAIRS SET NUM_OF_REPAIRS = ? WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateRepairsSql)) {
+                        updateStmt.setInt(1, repairCount + 1);
+                        updateStmt.setInt(2, Integer.parseInt(currentMonth));
+                        updateStmt.setInt(3, Integer.parseInt(currentYear));
+                        updateStmt.setInt(4, Integer.parseInt(loc));
+                        updateStmt.executeUpdate();
+                    } catch (SQLException e) {
+                        System.err.println("Error updating NUM_OF_REPAIRS: " + e.getMessage());
+                        throw e;
+                    }
+                } else {
+                    String insertRepairsSql = "INSERT INTO FMO_ADM.FMO_ITEM_REPAIRS (REPAIR_MONTH, REPAIR_YEAR, NUM_OF_REPAIRS, ITEM_LOC_ID) VALUES (?, ?, ?, ?)";
+                    
+                    try (PreparedStatement insertStmt = conn.prepareStatement(insertRepairsSql)) {
+                        
+                        insertStmt.setInt(1, Integer.parseInt(currentMonth));
+                        insertStmt.setInt(2, Integer.parseInt(currentYear));
+                        insertStmt.setInt(3, 1);
+                        insertStmt.setInt(4, Integer.parseInt(loc));
+                        insertStmt.executeUpdate();
+                    } catch (SQLException e) {
+                        System.err.println("Error inserting into FMO_ITEM_REPAIRS: " + e.getMessage());
+                        throw e;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error querying FMO_ITEM_REPAIRS: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr);
+    } catch (SQLException e) {
+        e.printStackTrace();
+        throw new ServletException("Database error during operation: " + e.getMessage(), e);
+    }
+
 
             
     }
