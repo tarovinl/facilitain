@@ -18,8 +18,8 @@
             <div class="container">
                 <h1 class="my-4">Settings</h1>
                 <div class="row">
-                    <!-- Service Providers Card -->
-                    <!--<div class="col-md-6">
+                    <!----><!-- Service Providers Card --><!--
+                    <div class="col-md-6">
                         <div class="card text-center mb-4">
                             <a href="serviceProviders">
                                 <div class="card-body">
@@ -31,61 +31,60 @@
                             </a>
                         </div>
                     </div>-->
-                    
-                    <!-- Item Type Card -->
-                    <div class="col-md-6">
-                        <div class="card text-center mb-4">
-                            <!-- Updated link to go through the controller -->
-                            <a href="<%=request.getContextPath()%>/itemCategories">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <span class="display-1"><i class="fas fa-users"></i></span>
-                                    </div>
-                                    <h5 class="card-title">Item Category</h5>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+                     <div class="row">
+                  <div class="col-md-6">
+    <div class="card text-center mb-4">
+        <a href="<%=request.getContextPath()%>/itemUser" style="text-decoration: none;">
+            <div class="card-body">
+                <div class="mb-3">
+                    <span class="display-1" style="color: #ffc107;"><i class="fas fa-users"></i></span>
                 </div>
+                <h5 class="card-title" style="color: black;">Users</h5>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="card text-center mb-4">
+        <a href="<%=request.getContextPath()%>/itemCategories" style="text-decoration: none;">
+            <div class="card-body">
+                <div class="mb-3">
+                    <span class="display-1" style="color: #ffc107;"><i class="fas fa-cogs"></i></span>
+                </div>
+                <h5 class="card-title" style="color: black;">Item Category</h5>
+            </div>
+        </a>
+    </div>
+</div>
                 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card text-center mb-4">
-                          <a href="<%=request.getContextPath()%>/itemUser">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <span class="display-1"><i class="fas fa-print"></i></span>
-                                    </div>
-                                    <h5 class="card-title">Users</h5>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+               
                     
-                    <div class="col-md-6">
-                        <div class="card text-center mb-4">
-                            <a href="<%=request.getContextPath()%>/maintenanceSchedule">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <span class="display-1"><i class="fas fa-calendar"></i></span>
-                                    </div>
-                                    <h5 class="card-title">Maintenance Schedule</h5>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card text-center mb-4">
-                            <a href="<%=request.getContextPath()%>/itemType">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <span class="display-1"><i class="fas fa-gear"></i></span>
-                                    </div>
-                                    <h5 class="card-title">Item Types</h5>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+                   <div class="col-md-6">
+    <div class="card text-center mb-4">
+        <a href="<%=request.getContextPath()%>/maintenanceSchedule" style="text-decoration: none;">
+            <div class="card-body">
+                <div class="mb-3">
+                    <span class="display-1" style="color: #ffc107;"><i class="fas fa-calendar"></i></span>
+                </div>
+                <h5 class="card-title" style="color: black;"">Maintenance Schedule</h5>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="card text-center mb-4">
+        <a href="<%=request.getContextPath()%>/itemType" style="text-decoration: none;">
+            <div class="card-body">
+                <div class="mb-3">
+                    <span class="display-1" style="color: #ffc107;"><i class="fas fa-gear"></i></span>
+                </div>
+                <h5 class="card-title" style="color: black;">Item Types</h5>
+            </div>
+        </a>
+    </div>
+</div>
                 </div>
             </div>
         </div>

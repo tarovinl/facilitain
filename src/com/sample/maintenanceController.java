@@ -67,18 +67,30 @@ public class maintenanceController extends HttpServlet {
 //         request.getRequestDispatcher("/maintenanceSchedule.jsp").forward(request, response);
 //     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try (Connection con = PooledConnection.getConnection()) {
-            String itemMsIdStr = request.getParameter("itemMsId");
+   @Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    String action = request.getParameter("action");
+
+    try (Connection con = PooledConnection.getConnection()) {
+            if ("archive".equals(action)) {
+                // Archive the maintenance schedule
+                int itemMsId = Integer.parseInt(request.getParameter("itemMsId"));
+                String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ARCHIVED_FLAG = 2 WHERE ITEM_MS_ID = ?";
+                try (PreparedStatement ps = con.prepareStatement(updateSql)) {
+                    ps.setInt(1, itemMsId);
+                    int rowsUpdated = ps.executeUpdate();
+                    System.out.println("Rows updated: " + rowsUpdated); // Debugging line
+                }
+            
+        } else {
+            // Add or Edit maintenance schedule
             int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
             int noOfDays = Integer.parseInt(request.getParameter("noOfDays"));
             String remarks = request.getParameter("remarks");
             int noOfDaysWarning = Integer.parseInt(request.getParameter("noOfDaysWarning"));
-
             String quarterlySchedule = request.getParameter("quarterlySchedule");
             String yearlySchedule = request.getParameter("yearlySchedule");
-
+            String itemMsIdStr = request.getParameter("itemMsId");
             int itemMsId = itemMsIdStr.isEmpty() ? 0 : Integer.parseInt(itemMsIdStr);
 
             String sql;
@@ -98,25 +110,26 @@ public class maintenanceController extends HttpServlet {
 
                 if (noOfDays == 90 && quarterlySchedule != null) {
                     ps.setInt(5, Integer.parseInt(quarterlySchedule)); // Set Quarterly Schedule
-                    ps.setNull(6, java.sql.Types.INTEGER); // Nullify Yearly Schedule
+                    ps.setNull(6, java.sql.Types.INTEGER); // Clear Yearly Schedule
                 } else if (noOfDays == 365 && yearlySchedule != null) {
-                    ps.setNull(5, java.sql.Types.INTEGER); // Nullify Quarterly Schedule
+                    ps.setNull(5, java.sql.Types.INTEGER); // Clear Quarterly Schedule
                     ps.setInt(6, Integer.parseInt(yearlySchedule)); // Set Yearly Schedule
                 } else {
-                    ps.setNull(5, java.sql.Types.INTEGER); // Nullify both if invalid
+                    ps.setNull(5, java.sql.Types.INTEGER); // Clear both
                     ps.setNull(6, java.sql.Types.INTEGER);
                 }
 
                 if (itemMsId != 0) {
-                    ps.setInt(7, itemMsId);
+                    ps.setInt(7, itemMsId); // Set ID for update
                 }
 
                 ps.executeUpdate();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
-        response.sendRedirect("maintenanceSchedule");
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    response.sendRedirect("maintenanceSchedule"); // Redirect to the main schedule page
+}
 }

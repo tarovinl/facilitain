@@ -14,7 +14,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
         <!-- Optional: Add a custom title -->
-        <title>Agreement</title>
+        <title>Login</title>
         <style>
         .montserrat-regular {
          font-family: "Montserrat", sans-serif;
@@ -27,12 +27,6 @@
          font-weight: 600;
          font-style: normal;
                             }
-        .montserrat-boldl {
-         font-family: "Montserrat", sans-serif;
-         font-weight: 800;
-         font-style: normal;
-                            }
-    
     </style>
     </head>
     <body class="d-flex flex-column min-vh-100" >
@@ -43,30 +37,30 @@
             <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
                 <div class="card">
                     <div class="card-body ">
+         <img src="resources/images/FMO-Logo.png" alt="FMO Logo" class="img-fluid d-block mx-auto" style="max-height: 10rem;">
             <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
-            <h3 class="text-center p-2 montserrat-boldl ">AGREEMENT REMINDER:</h3>
-          <p class=" text-center p-2"> 
-          Filling up the form abides by the <br/>
-          Data Privacy Act of 2012 where your <br/>
-          personal data is collected but for <br/>
-          record-keeping purposes only
+            <h3 class="text-center p-1 montserrat-bold">Sign In</h3>
+          <p class="  p-2"> 
+         To access MyUSTe Portal, please make sure you meet the following requirements:
           </p>
+              <p class="  p-2"> 
+          1. UST Google Workspace Personal Account <br/>
+2. Google Authenticator Application
+     </p>
             <!-- Example Bootstrap Button -->
              <div class="mt-3 d-flex justify-content-center px-0">
-                <button type ="button" onclick="window.location.href='menuClient.jsp';" class="montserrat-bold btn w-100 py-3 fs-5"  style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
+                <button type ="button" onclick="window.location.href='agreementClient.jsp';" class="btn w-100 py-3 fs-5 montserrat-bold "  style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
         onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
         onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
-                Agree
+                Sign in with Google
                 </button>
             </div>
-            <div class="mt-3 d-flex justify-content-center px-0">
-                 <button type ="button" onclick="window.location.href='loginClient.jsp';" class="montserrat-bold btn w-100 py-3 fs-5"  style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
-        onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
-        onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
-                Disagree
-                </button>
-            </div>
-    
+            
+    <div class=" text-center">
+    <p>
+    Need help signing in? Learn More
+    </p>
+</div>
             </div>
         </div>
         </div>
