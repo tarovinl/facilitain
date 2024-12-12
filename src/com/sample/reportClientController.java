@@ -52,7 +52,7 @@ public class reportClientController extends HttpServlet {
                  ResultSet equipmentResult = equipmentStatement.executeQuery()) {
                 while (equipmentResult.next()) {
                     int itemCatId = equipmentResult.getInt("ITEM_CAT_ID");
-                    String itemCatName = equipmentResult.getString("NAME");
+                    String itemCatName = equipmentResult.getString("NAME").toUpperCase();
                     equipmentList.add(new AbstractMap.SimpleEntry<>(itemCatId, itemCatName));
                 }
             }
@@ -67,6 +67,9 @@ public class reportClientController extends HttpServlet {
         // Forward the request to the JSP page
         request.getRequestDispatcher("/reportsClient.jsp").forward(request, response);
     }
+    
+
+   
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -74,7 +77,46 @@ public class reportClientController extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        // Extract form fields from request
+        // Check for the action parameter to determine the request type
+        String action = request.getParameter("action");
+
+        if ("floorFetch".equals(action)) {
+            // Dynamic floor-fetching logic
+            String locationId = request.getParameter("locationId");
+            if (locationId != null) {
+                List<Map.Entry<Integer, String>> floorList = new ArrayList<>();
+
+                String floorQuery = "SELECT ITEM_LOC_FLR_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOC_FLOORS WHERE ITEM_LOC_ID = ? AND ACTIVE_FLAG = 1 ORDER BY NAME";
+
+                try (Connection connection = PooledConnection.getConnection();
+                     PreparedStatement floorStatement = connection.prepareStatement(floorQuery)) {
+
+                    floorStatement.setInt(1, Integer.parseInt(locationId));
+                    try (ResultSet floorResult = floorStatement.executeQuery()) {
+                        while (floorResult.next()) {
+                            int floorId = floorResult.getInt("ITEM_LOC_FLR_ID");
+                            String floorName = floorResult.getString("NAME");
+                            floorList.add(new AbstractMap.SimpleEntry<>(floorId, floorName));
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                // Generate HTML options for dropdown
+                StringBuilder floorOptions = new StringBuilder();
+                for (Map.Entry<Integer, String> floor : floorList) {
+                    floorOptions.append("<option value=\"").append(floor.getKey()).append("\">").append(floor.getValue()).append("</option>");
+                }
+
+                // Respond with the generated options
+                response.setContentType("text/html");
+                response.getWriter().write(floorOptions.toString());
+                return; // Exit the method since this request is only for fetching floors
+            }
+        }
+
+        // Regular form submission logic
         String equipment = request.getParameter("equipment");
         if ("Other".equals(equipment)) {
             equipment = request.getParameter("otherEquipment"); // If 'Other' is selected, take the custom input
@@ -109,6 +151,7 @@ public class reportClientController extends HttpServlet {
 
             // Generate REPORT_CODE (e.g., abbreviation of equipment, floor, and room, plus unique ID)
             String reportCode = generateReportCode(equipment, floor, room, reportId);
+
             // Insert the new report, including STATUS and REPORT_CODE
             String insertQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPORTS (REPORT_ID, EQUIPMENT_TYPE, ITEM_LOC_ID, REPORT_FLOOR, REPORT_ROOM, REPORT_ISSUE, REPORT_PICTURE, REC_INST_DT, REC_INST_BY, STATUS, REPORT_CODE) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -145,7 +188,6 @@ public class reportClientController extends HttpServlet {
         // Redirect to the reportsThanksClient.jsp
         response.sendRedirect("reportsThanksClient.jsp");
     }
-
 
 
     private String generateReportCode(String equipment, String floor, String room, int reportId) {
