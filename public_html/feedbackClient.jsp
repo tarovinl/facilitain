@@ -48,33 +48,33 @@
         <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
         <h3 class="text-center montserrat-bold">Feedback Form</h3>
 
-        <form action="feedbackClient" method="POST" onsubmit="return validateForm()">
-           <label for="room">Evaluation for <span style="color: red;">*</span></label>
-<div class="mt-1">
-    <select name="room" id="room" class="form-select w-100" required >
-        <option value="" disabled selected>Choose type of room</option>
-        <c:forEach var="type" items="${typeList}">
-            <option value="${type.value}">${type.value}</option>
-        </c:forEach>
-    </select>
-    <small class="text-danger" id="roomError"></small>
-</div>
-            
-          <label for="equipment" class="mt-2">Type of Equipment <span style="color: red;">*</span></label>
-<div class="mt-1">
-    <select name="equipment" id="equipment" class="form-select w-100" onchange="toggleOtherOption()" required>
-        <option value="">Select equipment type</option>
-        <c:forEach var="category" items="${catList}">
-            <option value="${category.key}">${category.value.toUpperCase()}</option>
-        </c:forEach>
-        <option value="Other">OTHER</option> 
-    </select>
-    <div id="equipmentError" class="error-message"></div>
-</div>
-<div id="otherEquipmentDiv" style="display: none;" class="mt-1">
-    <label for="otherEquipment" class="mt-2">Please specify: <span style="color: red;">*</span></label>
-    <input type="text" id="otherEquipment" name="otherEquipment" class="form-control w-100" required>
-</div>
+                    <form action="feedbackClient" method="POST" onsubmit="return validateForm()">
+                        <label for="room">Evaluation for <span style="color: red;">*</span></label>
+                        <div class="mt-1">
+                            <select name="room" id="room" class="form-select w-100" required >
+                                <option value="" disabled selected>Choose type of room</option>
+                                <c:forEach var="type" items="${typeList}">
+                                    <option value="${type.value}">${type.value}</option>
+                                </c:forEach>
+                            </select>
+                            <small class="text-danger" id="roomError"></small>
+                        </div>
+                                                        
+                              <label for="equipment" class="mt-2">Type of Equipment <span style="color: red;">*</span></label>
+                    <div class="mt-1">
+                        <select name="equipment" id="equipment" class="form-select w-100" onchange="toggleOtherOption()" required>
+                            <option value="">Select equipment type</option>
+                            <c:forEach var="category" items="${catList}">
+                                <option value="${category.key}">${category.value.toUpperCase()}</option>
+                            </c:forEach>
+                            <option value="Other">OTHER</option> 
+                        </select>
+                        <div id="equipmentError" class="error-message"></div>
+                    </div>
+                    <div id="otherEquipmentDiv" style="display: none;" class="mt-1">
+                        <label for="otherEquipment" class="mt-2">Please specify: <span style="color: red;">*</span></label>
+                        <input type="text" id="otherEquipment" name="otherEquipment" class="form-control w-100" required>
+                    </div>
 
             
             <label for="location" class="mt-2">Location <span style="color: red;">*</span></label>
