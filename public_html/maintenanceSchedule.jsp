@@ -35,6 +35,7 @@
                     </thead>
                     <tbody>
                         <c:forEach var="maintenance" items="${maintenanceList}">
+                        <c:if test="${maintenance.archiveFlag == 1}">
                             <tr>
                                 <td>${maintenance.itemMsId}</td>
                                 <td>${maintenance.itemTypeId}</td>
@@ -61,6 +62,7 @@
     </form>
                                 </td>
                             </tr>
+                        </c:if>    
                         </c:forEach>
                     </tbody>
                 </table>

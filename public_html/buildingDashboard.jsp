@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <%@ page contentType="text/html;charset=windows-1252"%>
 <%@ page import="java.util.ArrayList" %>
@@ -7,9 +8,8 @@
 <%@ page import="java.time.temporal.ChronoUnit" %>
 
 <%
-    // Current date for calculations
-    LocalDate currentDate = LocalDate.now();
-    request.setAttribute("currentDate", currentDate);
+    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+    String currentDate = sdf.format(new java.util.Date());
 %>
 
 <%
@@ -80,7 +80,7 @@
             
                 <c:if test="${category.itemCID == itemCID}">
                     <c:if test="${itemz.itemArchive == 1}">
-                    <c:if test="${itemz.itemMaintStat == 1}">
+                    <c:if test="${itemz.itemMaintStat == 2}">
                         <c:set var="itemCount" value="${itemCount + 1}" />
                     </c:if>
                     </c:if>
@@ -339,9 +339,9 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="buildingBanner rounded-4" style="margin-top: 14px; margin-bottom: 14px; background-image: 
                                     linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
                                     url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center;">
-    <div class="statusDiv">
+    <!--<div class="statusDiv">
         <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
-    </div>
+    </div>-->
     <div class="buildingName text-light" style="font-family: NeueHaasMedium, sans-serif;">
         <h1>${locName}</h1>
     </div>
@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
 
           <!-- Activities -->
-          <div class="buildingActivities">
+        <div class="buildingActivities">
             <div class="activity">
               <div class="actCategories">
                 <h2 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h2>
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
                 <c:if test="${item.itemLID == locID}">
                     <c:forEach items="${maintenanceList}" var="maint">
-                    <c:if test="${maint.activeFlag == 1}">
+                    <c:if test="${maint.archiveFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
                             <div class="actItem"
@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                  data-no-of-days-warning="${maint.noOfDaysWarning}">
                                 <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
                                 <h3 class="activity-text">
-                                    Maintenance for ${item.itemName} ${not empty item.itemRoom ? '- ' + item.itemRoom : ''} in <span class="remaining-days">calculating...</span> days.
+                                    Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} in <span class="remaining-days">calculating...</span> days.
                                 </h3>
                             </div>
             
@@ -433,14 +433,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
                 <c:if test="${item.itemLID == locID}">
                     <c:forEach items="${maintenanceList}" var="maint">
-                    <c:if test="${maint.activeFlag == 1}">
+                    <c:if test="${maint.archiveFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
                             <div class="actItem"
-                                 data-last-maintenance-date2="${item.lastMaintDate}">
-                                <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
+                                 data-last-maintenance-date="${item.lastMaintDate}">
+                                <img src="resources/images/greenDot.png" alt="activity status indicator" width="28" height="28">
                                 <h3 class="activity-text">
-                                    Maintenance for ${item.itemName} ${not empty item.itemRoom ? '- ' + item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
+                                    Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
                                 </h3>
                             </div>
                         </c:if>
@@ -486,52 +486,66 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>-->
     
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Convert the server-side current date to a JavaScript Date object
-        const currentDate = new Date('<%= currentDate %>');
-        console.log('Current Date:', currentDate);
+document.addEventListener('DOMContentLoaded', function () {
+    const currentDate = new Date('<%= currentDate %>');
+    console.log('Current Date:', currentDate);
 
-        // Loop through each item and calculate the remaining days
-        document.querySelectorAll('#upcoming-activities .actItem').forEach(function (itemDiv) {
-            // Accessing data attributes from the div
-            const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
-            const noOfDays = parseInt(itemDiv.getAttribute('data-no-of-days'));
-            const noOfDaysWarning = parseInt(itemDiv.getAttribute('data-no-of-days-warning'));
+    document.querySelectorAll('#upcoming-activities .actItem').forEach(function (itemDiv) {
+        const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
+        const noOfDays = parseInt(itemDiv.getAttribute('data-no-of-days')) || 0;
+        const noOfDaysWarning = parseInt(itemDiv.getAttribute('data-no-of-days-warning')) || 0;
 
-            // Parse the last maintenance date into a Date object
+        if (lastMaintenanceDateStr) {
             const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
 
-            // Calculate the difference in days
-            const timeDifference = currentDate - lastMaintenanceDate;
-            const daysSinceLastMaintenance = timeDifference / (1000 * 60 * 60 * 24);
-            const daysRemaining = noOfDays - daysSinceLastMaintenance;
+            if (!isNaN(lastMaintenanceDate)) {
+                const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
+                const daysRemaining = noOfDays - daysSinceLastMaintenance;
 
-            // Update the text with the remaining days, if within the warning threshold
-            if (daysRemaining > 0 && daysRemaining <= noOfDaysWarning) {
-                const remainingDaysElement = itemDiv.querySelector('.remaining-days');
-                remainingDaysElement.textContent = Math.floor(daysRemaining);  // Display as an integer
+                if (daysRemaining > 0 && daysRemaining <= noOfDaysWarning) {
+                    const remainingDaysElement = itemDiv.querySelector('.remaining-days');
+                    if (remainingDaysElement) {
+                        remainingDaysElement.textContent = Math.floor(daysRemaining);
+                    }
+                } else {
+                    itemDiv.style.display = "none";
+                }
             } else {
+                console.error("Invalid lastMaintenanceDate:", lastMaintenanceDateStr);
                 itemDiv.style.display = "none";
             }
-        });
-        
-        document.querySelectorAll('#recent-activities .actItem').forEach(function (itemDiv) {
-            const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date2');
-    
-            if (lastMaintenanceDateStr) {
-                const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
+        } else {
+            itemDiv.style.display = "none";
+        }
+    });
+
+    document.querySelectorAll('#recent-activities .actItem').forEach(function (itemDiv) {
+        const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
+
+        if (lastMaintenanceDateStr) {
+            const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
+
+            if (!isNaN(lastMaintenanceDate)) {
                 const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
 
                 if (daysSinceLastMaintenance >= 0 && daysSinceLastMaintenance <= 30) {
-                    itemDiv.querySelector('.remaining-days').textContent = Math.floor(daysSinceLastMaintenance);
+                    const remainingDaysElement = itemDiv.querySelector('.remaining-days');
+                    if (remainingDaysElement) {
+                        remainingDaysElement.textContent = Math.floor(daysSinceLastMaintenance);
+                    }
                 } else {
-                    itemDiv.style.display = "none"; // Hide items not within 30 days
+                    itemDiv.style.display = "none";
                 }
             } else {
-                itemDiv.style.display = "none"; // Hide items with no maintenance date
+                console.error("Invalid lastMaintenanceDate:", lastMaintenanceDateStr);
+                itemDiv.style.display = "none";
             }
-        });
+        } else {
+            itemDiv.style.display = "none";
+        }
     });
+});
+
 </script>
 
 </script>
