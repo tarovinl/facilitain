@@ -62,21 +62,17 @@
                                                         
                               <label for="equipment" class="mt-2">Type of Equipment <span style="color: red;">*</span></label>
                     <div class="mt-1">
-                        <select name="equipment" id="equipment" class="form-select w-100" onchange="toggleOtherOption()" required>
-                            <option value="">Select equipment type</option>
-                            <c:forEach var="category" items="${catList}">
-                                <option value="${category.key}">${category.value.toUpperCase()}</option>
-                            </c:forEach>
-                            <option value="Other">OTHER</option> 
-                        </select>
-                        <div id="equipmentError" class="error-message"></div>
-                    </div>
-                    <div id="otherEquipmentDiv" style="display: none;" class="mt-1">
-                        <label for="otherEquipment" class="mt-2">Please specify: <span style="color: red;">*</span></label>
-                        <input type="text" id="otherEquipment" name="otherEquipment" class="form-control w-100" required>
-                    </div>
-
-            
+                                                       <select name="equipment" id="equipment" class="form-select w-100" onchange="toggleOtherOption()" required>
+                                    <option value="" disabled selected>Select equipment type</option>
+                                    <c:forEach var="category" items="${catList}">
+                                        <option value="${category.key}">${category.value.toUpperCase()}</option>
+                                    </c:forEach>
+                                    <option value="Other">OTHER</option>
+                                </select>
+                                <div id="otherEquipmentDiv" style="display: none;" class="mt-1">
+                                     <label for="otherEquipment" class="mt-2">Please specify: <span style="color: red;">*</span></label>
+                                    <input type="text" id="otherEquipment" name="otherEquipment" class="form-control w-100">
+                                </div>
             <label for="location" class="mt-2">Location <span style="color: red;">*</span></label>
             <div class="mt-1">
                 <select name="location" id="location" class="form-select w-100" required >
@@ -180,19 +176,32 @@
 
 <!-- JavaScript Validation -->
 <script>
-function toggleOtherOption() {
-    const equipmentSelect = document.getElementById('equipment');
-    const otherEquipmentDiv = document.getElementById('otherEquipmentDiv');
-    const otherEquipmentInput = document.getElementById('otherEquipment');
-
-    if (equipmentSelect.value === 'Other') {
-        otherEquipmentDiv.style.display = 'block';
-        otherEquipmentInput.setAttribute('required', 'true');  // Make it required
-    } else {
-        otherEquipmentDiv.style.display = 'none';
-        otherEquipmentInput.removeAttribute('required');  // Remove the required attribute
+  function toggleOtherOption() {
+        const equipmentSelect = document.getElementById("equipment");
+        const otherDiv = document.getElementById("otherEquipmentDiv");
+        const otherInput = document.getElementById("otherEquipment");
+        
+        if (equipmentSelect.value === "Other") {
+            otherDiv.style.display = "block";
+            otherInput.required = true;
+        } else {
+            otherDiv.style.display = "none";
+            otherInput.value = ""; // Clear the input if "Other" is not selected
+            otherInput.required = false;
+        }
     }
-}
+
+    function validateForm() {
+        const equipment = document.getElementById("equipment").value;
+        const otherEquipment = document.getElementById("otherEquipment").value;
+
+        if (equipment === "Other" && otherEquipment.trim() === "") {
+            alert("Please specify the equipment.");
+            return false;
+        }
+
+        return true;
+    }
 
 function updateRatingLabel(rating) {
     const label = document.getElementById('ratingLabel');

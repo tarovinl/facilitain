@@ -29,34 +29,36 @@
                     </div>
                 </div>
 
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Rating</th>
-                            <th>Room</th>
-                            <th>Location</th>
-                            <th>Suggestions</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="feedback" items="${feedbackList}">
-                            <tr>
-                                <td>${feedback.rating}</td>
-                                <td>${feedback.room}</td>
-                                <td>${feedback.location}</td>
-                                <td>${feedback.suggestions}</td>
-                                <td><fmt:formatDate value="${feedback.recInsDt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setFeedbackId(${feedback.feedbackId})">
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
+               <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Rating</th>
+            <th>Room</th>
+            <th>Location</th>
+            <th>Suggestions</th>
+            <th>Equipment Type</th>  
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <c:forEach var="feedback" items="${feedbackList}">
+            <tr>
+                <td>${feedback.rating}</td>
+                <td>${feedback.room}</td>
+                <td>${feedback.location}</td>
+                <td>${feedback.suggestions}</td>
+                <td>${feedback.itemCatName}</td>  <!-- Display itemCatName -->
+                <td><fmt:formatDate value="${feedback.recInsDt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+                <td>
+                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setFeedbackId(${feedback.feedbackId})">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        </c:forEach>
+    </tbody>
+</table>
             </div>
         </div>
     </div>
