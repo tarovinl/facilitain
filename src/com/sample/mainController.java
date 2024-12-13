@@ -31,16 +31,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import sample.model.Location;
 import sample.model.Item;
-
-import sample.model.Maintenance;
+import sample.model.Maps;
 import sample.model.PooledConnection;
 
 import sample.model.Repairs;
 import sample.model.Jobs;
 import sample.model.Maintenance;
 import sample.model.Quotation;
-
-import sample.model.SharedData;
 import sample.model.ToDo;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
@@ -79,6 +76,7 @@ public class mainController extends HttpServlet {
         ArrayList<Repairs> listRepairs = new ArrayList<>();
         ArrayList<Jobs> listJobs = new ArrayList<>();
         ArrayList<ToDo> listToDo = new ArrayList<>();
+        ArrayList<Maps> listMap = new ArrayList<>();
         
         List<String> months = new ArrayList<>();
                     months.add("January");
@@ -103,11 +101,13 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntICats = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
              PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME");
              PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
-             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
+             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 ORDER BY ITEM_MS_ID");
              PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
              PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
+             PreparedStatement stmntToDo = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_TO_DO_LIST");
+             PreparedStatement stmntMap = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOC_MAP");
              PreparedStatement stmntJobs = con.prepareCall("SELECT a.JOB_NAME, a.JOB_ACTION, a.START_DATE, a.REPEAT_INTERVAL, b.CREATED FROM DBA_SCHEDULER_JOBS a JOIN ALL_OBJECTS b ON a.JOB_NAME = b.OBJECT_NAME WHERE a.JOB_NAME LIKE 'UPDATE_ITEM_JOB_CAT%'");
-             PreparedStatement stmntToDo = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_TO_DO_LIST");){
+             ){
 
             ResultSet rs = statement.executeQuery();
             
@@ -236,6 +236,7 @@ public class mainController extends HttpServlet {
                 msched.setNoOfDaysWarning(rsMaintSched.getInt("NO_OF_DAYS_WARNING"));
                 msched.setQuarterlySchedNo(rsMaintSched.getInt("QUARTERLY_SCHED_NO"));
                 msched.setYearlySchedNo(rsMaintSched.getInt("YEARLY_SCHED_NO"));
+                msched.setArchiveFlag(rsMaintSched.getInt("ARCHIVED_FLAG"));
                 listMaintSched.add(msched);
             }
             rsMaintSched.close();
@@ -273,18 +274,6 @@ public class mainController extends HttpServlet {
                 listRepairs.add(reps);
             }
             rsRepairs.close();
-
-            ResultSet rsJobs = stmntJobs.executeQuery();
-            while (rsJobs.next()) {
-                Jobs jobs = new Jobs();
-                jobs.setJobName(rsJobs.getString("JOB_NAME"));
-                jobs.setJobAction(rsJobs.getString("JOB_ACTION"));
-                jobs.setStartDate(rsJobs.getDate("START_DATE"));
-                jobs.setRepeatInterval(rsJobs.getString("REPEAT_INTERVAL"));
-                jobs.setJobCreated(rsJobs.getDate("CREATED"));
-                listJobs.add(jobs);
-            }
-            rsJobs.close();
             
             ResultSet rsToDo = stmntToDo.executeQuery();
             while (rsToDo.next()) {
@@ -300,6 +289,31 @@ public class mainController extends HttpServlet {
                 listToDo.add(todo);
             }
             rsToDo.close();
+            
+            ResultSet rsMap = stmntMap.executeQuery();
+            while (rsMap.next()) {
+                Maps imthemap = new Maps();
+                imthemap.setCoordId(rsMap.getInt("COORD_ID"));
+                imthemap.setItemLocId(rsMap.getInt("ITEM_LOC_ID"));
+                imthemap.setLatitude(rsMap.getDouble("LATITUDE"));
+                imthemap.setLongitude(rsMap.getDouble("LONGITUDE"));
+                listMap.add(imthemap);
+            }
+            rsMap.close();
+            
+            ResultSet rsJobs = stmntJobs.executeQuery();
+            while (rsJobs.next()) {
+                Jobs jobs = new Jobs();
+                jobs.setJobName(rsJobs.getString("JOB_NAME"));
+                jobs.setJobAction(rsJobs.getString("JOB_ACTION"));
+                jobs.setStartDate(rsJobs.getDate("START_DATE"));
+                jobs.setRepeatInterval(rsJobs.getString("REPEAT_INTERVAL"));
+                jobs.setJobCreated(rsJobs.getDate("CREATED"));
+                listJobs.add(jobs);
+            }
+            rsJobs.close();
+            
+           
         } catch (SQLException error) {
             error.printStackTrace();
         }
@@ -401,6 +415,7 @@ public class mainController extends HttpServlet {
         
         request.setAttribute("monthsList", months);
         request.setAttribute("REPAIRS_PER_MONTH", listRepairs);
+        request.setAttribute("FMO_MAP_LIST", listMap);
         request.setAttribute("calendarSched", listJobs);
         request.setAttribute("FMO_TO_DO_LIST", listToDo);
         

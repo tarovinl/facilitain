@@ -4,7 +4,7 @@
   align-items: center; /* Centers the stars vertically if needed */
 }
 
-label {
+.star-rating {
   color: #E1E6F6;
   cursor: pointer;
   display: inline-flex;
