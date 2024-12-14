@@ -35,6 +35,8 @@
                             }
     
         </style>
+       
+       
       
     </head>
      <body class="d-flex flex-column min-vh-100" style="background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('resources/images/ust-bg.jpg'); 
@@ -145,6 +147,8 @@
             </div>
             </div>
         </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
         <script>
          // Function to toggle 'Other' option visibility
         function toggleOtherOption() {
@@ -171,20 +175,7 @@
     charCountDiv.textContent = `${currentLength}/${maxLength} characters used`;
 
 }
-   function toggleOtherOption() {
-    var equipmentSelect = document.getElementById("equipment");
-    var otherEquipmentDiv = document.getElementById("otherEquipmentDiv");
-    var selectedValue = equipmentSelect.value;
 
-    // Show the input field when "Other" is selected
-    if (selectedValue === "Other") {
-        otherEquipmentDiv.style.display = "block";" +
-        "otherEquipmentInput.setAttribute("required", "true");
-    } else {
-        otherEquipmentDiv.style.display = "none";" +
-        " otherEquipmentInput.removeAttribute("required");
-    }
-}
 
 
 </script>

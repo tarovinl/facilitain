@@ -77,45 +77,6 @@ public class reportClientController extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        // Check for the action parameter to determine the request type
-        String action = request.getParameter("action");
-
-        if ("floorFetch".equals(action)) {
-            // Dynamic floor-fetching logic
-            String locationId = request.getParameter("locationId");
-            if (locationId != null) {
-                List<Map.Entry<Integer, String>> floorList = new ArrayList<>();
-
-                String floorQuery = "SELECT ITEM_LOC_FLR_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOC_FLOORS WHERE ITEM_LOC_ID = ? AND ACTIVE_FLAG = 1 ORDER BY NAME";
-
-                try (Connection connection = PooledConnection.getConnection();
-                     PreparedStatement floorStatement = connection.prepareStatement(floorQuery)) {
-
-                    floorStatement.setInt(1, Integer.parseInt(locationId));
-                    try (ResultSet floorResult = floorStatement.executeQuery()) {
-                        while (floorResult.next()) {
-                            int floorId = floorResult.getInt("ITEM_LOC_FLR_ID");
-                            String floorName = floorResult.getString("NAME");
-                            floorList.add(new AbstractMap.SimpleEntry<>(floorId, floorName));
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                // Generate HTML options for dropdown
-                StringBuilder floorOptions = new StringBuilder();
-                for (Map.Entry<Integer, String> floor : floorList) {
-                    floorOptions.append("<option value=\"").append(floor.getKey()).append("\">").append(floor.getValue()).append("</option>");
-                }
-
-                // Respond with the generated options
-                response.setContentType("text/html");
-                response.getWriter().write(floorOptions.toString());
-                return; // Exit the method since this request is only for fetching floors
-            }
-        }
-
         // Regular form submission logic
         String equipment = request.getParameter("equipment");
         if ("Other".equals(equipment)) {
