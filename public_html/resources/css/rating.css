@@ -2,6 +2,7 @@
   display: flex; /* Makes the rating stars use flex layout */
   justify-content: center; /* Centers the stars horizontally */
   align-items: center; /* Centers the stars vertically if needed */
+  flex-direction: row-reverse; /* Reverses the direction of the stars */
 }
 
 .star-rating {
@@ -23,8 +24,9 @@ input {
   display: none;
 }
 
-label:hover,
-label:hover ~ label,
-input:checked ~ label {
+/* Hover and checked states */
+.star-rating:hover,
+.star-rating:hover ~ .star-rating,
+input:checked ~ .star-rating {
   color: #fbbe15;
 }
