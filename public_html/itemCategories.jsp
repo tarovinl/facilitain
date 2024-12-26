@@ -34,7 +34,7 @@
                         <c:if test="${category.archivedFlag == 1}">
                             <tr>
                                 <td>${category.itemCID}</td>
-                                <td>${category.categoryName}</td>
+                                <td>${category.categoryName.toUpperCase()}</td>
                                 <td>${category.description}</td>
                                 <td>
                                     <button class="btn btn-sm btn-primary" 
