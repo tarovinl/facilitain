@@ -111,6 +111,32 @@
 .roomDropdiv {
 }
 
+thead{
+    background-color: black !important;
+    color: white !important;
+}
+table.dataTable>thead>tr:hover td,
+table.dataTable>thead>tr:hover th {
+  background-color: #fccc4c !important;
+  color: black !important;
+  border: solid 1px black !important;
+}
+table.dataTable thead>tr>th.dt-orderable-asc span:hover,
+table.dataTable thead>tr>th.dt-orderable-desc span:hover,
+table.dataTable thead>tr>th.dt-ordering-asc span:hover,
+table.dataTable thead>tr>th.dt-ordering-desc span:hover,
+table.dataTable thead>tr>td.dt-orderable-asc span:hover,
+table.dataTable thead>tr>td.dt-orderable-desc span:hover,
+table.dataTable thead>tr>td.dt-ordering-asc span:hover,
+table.dataTable thead>tr>td.dt-ordering-desc span:hover {
+    color: black; /* Change this to your hover color */
+}
+div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-paging .dt-paging-button.current:hover {
+  border: 1px solid black !important;
+  background-color: #fccc4c !important;
+}
+
+
 .roomDLblDiv {
     background-color: #fccc4c;
     padding: 6px 12px;
@@ -134,7 +160,6 @@
 }
 
 .roomDTblDiv {
-    display: none;
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;

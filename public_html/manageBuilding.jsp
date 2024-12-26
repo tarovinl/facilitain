@@ -10,13 +10,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Manage Location</title>
         <link rel="stylesheet" href="resources/css/mBuilding.css">
-        <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
     <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
     <!-- Bootstrap 5 CSS and JS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -114,9 +113,10 @@
         </div>
         <c:if test="${floorName == 'all'}">
         <div class="roomDropsdiv">
-            <div style="overflow-x: auto; overflow-y: hidden; white-space: nowrap;">
-            <table aria-label="history logs table" style="border: 1px solid black;">
-                                <tr style="margin-bottom: 120px; background-color: black; color: white;">
+            <div >
+            <table id="allItemsTable" class="display" style="width:100%;">
+			<thead>
+                                <tr>
                                     <!--<th ></th>-->
                                     <th ></th>
                                     <th ></th>
@@ -131,7 +131,7 @@
                                     </th>
                                     <th >Status</th>
                                 </tr>
-                                
+                         </thead>   
                             <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
                             <c:if test="${item.itemArchive == 1}">
                                 <c:if test="${item.itemLID == locID}">
@@ -155,7 +155,7 @@
                                         width="24" 
                                         height="24"/>
                                     </td>-->
-                                    <td style="margin-left: 4px; margin-right: 4px; text-align:center;">
+                                    <td>
                                         <input type="image" 
                                         src="resources/images/editItem.svg" 
                                         id="editModalButton" 
@@ -187,7 +187,7 @@
                                         data-itemehz="${item.itemEHZ}"
                                         onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/> 
                                     </td>
-                                    <td style="margin-left: 4px; margin-right: 4px; text-align:center;">
+                                    <td>
                                         <input type="image" 
                                         src="resources/images/archiveItem.svg" 
                                         id="archiveModalButton" 
@@ -215,7 +215,7 @@
                                     <td >${item.itemBrand != null ? item.itemBrand : 'N/A'}</td>
                                     <td >${item.dateInstalled}</td>
                                     <!-- Quotation Icon Button in manageBuilding.jsp -->
-                                    <td style="display: flex; justify-content: center; align-items: center; margin-top: 8px;">
+                                    <td>
                                         <form id="quotForm" method="GET" action="quotations.jsp" style="display: none;">
                                             <input type="hidden" name="displayQuotItemID" id="hiddenItemID">
                                         </form>
@@ -257,43 +257,33 @@
         </c:if>
         
         <!-- list of room dropdowns  (turn roomDropdown <li> into foreach)-->
+        <c:if test="${floorName != 'all'}">
         <div class="roomDropsdiv">
-            <ul class="roomDropdowns" id="roomDropdowns">
-          <c:forEach items="${uniqueRooms}" var="room" >
-            <c:if test="${room.itemLID == locID}">
-                <c:if test="${room.itemFloor == floorName}">  
-                <c:if test="${room.itemArchive == 1}">  
-                <li class="roomDropdown">
-                    <div class="roomDropDiv">
-                        <div class="roomDLblDiv">
-                            <h3>
-                                <button onclick="showTblDiv(this)" >${room.itemRoom != null ? room.itemRoom : 'Non-Room Equipment'}</button>
-                            </h3>
-                        </div>
-                        <div class="roomDTblDiv">
-                            <table aria-label="history logs table">
-                                <tr style="margin-bottom: 120px;">
+            <div >
+            <table id="itemsTable" class="display" style="width:100%;">
+			<thead>
+                                <tr>
                                     <!--<th ></th>-->
                                     <th ></th>
                                     <th ></th>
                                     <th >ID</th>
                                     <th >Codename</th>
+				    <th >Room</th>
                                     <th >Category</th>
                                     <th >Type</th>
                                     <th >Brand</th>
                                     <th >Date Installed</th>
-                                    <th style="display: flex; justify-content: center; align-items: center;">
+                                    <th>
                                         Quotation
                                     </th>
                                     <th >Status</th>
                                 </tr>
-                                
+                         </thead>   
                             <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
                             <c:if test="${item.itemArchive == 1}">
                                 <c:if test="${item.itemLID == locID}">
-                                    <c:if test="${item.itemFloor == floorName}">
-                                    <c:if test="${item.itemRoom == room.itemRoom}">
-                                <tr>
+				<c:if test="${item.itemFloor == floorName}">
+                                <tr style="border: solid 1px black;">
                                 
                                 <c:forEach items="${FMO_TYPES_LIST}" var="type" >
                                     <c:if test="${type.itemTID == item.itemTID}">
@@ -313,7 +303,7 @@
                                         width="24" 
                                         height="24"/>
                                     </td>-->
-                                    <td style="margin-left: 4px; margin-right: 4px; text-align:center;">
+                                    <td>
                                         <input type="image" 
                                         src="resources/images/editItem.svg" 
                                         id="editModalButton" 
@@ -343,9 +333,9 @@
                                         data-itemev="${item.itemEV}"
                                         data-itemeph="${item.itemEPH}"
                                         data-itemehz="${item.itemEHZ}"
-                                        onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});filterETypes();"/> 
+                                        onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/> 
                                     </td>
-                                    <td style="margin-left: 4px; margin-right: 4px; text-align:center;">
+                                    <td>
                                         <input type="image" 
                                         src="resources/images/archiveItem.svg" 
                                         id="archiveModalButton" 
@@ -360,6 +350,7 @@
                                     </td>
                                     <td >${item.itemID}</td>
                                     <td >${item.itemName}</td>
+				    <td >${item.itemRoom != null ? item.itemRoom : 'N/A'}</td>
                                     <c:forEach items="${FMO_TYPES_LIST}" var="type" >
                                         <c:if test="${type.itemTID == item.itemTID}">
                                         <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
@@ -372,25 +363,22 @@
                                     </c:forEach>
                                     <td >${item.itemBrand != null ? item.itemBrand : 'N/A'}</td>
                                     <td >${item.dateInstalled}</td>
-                                  <!-- Quotation Icon Button in manageBuilding.jsp -->
-<!-- Quotation Icon Button in manageBuilding.jsp -->
-<td style="display: flex; justify-content: center; align-items: center; margin-top: 8px;">
-    <form id="quotForm" method="GET" action="quotations.jsp" style="display: none;">
-        <input type="hidden" name="displayQuotItemID" id="hiddenItemID">
-    </form>
-    <input type="image"
-        src="resources/images/quotationsIcon.svg"
-        id="quotModalButton"
-        alt="Open Quotation Modal"
-        width="24"
-        height="24"
-        data-itemid="${item.itemID}"
-        data-bs-toggle="modal"
-        data-bs-target="#quotEquipmentModal"
-        onclick="openQuotModal(this)">
-</td>
-
-
+                                    <!-- Quotation Icon Button in manageBuilding.jsp -->
+                                    <td>
+                                        <form id="quotForm" method="GET" action="quotations.jsp" style="display: none;">
+                                            <input type="hidden" name="displayQuotItemID" id="hiddenItemID">
+                                        </form>
+                                        <input type="image"
+                                            src="resources/images/quotationsIcon.svg"
+                                            id="quotModalButton"
+                                            alt="Open Quotation Modal"
+                                            width="24"
+                                            height="24"
+                                            data-itemid="${item.itemID}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#quotEquipmentModal"
+                                            onclick="openQuotModal(this)">
+                                    </td>
                                     <td >
                                       <form action="itemcontroller" method="POST">
                                         <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}"/>
@@ -408,26 +396,15 @@
                                       </form>
                                     </td>
                                 </tr>
-                                    </c:if>
-                                    </c:if>
+				</c:if>
                                 </c:if>
-                            </c:if>    
+                            </c:if>
                             </c:forEach>    
                                 
-                            </table>
-                        </div>
-                    </div>
-                </li>
-                </c:if>
-                </c:if>    
-            </c:if>            
-        </c:forEach>   
-           
-                <!--<li>room 808</li>-->
-            </ul>
-            
-            <div id="paginationControls"></div>
-         </div>
+            </table>
+            </div>
+        </div>    
+        </c:if>
      </div>
    </div>
 </div>
@@ -812,6 +789,44 @@
     <c:if test="${locMatchFound == false || flrMatchFound == false}">
         <meta http-equiv="refresh" content="0; URL=./homepage" /> 
     </c:if>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize DataTable for #allItemsTable
+            let allItemsTable = new DataTable('#allItemsTable', {
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                stateSave: true,
+                columnDefs: [
+                    { targets: "_all", className: "dt-center" }, // Center-align all columns
+                    { targets: 0, orderable: false },
+                    { targets: 1, orderable: false },
+                    { targets: 8, orderable: false },
+                    { targets: 9, orderable: false }
+                ]
+            });
+        
+            // Initialize DataTable for #itemsTable
+            let itemsTable = new DataTable('#itemsTable', {
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                stateSave: true,
+                columnDefs: [
+                    { targets: "_all", className: "dt-center" }, // Center-align all columns
+                    { targets: 0, orderable: false },
+                    { targets: 1, orderable: false },
+                    { targets: 9, orderable: false },
+                    { targets: 10, orderable: false }
+                ]
+            });
+        });
+
+    </script>
+    
     <script>
     
         function showTblDiv(button) {
@@ -1213,52 +1228,7 @@ const inputER = document.querySelector("#itemEditRoom");
     }
 
     
-    document.addEventListener("DOMContentLoaded", function() {
-    const itemsPerPage = 5;  // Set how many items you want per page
-    const ul = document.getElementById("roomDropdowns");
-    const items = ul.getElementsByClassName("roomDropdown");  // Get all list items
-    const totalItems = items.length;
-    const paginationControls = document.getElementById("paginationControls");
     
-    let currentPage = 1;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    function showPage(page) {
-        currentPage = page;
-        // Hide all items
-        for (let i = 0; i < totalItems; i++) {
-            items[i].style.display = "none";
-        }
-        // Show only the items for the current page
-        let start = (page - 1) * itemsPerPage;
-        let end = start + itemsPerPage;
-        for (let i = start; i < end && i < totalItems; i++) {
-            items[i].style.display = "block";
-        }
-        // Update pagination controls
-        updatePaginationControls();
-    }
-
-    function updatePaginationControls() {
-        paginationControls.innerHTML = "";  // Clear existing controls
-        for (let i = 1; i <= totalPages; i++) {
-            const button = document.createElement("button");
-            button.textContent = i;
-            button.classList.add("page-btn");
-            if (i === currentPage) {
-                button.classList.add("active");
-            }
-            button.addEventListener("click", function() {
-                showPage(i);
-            });
-            paginationControls.appendChild(button);
-        }
-    }
-
-    // Initialize the first page
-    showPage(1);
-});
-
 
 function populateQuotModal(button) {
     // Retrieve the itemID from the clicked button

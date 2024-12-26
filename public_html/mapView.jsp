@@ -4,8 +4,8 @@
 <html lang="en">
     <head>
     <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Map View</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Map View Homepage</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
@@ -15,26 +15,42 @@
       <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
+     
+    <style>
+    @media (max-width: 800px) {
+        .map-header h1, .map-header button {
+            display: none !important; /* Overrides conflicting styles */
+        }
+        .map-container, #map {
+            height: 90vh !important; /* Set the map to take the full viewport height */
+            display: flex !important;
+            align-items: center !important;
+        }
+    }
+    </style>
+     
     </head>
     <body>
-<div class="row min-vh-100">
-  <jsp:include page="sidebar.jsp"/>
-  <div class="col-md-10">
-    <div class="container-fluid h-100 d-flex flex-column">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        <jsp:include page="sidebar.jsp"/>
+    <div class="col-md-10">
+        <div class="container mcontainer">
+            <div class="d-flex justify-content-between align-items-center mb-2 mt-2 map-header">
+                <div>
+                    <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
+                </div>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addBuildingModal">
+                    <i class="bi bi-plus-lg"></i> Add
+                </button>
+            </div>
+            <div class="row mt-2 mb-2 map-container">
+                <div id="map" style="width: 100%; height: 100%; border-radius:5px;"></div>
+            </div>               
         </div>
-        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addBuildingModal">
-          <i class="bi bi-plus-lg"></i> Add
-        </button>
-      </div>
-      <!-- Map container that dynamically adjusts height -->
-      <div class="map-container" id="map" style="width: 100%; border-radius:5px;"></div>
     </div>
-  </div>
+    </div>
 </div>
-    
     <script>
     function resizeMap() {
         const mapContainer = document.getElementById('map');
@@ -48,7 +64,7 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
-
+    
     
     <c:forEach var="mapItem" items="${FMO_MAP_LIST}">
     L.marker([${mapItem.latitude}, ${mapItem.longitude}]) //csen
