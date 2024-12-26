@@ -96,7 +96,7 @@
             <div class="row mt-3">
                 <div class="col">
                     <label for="locDescription" class="form-label fw-bold h4">Description</label>
-                    <textarea class="form-control" id="locDescription" name="locDescription" rows="3" required>${locDescription}</textarea>
+                    <textarea class="form-control" id="locDescription" name="locDescription" rows="3">${locDescription}</textarea>
                 </div>
             </div>
     
