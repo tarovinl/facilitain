@@ -799,6 +799,7 @@
                 ordering: true,
                 info: true,
                 stateSave: true,
+                scrollX: true,
                 columnDefs: [
                     { targets: "_all", className: "dt-center" }, // Center-align all columns
                     { targets: 0, orderable: false },
@@ -815,6 +816,7 @@
                 ordering: true,
                 info: true,
                 stateSave: true,
+                scrollX: true,
                 columnDefs: [
                     { targets: "_all", className: "dt-center" }, // Center-align all columns
                     { targets: 0, orderable: false },

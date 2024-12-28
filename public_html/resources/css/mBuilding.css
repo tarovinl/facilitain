@@ -238,7 +238,7 @@ table {
     display:none;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 800px) {
     .roomDTblDiv tr {
         margin-bottom: 10px;
     }
