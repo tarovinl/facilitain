@@ -28,8 +28,9 @@ public class historyLogsController extends HttpServlet {
             "ORDER BY OPERATION_TIMESTAMP DESC";
 
         try (Connection conn = PooledConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 HistoryLog log = new HistoryLog(
                     rs.getInt("LOG_ID"),
@@ -45,10 +46,7 @@ public class historyLogsController extends HttpServlet {
             e.printStackTrace();
         }
 
-        // Set the request attributes
         request.setAttribute("historyLogs", historyLogs);
-
-        // Forward the request to the JSP page
         request.getRequestDispatcher("history.jsp").forward(request, response);
     }
 }
