@@ -7,37 +7,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reports</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        .detail-content {
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+        }
+    </style>
 </head>
 <body>
 <div class="container-fluid">
     <div class="row min-vh-100">
         <jsp:include page="sidebar.jsp"/>
 
-        <div class="col-md-10">
+        <div class="col-md-10 p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h1>Reports</h1>
-                <select id="sortStatus" class="form-select w-auto">
-                    <option value="all" selected>All</option>
-                    <option value="resolved">Resolved</option>
-                    <option value="unresolved">Unresolved</option>
+                <select id="statusFilter" class="form-select w-auto">
+                    <option value="">All Status</option>
+                    <option value="Resolved">Resolved</option>
+                    <option value="Not Resolved">Not Resolved</option>
                 </select>
             </div>
 
-            <table class="table table-striped table-hover">
+            <table id="reportsTable" class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Equipment Type</th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Actions</th>
+                        <th>ID</th>
+                        <th>Equipment Type</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="reportsTable">
+                <tbody>
                     <c:forEach var="report" items="${reportsList}">
-                        <tr class="report-row" data-status="${report.status == 1 ? 'resolved' : 'unresolved'}">
+                        <tr class="report-row" 
+                            data-repfloor="${report.repfloor}"
+                            data-reproom="${report.reproom}"
+                            data-repissue="${report.repissue}"
+                            data-report-id="${report.reportId}">
                             <td>${report.reportId}</td>
                             <td>${report.repEquipment}</td>
                             <td>${report.locName}</td>
@@ -48,7 +61,7 @@
                                 </span>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-info toggle-btn" data-target="details-${report.reportId}">Details</button>
+                                <button class="btn btn-info btn-sm toggle-details" data-bs-toggle="modal" data-bs-target="#detailsModal">Details</button>
                                 <form action="emailresolve" method="post" style="display:inline;">
                                     <input type="hidden" name="reportId" value="${report.reportId}">
                                     <button type="submit" class="btn btn-sm btn-success">Resolve</button>
@@ -59,20 +72,6 @@
                                 </form>
                             </td>
                         </tr>
-
-                        <tr class="detail-row" id="details-${report.reportId}" style="display: none;">
-                            <td colspan="6">
-                                <div class="p-3">
-                                    <strong>Floor:</strong> ${report.repfloor}<br>
-                                    <strong>Room:</strong> ${report.reproom}<br>
-                                    <strong>Description:</strong> ${report.repissue}<br>
-                                    <form action="viewImage" method="get" target="_blank">
-                                        <input type="hidden" name="reportId" value="${report.reportId}">
-                                        <button type="submit" class="btn btn-link">View Proof</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
                     </c:forEach>
                 </tbody>
             </table>
@@ -80,37 +79,89 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailsModalLabel">Report Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-content">
+            <strong>Floor:</strong> <span id="modalFloor">N/A</span><br>
+            <strong>Room:</strong> <span id="modalRoom">N/A</span><br>
+            <strong>Description:</strong> <span id="modalDescription">N/A</span><br>
+            <form action="viewImage" method="get" target="_blank" class="mt-2">
+                <input type="hidden" name="reportId" id="modalReportId">
+                <button type="submit" class="btn btn-link p-0">View Proof</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const toggleButtons = document.querySelectorAll('.toggle-btn');
-        const sortStatus = document.getElementById('sortStatus');
-        const reportRows = document.querySelectorAll('.report-row');
-
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const targetId = button.getAttribute('data-target');
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    targetElement.style.display = targetElement.style.display === 'none' ? 'table-row' : 'none';
-                }
-            });
-        });
-
-        sortStatus.addEventListener('change', () => {
-            const selectedStatus = sortStatus.value;
-            reportRows.forEach(row => {
-                const rowStatus = row.getAttribute('data-status');
-                if (selectedStatus === 'all' || rowStatus === selectedStatus) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
+$(document).ready(function() {
+    // Initialize DataTable
+    const table = $('#reportsTable').DataTable({
+        order: [[3, 'desc']], // Sort by date
+        pageLength: 10,
+        columnDefs: [{
+            targets: 5,
+            orderable: false
+        }]
     });
-</script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    // Function to format the details content and open the modal
+    function openModal(row) {
+        const floor = $(row).data('repfloor');
+        const room = $(row).data('reproom');
+        const description = $(row).data('repissue');
+        const reportId = $(row).data('report-id');
+
+        console.log('Details Data:', { floor, room, description, reportId });
+
+        // Set modal content
+        $('#modalFloor').text(floor || 'N/A');
+        $('#modalRoom').text(room || 'N/A');
+        $('#modalDescription').text(description || 'N/A');
+        $('#modalReportId').val(reportId);
+    }
+
+    // Handle details button click
+    $('#reportsTable tbody').on('click', '.toggle-details', function() {
+        const tr = $(this).closest('tr');  // Get the clicked row
+        openModal(tr);
+    });
+
+    // Custom status filter
+    $('#statusFilter').on('change', function() {
+        const selectedStatus = $(this).val();
+        
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            if (!selectedStatus) return true;
+            const status = $(table.row(dataIndex).node()).find('td:eq(4)').text().trim();
+            return status === selectedStatus;
+        });
+        
+        table.draw();
+        $.fn.dataTable.ext.search.pop();
+    });
+
+    // Handle row details on page change and search
+    table.on('page.dt search.dt', function() {
+        // Hide modal if it's visible during table redraw
+        $('#detailsModal').modal('hide');
+    });
+});
+</script>
 
 </body>
 </html>
