@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>Maintenance Schedule</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
 </head>
 <body>
@@ -17,12 +18,12 @@
             </div>
             <div class="col-md-9 col-lg-10 p-4">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h1  style="font-family: 'NeueHaasMedium', sans-serif;">Maintenance Schedule</h1>
+                    <h1 style="font-family: 'NeueHaasMedium', sans-serif;">Maintenance Schedule</h1>
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#maintenanceModal">Add Schedule</button>
                 </div>
 
                 <!-- Maintenance List Table -->
-                <table class="table table-striped mt-4">
+                <table id="maintenanceTable" class="table table-striped mt-4">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -35,34 +36,43 @@
                     </thead>
                     <tbody>
                         <c:forEach var="maintenance" items="${maintenanceList}">
-                        <c:if test="${maintenance.archiveFlag == 1}">
-                            <tr>
-                                <td>${maintenance.itemMsId}</td>
-                                <td>${maintenance.itemTypeId}</td>
-                                <td>${maintenance.noOfDays}</td>
-                                <td>${maintenance.remarks}</td>
-                                <td>${maintenance.noOfDaysWarning}</td>
-                                <td>
-                                    <button class="btn btn-primary btn-sm" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#maintenanceModal"
-                                            data-itemmsid="${maintenance.itemMsId}"
-                                            data-itemtypeid="${maintenance.itemTypeId}"
-                                            data-noofdays="${maintenance.noOfDays}"
-                                            data-remarks="${maintenance.remarks}"
-                                            data-warning="${maintenance.noOfDaysWarning}">
-                                        Edit
-                                    </button>
-                                <form action="maintenanceSave" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to archive this maintenance schedule?');">
-                                <input type="hidden" name="itemMsId" value="${maintenance.itemMsId}">
-                    <input type="hidden" name="action" value="archive">
-    <button type="submit" class="btn btn-danger btn-sm">Archive</button>
-</form>
-
-    </form>
-                                </td>
-                            </tr>
-                        </c:if>    
+                            <c:if test="${maintenance.archiveFlag == 1}">
+                                <tr>
+                                    <td>${maintenance.itemMsId}</td>
+                                    <td>
+                                        <c:forEach items="${FMO_TYPES_LIST}" var="type">
+                                            <c:if test="${type.itemTID == maintenance.itemTypeId}">
+                                                <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
+                                                    <c:if test="${cat.itemCID == type.itemCID}">
+                                                        ${cat.itemCat.toUpperCase()}
+                                                    </c:if>
+                                                </c:forEach>
+                                                ${type.itemType.toUpperCase()}
+                                            </c:if>
+                                        </c:forEach>
+                                    </td>
+                                    <td>${maintenance.noOfDays}</td>
+                                    <td>${maintenance.remarks}</td>
+                                    <td>${maintenance.noOfDaysWarning}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#maintenanceModal"
+                                                data-itemmsid="${maintenance.itemMsId}"
+                                                data-itemtypeid="${maintenance.itemTypeId}"
+                                                data-noofdays="${maintenance.noOfDays}"
+                                                data-remarks="${maintenance.remarks}"
+                                                data-warning="${maintenance.noOfDaysWarning}">
+                                            Edit
+                                        </button>
+                                        <form action="maintenanceSave" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to archive this maintenance schedule?');">
+                                            <input type="hidden" name="itemMsId" value="${maintenance.itemMsId}">
+                                            <input type="hidden" name="action" value="archive">
+                                            <button type="submit" class="btn btn-danger btn-sm">Archive</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </c:if>
                         </c:forEach>
                     </tbody>
                 </table>
@@ -163,32 +173,46 @@
         </div>
     </div>
 
+   
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
-        // Prefill Modal with selected maintenance data
-        const maintenanceModal = document.getElementById('maintenanceModal');
-        maintenanceModal.addEventListener('show.bs.modal', event => {
-            const button = event.relatedTarget;
-            const itemMsId = button.getAttribute('data-itemmsid');
+          $(document).ready(function() {
+            $('#maintenanceTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "language": {
+                    "search": "Filter records:",
+                    "lengthMenu": "Show _MENU_ entries per page"
+                }
+            });
 
-            if (itemMsId) {
-                // Edit mode
-                document.getElementById('itemMsId').value = itemMsId;
-                document.getElementById('itemTypeId').value = button.getAttribute('data-itemtypeid');
-                document.getElementById('noOfDays').value = button.getAttribute('data-noofdays');
-                document.getElementById('remarks').value = button.getAttribute('data-remarks');
-                document.getElementById('noOfDaysWarning').value = button.getAttribute('data-warning');
-                
-                // Trigger options display
-                document.getElementById('noOfDays').dispatchEvent(new Event('input'));
-            } else {
-                // Add mode - clear the form
-                document.getElementById('itemMsId').value = '';
-                document.getElementById('itemTypeId').value = '';
-                document.getElementById('noOfDays').value = '';
-                document.getElementById('remarks').value = '';
-                document.getElementById('noOfDaysWarning').value = '';
-            }
+            // Prefill Modal with selected maintenance data
+            const maintenanceModal = document.getElementById('maintenanceModal');
+            maintenanceModal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                const itemMsId = button.getAttribute('data-itemmsid');
+
+                if (itemMsId) {
+                    // Edit mode
+                    document.getElementById('itemMsId').value = itemMsId;
+                    document.getElementById('itemTypeId').value = button.getAttribute('data-itemtypeid');
+                    document.getElementById('noOfDays').value = button.getAttribute('data-noofdays');
+                    document.getElementById('remarks').value = button.getAttribute('data-remarks');
+                    document.getElementById('noOfDaysWarning').value = button.getAttribute('data-warning');
+                } else {
+                    // Add mode - clear the form
+                    document.getElementById('itemMsId').value = '';
+                    document.getElementById('itemTypeId').value = '';
+                    document.getElementById('noOfDays').value = '';
+                    document.getElementById('remarks').value = '';
+                    document.getElementById('noOfDaysWarning').value = '';
+                }
+            });
         });
 
         function toggleQuarterlyOptions() {

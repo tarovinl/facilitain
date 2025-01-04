@@ -27,9 +27,11 @@ public class FeedbackController extends HttpServlet {
         double generalAverage = 0.0;
 
         String feedbackQuery = 
-            "SELECT F.FEEDBACK_ID, L.NAME AS LOCATION, F.ROOM, F.RATING, F.SUGGESTIONS, F.REC_INS_DT " +
+            "SELECT F.FEEDBACK_ID, L.NAME AS LOCATION, F.ROOM, F.RATING, F.SUGGESTIONS, F.REC_INS_DT, " +
+            "       COALESCE(IC.NAME, F.SPECIFY) AS ITEM_CAT_NAME " +
             "FROM C##FMO_ADM.FMO_ITEM_FEEDBACK F " +
             "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS L ON F.ITEM_LOC_ID = L.ITEM_LOC_ID " +
+            "LEFT JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES IC ON F.ITEM_CAT_ID = IC.ITEM_CAT_ID " +
             "ORDER BY F.REC_INS_DT DESC";
 
         String satisfactionQuery =
@@ -49,10 +51,11 @@ public class FeedbackController extends HttpServlet {
                 Feedback feedback = new Feedback(
                     feedbackRs.getInt("FEEDBACK_ID"),
                     feedbackRs.getString("LOCATION"),
-                    feedbackRs.getString("ROOM"),
+                feedbackRs.getString("ROOM"),
                     feedbackRs.getInt("RATING"),
                     feedbackRs.getString("SUGGESTIONS"),
-                    feedbackRs.getDate("REC_INS_DT")
+                    feedbackRs.getDate("REC_INS_DT"),
+                    feedbackRs.getString("ITEM_CAT_NAME")
                 );
                 feedbackList.add(feedback);
             }
@@ -65,7 +68,7 @@ public class FeedbackController extends HttpServlet {
                 generalAverage += avgRating;
             }
             generalAverage = satisfactionRates.isEmpty() ? 0.0 : generalAverage / satisfactionRates.size();
-         
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,6 +80,7 @@ public class FeedbackController extends HttpServlet {
         request.setAttribute("generalAverage", generalAverage);
         request.getRequestDispatcher("feedback.jsp").forward(request, response);
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String feedbackIdStr = request.getParameter("feedbackId");

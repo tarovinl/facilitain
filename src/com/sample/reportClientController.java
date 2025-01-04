@@ -33,7 +33,7 @@ public class reportClientController extends HttpServlet {
         List<Map.Entry<Integer, String>> equipmentList = new ArrayList<>();
 
         String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
-        String equipmentQuery = "SELECT ITEM_CAT_ID, NAME FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1";
+        String equipmentQuery = "SELECT ITEM_CAT_ID, NAME FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1 ORDER BY NAME";
 
         try (Connection connection = PooledConnection.getConnection()) {
 
@@ -52,7 +52,7 @@ public class reportClientController extends HttpServlet {
                  ResultSet equipmentResult = equipmentStatement.executeQuery()) {
                 while (equipmentResult.next()) {
                     int itemCatId = equipmentResult.getInt("ITEM_CAT_ID");
-                    String itemCatName = equipmentResult.getString("NAME");
+                    String itemCatName = equipmentResult.getString("NAME").toUpperCase();
                     equipmentList.add(new AbstractMap.SimpleEntry<>(itemCatId, itemCatName));
                 }
             }
@@ -67,6 +67,9 @@ public class reportClientController extends HttpServlet {
         // Forward the request to the JSP page
         request.getRequestDispatcher("/reportsClient.jsp").forward(request, response);
     }
+    
+
+   
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -74,7 +77,7 @@ public class reportClientController extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        // Extract form fields from request
+        // Regular form submission logic
         String equipment = request.getParameter("equipment");
         if ("Other".equals(equipment)) {
             equipment = request.getParameter("otherEquipment"); // If 'Other' is selected, take the custom input
@@ -109,6 +112,7 @@ public class reportClientController extends HttpServlet {
 
             // Generate REPORT_CODE (e.g., abbreviation of equipment, floor, and room, plus unique ID)
             String reportCode = generateReportCode(equipment, floor, room, reportId);
+
             // Insert the new report, including STATUS and REPORT_CODE
             String insertQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPORTS (REPORT_ID, EQUIPMENT_TYPE, ITEM_LOC_ID, REPORT_FLOOR, REPORT_ROOM, REPORT_ISSUE, REPORT_PICTURE, REC_INST_DT, REC_INST_BY, STATUS, REPORT_CODE) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -145,7 +149,6 @@ public class reportClientController extends HttpServlet {
         // Redirect to the reportsThanksClient.jsp
         response.sendRedirect("reportsThanksClient.jsp");
     }
-
 
 
     private String generateReportCode(String equipment, String floor, String room, int reportId) {
