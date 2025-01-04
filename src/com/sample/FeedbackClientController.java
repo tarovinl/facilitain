@@ -73,40 +73,50 @@ public class FeedbackClientController extends HttpServlet {
 
 
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            @Override
+            protected void doPost(HttpServletRequest request, HttpServletResponse response)
+                    throws ServletException, IOException {
+                String room = request.getParameter("room");
+                int locationId = Integer.parseInt(request.getParameter("location"));
+                int rating = Integer.parseInt(request.getParameter("rating"));
+                String suggestions = request.getParameter("suggestions");
+                String equipmentId = request.getParameter("equipment");
+                String specify = null;
 
-        // Retrieve parameters from the request
-        String room = request.getParameter("room");
-        int locationId = Integer.parseInt(request.getParameter("location"));
-        int rating = Integer.parseInt(request.getParameter("rating"));
-        String suggestions = request.getParameter("suggestions");
+                // Handle "Other" equipment type
+                int itemCatId;
+                if ("Other".equals(equipmentId)) {
+                    specify = request.getParameter("otherEquipment");
+                    itemCatId = -1; // You can assign a placeholder value for "Other" in the database
+                } else {
+                    itemCatId = Integer.parseInt(equipmentId);
+                }
 
-        // Create the Feedback object
-        Feedback feedback = new Feedback(locationId, room, rating, suggestions, new java.util.Date());  // Adding current date for REC_INS_DT
+                // Create Feedback object
+                Feedback feedback = new Feedback(locationId, room, rating, suggestions, new java.util.Date(), specify, itemCatId);
 
-        // Query to insert the feedback
-        String insertFeedbackQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_FEEDBACK (FEEDBACK_ID, ITEM_LOC_ID, ROOM, RATING, SUGGESTIONS, REC_INS_DT, REC_INS_BY) " +
-                                     "VALUES (?, ?, ?, ?, ?, SYSDATE, USER)"; 
+                // SQL query to insert the feedback
+                String insertFeedbackQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_FEEDBACK " +
+                                             "(FEEDBACK_ID, ITEM_LOC_ID, ROOM, RATING, SUGGESTIONS, REC_INS_DT, REC_INS_BY, ITEM_CAT_ID, SPECIFY) " +
+                                             "VALUES (?, ?, ?, ?, ?, SYSDATE, USER, ?, ?)";
 
-        try (Connection connection = PooledConnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(insertFeedbackQuery)) {
+                try (Connection connection = PooledConnection.getConnection();
+                     PreparedStatement stmt = connection.prepareStatement(insertFeedbackQuery)) {
 
+                    stmt.setInt(1, feedback.getFeedbackId()); // Adjust as needed for sequence or auto-generation
+                    stmt.setInt(2, feedback.getItemLocId());
+                    stmt.setString(3, feedback.getRoom());
+                    stmt.setInt(4, feedback.getRating());
+                    stmt.setString(5, feedback.getSuggestions());
+                    stmt.setObject(6, itemCatId != -1 ? itemCatId : null); // Use null if Other
+                    stmt.setString(7, specify);
+
+                    stmt.executeUpdate();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                response.sendRedirect("feedbackThanksClient.jsp");
             
-            stmt.setInt(1, feedback.getFeedbackId()); 
-            stmt.setInt(2, feedback.getItemLocId());
-            stmt.setString(3, feedback.getRoom());
-            stmt.setInt(4, feedback.getRating());
-            stmt.setString(5, feedback.getSuggestions());
-
-            // Execute the query to insert the data
-            stmt.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Redirect to the feedbackThanksClient.jsp
-        response.sendRedirect("feedbackThanksClient.jsp");
-    }
-    }
+                    }
+            }

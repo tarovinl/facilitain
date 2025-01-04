@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>Item Categories</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="container-fluid">
@@ -20,7 +21,7 @@
                 </button>
             </div>
 
-            <table class="table table-striped">
+            <table id="categoriesTable" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Category ID</th>
@@ -34,7 +35,7 @@
                         <c:if test="${category.archivedFlag == 1}">
                             <tr>
                                 <td>${category.itemCID}</td>
-                                <td>${category.categoryName}</td>
+                                <td>${category.categoryName.toUpperCase()}</td>
                                 <td>${category.description}</td>
                                 <td>
                                     <button class="btn btn-sm btn-primary" 
@@ -89,6 +90,7 @@
         </form>
     </div>
 </div>
+
 <!-- Edit Category Modal -->
 <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -120,10 +122,18 @@
     </div>
 </div>
 
-
-<!-- Bootstrap JS -->
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
+    // Initialize DataTables
+    $(document).ready(function () {
+        $('#categoriesTable').DataTable();
+    });
+
+    // Prefill Edit Modal with data
     document.querySelectorAll('[data-bs-target="#editCategoryModal"]').forEach(button => {
         button.addEventListener('click', function () {
             const cid = this.getAttribute('data-cid');
