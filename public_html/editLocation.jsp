@@ -21,6 +21,12 @@
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.js"></script>
+         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+         crossorigin=""/>
+          <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+         crossorigin=""></script>
     </head>
     
     <%
@@ -76,33 +82,45 @@
         <form action="buildingController" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="locID" value="${locID}"> <!-- Ensure this value is correctly set -->
 
-    <!-- Location Name Section -->
     <div class="row mt-4">
-        <div class="col">
-            <label for="locName" class="form-label fw-bold h4">Location Name</label>
-            <input type="text" class="form-control" id="locName" name="locName" value="${locName}" required>
-        </div>
-    </div>
-
-    <!-- Description Section -->
-    <div class="row mt-3">
-        <div class="col">
-            <label for="locDescription" class="form-label fw-bold h4">Description</label>
-            <textarea class="form-control" id="locDescription" name="locDescription" rows="3" required>${locDescription}</textarea>
-        </div>
-    </div>
-
-    <!-- Image Upload Section -->
-    <div class="row mt-3">
-        <div class="col">
-            <h4 class="fw-bold mt-3">Change Location Image</h4>
-            <!-- File Input -->
-            <div class="mb-3">
-                <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
+        <div class="col-12 col-md-6">
+            <!-- Location Name Section -->
+            <div class="row">
+                <div class="col">
+                    <label for="locName" class="form-label fw-bold h4">Location Name</label>
+                    <input type="text" class="form-control" id="locName" name="locName" value="${locName}" required>
+                </div>
+            </div>
+    
+            <!-- Description Section -->
+            <div class="row mt-3">
+                <div class="col">
+                    <label for="locDescription" class="form-label fw-bold h4">Description</label>
+                    <textarea class="form-control" id="locDescription" name="locDescription" rows="3">${locDescription}</textarea>
+                </div>
+            </div>
+    
+            <!-- Image Upload Section -->
+            <div class="row mt-3">
+                <div class="col">
+                    <h4 class="fw-bold mt-3">Change Location Image</h4>
+                    <!-- File Input -->
+                    <div class="mb-3">
+                        <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="col-12 col-md-6">
+            <div class="row">
+                <div class="col" id="parentMap">
+                    <label for="mapCoord" class="form-label fw-bold h4">Choose your location:</label>
+                    <input type="hidden" class="form-control" id="mapCoord" name="mapCoord">
+                    <div id="map" style="width: 100%; height: 280px; border-radius:5px;"></div>
+                </div>           
+            </div> 
+        </div>
     </div>
-
     <!-- Save & Reset Buttons Section -->
     <div class="row mt-2">
         <div class="col text-center">
@@ -435,6 +453,36 @@
 
 
 <script>
+    var map = L.map('map').setView([14.610032805621275, 120.99003889129173], 18); // Center the map (latitude, longitude, zoom level)
+    var marker;
+    
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+    
+    map.on('click', function (e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+    
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker([lat, lng]).addTo(map);
+        document.getElementById('mapCoord').value = lat + ',' + lng;
+    });
+    <c:forEach var="mapItem" items="${FMO_MAP_LIST}">
+    <c:if test="${mapItem.itemLocId == locID}">
+    L.marker([${mapItem.latitude}, ${mapItem.longitude}]) //csen
+        .addTo(map)
+        .bindPopup('Original Location'); // Static link
+    </c:if>
+    </c:forEach> 
+    setTimeout(function () {
+        map.invalidateSize();
+    }, 100);
+
+
 
     function showActiveTbl() {
         //event.preventDefault();

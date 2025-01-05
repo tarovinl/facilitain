@@ -13,13 +13,16 @@
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
  
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
-       <link rel="stylesheet" href="./resources/css/sidebar.css">
+    <link rel="stylesheet" href="./resources/css/sidebar.css">
+    
 </head>
 <body>
     <div class="sidebar">
         <div class="text-center pt-4">
             <a href="<%=request.getContextPath()%>/homepage" class="p-0">
-                <img src="resources/images/facilitain-home-logo.png" 
+
+               <img src="resources/images/facilitain-home-logo.png" 
+
              alt="Facilitain Home Logo" 
              style="max-width: 100%; max-height: 100px; margin: 0 auto; display: block;" />
             </a>
@@ -50,6 +53,10 @@
                 <img src="resources/images/icons/circle-exclamation-solid.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Reports
             </a>
+              <a href="mapView" class="${page == 'mapView' ? 'active' : ''}">
+                <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                Map View
+            </a>
             <a href="settings" class="${page == 'settings' ? 'active' : ''}">
                 <img src="resources/images/icons/gear-solid.svg" alt="Settings" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Settings
@@ -67,7 +74,7 @@
                 </button>
                 </div>
             </div>
-            <hr class="bg-light border-2 border-top border-light"/>
+            <!--<hr class="bg-light border-2 border-top border-light"/>
             <div class="todo-item d-flex justify-content-between align-items-center">
                 <div class="ps-2">
                     <p>
@@ -81,7 +88,7 @@
                     <button class="btn btn-sm"><img src="resources/images/icons/xmark-solid.svg" alt="X" class="icon" style="width: 1.5em; height: 1.5em; vertical-align: middle;"></button>
                 </div>
             </div>
-            <hr class="bg-light border-2 border-top border-light"/>
+            <hr class="bg-light border-2 border-top border-light"/>-->
         </div>
      <!--   Log out to Portal -->
         <a href="#" class="btn"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
@@ -137,7 +144,7 @@
                     </button>
                 </div>
                 <div style="border: 1px solid black; max-height: 300px; overflow-y: auto;">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="tdTable" style="width:100%;">
                         <thead>
                             <tr>
                                 <th>Task</th>
@@ -156,7 +163,7 @@
                                         <td>${todos.listContent}</td>
                                         <td>${todos.startDate}</td>
                                         <td>${todos.endDate}</td>
-                                        <td style="text-align: center;">
+                                        <td>
                                             <input type="hidden" name="originalUrl" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />
                                             <input type="hidden" name="tdListId" value="${todos.listItemId}" />
                                             <input type="hidden" name="tdListContent" value="${todos.listContent}" />
@@ -168,7 +175,7 @@
                                                 <img src="resources/images/icons/square-check.svg" alt="Check" style="width: 24px; height: 24px;" />
                                             </button>                                
                                         </td>
-                                        <td style="text-align: center;">
+                                        <td>
                                             <button type="submit" name="tdAction" value="delete" style="background: none; border: none; padding: 0;">
                                                 <img src="resources/images/icons/trash-can.svg" alt="Delete" style="width: 24px; height: 24px;" />
                                             </button>  
@@ -186,7 +193,7 @@
                                         <td><s>${todos1.listContent}</s></td>
                                         <td><s>${todos1.startDate}</s></td>
                                         <td><s>${todos1.endDate}</s></td>
-                                        <td style="text-align: center;">
+                                        <td>
                                             <input type="hidden" name="originalUrl" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />
                                             <input type="hidden" name="tdListId" value="${todos1.listItemId}" />
                                             <input type="hidden" name="tdListContent" value="${todos1.listContent}" />
@@ -198,7 +205,7 @@
                                                 <img src="resources/images/icons/eks-square.svg" alt="Uncheck" style="width: 24px; height: 24px;" />
                                             </button>  
                                         </td>
-                                        <td style="text-align: center;">
+                                        <td>
                                             <button type="submit" name="tdAction" value="delete" style="background: none; border: none; padding: 0;">
                                                 <img src="resources/images/icons/trash-can.svg" alt="Delete" style="width: 24px; height: 24px;" />
                                             </button>  
@@ -219,6 +226,19 @@
 
 
 <script>
+//        document.addEventListener('DOMContentLoaded', function() {
+//            let tdTable = new DataTable('#tdTable', {
+//                paging: true,
+//                ordering: true,
+//                scrollX: true,
+//                columnDefs: [
+//                    { targets: "_all", className: "dt-center" }, // Center-align all columns
+//                    { targets: 3, orderable: false },
+//                    { targets: 4, orderable: false }
+//                ]
+//            });
+//        });
+
 function openAddToDoModal() {
     // Hide the first modal
     const firstTModal = bootstrap.Modal.getInstance(document.getElementById('showToDo'));

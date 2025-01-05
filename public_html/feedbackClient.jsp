@@ -95,34 +95,36 @@
       
       <!-- star rating -->
       <div class="rating-wrapper">
-        <input type="radio" id="five" name="rating" value="5" onclick="updateRatingLabel(5)">
-        <label for="five" class="star-rating">
-          <i class="fas fa-star d-inline-block"></i>
-        </label>
-    
-        <!-- star 4 -->
-        <input type="radio" id="four" name="rating" value="4" onclick="updateRatingLabel(4)">
-        <label for="four" class="star-rating star">
-          <i class="fas fa-star d-inline-block"></i>
-        </label>
-    
-        <!-- star 3 -->
-        <input type="radio" id="three" name="rating" value="3" onclick="updateRatingLabel(3)">
-        <label for="three" class="star-rating star">
-          <i class="fas fa-star d-inline-block"></i>
-        </label>
-    
-        <!-- star 2 -->
-        <input type="radio" id="two" name="rating" value="2" onclick="updateRatingLabel(2)">
-        <label for="two" class="star-rating star">
-          <i class="fas fa-star d-inline-block"></i>
-        </label>
-    
         <!-- star 1 -->
         <input type="radio" id="one" name="rating" value="1" onclick="updateRatingLabel(1)">
         <label for="one" class="star-rating star">
           <i class="fas fa-star d-inline-block"></i>
         </label>
+        
+        <!-- star 2 -->
+        <input type="radio" id="two" name="rating" value="2" onclick="updateRatingLabel(2)">
+        <label for="two" class="star-rating star">
+          <i class="fas fa-star d-inline-block"></i>
+        </label>
+        
+        <!-- star 3 -->
+        <input type="radio" id="three" name="rating" value="3" onclick="updateRatingLabel(3)">
+        <label for="three" class="star-rating star">
+          <i class="fas fa-star d-inline-block"></i>
+        </label>
+        
+        <!-- star 4 -->
+        <input type="radio" id="four" name="rating" value="4" onclick="updateRatingLabel(4)">
+        <label for="four" class="star-rating star">
+          <i class="fas fa-star d-inline-block"></i>
+        </label>
+        
+        <!-- star 5 -->
+        <input type="radio" id="five" name="rating" value="5" onclick="updateRatingLabel(5)">
+        <label for="five" class="star-rating">
+          <i class="fas fa-star d-inline-block"></i>
+        </label>
+
         
        </div>
       
@@ -270,8 +272,7 @@ document.getElementById('suggestions').addEventListener('input', function() {
 </script>
 
 <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkm6Yc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <jsp:include page="footerClient.jsp"/>
 </body>
 </html>
