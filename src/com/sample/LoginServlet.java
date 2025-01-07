@@ -39,7 +39,7 @@ public class LoginServlet extends HttpServlet {
         try {
             String role = getUserRoleFromDatabase(email);
             
-            if (role != null && (role.equals("Admin") || role.equals("Support Staff"))) {
+            if (role != null && (role.equals("Admin") || role.equals("Support"))) {
                 // Create session
                 HttpSession session = request.getSession();
                 session.setAttribute("email", email);

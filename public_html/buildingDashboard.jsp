@@ -325,10 +325,17 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div>
               <!-- Edit button triggers the modal -->
-              <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
-                <img src="resources/images/icons/pen-solid.svg" class="pe-2" alt="edit icon" width="25" height="25">
-                Edit
-              </button>
+                <c:choose>
+                    <c:when test="${sessionScope.role == 'Admin'}">
+                      <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
+                        <img src="resources/images/icons/pen-solid.svg" class="pe-2" alt="edit icon" width="25" height="25">
+                        Edit
+                      </button>
+                    </c:when>
+                    <c:otherwise>
+                    </c:otherwise>
+                </c:choose>
+              
               <button class="buttonsBuilding" style="font-family: NeueHaasMedium, sans-serif;">
               <img src="resources/images/icons/file-export-solid.svg" class="pe-2" alt="generate report icon" width="25" height="25">
               Generate Report</button>
