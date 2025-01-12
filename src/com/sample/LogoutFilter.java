@@ -1,16 +1,12 @@
 package com.sample;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-// Define the filter for URLs except login and logout-related ones
-@WebFilter("/*")
 public class LogoutFilter implements Filter {
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         // Initialization if necessary
@@ -21,26 +17,20 @@ public class LogoutFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-
-        // Get the current session without creating a new one
         HttpSession session = httpRequest.getSession(false);
-
-        // Get the requested URI
         String uri = httpRequest.getRequestURI();
 
-        // Check if the user is trying to access a protected resource
-        boolean isLoginPage = uri.endsWith("index.jsp") || uri.endsWith("loginServlet");
-        boolean isLogoutPage = uri.endsWith("logoutServlet");
-        boolean isStaticResource = uri.startsWith(httpRequest.getContextPath() + "/static/");
-
-        if (isLoginPage || isLogoutPage || isStaticResource) {
-            // Allow access to login/logout/static resources
+        // Allow access to all login and logout pages without requiring a session
+        if (uri.contains("login") || uri.contains("logout") || uri.endsWith("index.jsp") || 
+            uri.startsWith(httpRequest.getContextPath() + "/static/")) {
             chain.doFilter(request, response);
-        } else if (session == null || session.getAttribute("email") == null) {
-            // Redirect to login page if session is missing or user is not logged in
+            return;
+        }
+
+        // For all other pages, require a session
+        if (session == null || session.getAttribute("email") == null) {
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/index.jsp");
         } else {
-            // Continue to the requested resource if logged in
             chain.doFilter(request, response);
         }
     }
