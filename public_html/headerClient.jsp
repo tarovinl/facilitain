@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ page import="javax.servlet.http.HttpSession" %>
-<%
-    HttpSession session = request.getSession(false);
-    boolean isLoggedIn = session != null && session.getAttribute("email") != null;
-%>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -24,7 +19,10 @@
             <!-- For small devices -->
             <img src="resources/images/USTLogo.png" alt="UST Logo" class="img-fluid d-md-none" style="max-height: 3rem;">
             
-            <% if (isLoggedIn) { %>
+            <% 
+                boolean isLoggedIn = session != null && session.getAttribute("email") != null;
+                if (isLoggedIn) { 
+            %>
                 <!-- Logout Button for logged-in users -->
                 <a href="<%=request.getContextPath()%>/logoutServlet" class="btn btn-danger d-none d-md-block">
                     <i class="bi bi-box-arrow-left pe-2"></i>Logout

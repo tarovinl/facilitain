@@ -50,7 +50,7 @@ public class LogoutFilter implements Filter {
             case "Support":
                 // Restrict access to specific paths for Support role
                 if (uri.endsWith("/settings") || uri.endsWith("/itemCategories") ||
-                        uri.endsWith("/itemTypes") || uri.endsWith("/maintenance")) {
+                        uri.endsWith("/itemType") || uri.endsWith("/maintenance")) {
                     httpResponse.sendRedirect(httpRequest.getContextPath() + "/unauthorized.jsp");
                 } else {
                     chain.doFilter(request, response);
