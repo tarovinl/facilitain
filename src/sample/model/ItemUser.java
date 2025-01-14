@@ -1,43 +1,42 @@
 package sample.model;
 
 public class ItemUser {
-    private int empNumber;
-    private int userType;
-    private String fullName;
-    private String userTypeString;  
+    private int userId;
+    private String name;
+    private String email;
+    private String role;
 
     // Getters and Setters
 
-    public int getEmpNumber() {
-        return empNumber;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setEmpNumber(int empNumber) {
-        this.empNumber = empNumber;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public int getUserType() {
-        return userType;
+    public String getName() {
+        return name;
     }
 
-    public void setUserType(int userType) {
-        this.userType = userType;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getEmail() {
+        return email;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    // New getter and setter for userTypeString
-    public String getUserTypeString() {
-        return userTypeString;
+    public String getRole() {
+        return role;
     }
 
-    public void setUserTypeString(String userTypeString) {
-        this.userTypeString = userTypeString;
+    public void setRole(String role) {
+        this.role = role;
     }
 }
