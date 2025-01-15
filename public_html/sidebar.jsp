@@ -91,7 +91,7 @@
             <hr class="bg-light border-2 border-top border-light"/>-->
         </div>
      <!--   Log out to Portal -->
-        <a href="#" class="btn"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
+        <a href="<%=request.getContextPath()%>/logoutServlet" class="btn"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
     </div>
 
 <!--to do list item modal-->

@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
     <script>
         function handleCredentialResponse(response) {
             try {
@@ -59,15 +63,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: url('your-background-image.jpg') no-repeat center center;
-            background-size: cover;
-            color: #fff;
+            color: #000000;
         }
         .login-container {
-            background-color: rgba(0, 0, 0, 0.6);
-            border-radius: 8px;
+            background-color: white;
             padding: 20px;
-            max-width: 400px;
+            max-width: 600px;
             width: 100%;
         }
         .login-container h1 {
@@ -82,21 +83,44 @@
         .g_id_signin {
             width: 100%;
         }
+         .montserrat-regular {
+         font-family: "Montserrat", sans-serif;
+         font-weight: 400;
+         font-style: normal;
+                            }
+        
+        .montserrat-bold {
+         font-family: "Montserrat", sans-serif;
+         font-weight: 600;
+         font-style: normal;
+                            }
+        .shared-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14.4px;
+    color: #343a40; 
+    text-align: start;
+    line-height: 1.5; 
+}
+
+        
     </style>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100" style="background: linear-gradient(rgba(128, 128, 128, 0.8), rgba(128, 128, 128, 0.8)), url('resources/images/arch-bg.jpg'); 
+             background-size: cover; 
+             background-position: center; 
+             background-repeat: no-repeat;">
     <div class="container text-center">
         <div class="row">
-            <div class="col-md-6 text-start">
-                <h1 class="display-4 fw-bold">FACILITAIN</h1>
+            <div class="d-flex col-md-6 align-items-center">
+                <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
             </div>
             <div class="col-md-6">
                 <div class="login-container">
-                    <h3 class="mb-4">Sign in</h3>
-                    <p>To access MyUSTe Portal, please make sure you meet the following requirements:</p>
-                    <ol class="text-start">
-                        <li>UST Google Workspace Personal Account</li>
-                        <li>Google Authenticator Application</li>
+                    <h3 class="mb-4 montserrat-bold text-start ">Sign in</h3>
+                    <p class="montserrat-regular text-dark text-start shared-text">To access MyUSTe Portal, please make sure you meet the following requirements:</p>
+                    <ol class="text-start montserrat-regular ">
+                        <li class="shared-text">UST Google Workspace Personal Account</li>
+                        <li class="shared-text">Google Authenticator Application</li>
                     </ol>
                     <div id="g_id_onload"
                          data-client_id="103164757802-4v37vphomb6foi27vbhhc4advakt16q3.apps.googleusercontent.com"
@@ -112,7 +136,7 @@
                          data-shape="rectangular"
                          data-logo_alignment="left">
                     </div>
-                    <a href="#" class="d-block mt-3 text-decoration-none text-light">Need help signing in? <strong>Learn More</strong></a>
+                    <a href="#" class="d-block mt-3 text-decoration-none text-dark montserrat-regular text-center">Need help signing in? <strong>Learn More</strong></a>
                 </div>
             </div>
         </div>

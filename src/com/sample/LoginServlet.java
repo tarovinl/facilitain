@@ -15,8 +15,10 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        
-        // Read JSON data from request body
+
+        // Get the page identifier from the request
+        String loginPage = request.getParameter("loginPage");
+
         StringBuilder buffer = new StringBuilder();
         String line;
         try (BufferedReader reader = request.getReader()) {
@@ -25,12 +27,10 @@ public class LoginServlet extends HttpServlet {
             }
         }
 
-        // Parse JSON data
         LoginRequest loginRequest = gson.fromJson(buffer.toString(), LoginRequest.class);
         String name = loginRequest.getName();
         String email = loginRequest.getEmail();
 
-        // Validate input
         if (email == null || email.trim().isEmpty()) {
             sendErrorResponse(response, "Email is required");
             return;
@@ -38,16 +38,26 @@ public class LoginServlet extends HttpServlet {
 
         try {
             String role = getUserRoleFromDatabase(email);
-            
-            if (role != null && (role.equals("Admin") || role.equals("Support"))) {
+            if (role != null) {
                 // Create session
                 HttpSession session = request.getSession();
                 session.setAttribute("email", email);
                 session.setAttribute("name", name);
                 session.setAttribute("role", role);
 
-                // Send success response
-                sendSuccessResponse(response);
+                // Determine redirection URL
+                String redirectUrl = "homepage";
+                if ("Respondent".equals(role)) {
+                    if ("reportsClient".equals(loginPage)) {
+                        redirectUrl = "reportsClient";  // for reportClient page
+                    } else {
+                        redirectUrl = "feedbackClient";  // for feedbackClient page
+                    }
+                } else if ("ReportClient".equals(role)) {
+                    redirectUrl = "reportsClient";
+                }
+
+                sendSuccessResponse(response, redirectUrl);
             } else {
                 sendErrorResponse(response, "Unauthorized user");
             }
@@ -73,10 +83,10 @@ public class LoginServlet extends HttpServlet {
         return role;
     }
 
-    private void sendSuccessResponse(HttpServletResponse response) throws IOException {
+    private void sendSuccessResponse(HttpServletResponse response, String redirectUrl) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"success\": true}");
+        response.getWriter().write("{\"success\": true, \"redirectUrl\": \"" + redirectUrl + "\"}");
     }
 
     private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
@@ -85,7 +95,6 @@ public class LoginServlet extends HttpServlet {
         response.getWriter().write("{\"success\": false, \"message\": \"" + message + "\"}");
     }
 
-    // Helper class for JSON parsing
     private static class LoginRequest {
         private String name;
         private String email;
