@@ -39,6 +39,9 @@ public class itemController extends HttpServlet {
         response.setContentType(CONTENT_TYPE);
             // Access form parameters
         
+        String action = "";
+        String status = "success";
+        
         String loc = request.getParameter("itemLID");
         String flr = request.getParameter("itemFlr");
             
@@ -231,11 +234,17 @@ public class itemController extends HttpServlet {
 
                     
                     stmt.setInt(20, Integer.parseInt(itemEID));
+                    
+                    action = "edit";
                 }else if(maintStatID != null && !maintStatID.isEmpty()){
                     stmt.setInt(1, Integer.parseInt(maintStatus));
                     stmt.setInt(2, Integer.parseInt(maintStatID));
+                    
+                    action = "modify_status";
                 } else if(itemAID != null && !itemAID.isEmpty()){
                     stmt.setInt(1, Integer.parseInt(itemAID));
+                    
+                    action = "archive";
                 }else{
                     stmt.setInt(1, Integer.parseInt(itemType));
                     stmt.setString(2, itemName);
@@ -293,6 +302,7 @@ public class itemController extends HttpServlet {
                             stmt.setNull(19, java.sql.Types.INTEGER);
                         }
 
+                    action = "add";
                 }
 
                 
@@ -301,6 +311,7 @@ public class itemController extends HttpServlet {
             
             // Check conditions for FMO_ITEM_REPAIRS
                 if ("3".equals(oldMaintStat) && "1".equals(maintStatus)) {
+                    action = "modify_status";
                     String currentMonth = String.valueOf(java.time.LocalDate.now().getMonthValue());
                     String currentYear = String.valueOf(java.time.LocalDate.now().getYear());
 
@@ -338,10 +349,11 @@ public class itemController extends HttpServlet {
                 }
 
             // Redirect to homepage after processing
-            response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr);
+            response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new ServletException("Database error while adding/editing/archiving item.");
+            status = "error";
+//            throw new ServletException("Database error while adding/editing/archiving item.");
         }
 
             
