@@ -103,13 +103,20 @@
             <div class="floorName">
               <h1>${floorName == 'all' ? 'All Items' : floorName}</h1>
             </div>
-            <div>
-              <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'"><!--hidden if acc is not admin-->
-                Edit Location
-              </button>
-               
-              <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender(); toggleAirconDiv(); filterTypes();">Add Equipment</button>
-            </div>
+            <c:choose>
+                    <c:when test="${sessionScope.role == 'Admin'}">
+                        <div>
+                          <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'"><!--hidden if acc is not admin-->
+                            Edit Location
+                          </button>
+                           
+                          <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender(); toggleAirconDiv(); filterTypes();">Add Equipment</button>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                    </c:otherwise>
+            </c:choose>
+            
         </div>
         <c:if test="${floorName == 'all'}">
         <div class="roomDropsdiv">
@@ -118,8 +125,14 @@
 			<thead>
                                 <tr>
                                     <!--<th ></th>-->
-                                    <th ></th>
-                                    <th ></th>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.role == 'Admin'}">
+                                            <th ></th>
+                                            <th ></th>
+                                        </c:when>
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
                                     <th >ID</th>
                                     <th >Codename</th>
                                     <th >Category</th>
@@ -155,51 +168,57 @@
                                         width="24" 
                                         height="24"/>
                                     </td>-->
-                                    <td>
-                                        <input type="image" 
-                                        src="resources/images/editItem.svg" 
-                                        id="editModalButton" 
-                                        alt="Open Edit Modal" 
-                                        width="24" 
-                                        height="24" 
-                                        data-toggle="modal" 
-                                        data-target="#editEquipment"
-                                        data-itemid="${item.itemID}"
-                                        data-itemname="${item.itemName}"
-                                        data-itembrand="${item.itemBrand}"
-                                        data-dateinst="${item.dateInstalled}"
-                                        data-itemexpiry="${item.expiration}"
-                                        data-itemcat="${itemEditCat}"
-                                        data-itemfloor="${item.itemFloor}"
-                                        data-itemroom="${item.itemRoom}"
-                                        data-itemtype="${itemEditType}"
-                                        data-itemloctext="${item.itemLocText}"
-                                        data-itemremarks="${item.itemRemarks}"
-
-                                        data-itempcc="${item.itemPCC}"
-                                        data-accu="${item.acACCU}"
-                                        data-fcu="${item.acFCU}"
-                                        data-inverter="${item.acINVERTER}"
-                                        data-itemcapacity="${item.itemCapacity}"
-                                        data-itemmeasure="${item.itemUnitMeasure}"
-                                        data-itemev="${item.itemEV}"
-                                        data-itemeph="${item.itemEPH}"
-                                        data-itemehz="${item.itemEHZ}"
-                                        onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/> 
-                                    </td>
-                                    <td>
-                                        <input type="image" 
-                                        src="resources/images/archiveItem.svg" 
-                                        id="archiveModalButton" 
-                                        alt="Open Archive Modal" 
-                                        width="24" 
-                                        height="24"
-                                        data-toggle="modal"
-                                        data-itemaid="${item.itemID}"
-                                        data-itemaname="${item.itemName}"
-                                        data-target="#archiveEquipment"
-                                        onclick="populateArchModal(this)"/>
-                                    </td>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.role == 'Admin'}">
+                                            <td>
+                                                <input type="image" 
+                                                src="resources/images/editItem.svg" 
+                                                id="editModalButton" 
+                                                alt="Open Edit Modal" 
+                                                width="24" 
+                                                height="24" 
+                                                data-toggle="modal" 
+                                                data-target="#editEquipment"
+                                                data-itemid="${item.itemID}"
+                                                data-itemname="${item.itemName}"
+                                                data-itembrand="${item.itemBrand}"
+                                                data-dateinst="${item.dateInstalled}"
+                                                data-itemexpiry="${item.expiration}"
+                                                data-itemcat="${itemEditCat}"
+                                                data-itemfloor="${item.itemFloor}"
+                                                data-itemroom="${item.itemRoom}"
+                                                data-itemtype="${itemEditType}"
+                                                data-itemloctext="${item.itemLocText}"
+                                                data-itemremarks="${item.itemRemarks}"
+        
+                                                data-itempcc="${item.itemPCC}"
+                                                data-accu="${item.acACCU}"
+                                                data-fcu="${item.acFCU}"
+                                                data-inverter="${item.acINVERTER}"
+                                                data-itemcapacity="${item.itemCapacity}"
+                                                data-itemmeasure="${item.itemUnitMeasure}"
+                                                data-itemev="${item.itemEV}"
+                                                data-itemeph="${item.itemEPH}"
+                                                data-itemehz="${item.itemEHZ}"
+                                                onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/> 
+                                            </td>
+                                            <td>
+                                                <input type="image" 
+                                                src="resources/images/archiveItem.svg" 
+                                                id="archiveModalButton" 
+                                                alt="Open Archive Modal" 
+                                                width="24" 
+                                                height="24"
+                                                data-toggle="modal"
+                                                data-itemaid="${item.itemID}"
+                                                data-itemaname="${item.itemName}"
+                                                data-target="#archiveEquipment"
+                                                onclick="populateArchModal(this)"/>
+                                            </td>
+                                        </c:when>
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
                                     <td >${item.itemID}</td>
                                     <td >${item.itemName}</td>
                                     <c:forEach items="${FMO_TYPES_LIST}" var="type" >
@@ -264,8 +283,15 @@
 			<thead>
                                 <tr>
                                     <!--<th ></th>-->
-                                    <th ></th>
-                                    <th ></th>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.role == 'Admin'}">
+                                            <th ></th>
+                                            <th ></th>
+                                        </c:when>
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    
                                     <th >ID</th>
                                     <th >Codename</th>
 				    <th >Room</th>
@@ -303,51 +329,57 @@
                                         width="24" 
                                         height="24"/>
                                     </td>-->
-                                    <td>
-                                        <input type="image" 
-                                        src="resources/images/editItem.svg" 
-                                        id="editModalButton" 
-                                        alt="Open Edit Modal" 
-                                        width="24" 
-                                        height="24" 
-                                        data-toggle="modal" 
-                                        data-target="#editEquipment"
-                                        data-itemid="${item.itemID}"
-                                        data-itemname="${item.itemName}"
-                                        data-itembrand="${item.itemBrand}"
-                                        data-dateinst="${item.dateInstalled}"
-                                        data-itemexpiry="${item.expiration}"
-                                        data-itemcat="${itemEditCat}"
-                                        data-itemfloor="${item.itemFloor}"
-                                        data-itemroom="${item.itemRoom}"
-                                        data-itemtype="${itemEditType}"
-                                        data-itemloctext="${item.itemLocText}"
-                                        data-itemremarks="${item.itemRemarks}"
-
-                                        data-itempcc="${item.itemPCC}"
-                                        data-accu="${item.acACCU}"
-                                        data-fcu="${item.acFCU}"
-                                        data-inverter="${item.acINVERTER}"
-                                        data-itemcapacity="${item.itemCapacity}"
-                                        data-itemmeasure="${item.itemUnitMeasure}"
-                                        data-itemev="${item.itemEV}"
-                                        data-itemeph="${item.itemEPH}"
-                                        data-itemehz="${item.itemEHZ}"
-                                        onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/> 
-                                    </td>
-                                    <td>
-                                        <input type="image" 
-                                        src="resources/images/archiveItem.svg" 
-                                        id="archiveModalButton" 
-                                        alt="Open Archive Modal" 
-                                        width="24" 
-                                        height="24"
-                                        data-toggle="modal"
-                                        data-itemaid="${item.itemID}"
-                                        data-itemaname="${item.itemName}"
-                                        data-target="#archiveEquipment"
-                                        onclick="populateArchModal(this)"/>
-                                    </td>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.role == 'Admin'}">
+                                            <td>
+                                                <input type="image" 
+                                                src="resources/images/editItem.svg" 
+                                                id="editModalButton" 
+                                                alt="Open Edit Modal" 
+                                                width="24" 
+                                                height="24" 
+                                                data-toggle="modal" 
+                                                data-target="#editEquipment"
+                                                data-itemid="${item.itemID}"
+                                                data-itemname="${item.itemName}"
+                                                data-itembrand="${item.itemBrand}"
+                                                data-dateinst="${item.dateInstalled}"
+                                                data-itemexpiry="${item.expiration}"
+                                                data-itemcat="${itemEditCat}"
+                                                data-itemfloor="${item.itemFloor}"
+                                                data-itemroom="${item.itemRoom}"
+                                                data-itemtype="${itemEditType}"
+                                                data-itemloctext="${item.itemLocText}"
+                                                data-itemremarks="${item.itemRemarks}"
+        
+                                                data-itempcc="${item.itemPCC}"
+                                                data-accu="${item.acACCU}"
+                                                data-fcu="${item.acFCU}"
+                                                data-inverter="${item.acINVERTER}"
+                                                data-itemcapacity="${item.itemCapacity}"
+                                                data-itemmeasure="${item.itemUnitMeasure}"
+                                                data-itemev="${item.itemEV}"
+                                                data-itemeph="${item.itemEPH}"
+                                                data-itemehz="${item.itemEHZ}"
+                                                onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/> 
+                                            </td>
+                                            <td>
+                                                <input type="image" 
+                                                src="resources/images/archiveItem.svg" 
+                                                id="archiveModalButton" 
+                                                alt="Open Archive Modal" 
+                                                width="24" 
+                                                height="24"
+                                                data-toggle="modal"
+                                                data-itemaid="${item.itemID}"
+                                                data-itemaname="${item.itemName}"
+                                                data-target="#archiveEquipment"
+                                                onclick="populateArchModal(this)"/>
+                                            </td>
+                                        </c:when>
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
                                     <td >${item.itemID}</td>
                                     <td >${item.itemName}</td>
 				    <td >${item.itemRoom != null ? item.itemRoom : 'N/A'}</td>
@@ -790,44 +822,83 @@
         <meta http-equiv="refresh" content="0; URL=./homepage" /> 
     </c:if>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize DataTable for #allItemsTable
-            let allItemsTable = new DataTable('#allItemsTable', {
-                paging: true,
-                searching: true,
-                ordering: true,
-                info: true,
-                stateSave: true,
-                scrollX: true,
-                columnDefs: [
-                    { targets: "_all", className: "dt-center" }, // Center-align all columns
-                    { targets: 0, orderable: false },
-                    { targets: 1, orderable: false },
-                    { targets: 8, orderable: false },
-                    { targets: 9, orderable: false }
-                ]
-            });
-        
-            // Initialize DataTable for #itemsTable
-            let itemsTable = new DataTable('#itemsTable', {
-                paging: true,
-                searching: true,
-                ordering: true,
-                info: true,
-                stateSave: true,
-                scrollX: true,
-                columnDefs: [
-                    { targets: "_all", className: "dt-center" }, // Center-align all columns
-                    { targets: 0, orderable: false },
-                    { targets: 1, orderable: false },
-                    { targets: 9, orderable: false },
-                    { targets: 10, orderable: false }
-                ]
-            });
-        });
+    <c:choose>
+        <c:when test="${sessionScope.role == 'Admin'}">
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Initialize DataTable for #allItemsTable
+                    let allItemsTable = new DataTable('#allItemsTable', {
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        info: true,
+                        stateSave: true,
+                        scrollX: true,
+                        columnDefs: [
+                            { targets: "_all", className: "dt-center" }, // Center-align all columns
+                            { targets: 0, orderable: false },
+                            { targets: 1, orderable: false },
+                            { targets: 8, orderable: false }, 
+                            { targets: 9, orderable: false } 
+                        ]
+                    });
+    
+                    // Initialize DataTable for #itemsTable
+                    let itemsTable = new DataTable('#itemsTable', {
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        info: true,
+                        stateSave: true,
+                        scrollX: true,
+                        columnDefs: [
+                            { targets: "_all", className: "dt-center" }, // Center-align all columns
+                            { targets: 0, orderable: false },
+                            { targets: 1, orderable: false },
+                            { targets: 9, orderable: false },
+                            { targets: 10, orderable: false }
+                        ]
+                    });
+                });
+            </script>
+        </c:when>
+        <c:otherwise>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Initialize DataTable for #allItemsTable
+                    let allItemsTable = new DataTable('#allItemsTable', {
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        info: true,
+                        stateSave: true,
+                        scrollX: true,
+                        columnDefs: [
+                            { targets: "_all", className: "dt-center" }, // Center-align all columns
+                            { targets: 6, orderable: false }, 
+                            { targets: 7, orderable: false } 
+                        ]
+                    });
+    
+                    // Initialize DataTable for #itemsTable
+                    let itemsTable = new DataTable('#itemsTable', {
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        info: true,
+                        stateSave: true,
+                        scrollX: true,
+                        columnDefs: [
+                            { targets: "_all", className: "dt-center" }, // Center-align all columns
+                            { targets: 7, orderable: false },
+                            { targets: 8, orderable: false }
+                        ]
+                    });
+                });
+            </script>
+        </c:otherwise>
+    </c:choose>
 
-    </script>
     
     <script>
     

@@ -166,7 +166,8 @@
                 {
                     title: '${todos.listContent}', 
                     start: '${todos.startDate}',
-                    end: '${todos.endDate}'
+                    end: '${todos.endDate}',
+                    <!--display: 'background'-->
                 },
             </c:if>
             </c:forEach>

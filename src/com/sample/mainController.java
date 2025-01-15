@@ -29,6 +29,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import javax.servlet.http.HttpSession;
+
 import sample.model.Location;
 import sample.model.Item;
 import sample.model.Maps;
@@ -41,7 +43,7 @@ import sample.model.Quotation;
 import sample.model.ToDo;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
-                                                     "/calendar", "/settings", "/maintenanceSchedule", "/mapView" })
+                                                     "/calendar", "/settings", "/maintenanceSchedule", "/mapView"})
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
@@ -428,6 +430,8 @@ public class mainController extends HttpServlet {
         
         String path = request.getServletPath();
         String queryString = request.getQueryString();
+        HttpSession session = request.getSession(false); // Use false to avoid creating a new session if none exists
+        String role = (session != null) ? (String) session.getAttribute("role") : null;
 
         String locID = request.getParameter("locID");
 
@@ -457,49 +461,54 @@ public class mainController extends HttpServlet {
 //        end of server side invalid URl test
 
         switch (path) {
-            case "/homepage":
-                request.getRequestDispatcher("/homepage.jsp").forward(request, response);
-                break;
-            case "/buildingDashboard":
-                if (queryString != null && queryString.contains("/manage")) {
-                    request.getRequestDispatcher("/manageBuilding.jsp").forward(request, response);
-//                    System.out.println(locID);
-//                    System.out.println(locID.substring(locID.indexOf("floor=") + 6));
-                } else if (queryString != null && queryString.contains("/edit")) {
-                    request.getRequestDispatcher("/editLocation.jsp").forward(request, response);
+                    case "/homepage":
+                        request.getRequestDispatcher("/homepage.jsp").forward(request, response);
+                        break;
+                    case "/buildingDashboard":
+                        if (queryString != null && queryString.contains("/manage")) {
+                            request.getRequestDispatcher("/manageBuilding.jsp").forward(request, response);
+        //                    System.out.println(locID);
+        //                    System.out.println(locID.substring(locID.indexOf("floor=") + 6));
+                        } else if (queryString != null && queryString.contains("/edit")) {
+                            // Check if role is "Admin"
+                            if ("Admin".equals(role)) {
+                                request.getRequestDispatcher("/editLocation.jsp").forward(request, response);
+                            } else {
+                                // Redirect to an error page or homepage
+                                response.sendRedirect(request.getContextPath() + "/homepage");
+                            }
+                        } else {
+                            request.getRequestDispatcher("/buildingDashboard.jsp").forward(request, response);
+                        }
+                        break;
+        //            case "/notification":
+        //                request.getRequestDispatcher("/notification.jsp").forward(request, response);
+        //                break;
+                    case "/calendar":
+                        request.getRequestDispatcher("/calendar.jsp").forward(request, response);
+                        break;
+        //            case "/history":
+        //                request.getRequestDispatcher("/history.jsp").forward(request, response);
+        //                break;
+        //            case "/feedback":
+        //                request.getRequestDispatcher("/feedback.jsp").forward(request, response);
+        //                break;
+        //            case "/reports":
+        //                request.getRequestDispatcher("/reports.jsp").forward(request, response);
+        //                break;
+                    case "/settings":
+                        request.getRequestDispatcher("/settings.jsp").forward(request, response);
+                        break;
+                    case "/maintenanceSchedule":
+                        request.getRequestDispatcher("/maintenanceSchedule.jsp").forward(request, response);
+                        break;
+                    case "/mapView":
+                        request.getRequestDispatcher("/mapView.jsp").forward(request, response);
+                        break;
+                    default:
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                        break;
                 }
-                  else  {
-                    request.getRequestDispatcher("/buildingDashboard.jsp").forward(request, response);
-                }
-                break;
-            case "/notification":
-                request.getRequestDispatcher("/notification.jsp").forward(request, response);
-                break;
-            case "/calendar":
-                request.getRequestDispatcher("/calendar.jsp").forward(request, response);
-                break;
-            case "/history":
-                request.getRequestDispatcher("/history.jsp").forward(request, response);
-                break;
-            case "/feedback":
-                request.getRequestDispatcher("/feedback.jsp").forward(request, response);
-                break;
-            case "/reports":
-                request.getRequestDispatcher("/reports.jsp").forward(request, response);
-                break;
-            case "/settings":
-                request.getRequestDispatcher("/settings.jsp").forward(request, response);
-                break;
-            case "/maintenanceSchedule":
-                request.getRequestDispatcher("/maintenanceSchedule.jsp").forward(request, response);
-                break;
-            case "/mapView":
-                request.getRequestDispatcher("/mapView.jsp").forward(request, response);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                break;
-        }
         
     }}
 
