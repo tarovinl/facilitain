@@ -40,9 +40,9 @@
                 <div>
                     <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
                 </div>
-                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addBuildingModal">
-                    <i class="bi bi-plus-lg"></i> Add
-                </button>
+                <a href="./homepage" class="btn btn-warning">
+                    Default View
+                </a>
             </div>
             <div class="row mt-2 mb-2 map-container">
                 <div id="map" style="width: 100%; height: 100%; border-radius:5px;"></div>
