@@ -13,50 +13,60 @@
 <div class="container-fluid">
     <div class="row vh-100">
         <jsp:include page="sidebar.jsp"/>
-        <div class="col-md-10">
+        <div class="col-md-10 bg-light p-4">
+            <!-- Header Section -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>Item Categories</h1>
-                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <h1 class="text-primary">Item Categories</h1>
+                <button class="btn btn-warning shadow-sm" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                     <i class="bi bi-plus-lg"></i> Add Item Category
                 </button>
             </div>
 
-            <table id="categoriesTable" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Category ID</th>
-                        <th scope="col">Category Name</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="category" items="${categoryList}">
-                        <c:if test="${category.archivedFlag == 1}">
-                            <tr>
-                                <td>${category.itemCID}</td>
-                                <td>${category.categoryName.toUpperCase()}</td>
-                                <td>${category.description}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#editCategoryModal"
-                                            data-cid="${category.itemCID}" 
-                                            data-name="${category.categoryName}" 
-                                            data-description="${category.description}"> 
-                                        Edit
-                                    </button>
-                                    <form action="itemCategories" method="post" class="d-inline">
-                                        <input type="hidden" name="itemCID" value="${category.itemCID}">
-                                        <input type="hidden" name="action" value="archive">
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to archive this category?');">Archive</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        </c:if>
-                    </c:forEach>
-                </tbody>
-            </table>
+            <!-- Table Section -->
+            <div class="table-responsive">
+                <table id="categoriesTable" class="table table-striped table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Category ID</th>
+                            <th scope="col">Category Name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="category" items="${categoryList}">
+                            <c:if test="${category.archivedFlag == 1}">
+                                <tr>
+                                    <td>${category.itemCID}</td>
+                                    <td>${category.categoryName.toUpperCase()}</td>
+                                    <td>${category.description}</td>
+                                    <td>
+                                        <!-- Edit Button -->
+                                        <button class="btn btn-sm btn-primary shadow-sm me-2" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editCategoryModal"
+                                                data-cid="${category.itemCID}" 
+                                                data-name="${category.categoryName}" 
+                                                data-description="${category.description}"> 
+                                            Edit
+                                        </button>
+                                        <!-- Archive Form -->
+                                        <form action="itemCategories" method="post" class="d-inline">
+                                            <input type="hidden" name="itemCID" value="${category.itemCID}">
+                                            <input type="hidden" name="action" value="archive">
+                                            <button type="submit" 
+                                                    class="btn btn-sm btn-danger shadow-sm" 
+                                                    onclick="return confirm('Are you sure you want to archive this category?');">
+                                                Archive
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </c:if>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
