@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
    <div class="container-fluid">
@@ -57,17 +59,17 @@
                                 <td>${maintenance.remarks}</td>
                                 <td>${maintenance.noOfDaysWarning}</td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#maintenanceModal"
-                                            data-itemmsid="${maintenance.itemMsId}"
-                                            data-itemtypeid="${maintenance.itemTypeId}"
-                                            data-noofdays="${maintenance.noOfDays}"
-                                            data-remarks="${maintenance.remarks}"
-                                            data-warning="${maintenance.noOfDaysWarning}">
-                                        Edit
-                                    </button>
-                                    <form action="maintenanceSave" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to archive this maintenance schedule?');">
+                                <button class="btn btn-primary btn-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#maintenanceModal"
+                                        data-itemmsid="${maintenance.itemMsId}"
+                                        data-itemtypeid="${maintenance.itemTypeId}"
+                                        data-noofdays="${maintenance.noOfDays}"
+                                        data-remarks="${maintenance.remarks}"
+                                        data-warning="${maintenance.noOfDaysWarning}">
+                                    Edit
+                                </button>
+                                    <form action="maintenanceSave" method="POST" class="d-inline" >
                                         <input type="hidden" name="itemMsId" value="${maintenance.itemMsId}">
                                         <input type="hidden" name="action" value="archive">
                                         <button type="submit" class="btn btn-danger btn-sm">Archive</button>
@@ -182,61 +184,139 @@
     
     <script>
           $(document).ready(function() {
-            $('#maintenanceTable').DataTable({
-                "paging": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "language": {
-                    "search": "Filter records:",
-                    "lengthMenu": "Show _MENU_ entries per page"
-                }
-            });
+    // Initialize DataTable
+    $('#maintenanceTable').DataTable({
+        "paging": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "language": {
+            "search": "Filter records:",
+            "lengthMenu": "Show _MENU_ entries per page"
+        }
+    });
 
-            // Prefill Modal with selected maintenance data
-            const maintenanceModal = document.getElementById('maintenanceModal');
-            maintenanceModal.addEventListener('show.bs.modal', event => {
-                const button = event.relatedTarget;
-                const itemMsId = button.getAttribute('data-itemmsid');
+    // Prefill Modal with selected maintenance data
+    const maintenanceModal = document.getElementById('maintenanceModal');
+    maintenanceModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const itemMsId = button.getAttribute('data-itemmsid');
 
-                if (itemMsId) {
-                    // Edit mode
-                    document.getElementById('itemMsId').value = itemMsId;
-                    document.getElementById('itemTypeId').value = button.getAttribute('data-itemtypeid');
-                    document.getElementById('noOfDays').value = button.getAttribute('data-noofdays');
-                    document.getElementById('remarks').value = button.getAttribute('data-remarks');
-                    document.getElementById('noOfDaysWarning').value = button.getAttribute('data-warning');
-                } else {
-                    // Add mode - clear the form
-                    document.getElementById('itemMsId').value = '';
-                    document.getElementById('itemTypeId').value = '';
-                    document.getElementById('noOfDays').value = '';
-                    document.getElementById('remarks').value = '';
-                    document.getElementById('noOfDaysWarning').value = '';
-                }
-            });
-        });
+        if (itemMsId) {
+            // Edit mode
+            document.getElementById('itemMsId').value = itemMsId;
+            document.getElementById('itemTypeId').value = button.getAttribute('data-itemtypeid');
+            document.getElementById('noOfDays').value = button.getAttribute('data-noofdays');
+            document.getElementById('remarks').value = button.getAttribute('data-remarks');
+            document.getElementById('noOfDaysWarning').value = button.getAttribute('data-warning');
+            toggleQuarterlyOptions(); // Ensure correct options are shown
+        } else {
+            // Add mode - clear the form
+            document.getElementById('itemMsId').value = '';
+            document.getElementById('itemTypeId').value = '';
+            document.getElementById('noOfDays').value = '';
+            document.getElementById('remarks').value = '';
+            document.getElementById('noOfDaysWarning').value = '';
+        }
+    });
 
-        function toggleQuarterlyOptions() {
-            const value = document.getElementById('noOfDays').value;
-            const quarterlyOptionsGroup = document.getElementById('quarterlyOptionsGroup');
-            const annualOptionsGroup = document.getElementById('annualOptionsGroup');
+    // Handle SweetAlert2 notifications
+    const urlParams = new URLSearchParams(window.location.search);
+    const action = urlParams.get('action');
+    const error = urlParams.get('error');
 
-            if (value == 90) {
-                quarterlyOptionsGroup.style.display = 'block';
-                annualOptionsGroup.style.display = 'none';
-                document.getElementById('month').value = ""; 
-            } else if (value == 365 || value == 180) {
-                annualOptionsGroup.style.display = 'block';
-                quarterlyOptionsGroup.style.display = 'none';
-                document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
-            } else {
-                quarterlyOptionsGroup.style.display = 'none';
-                annualOptionsGroup.style.display = 'none';
-                document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
-                document.getElementById('month').value = "";
+    if (action || error) {
+        let alertConfig = {
+            confirmButtonText: 'OK',
+            allowOutsideClick: false
+        };
+
+        if (error) {
+            alertConfig = {
+                ...alertConfig,
+                title: 'Error!',
+                text: 'An error occurred while processing your request.',
+                icon: 'error'
+            };
+        } else {
+            switch(action) {
+                case 'archived':
+                    alertConfig = {
+                        ...alertConfig,
+                        title: 'Archived!',
+                        text: 'The maintenance schedule has been successfully archived.',
+                        icon: 'success'
+                    };
+                    break;
+                case 'updated':
+                    alertConfig = {
+                        ...alertConfig,
+                        title: 'Updated!',
+                        text: 'The maintenance schedule has been successfully updated.',
+                        icon: 'success'
+                    };
+                    break;
+                case 'added':
+                    alertConfig = {
+                        ...alertConfig,
+                        title: 'Added!',
+                        text: 'The new maintenance schedule has been successfully added.',
+                        icon: 'success'
+                    };
+                    break;
             }
         }
+
+        Swal.fire(alertConfig).then(() => {
+            // Remove the parameters from the URL without refreshing
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        });
+    }
+
+    // Handle archive confirmation with SweetAlert2
+    $('form').on('submit', function(e) {
+        if ($(this).find('input[name="action"][value="archive"]').length) {
+            e.preventDefault();
+            const form = this;
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to archive this maintenance schedule?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, archive it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    });
+});
+
+function toggleQuarterlyOptions() {
+    const value = document.getElementById('noOfDays').value;
+    const quarterlyOptionsGroup = document.getElementById('quarterlyOptionsGroup');
+    const annualOptionsGroup = document.getElementById('annualOptionsGroup');
+
+    if (value == 90) {
+        quarterlyOptionsGroup.style.display = 'block';
+        annualOptionsGroup.style.display = 'none';
+        document.getElementById('month').value = ""; 
+    } else if (value == 365 || value == 180) {
+        annualOptionsGroup.style.display = 'block';
+        quarterlyOptionsGroup.style.display = 'none';
+        document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
+    } else {
+        quarterlyOptionsGroup.style.display = 'none';
+        annualOptionsGroup.style.display = 'none';
+        document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
+        document.getElementById('month').value = "";
+    }
+}
     </script>
 </body>
 </html>
