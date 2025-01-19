@@ -3,11 +3,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
+     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>Item Categories</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div class="container-fluid">
@@ -51,12 +52,12 @@
                                             Edit
                                         </button>
                                         <!-- Archive Form -->
-                                        <form action="itemCategories" method="post" class="d-inline">
+                                      <form action="itemCategories" method="post" class="d-inline">
                                             <input type="hidden" name="itemCID" value="${category.itemCID}">
                                             <input type="hidden" name="action" value="archive">
                                             <button type="submit" 
                                                     class="btn btn-sm btn-danger shadow-sm" 
-                                                    onclick="return confirm('Are you sure you want to archive this category?');">
+                                                    >
                                                 Archive
                                             </button>
                                         </form>
@@ -104,31 +105,32 @@
 <!-- Edit Category Modal -->
 <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form action="itemCategories" method="post">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="editItemCID" name="itemCID">
-                    <div class="form-group">
-                        <label for="editCategoryName">Category Name</label>
-                        <input type="text" class="form-control" id="editCategoryName" name="categoryName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editDescription">Description</label>
-                        <textarea class="form-control" id="editDescription" name="description" required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-warning">Save Changes</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                </div>
+       <form action="itemCategories" method="post">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editItemCID" name="itemCID">
+            <input type="hidden" name="editMode" value="true">  <!-- Add this line -->
+            <div class="form-group">
+                <label for="editCategoryName">Category Name</label>
+                <input type="text" class="form-control" id="editCategoryName" name="categoryName" required>
             </div>
-        </form>
+            <div class="form-group">
+                <label for="editDescription">Description</label>
+                <textarea class="form-control" id="editDescription" name="description" required></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-warning">Save Changes</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+</form>
     </div>
 </div>
 
@@ -138,22 +140,99 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
-    // Initialize DataTables
     $(document).ready(function () {
+        // Initialize DataTable
         $('#categoriesTable').DataTable();
-    });
 
-    // Prefill Edit Modal with data
-    document.querySelectorAll('[data-bs-target="#editCategoryModal"]').forEach(button => {
-        button.addEventListener('click', function () {
-            const cid = this.getAttribute('data-cid');
-            const name = this.getAttribute('data-name');
-            const description = this.getAttribute('data-description');
+        // Prefill Edit Modal with data
+      const editModal = document.getElementById('editCategoryModal');
+editModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget;
+    const cid = button.getAttribute('data-cid');
+    const name = button.getAttribute('data-name');
+    const description = button.getAttribute('data-description');
 
-            document.getElementById('editItemCID').value = cid;
-            document.getElementById('editCategoryName').value = name;
-            document.getElementById('editDescription').value = description;
+    document.getElementById('editItemCID').value = cid;
+    document.getElementById('editCategoryName').value = name;
+    document.getElementById('editDescription').value = description;
+});
+
+        // Handle SweetAlert2 notifications
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action');
+        const error = urlParams.get('error');
+
+        if (action || error) {
+            let alertConfig = {
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+            };
+
+            if (error) {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Error!',
+                    text: 'An error occurred while processing your request.',
+                    icon: 'error'
+                };
+            } else {
+                switch(action) {
+                    case 'archived':
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Archived!',
+                            text: 'The category has been successfully archived.',
+                            icon: 'success'
+                        };
+                        break;
+                    case 'updated':
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Updated!',
+                            text: 'The category has been successfully updated.',
+                            icon: 'success'
+                        };
+                        break;
+                    case 'added':
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Added!',
+                            text: 'The new category has been successfully added.',
+                            icon: 'success'
+                        };
+                        break;
+                }
+            }
+
+            Swal.fire(alertConfig).then(() => {
+                // Remove the parameters from the URL without refreshing
+                const newUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+            });
+        }
+
+        // Replace confirm dialog with SweetAlert2 for archive action
+       $('form').on('submit', function(e) {
+    if ($(this).find('input[name="action"][value="archive"]').length) {
+        e.preventDefault();
+        const form = this;
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to archive this category? This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, archive it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
         });
+    }
+});
     });
 </script>
 </body>
