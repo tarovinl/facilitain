@@ -30,6 +30,9 @@ public class floorController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get form data
+        String action = "";
+        String status = "success";
+        
         String locID = request.getParameter("locID"); // locID is used for editing
         
         String editFlrID = request.getParameter("editFlrID");
@@ -71,23 +74,30 @@ public class floorController extends HttpServlet {
                                 stmt.setString(1, editFlrName);
                                 stmt.setString(2, editFlrDesc);
                                 stmt.setInt(3, Integer.parseInt(editFlrID));
+                                
+                                action = "floor_update";
                             } else if (archFlrID != null && !archFlrID.isEmpty()) {
                                 stmt.setInt(1, Integer.parseInt(archFlrID));
+                                
+                                action = "floor_archive";
                             } else if (actFlrID != null && !actFlrID.isEmpty()) {
                                 stmt.setInt(1, Integer.parseInt(actFlrID));
                             } else {
                                 stmt.setInt(1, Integer.parseInt(locID));
                                 stmt.setString(2, addFlrName);
                                 stmt.setString(3, addFlrDesc);
+                                
+                                action = "floor_add";
                             }
                             
                             stmt.executeUpdate();
                         }
 
             // Redirect to building dashboard after saving changes
-            response.sendRedirect("buildingDashboard?locID=" + locID + "/edit");
+            response.sendRedirect("buildingDashboard?locID=" + locID + "/edit" + "&action=" + action + "&status=" + status);
         } catch (SQLException e) {
             e.printStackTrace();
+            status = "error";
             throw new ServletException("Database error while adding/editing building.");
         }
     }

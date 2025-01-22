@@ -26,6 +26,9 @@
           <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
          crossorigin=""></script>
+         
+         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
+         <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     </head>
     
     <%
@@ -535,6 +538,62 @@
     }
 
 </script>
+
+<script>
+  // Helper function to get query parameter by name
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // Get action and status from URL parameters
+  const action = getQueryParam('action');
+  const status = getQueryParam('status');
+
+  // Trigger SweetAlert2 Toast based on action and status
+  if (status === 'success') {
+    let toastMessage = '';
+    
+    switch (action) {
+      case 'floor_add':
+        toastMessage = 'The floor was added successfully.';
+        break;
+      case 'floor_update':
+        toastMessage = 'The floor was updated successfully.';
+        break;
+      case 'floor_archive':
+        toastMessage = 'The floor was archived successfully.';
+        break;
+      case 'building_modify':
+        toastMessage = 'The location was updated successfully.';
+        break;
+      default:
+        toastMessage = 'Operation completed successfully.';
+        break;
+    }
+
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: toastMessage,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+  } else if (status === 'error') {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'An error occurred while processing your request.',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+  }
+</script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

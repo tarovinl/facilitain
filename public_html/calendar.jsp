@@ -14,6 +14,8 @@
     <script src="https://cdn.jsdelivr.net/npm/rrule@2.6.6/dist/es5/rrule.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/main.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -181,8 +183,13 @@
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
                 eventClick: function(info) {
-                    alert(info.event.title);
-                    // Additional actions like editing or deleting the event
+                    Swal.fire({
+                    title: info.event.title,
+                    icon: 'info',
+                    showConfirmButton: true,
+                   
+                    confirmButtonText: 'Close'
+                  });
                 }
             });
             calendar.render();

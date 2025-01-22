@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
         </script>
     </head>
-    <body>
+    <body style="background-color: #efefef;">
 <div class="container-fluid">
       <div class="row min-vh-100">
         
@@ -341,70 +341,51 @@ document.addEventListener('DOMContentLoaded', function() {
               Generate Report</button>
             </div>
           </div>
-
-          <!-- Building Banner -->
-<div class="buildingBanner rounded-4" style="margin-top: 14px; margin-bottom: 14px; background-image: 
+          
+<div class="container">
+  <div class="row mb-4">
+    <div class="col-12 col-lg-8 mb-3">
+        <div class="buildingBanner rounded-4" style="margin-top: 14px; background-image: 
                                     linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
-                                    url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center;">
-    <!--<div class="statusDiv">
-        <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
-    </div>-->
-    <div class="buildingName text-light" style="font-family: NeueHaasMedium, sans-serif;">
-        <h1>${locName}</h1>
-    </div>
-    <div>
-        <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
-            <c:if test="${floors.key == locID}">
-                <c:forEach var="floor" items="${floors.value}" varStatus="status">
-                    <c:if test="${status.first}">
-                        <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" class="buildingManage d-flex align-items-center" style="font-family: NeueHaasMedium, sans-serif;">
-                            Manage
-                            <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
-                        </a>
+                                    url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center; height: 264px; display: flex; flex-direction:column;justify-content: flex-end;">
+            <!--<div class="statusDiv">
+                <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
+            </div>-->
+            <div class="buildingName text-light" style="font-family: NeueHaasMedium, sans-serif;">
+                <h1>${locName}</h1>
+            </div>
+            <div>
+                <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
+                    <c:if test="${floors.key == locID}">
+                        <c:forEach var="floor" items="${floors.value}" varStatus="status">
+                            <c:if test="${status.first}">
+                                <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" class="buildingManage d-flex align-items-center" style="font-family: NeueHaasMedium, sans-serif;">
+                                    Manage
+                                    <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
+                                </a>
+                            </c:if>
+                        </c:forEach>
                     </c:if>
                 </c:forEach>
-            </c:if>
-        </c:forEach>
+            </div>
+        </div>
     </div>
-</div>
-
-
-          <!-- Graphs and Charts -->
-          <div class="buildingDiagrams" >
-            <!-- Frequency of Repairs -->
-            <div class="diagram">
+    <div class="col-12 col-lg-4 mb-3" style="margin-top: 14px;">
+      	    <div class="diagram">
               <div class="diagramTitle">
-                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Repairs per Month</h2>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Repairs per Month</h4>
               </div>
-              <div style="background: green; height: 280px; ">
-                <div id="repairNoChart" style="height: 100%; width: 100%;"></div>
+              <div style="background: white; height: 220px; border-radius:15px;">
+                <div id="repairNoChart" style="height: 100%; width: 100%; overflow: hidden; border-radius:15px;"></div>
               </div>
             </div>
-            <!-- Pending Maintenance -->
-            <div class="diagram">
+    </div>
+  </div>
+  <div class="row mt-4" style="margin-top: 100px;">
+    <div class="col-12 col-lg-4 mb-3"">
+      <div class="diagram">
               <div class="diagramTitle">
-                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Pending Maintenance</h2>
-              </div>
-              <div style="background: green; height: 280px;">
-                  <div id="pendingMainChart" style="height: 100%; width: 100%;"></div>
-              </div>
-            </div>
-            <!-- Punctuality -->
-            <!--<div class="diagram">
-              <div class="diagramTitle">
-                <h2>Punctuality</h2>
-              </div>
-              <div style="background: green; height: 280px; overflow: auto;">
-                <div>graph and chart and stuff</div>
-              </div>
-            </div>-->
-          </div>
-
-          <!-- Activities -->
-        <div class="buildingActivities">
-            <div class="activity">
-              <div class="actCategories">
-                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h2>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h4>
               </div>
               <div class="actContainer" id="upcoming-activities">
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
@@ -432,9 +413,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </c:forEach>
               </div>
             </div>
-            <div class="activity">
-              <div class="actCategories">
-                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h2>
+    </div>
+    <div class="col-12 col-lg-4 mb-3"">
+      <div class="diagram">
+              <div class="diagramTitle">
+                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h4>
               </div>
               <div class="actContainer" id="recent-activities">
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
@@ -457,7 +440,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 </c:forEach>
               </div>
             </div>
-          </div>
+    </div>
+    <div class="col-12 col-lg-4 mb-3" style="border-radius:15px;">
+      <div class="diagram">
+              <div class="diagramTitle">
+                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Pending Maintenance</h4>
+              </div>
+              <div style="background: white; height: 200px;border-radius:15px;">
+                  <div id="pendingMainChart" style="height: 101%; width: 100%;border-radius:15px; overflow: hidden;"></div>
+              </div>
+            </div>
+    </div>
+  </div>
+</div>
+
         </div>
       </div>
     </div>
@@ -502,12 +498,20 @@ document.addEventListener('DOMContentLoaded', function () {
         const noOfDays = parseInt(itemDiv.getAttribute('data-no-of-days')) || 0;
         const noOfDaysWarning = parseInt(itemDiv.getAttribute('data-no-of-days-warning')) || 0;
 
+        console.log('UA Last Maintenance Date String:', lastMaintenanceDateStr);
+        console.log('UA Number of Days:', noOfDays);
+        console.log('UA Number of Days Warning:', noOfDaysWarning);
+
+
         if (lastMaintenanceDateStr) {
             const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
 
             if (!isNaN(lastMaintenanceDate)) {
                 const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
                 const daysRemaining = noOfDays - daysSinceLastMaintenance;
+                
+                console.log('UA daysSinceLastMaintenance:', daysSinceLastMaintenance);
+                console.log('UA daysRemaining:', daysRemaining);
 
                 if (daysRemaining > 0 && daysRemaining <= noOfDaysWarning) {
                     const remainingDaysElement = itemDiv.querySelector('.remaining-days');
@@ -528,13 +532,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('#recent-activities .actItem').forEach(function (itemDiv) {
         const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
-
+        console.log('RA Last Maintenance Date String:', lastMaintenanceDateStr);
+        
         if (lastMaintenanceDateStr) {
             const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
 
             if (!isNaN(lastMaintenanceDate)) {
                 const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
-
+                console.log('UA daysSinceLastMaintenance:', daysSinceLastMaintenance);
                 if (daysSinceLastMaintenance >= 0 && daysSinceLastMaintenance <= 30) {
                     const remainingDaysElement = itemDiv.querySelector('.remaining-days');
                     if (remainingDaysElement) {
@@ -555,7 +560,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </script>
 
-</script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>
