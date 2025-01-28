@@ -8,6 +8,7 @@
     <title>Item Users</title>
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -15,7 +16,7 @@
     <div class="row min-vh-100">
         <jsp:include page="sidebar.jsp"/>
         <div class="col-md-10">
-            <h1>Manage Item Users</h1>
+            <h1 style="font-family: 'NeueHaasMedium', sans-serif;">Manage Item Users</h1>
             <table id="itemUserTable" class="table table-striped table-bordered">
                 <thead class="table-dark">
                     <tr>

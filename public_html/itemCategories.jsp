@@ -8,6 +8,7 @@
     <title>Item Categories</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet"/>
+     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -17,7 +18,7 @@
         <div class="col-md-10 bg-light p-4">
             <!-- Header Section -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="text-primary">Item Categories</h1>
+                <h1 class="text-primary" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Item Categories</h1>
                 <button class="btn btn-warning shadow-sm" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                     <i class="bi bi-plus-lg"></i> Add Item Category
                 </button>
