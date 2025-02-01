@@ -42,6 +42,10 @@ import sample.model.Maintenance;
 import sample.model.Quotation;
 import sample.model.ToDo;
 
+import com.google.gson.Gson;
+
+import java.util.TreeSet;
+
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
                                                      "/calendar", "/settings", "/maintenanceSchedule", "/mapView"})
 public class mainController extends HttpServlet {
@@ -458,7 +462,8 @@ public class mainController extends HttpServlet {
 //            response.sendRedirect(request.getContextPath() + "/homepage"); // Redirect to homepage
 //            return; // Ensure no further processing happens
 //        }
-//        end of server side invalid URl test
+//        end of server side invalid URl test        
+
 
         switch (path) {
                     case "/homepage":
@@ -485,8 +490,51 @@ public class mainController extends HttpServlet {
         //                request.getRequestDispatcher("/notification.jsp").forward(request, response);
         //                break;
                     case "/calendar":
-                        request.getRequestDispatcher("/calendar.jsp").forward(request, response);
-                        break;
+                        String eventCat = request.getParameter("eventCat");
+                            //System.out.println("controller eventCat " + eventCat);
+                                    if (eventCat != null) {
+                                        // Process the dynamic locations logic
+                                        Set<String> uniqueLocations = new TreeSet<>();
+
+                                            for (Location location : locations) {
+                                                for (Item item : listItem) {
+                                                    if (location.getItemLocId() == item.getItemLID()) {
+                                                        for (Item type : listTypes) { // Assuming listTypes represents FMO_TYPES_LIST
+                                                            if (item.getItemTID() == type.getItemTID()) {
+                                                                for (Item category : filteredCategories) { // Assuming filteredCategories represents FMO_CATEGORIES_LIST
+                                                                    if (category.getItemCat().equals(eventCat) && category.getItemCID() == type.getItemCID()) {
+                                                                        for (Maintenance maintenance : listMaintSched) { // Assuming listMaintSched represents maintenanceList
+                                                                            if (maintenance.getItemTypeId() == type.getItemTID()) {
+                                                                                
+                                                                                // Add location name if it's not already in uniqueLocations
+                                                                                if (!uniqueLocations.contains(location.getLocName())) {
+                                                                                    uniqueLocations.add(location.getLocName());
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+//                                        System.out.println("Unique locations size: " + uniqueLocations.size());
+//                                        for (String loc : uniqueLocations) {
+//                                            System.out.println("Location: " + loc);
+//                                        }
+
+                                        // Return the uniqueLocations as a JSON response
+                                        response.setContentType("application/json");
+                                        response.setCharacterEncoding("UTF-8");
+                                        response.getWriter().write(new Gson().toJson(uniqueLocations));
+
+                                    } else {
+                                        // If it's not an AJAX request, forward to the calendar page
+                                        request.getRequestDispatcher("/calendar.jsp").forward(request, response);
+                                    }
+                                    break;
         //            case "/history":
         //                request.getRequestDispatcher("/history.jsp").forward(request, response);
         //                break;

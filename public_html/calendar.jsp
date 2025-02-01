@@ -7,16 +7,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maintenance Calendar</title>
-
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/main.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/rrule@2.6.6/dist/es5/rrule.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/main.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     
+    
+    <%@ page import="java.util.HashSet" %>
+<%
+    HashSet<String> displayedLocations = new HashSet<>();
+    request.setAttribute("displayedLocations", displayedLocations);
+%>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
@@ -183,14 +189,59 @@
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
                 eventClick: function(info) {
+                var title = info.event.title;
+                
+                // Check if "Maintenance for" exists but is NOT at the start
+                if (title.includes("Maintenance for") && title.indexOf("Maintenance for") > 0) {
+                    var eventTitleParts = title.split("for");
+                    var eventCat = eventTitleParts.length > 1 ? eventTitleParts[1].trim() : '';
+            
+                    console.log("eventCat: " + eventCat);
+                    
+                    $.ajax({
+                    type: "GET",
+                    url: "calendar",
+                    data: { eventCat: eventCat },
+                    dataType: "json",
+                    success: function(response) {
+                        let locationList = response.map(loc => `<div>`+loc+`</div>`).join('');
+                        console.log(locationList);
+            
+                        Swal.fire({
+                            title: info.event.title,
+                            icon: 'info',
+                            showConfirmButton: true,
+                            html: `
+                                <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                                    <tr>
+                                        <td style="font-weight: bold; padding: 8px; border-bottom: 1px solid #ddd;">Date:</td>
+                                        <td style="padding: 8px; border-bottom: 1px solid #ddd;">`+info.event.start.toLocaleDateString()+`</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: bold; padding: 8px; border-bottom: 1px solid #ddd;">Location/s:</td>
+                                        <td style="padding: 8px; border-bottom: 1px solid #ddd;">
+                                            `+locationList+`
+                                        </td>
+                                    </tr>
+                                </table>
+                            `,
+                            confirmButtonText: 'Close'
+                        });
+                    },
+                        error: function() {
+                            Swal.fire("Error", "Failed to fetch locations.", "error");
+                        }
+                    });
+                } else {
+                    // Show a normal SweetAlert for invalid titles
                     Swal.fire({
-                    title: info.event.title,
-                    icon: 'info',
-                    showConfirmButton: true,
-                   
-                    confirmButtonText: 'Close'
-                  });
+                        title: info.event.title,
+                        icon: "info",
+                        confirmButtonText: "OK"
+                    });
                 }
+            }
+
             });
             calendar.render();
         });
@@ -264,7 +315,6 @@
         </div>
         <div class="mb-4">
         <div id='calendar'></div>
-        
         </div>
     </div>
     
