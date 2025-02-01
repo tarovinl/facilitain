@@ -21,10 +21,10 @@
             <div class="container">
                <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <div class="mt-4">
-       
+    <div>
         <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
     </div>
+    <div>
     <c:choose>
         <c:when test="${sessionScope.role == 'Admin'}">
             <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addBuildingModal">
@@ -34,6 +34,11 @@
         <c:otherwise>
         </c:otherwise>
     </c:choose>
+            <a href="./mapView" class="btn btn-warning">
+                Map View
+            </a>
+
+    </div>
 </div>
 
 

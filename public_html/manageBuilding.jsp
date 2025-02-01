@@ -20,9 +20,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.css" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.js"></script>
         
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
+    
     </head>
 
 <%
@@ -127,8 +130,8 @@
                                     <!--<th ></th>-->
                                     <c:choose>
                                         <c:when test="${sessionScope.role == 'Admin'}">
-                                            <th ></th>
-                                            <th ></th>
+                                            <th >Edit</th>
+                                            <th >Archive</th>
                                         </c:when>
                                         <c:otherwise>
                                         </c:otherwise>
@@ -285,8 +288,8 @@
                                     <!--<th ></th>-->
                                     <c:choose>
                                         <c:when test="${sessionScope.role == 'Admin'}">
-                                            <th ></th>
-                                            <th ></th>
+                                            <th >Edit</th>
+                                            <th >Archive</th>
                                         </c:when>
                                         <c:otherwise>
                                         </c:otherwise>
@@ -456,11 +459,11 @@
                             <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}">
                             <div class="row mt-1">
                                 <div class="col">
-                                    <label for="" class="form-label">Codename</label>
+                                    <label for="" class="form-label">Codename <span style="color: red;">*</span></label>
                                     <input type="text" name="itemCode" id="" class="form-control" maxlength="20" required>
                                 </div>
                                 <div class="col">
-                                    <label for="" class="form-label">Building</label>
+                                    <label for="" class="form-label">Building <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemBuilding" onchange="floorRender()">
                                         <c:forEach items="${locations}" var="loc" >
                                             <option value="${loc.itemLocId}" selected>${loc.locName}</option>
@@ -474,7 +477,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
-                                    <label for="itemCat" class="form-label">Category</label>
+                                    <label for="itemCat" class="form-label">Category <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemCat" id="itemCat" onchange="toggleAirconDiv();filterTypes();">
                                         <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
                                             <option value="${cat.itemCID}" selected>${cat.itemCat}</option>
@@ -482,7 +485,7 @@
                                     </select>
                                 </div>
                                 <div class="col">
-                                    <label for="itemType" class="form-label">Type</label>
+                                    <label for="itemType" class="form-label">Type <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemType" id="itemType">
                                         <c:forEach items="${FMO_TYPES_LIST}" var="type" >
                                             <option value="${type.itemTID}" data-item-cid="${type.itemCID}" selected>${type.itemType}</option>
@@ -541,7 +544,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
-                                    <label for="itemAddFloor" class="form-label">Floor</label>
+                                    <label for="itemAddFloor" class="form-label">Floor <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemAddFloor" id="itemAddFloor" onchange="roomRender()">
                                       <%--<c:forEach var="floors" items="${FMO_FLOORS_LIST}">
                                         <c:if test="${floors.key == locID}">
@@ -560,7 +563,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
-                                    <label for="" class="form-label">Date Installed</label>
+                                    <label for="" class="form-label">Date Installed <span style="color: red;">*</span></label>
                                     <input type="date" name="itemInstalled" id="" class="form-control" required>
                                 </div>
                                 <div class="col">
@@ -629,11 +632,11 @@
                             <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}">
                             <div class="row mt-1">
                                 <div class="col">
-                                    <label for="" class="form-label">Codename</label>
+                                    <label for="" class="form-label">Codename <span style="color: red;">*</span></label>
                                     <input type="text" name="itemEditCode" id="" class="form-control" maxlength="20" required>
                                 </div>
                                 <div class="col">
-                                    <label for="" class="form-label">Building</label>
+                                    <label for="" class="form-label">Building <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemEditLoc" onchange="floorERender()">
                                         <c:forEach items="${locations}" var="loc" >
                                             <option value="${loc.itemLocId}" selected>${loc.locName}</option>
@@ -647,7 +650,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
-                                    <label for="itemEditCat" class="form-label">Category</label>
+                                    <label for="itemEditCat" class="form-label">Category <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemEditCat" id="itemECat" onchange="toggleEAirconDiv();filterETypes();">
                                         <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
                                             <option value="${cat.itemCID}" selected>${cat.itemCat}</option>
@@ -655,7 +658,7 @@
                                     </select>
                                 </div>
                                 <div class="col">
-                                    <label for="itemEditType" class="form-label">Type</label>
+                                    <label for="itemEditType" class="form-label">Type <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemEditType" id="itemEType">
                                         <c:forEach items="${FMO_TYPES_LIST}" var="type" >
                                             <option value="${type.itemTID}" data-item-cid="${type.itemCID}" selected>${type.itemType}</option>
@@ -714,7 +717,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
-                                    <label for="itemEditFloor" class="form-label">Floor</label>
+                                    <label for="itemEditFloor" class="form-label">Floor <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemEditFloor" id="itemEditFloor" onchange="roomEditRender()">
                                       <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
                                         <c:if test="${floors.key == locID}">
@@ -733,7 +736,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col">
-                                    <label for="" class="form-label">Date Installed</label>
+                                    <label for="" class="form-label">Date Installed <span style="color: red;">*</span></label>
                                     <input type="date" name="itemEditInstalled" id="itemEditInstalled" class="form-control" required>
                                 </div>
                                 <div class="col">
@@ -1337,6 +1340,61 @@ function roomEditRenderCopy() {
 }
 
     </script>
+    
+<script>
+  // Helper function to get query parameter by name
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // Get action and status from URL parameters
+  const action = getQueryParam('action');
+  const status = getQueryParam('status');
+
+  // Trigger SweetAlert2 Toast based on action and status
+  if (status === 'success') {
+    let toastMessage = '';
+    
+    switch (action) {
+      case 'add':
+        toastMessage = 'The equipment was added successfully.';
+        break;
+      case 'edit':
+        toastMessage = 'The equipment was updated successfully.';
+        break;
+      case 'archive':
+        toastMessage = 'The equipment was archived successfully.';
+        break;
+      case 'modify_status':
+        toastMessage = 'The equipment status was modified successfully.';
+        break;
+      default:
+        toastMessage = 'Operation completed successfully.';
+        break;
+    }
+
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: toastMessage,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+  } else if (status === 'error') {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'An error occurred while processing your request.',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+  }
+</script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script> 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>

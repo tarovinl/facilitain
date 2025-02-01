@@ -9,12 +9,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Edit Location</title>
         <link rel="stylesheet" href="resources/css/eBuilding.css">
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <!-- DataTables CSS -->
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
-        <!-- jQuery -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
         <!-- DataTables JS -->
-        <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
         <!-- Bootstrap 5 CSS and JS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -134,27 +133,22 @@
 
                 <div class="row mt-4">
                     <div class="col dropTbl">
-                        <div class="floorDLblDiv">
-                            <h4 class="fw-bold mt-2">
-                                <button onclick="showActiveTbl()">Active Floors</button>
-                            </h4>
-                        </div>
-                        <table class="activeFloorTbl table table-striped table-bordered border border-dark">
-                            <thead class="table-dark">
+                        <table id="flrTable" class="display" style="width:100%;">
+                            <thead>
                               <tr>
-                                <th scope="col"></th>
-                                <th scope="col"></th>
-                                <th scope="col">Floor ID</th>
-                                <th scope="col">Floor Name</th>
-                                <th scope="col">Description</th>
+                                <th>Edit</th>
+                                <th>Archive</th>
+                                <th>Floor ID</th>
+                                <th>Floor Name</th>
+                                <th>Description</th>
                               </tr>
                             </thead>
                             <tbody>
                                 <c:forEach var="floors" items="${FMO_FLOORS_LIST2}">
                                     <c:if test="${floors.itemLocId == locID}">
                                         <c:if test="${floors.locArchive == 1}">
-                                     <tr>
-                                        <th scope="row" style="text-align:center;">
+                                     <tr style="border: solid 1px black;">
+                                        <td>
                                             <input type="image" 
                                                 src="resources/images/editItem.svg" 
                                                 id="editModalButton" 
@@ -168,7 +162,7 @@
                                                 data-target="#editFloor"
                                                 onclick="populateEditModal(this)">
                                         </th>
-                                        <th scope="row" style="text-align:center;">
+                                        <td>
                                             <input type="image" 
                                                 src="resources/images/archiveItem.svg" 
                                                 id="archFlrModalButton" 
@@ -327,7 +321,7 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="flrName" class="fw-bold">Floor Name</label>
+                                <label for="flrName" class="fw-bold">Floor Name <span style="color: red;">*</span></label>
                                 <input type="text" name="addFlrName" id="addFlrName" class="form-control mt-3" maxlength="15" required>
                             </div>
                         </div>
@@ -451,7 +445,26 @@
 </div>
 <!-- end of archive location modal -->
 
-
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Initialize DataTable for #allItemsTable
+                    let flrTable = new DataTable('#flrTable', {
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        info: true,
+                        stateSave: true,
+                        scrollX: true,
+                        columnDefs: [
+                            { targets: "_all", className: "dt-center" }, // Center-align all columns
+                            { targets: 0, orderable: false }, 
+                            { targets: 1, orderable: false }, 
+                            { targets: 4, orderable: false } 
+                        ]
+                    });
+    
+                });
+            </script>
 <script>
     var map = L.map('map').setView([14.610032805621275, 120.99003889129173], 18); // Center the map (latitude, longitude, zoom level)
     var marker;
@@ -484,32 +497,6 @@
 
 
 
-    function showActiveTbl() {
-        //event.preventDefault();
-        const table = document.querySelector('.activeFloorTbl');
-         // Toggle the display property
-        table.style.display = (table.style.display === 'none' || table.style.display === '') ? 'table' : 'none';
-        
-        // Store the state in localStorage
-        localStorage.setItem('tableVisible', table.style.display === 'table' ? 'true' : 'false');
-    }
-        window.onload = function() {
-            const isTableVisible = localStorage.getItem('tableVisible');
-            const table = document.querySelector('.activeFloorTbl');
-            if (isTableVisible === 'true') {
-                table.style.display = 'table';
-            }
-        };
-    
-    function showArchivedTbl() {
-        //event.preventDefault();
-        const table = document.querySelector('.archivedFloorTbl');
-        if (table.style.display === 'none' || table.style.display === '') {
-            table.style.display = 'table';
-        } else {
-            table.style.display = 'none';
-        }
-    }
 
     function populateEditModal(button){
 //        event.preventDefault();
