@@ -34,9 +34,11 @@
                 Homepage
             </a>
             <a href="notification" class="${page == 'notification' ? 'active' : ''}">
-                <img src="resources/images/icons/bell-solid.svg" alt="Notifications" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Notifications
-            </a>
+                 <img src="resources/images/icons/bell-solid.svg" alt="Notifications" class="icon pe-2" 
+                    style="width: 2em; height: 2em; vertical-align: middle;">
+                Notifications 
+                <span id="notificationBadge" class="badge bg-warning text-dark ms-2" style="display: none;">0</span>
+            </a>        
             <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
                 <img src="resources/images/icons/calendar-solid.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Calendar
@@ -238,7 +240,22 @@
 //                ]
 //            });
 //        });
+document.addEventListener("DOMContentLoaded", function() {
+    fetch('/FMOCapstone/homepage/checkNotifications')
+        .then(response => response.json())
+        .then(data => {
+            const unreadCount = data.unreadCount;
+            const badge = document.getElementById('notificationBadge');
 
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount; // Update the count
+                badge.style.display = 'inline-block'; // Show the badge
+            } else {
+                badge.style.display = 'none'; 
+            }
+        })
+        .catch(error => console.error('Error fetching notification count:', error));
+});
 function openAddToDoModal() {
     // Hide the first modal
     const firstTModal = bootstrap.Modal.getInstance(document.getElementById('showToDo'));
