@@ -220,7 +220,9 @@
                                     <tr>
                                         <td style="font-weight: bold; padding: 8px; border-bottom: 1px solid #ddd;">Location/s:</td>
                                         <td style="padding: 8px; border-bottom: 1px solid #ddd;">
+                                            <div style="max-height: 150px; overflow-y: auto; padding: 4px;">
                                             `+locationList+`
+                                            </div>
                                         </td>
                                     </tr>
                                 </table>
