@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap-icons/1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <title>Notifications</title>
 </head>
 <body>
@@ -15,7 +16,7 @@
         <jsp:include page="sidebar.jsp"/>
 
         <div class="col-md-10 p-4">
-            <h1 class="mb-4">Notifications</h1>
+            <h1 class="mb-4" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Notifications</h1>
 
             <!-- Sorting and Filtering controls -->
             <div class="d-flex justify-content-between mb-3">
