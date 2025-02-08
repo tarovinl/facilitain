@@ -59,10 +59,26 @@
                 <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Map View
             </a>-->
+            <a href="itemType" class="${page == 'settings' ? 'active' : ''}">
+                <img src="resources/images/icons/gear-solid.svg" alt="Type" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                Item Types
+            </a>
+            
+            <a href="itemCategories" class="${page == 'settings' ? 'active' : ''}">
+                <img src="resources/images/icons/gear-solid.svg" alt="Type" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                Item Categories
+            </a>
+            
+            <a href="maintenanceSchedule" class="${page == 'settings' ? 'active' : ''}">
+                <img src="resources/images/icons/gear-solid.svg" alt="Type" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                Maintenance
+            </a>
+            
             <a href="settings" class="${page == 'settings' ? 'active' : ''}">
                 <img src="resources/images/icons/gear-solid.svg" alt="Settings" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Settings
             </a>
+             
         </div>
         <div class="todo-list">
             <div class="d-flex justify-content-between align-items-center">
