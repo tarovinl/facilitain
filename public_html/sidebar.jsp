@@ -14,7 +14,62 @@
  
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./resources/css/sidebar.css">
-    
+    <style>
+.maintenance-container {
+    margin: 10px 0;
+}
+
+.maintenance-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.maintenance-header:hover {
+    background-color: #444;
+    border-radius: 5px;
+}
+
+.maintenance-header i {
+    transition: transform 0.3s;
+}
+
+.maintenance-items {
+    display: none;
+    background-color: #3c3c3c;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.maintenance-items a {
+    padding: 8px 15px;
+    color: white;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+.maintenance-items a:hover {
+    background-color: #4a4a4a;
+}
+
+.maintenance-items a.active {
+    background-color: #ffca2c;
+    color: black;
+}
+
+/* Class for when menu is open */
+.maintenance-container.open .maintenance-items {
+    display: block;
+}
+
+.maintenance-container.open .maintenance-header i {
+    transform: rotate(180deg);
+}
+</style>
 </head>
 <body>
     <div class="sidebar">
@@ -59,20 +114,25 @@
                 <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Map View
             </a>-->
-            <a href="itemType" class="${page == 'settings' ? 'active' : ''}">
-                <img src="resources/images/icons/gear-solid.svg" alt="Type" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Item Types
-            </a>
-            
-            <a href="itemCategories" class="${page == 'settings' ? 'active' : ''}">
-                <img src="resources/images/icons/gear-solid.svg" alt="Type" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Item Categories
-            </a>
-            
-            <a href="maintenanceSchedule" class="${page == 'settings' ? 'active' : ''}">
-                <img src="resources/images/icons/gear-solid.svg" alt="Type" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Maintenance
-            </a>
+ <div class="maintenance-container">
+            <div class="maintenance-header">
+                <img src="resources/images/icons/gear-solid.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                <span>Maintenance</span>
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </div>
+            <div class="maintenance-items">
+                <a href="itemType" class="${page == 'itemType' ? 'active' : ''}">
+                    <span class="ps-4">Item Types</span>
+                </a>
+                <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}">
+                    <span class="ps-4">Item Categories</span>
+                </a>
+                <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
+                    <span class="ps-4">Item Schedule</span>
+                </a>
+            </div>
+        </div>
+
             
             <a href="settings" class="${page == 'settings' ? 'active' : ''}">
                 <img src="resources/images/icons/gear-solid.svg" alt="Settings" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
@@ -256,6 +316,14 @@
 //                ]
 //            });
 //        });
+  const maintenanceDropdown = document.querySelector('.maintenance-dropdown');
+        maintenanceDropdown.addEventListener('click', function() {
+            const arrow = this.querySelector('.dropdown-arrow');
+            arrow.style.transform = this.getAttribute('aria-expanded') === 'true' ? 'rotate(0deg)' : 'rotate(90deg)';
+        });
+    });
+
+
 document.addEventListener("DOMContentLoaded", function() {
     fetch('/FMOCapstone/homepage/checkNotifications')
         .then(response => response.json())
@@ -342,6 +410,14 @@ document.querySelector('form').addEventListener('submit', function(event) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     
   <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const maintenanceHeader = document.querySelector('.maintenance-header');
+    const maintenanceContainer = document.querySelector('.maintenance-container');
+    
+    maintenanceHeader.addEventListener('click', function() {
+        maintenanceContainer.classList.toggle('open');
+    });
+});
 document.addEventListener('DOMContentLoaded', function() {
     // Create hamburger menu button
     const hamburgerMenu = document.createElement('button');
