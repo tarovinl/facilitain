@@ -138,26 +138,6 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-<script>
-window.onload = function() {
-    fetch('/FMOCapstone/homepage/checkNotifications')
-        .then(response => response.json())
-        .then(data => {
-            console.log("Fetched data:", data); // Ensure the data is logged correctly
-            const unreadCount = data.unreadCount;
-            if (unreadCount > 0) {
-                // Show popup with the number of unread notifications
-                document.getElementById('notificationMessage').textContent = "You have " + unreadCount + " unread notifications!";
-                $('#notificationPopup').modal('show');
-            } else {
-                console.log("No unread notifications.");
-            }
-        })
-        .catch(error => {
-            console.error('Error checking notifications:', error);
-        });
-};
 
-</script>
 </body>
 </html>
