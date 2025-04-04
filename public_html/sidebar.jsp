@@ -69,6 +69,17 @@
 .maintenance-container.open .maintenance-header i {
     transform: rotate(180deg);
 }
+
+
+#notificationBadge {
+    position: relative;
+    padding: 0.25em 0.6em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    vertical-align: middle;
+    border-radius: 50%;
+    display: inline-block;
+}
 </style>
 </head>
 <body>
@@ -88,12 +99,12 @@
                 <img src="resources/images/icons/house.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Homepage
             </a>
-            <a href="notification" class="${page == 'notification' ? 'active' : ''}">
-                 <img src="resources/images/icons/bell-solid.svg" alt="Notifications" class="icon pe-2" 
-                    style="width: 2em; height: 2em; vertical-align: middle;">
+            <a href="notification" class="${page == 'notification' ? 'active' : ''}" style="position: relative;">
+             <img src="resources/images/icons/bell-solid.svg" alt="Notifications" class="icon pe-2" 
+                 style="width: 2em; height: 2em; vertical-align: middle;">
                 Notifications 
-                <span id="notificationBadge" class="badge bg-warning text-dark ms-2" style="display: none;">0</span>
-            </a>        
+            <span id="notificationBadge" class="badge bg-warning text-dark ms-2">0</span>
+            </a>     
             <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
                 <img src="resources/images/icons/calendar-solid.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Calendar
@@ -410,6 +421,36 @@ document.querySelector('form').addEventListener('submit', function(event) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     
   <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Initialize the notification badge as hidden
+    const badge = document.getElementById('notificationBadge');
+    badge.style.display = 'none';
+    
+    // Fetch notification count
+    fetch('/FMOCapstone/homepage/checkNotifications')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const unreadCount = data.unreadCount;
+            
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching notification count:', error);
+            // For testing - remove in production
+            // badge.textContent = "3";
+            // badge.style.display = 'inline-block';
+        });
+});
   document.addEventListener('DOMContentLoaded', function() {
     const maintenanceHeader = document.querySelector('.maintenance-header');
     const maintenanceContainer = document.querySelector('.maintenance-container');
