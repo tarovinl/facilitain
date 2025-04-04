@@ -149,19 +149,19 @@ function generateReport() {
         format: 'a4'
     });
 
-    // Get current date from JSP
+    // Get current date from JSP (not even working)
     const reportDate = '<%= new java.text.SimpleDateFormat("MMMM dd, yyyy").format(new java.util.Date()) %>';
     
-    // Add dark grey header with ONLY UST logo
+  
     doc.setFillColor(51, 51, 51);
     doc.rect(0, 0, 210, 20, 'F');
     
-    // Add UST logo only (no text)
+   
     const logoImg = new Image();
     logoImg.src = 'resources/images/USTLogo.png';
     logoImg.onload = function() {
-        // Centered logo placement (wider version)
-        doc.addImage(logoImg, 'PNG', (210-60)/2, 2, 60, 15); // 60mm wide, centered
+        // Left-aligned logo (15mm from left, 50mm width)
+        doc.addImage(logoImg, 'PNG', 15, 2, 50, 15);
         
         // Main content starts below header
         const contentStartY = 25;
@@ -171,93 +171,157 @@ function generateReport() {
         doc.setTextColor(0, 0, 0);
         doc.text(`${locName}`, 105, contentStartY + 10, {align: 'center'});
         
-        // Capture and add pie chart (left-aligned with proper margins)
+        // Add "Pending Maintenance" label above pie chart
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text("Pending Maintenance", 105, contentStartY + 25, {align: 'center'});
+        doc.setFont(undefined, 'normal');
+        
+        // Capture and add pie chart with proper margins
         const pieChartDiv = document.getElementById('pendingMainChart');
         
         // Set temporary dimensions for capture
-        const originalWidth = pieChartDiv.style.width;
-        const originalHeight = pieChartDiv.style.height;
+        const originalStyles = {
+            width: pieChartDiv.style.width,
+            height: pieChartDiv.style.height,
+            overflow: pieChartDiv.style.overflow
+        };
         pieChartDiv.style.width = '300px';
         pieChartDiv.style.height = '300px';
+        pieChartDiv.style.overflow = 'visible';
         
         html2canvas(pieChartDiv, {
-            scale: 2,
+            scale: 3, 
             logging: false,
             useCORS: true,
             width: 300,
             height: 300,
-            backgroundColor: null // Transparent background
+            backgroundColor: null,
+            windowWidth: 300,
+            windowHeight: 300
         }).then(canvas => {
-            // Restore original dimensions
-            pieChartDiv.style.width = originalWidth;
-            pieChartDiv.style.height = originalHeight;
+           
+            pieChartDiv.style.width = originalStyles.width;
+            pieChartDiv.style.height = originalStyles.height;
+            pieChartDiv.style.overflow = originalStyles.overflow;
             
-            // Create perfect circle with padding
-            const size = Math.min(canvas.width, canvas.height);
-            const paddedSize = size * 1.2; // Add 20% padding
-            const squareCanvas = document.createElement('canvas');
-            squareCanvas.width = paddedSize;
-            squareCanvas.height = paddedSize;
-            const ctx = squareCanvas.getContext('2d');
+            // Create canvas with extra padding
+            const padding = 50; // Extra padding to prevent cutoff
+            const paddedCanvas = document.createElement('canvas');
+            paddedCanvas.width = canvas.width + padding * 2;
+            paddedCanvas.height = canvas.height + padding * 2;
+            const ctx = paddedCanvas.getContext('2d');
             
-            // Draw white background
+           
             ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, paddedSize, paddedSize);
+            ctx.fillRect(0, 0, paddedCanvas.width, paddedCanvas.height);
             
-            // Draw centered pie chart
+            // Draw centered pie chart with padding
             ctx.drawImage(
                 canvas,
-                (canvas.width - size)/2,
-                (canvas.height - size)/2,
-                size,
-                size,
-                (paddedSize - size)/2,
-                (paddedSize - size)/2,
-                size,
-                size
+                0,
+                0,
+                canvas.width,
+                canvas.height,
+                padding,
+                padding,
+                canvas.width,
+                canvas.height
             );
             
-            const pieChartImg = squareCanvas.toDataURL('image/png');
+            const pieChartImg = paddedCanvas.toDataURL('image/png');
             
-            // Add pie chart (left-aligned with 20mm margin)
-            doc.addImage(pieChartImg, 'PNG', 20, contentStartY + 20, 80, 80);
+       
+            doc.addImage(pieChartImg, 'PNG', 20, contentStartY + 30, 80, 80);
             
-            // Add percentage labels (right of pie chart)
-            doc.setFontSize(12);
-            doc.text("100%", 110, contentStartY + 60);
+       
+            const legendStartX = 110;
+            let legendStartY = contentStartY + 40;
+            const legendItemHeight = 6;
             
-            // Add repairs table (full width below)
-            const tableStartY = contentStartY + 110;
+           
+            const colors = [
+                {r: 66, g: 133, b: 244},   // Blue
+                {r: 234, g: 67, b: 53},     // Red
+                {r: 251, g: 188, b: 5},     // Yellow
+                {r: 52, g: 168, b: 83},     // Green
+                {r: 168, g: 50, b: 150},     // Purple
+                {r: 235, g: 122, b: 40}      // Orange
+            ];
+            
+            // Get the pie chart data to create the legend
+            <c:forEach var="category" items="${FMO_CATEGORIES_LIST}" varStatus="status">
+                <c:set var="itemCount" value="0" />
+                <c:forEach var="itemz" items="${FMO_ITEMS_LIST}">
+                    <c:if test="${itemz.itemLID == locID2}">
+                        <c:set var="itemCID" value="" />
+                        <c:forEach var="type" items="${FMO_TYPES_LIST}">
+                            <c:if test="${type.itemTID == itemz.itemTID}">
+                                <c:forEach var="cat" items="${FMO_CATEGORIES_LIST}">
+                                    <c:if test="${cat.itemCID == type.itemCID}">
+                                        <c:set var="itemCID" value="${cat.itemCID}" />            
+                                    </c:if>
+                                </c:forEach>
+                            </c:if>
+                        </c:forEach>
+                        <c:if test="${category.itemCID == itemCID}">
+                            <c:if test="${itemz.itemArchive == 1}">
+                                <c:if test="${itemz.itemMaintStat == 2}">
+                                    <c:set var="itemCount" value="${itemCount + 1}" />
+                                </c:if>
+                            </c:if>
+                        </c:if>
+                    </c:if>
+                </c:forEach>
+                
+                <c:if test="${itemCount > 0}">
+                    // Draw color box
+                    const colorIndex = ${status.index} % colors.length;
+                    doc.setFillColor(
+                        colors[colorIndex].r,
+                        colors[colorIndex].g,
+                        colors[colorIndex].b
+                    );
+                    doc.rect(legendStartX, legendStartY, 4, 4, 'F');
+                    
+                    // Add category name and count
+                    doc.setFontSize(10);
+                    doc.setTextColor(0, 0, 0); // Black text
+                    doc.text(`${category.itemCat} (${itemCount})`, legendStartX + 6, legendStartY + 3);
+                    
+                    // Move to next line
+                    legendStartY += legendItemHeight;
+                </c:if>
+            </c:forEach>
+            
+            
+            const tableStartY = contentStartY + 120;
             doc.setFontSize(14);
             doc.setFont(undefined, 'bold');
             doc.text("Repairs per Month", 105, tableStartY - 5, {align: 'center'});
             doc.setFont(undefined, 'normal');
             
-            // Create repairs table data
-            const headers = ["Month", "Number of Repairs"];
-            const tableData = [
-                <c:forEach var="month" items="${monthsList}" varStatus="status">
-                    <c:set var="repairCount" value="0" />
-                    <c:set var="monthNumber" value="${status.index + 1}" />
-                    <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
-                        <c:if test="${repair.repairLocID == locID2}">
-                            <c:if test="${repair.repairYear == currentYear}">
-                                <c:if test="${repair.repairMonth == monthNumber}">
-                                    <c:set var="repairCount" value="${repair.repairCount}" />
-                                </c:if>
-                            </c:if>
-                        </c:if>
-                    </c:forEach>
-                    ['${month}', '${repairCount}'],
-                </c:forEach>
-            ];
-            
-            // Full-width table configuration
+            // Create and add full-width table
             doc.autoTable({
                 startY: tableStartY,
-                margin: {left: 20, right: 20}, // 20mm margins
-                head: [headers],
-                body: tableData,
+                margin: {left: 20, right: 20},
+                head: [["Month", "Number of Repairs"]],
+                body: [
+                    <c:forEach var="month" items="${monthsList}" varStatus="status">
+                        <c:set var="repairCount" value="0" />
+                        <c:set var="monthNumber" value="${status.index + 1}" />
+                        <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
+                            <c:if test="${repair.repairLocID == locID2}">
+                                <c:if test="${repair.repairYear == currentYear}">
+                                    <c:if test="${repair.repairMonth == monthNumber}">
+                                        <c:set var="repairCount" value="${repair.repairCount}" />
+                                    </c:if>
+                                </c:if>
+                            </c:if>
+                        </c:forEach>
+                        ['${month}', '${repairCount}'],
+                    </c:forEach>
+                ],
                 theme: 'grid',
                 headStyles: {
                     fillColor: [51, 51, 51],
@@ -267,27 +331,26 @@ function generateReport() {
                 styles: {
                     cellPadding: 5,
                     fontSize: 11,
-                    valign: 'middle',
-                    halign: 'center'
+                    valign: 'middle'
                 },
                 columnStyles: {
-                    0: { cellWidth: 'auto', halign: 'left' },
-                    1: { cellWidth: 'auto', halign: 'center' }
-                },
-                tableWidth: 'auto' // Use full available width
+                    0: { halign: 'left', cellWidth: 'auto' },
+                    1: { halign: 'center', cellWidth: 'auto' }
+                }
             });
             
             // Save the PDF
             doc.save('${locName}_Maintenance_Report.pdf');
+        }).catch(error => {
+            console.error('Error generating PDF:', error);
+            alert('Error generating PDF. Please check console for details.');
         });
     };
 }
 
-// Attach event listener
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.buttonsBuilding:nth-child(2)').addEventListener('click', generateReport);
 });
-
         </script>
     </head>
     <body>
