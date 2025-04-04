@@ -20,7 +20,9 @@ public class buildingController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, java.io.IOException {
-
+        
+        String action = "";
+        String status = "success";
 
         request.setCharacterEncoding("UTF-8");
         String locId = request.getParameter("locID");
@@ -93,8 +95,10 @@ public class buildingController extends HttpServlet {
                                         }
                                     }
                                 }
+                                
+                                action = "building_modify";
 
-                                response.sendRedirect("buildingDashboard?locID=" + locId);
+                                response.sendRedirect("buildingDashboard?locID=" + locId + "/edit&action=" + action + "&status=" + status);
                             } else {
                                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Location not found in FMO_ITEM_LOCATIONS");
                             }

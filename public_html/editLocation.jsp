@@ -26,6 +26,9 @@
           <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
          crossorigin=""></script>
+         
+         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
+         <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     </head>
     
     <%
@@ -114,8 +117,9 @@
             <div class="row">
                 <div class="col" id="parentMap">
                     <label for="mapCoord" class="form-label fw-bold h4">Choose your location:</label>
+                    <h6 class="text-secondary fw-normal">Click on the map to choose the location's area. Click the Reset button to undo.</h6>
                     <input type="hidden" class="form-control" id="mapCoord" name="mapCoord">
-                    <div id="map" style="width: 100%; height: 280px; border-radius:5px;"></div>
+                    <div id="map" style="width: 100%; height: 256px; border-radius:5px;"></div>
                 </div>           
             </div> 
         </div>
@@ -466,6 +470,19 @@
                 });
             </script>
 <script>
+    var customIcon = L.divIcon({
+        className: 'custom-marker',
+        html: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="50" viewBox="0 0 30 50">
+                <path fill="#fccc4c" stroke="#000" stroke-width="2"
+                    d="M15 1c-7.5 0-13.5 6-13.5 13.5S15 49 15 49s13.5-21.5 13.5-34C28.5 7 22.5 1 15 1z"/>
+                <circle cx="15" cy="14" r="5" fill="#000"/>
+            </svg>`,
+        iconSize: [30, 50], 
+        iconAnchor: [15, 50], 
+        popupAnchor: [0, -50] 
+    })
+
     var map = L.map('map').setView([14.610032805621275, 120.99003889129173], 18); // Center the map (latitude, longitude, zoom level)
     var marker;
     
@@ -481,12 +498,12 @@
         if (marker) {
             map.removeLayer(marker);
         }
-        marker = L.marker([lat, lng]).addTo(map);
+        marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
         document.getElementById('mapCoord').value = lat + ',' + lng;
     });
     <c:forEach var="mapItem" items="${FMO_MAP_LIST}">
     <c:if test="${mapItem.itemLocId == locID}">
-    L.marker([${mapItem.latitude}, ${mapItem.longitude}]) //csen
+    L.marker([${mapItem.latitude}, ${mapItem.longitude}], { icon: customIcon }) //csen
         .addTo(map)
         .bindPopup('Original Location'); // Static link
     </c:if>
@@ -535,6 +552,62 @@
     }
 
 </script>
+
+<script>
+  // Helper function to get query parameter by name
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // Get action and status from URL parameters
+  const action = getQueryParam('action');
+  const status = getQueryParam('status');
+
+  // Trigger SweetAlert2 Toast based on action and status
+  if (status === 'success') {
+    let toastMessage = '';
+    
+    switch (action) {
+      case 'floor_add':
+        toastMessage = 'The floor was added successfully.';
+        break;
+      case 'floor_update':
+        toastMessage = 'The floor was updated successfully.';
+        break;
+      case 'floor_archive':
+        toastMessage = 'The floor was archived successfully.';
+        break;
+      case 'building_modify':
+        toastMessage = 'The location was updated successfully.';
+        break;
+      default:
+        toastMessage = 'Operation completed successfully.';
+        break;
+    }
+
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: toastMessage,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+  } else if (status === 'error') {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'An error occurred while processing your request.',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+  }
+</script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
