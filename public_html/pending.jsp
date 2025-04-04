@@ -23,6 +23,39 @@
         table.dataTable tbody td {
             vertical-align: middle;
         }
+        .equal-height {
+            display: flex;
+            flex-direction: column;
+        }
+        .equal-height .card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .equal-height .card-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+        /* Changed class name to avoid conflict with sidebar */
+        .dashboard-maintenance-container {
+            display: flex;
+            min-height: 500px;
+        }
+        #maintenanceTable_wrapper .row:first-child {
+            margin-bottom: 10px;
+        }
+        #maintenanceTable_wrapper .row:last-child {
+            margin-top: 10px;
+        }
+        #maintenanceTable tbody tr {
+            cursor: pointer;
+        }
+        #maintenanceTable tbody tr:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        #maintenanceTable tbody tr.selected {
+            background-color: rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -50,9 +83,10 @@
                 </div>
 
                 <!-- Maintenance Dashboard Panels -->
-                <div class="row">
+                <!-- Changed class name from maintenance-container to dashboard-maintenance-container -->
+                <div class="row dashboard-maintenance-container">
                     <!-- Maintenance List Panel -->
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-lg-6 mb-4 equal-height">
                         <div class="card shadow-sm">
                             <div class="card-header bg-white">
                                 <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">Maintenance</h5>
@@ -64,60 +98,34 @@
                                             <th>Equipment</th>
                                             <th>Status</th>
                                             <th>Date Notified</th>
-                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <!-- Static data for demonstration -->
-                                        <tr>
+                                        <tr data-id="1" data-equipment="Fire Extinguisher" data-status="In Progress" data-serial="09222222" data-brand="XYZ Fire Safety" data-location="Building A, Floor 1">
                                             <td>Fire Extinguisher</td>
                                             <td>In Progress</td>
                                             <td>02/03/2025</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-secondary view-details" data-id="1">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </button>
-                                            </td>
                                         </tr>
-                                        <tr>
+                                        <tr data-id="2" data-equipment="Aircon" data-status="Needs Maintenance" data-serial="AC78945" data-brand="CoolSys 5000" data-location="Building B, Room 203">
                                             <td>Aircon</td>
                                             <td>Needs Maintenance</td>
                                             <td>02/03/2025</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-secondary view-details" data-id="2">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </button>
-                                            </td>
                                         </tr>
-                                        <tr>
+                                        <tr data-id="3" data-equipment="Elevator" data-status="Completed" data-serial="EL12345" data-brand="LiftTech Pro" data-location="Main Building">
                                             <td>Elevator</td>
                                             <td>Completed</td>
                                             <td>01/25/2025</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-secondary view-details" data-id="3">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </button>
-                                            </td>
                                         </tr>
-                                        <tr>
+                                        <tr data-id="4" data-equipment="HVAC System" data-status="Pending Parts" data-serial="HVAC7890" data-brand="AirFlow Systems" data-location="Building C">
                                             <td>HVAC System</td>
                                             <td>Pending Parts</td>
                                             <td>01/15/2025</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-secondary view-details" data-id="4">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </button>
-                                            </td>
                                         </tr>
-                                        <tr>
+                                        <tr data-id="5" data-equipment="Plumbing System" data-status="In Progress" data-serial="PS54321" data-brand="FlowMaster" data-location="Building D, Basement">
                                             <td>Plumbing System</td>
                                             <td>In Progress</td>
                                             <td>03/02/2025</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-secondary view-details" data-id="5">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </button>
-                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -126,7 +134,7 @@
                     </div>
 
                     <!-- Maintain Details Panel -->
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-lg-6 mb-4 equal-height">
                         <div class="card shadow-sm">
                             <div class="card-header bg-white">
                                 <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">Maintain</h5>
@@ -136,19 +144,23 @@
                                 <div id="equipmentDetails">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Equipment</label>
-                                        <div>Fire Extinguisher</div>
+                                        <div id="detailEquipment">Fire Extinguisher</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Status</label>
+                                        <div id="detailStatus">In Progress</div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Serial Number</label>
-                                        <div>09222222 (serial)</div>
+                                        <div id="detailSerial">09222222</div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Brand Model</label>
-                                        <div>09222222 (serial)</div>
+                                        <div id="detailBrand">XYZ Fire Safety</div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Location</label>
-                                        <div>Building</div>
+                                        <div id="detailLocation">Building A, Floor 1</div>
                                     </div>
                                     <div class="d-grid gap-2 mt-4">
                                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateStatusModal">
@@ -226,7 +238,7 @@
                             <option value="" selected disabled>Select Status</option>
                             <option value="In Progress">In Progress</option>
                             <option value="Completed">Completed</option>
-                            <option value="Needs Replacement">Needs Replacement</option>
+                            <option value="Needs Maintenance">Needs Maintenance</option>
                             <option value="Pending Parts">Pending Parts</option>
                         </select>
                     </div>
@@ -257,7 +269,7 @@
 <script>
     $(document).ready(function() {
         // Initialize DataTable
-        $('#maintenanceTable').DataTable({
+        var maintenanceTable = $('#maintenanceTable').DataTable({
             responsive: true,
             order: [[2, 'desc']], // Sort by Date Notified in descending order
             language: {
@@ -271,21 +283,58 @@
                     previous: "Previous"
                 }
             },
-            columnDefs: [
-                { targets: -1, orderable: false } // Disable sorting for the actions column
-            ]
+            pageLength: 5, // Show 5 entries per page to match panel height
+            lengthMenu: [5, 10, 25, 50]
         });
 
-        // Handle view details button clicks
-        $('.view-details').on('click', function() {
+        // Ensure equal heights of both panels
+        function equalizeCardHeights() {
+            var windowWidth = $(window).width();
+            if (windowWidth >= 992) { // Only on desktop
+                setTimeout(function() {
+                    var leftPanelHeight = $('.equal-height:first-child .card').outerHeight();
+                    $('.equal-height:last-child .card').css('min-height', leftPanelHeight + 'px');
+                }, 100);
+            } else {
+                $('.equal-height:last-child .card').css('min-height', '');
+            }
+        }
+
+        // Run on initial load
+        equalizeCardHeights();
+
+        // Run when window is resized or DataTable page is changed
+        $(window).resize(equalizeCardHeights);
+        maintenanceTable.on('draw', equalizeCardHeights);
+
+        // Handle row clicks to show details
+        $('#maintenanceTable tbody').on('click', 'tr', function() {
             const equipmentId = $(this).data('id');
-            // In a real application, you would fetch the details via AJAX
-            // For this example, we'll just update the hidden input in the update modal
+            const equipment = $(this).data('equipment');
+            const status = $(this).data('status');
+            const serial = $(this).data('serial');
+            const brand = $(this).data('brand');
+            const location = $(this).data('location');
+            
+            // Update the hidden input for the update modal
             $('#updateEquipmentId').val(equipmentId);
             
-            // Here you would typically update the equipment details panel
-            // with data from the server based on the equipmentId
+            // Update equipment details in the right panel
+            $('#detailEquipment').text(equipment);
+            $('#detailStatus').text(status);
+            $('#detailSerial').text(serial);
+            $('#detailBrand').text(brand);
+            $('#detailLocation').text(location);
+            
+            // Highlight the selected row
+            if (!$(this).hasClass('selected')) {
+                maintenanceTable.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
         });
+        
+        // Select the first row by default
+        $('#maintenanceTable tbody tr:first').trigger('click');
     });
 </script>
 
