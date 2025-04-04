@@ -117,8 +117,9 @@
             <div class="row">
                 <div class="col" id="parentMap">
                     <label for="mapCoord" class="form-label fw-bold h4">Choose your location:</label>
+                    <h6 class="text-secondary fw-normal">Click on the map to choose the location's area. Click the Reset button to undo.</h6>
                     <input type="hidden" class="form-control" id="mapCoord" name="mapCoord">
-                    <div id="map" style="width: 100%; height: 280px; border-radius:5px;"></div>
+                    <div id="map" style="width: 100%; height: 256px; border-radius:5px;"></div>
                 </div>           
             </div> 
         </div>
@@ -469,6 +470,19 @@
                 });
             </script>
 <script>
+    var customIcon = L.divIcon({
+        className: 'custom-marker',
+        html: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="50" viewBox="0 0 30 50">
+                <path fill="#fccc4c" stroke="#000" stroke-width="2"
+                    d="M15 1c-7.5 0-13.5 6-13.5 13.5S15 49 15 49s13.5-21.5 13.5-34C28.5 7 22.5 1 15 1z"/>
+                <circle cx="15" cy="14" r="5" fill="#000"/>
+            </svg>`,
+        iconSize: [30, 50], 
+        iconAnchor: [15, 50], 
+        popupAnchor: [0, -50] 
+    })
+
     var map = L.map('map').setView([14.610032805621275, 120.99003889129173], 18); // Center the map (latitude, longitude, zoom level)
     var marker;
     
@@ -484,12 +498,12 @@
         if (marker) {
             map.removeLayer(marker);
         }
-        marker = L.marker([lat, lng]).addTo(map);
+        marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
         document.getElementById('mapCoord').value = lat + ',' + lng;
     });
     <c:forEach var="mapItem" items="${FMO_MAP_LIST}">
     <c:if test="${mapItem.itemLocId == locID}">
-    L.marker([${mapItem.latitude}, ${mapItem.longitude}]) //csen
+    L.marker([${mapItem.latitude}, ${mapItem.longitude}], { icon: customIcon }) //csen
         .addTo(map)
         .bindPopup('Original Location'); // Static link
     </c:if>

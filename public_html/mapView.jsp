@@ -58,7 +58,20 @@
         mapContainer.style.height = width+'px';  // Set the height to match the width (square)
         map.invalidateSize();  // Update Leaflet map size
     }
-      
+    
+    var customIcon = L.divIcon({
+        className: 'custom-marker',
+        html: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="50" viewBox="0 0 30 50">
+                <path fill="#fccc4c" stroke="#000" stroke-width="2"
+                    d="M15 1c-7.5 0-13.5 6-13.5 13.5S15 49 15 49s13.5-21.5 13.5-34C28.5 7 22.5 1 15 1z"/>
+                <circle cx="15" cy="14" r="5" fill="#000"/>
+            </svg>`,
+        iconSize: [30, 50], 
+        iconAnchor: [15, 50], 
+        popupAnchor: [0, -50] 
+    })
+
     var map = L.map('map').setView([14.610032805621275, 120.99003889129173], 18); // Center the map (latitude, longitude, zoom level)
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -67,7 +80,7 @@
     
     
     <c:forEach var="mapItem" items="${FMO_MAP_LIST}">
-    L.marker([${mapItem.latitude}, ${mapItem.longitude}]) //csen
+    L.marker([${mapItem.latitude}, ${mapItem.longitude}], { icon: customIcon }) //csen
         .addTo(map)
         .bindPopup('<a href="./buildingDashboard?locID=${mapItem.itemLocId}" target="_blank"><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locName}</c:if></c:forEach></a>'); // Static link
     </c:forEach>   
