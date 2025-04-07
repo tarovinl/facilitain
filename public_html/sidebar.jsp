@@ -460,15 +460,23 @@ document.querySelector('form').addEventListener('submit', function(event) {
     });
 });
 document.addEventListener('DOMContentLoaded', function() {
-    // Create hamburger menu button
-    const hamburgerMenu = document.createElement('button');
-    hamburgerMenu.classList.add('hamburger-menu');
-    hamburgerMenu.innerHTML = `
-        <span></span>
-        <span></span>
-        <span></span>
-    `;
-    document.body.prepend(hamburgerMenu);
+    // Create arrow toggle button with SVG arrow
+    const toggleButton = document.createElement('button');
+    toggleButton.classList.add('hamburger-menu');
+    
+    // Create SVG arrow
+    const svgArrow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgArrow.setAttribute("width", "16");
+    svgArrow.setAttribute("height", "16");
+    svgArrow.setAttribute("fill", "white");
+    svgArrow.setAttribute("viewBox", "0 0 16 16");
+    
+    const arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    arrowPath.setAttribute("d", "M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z");
+    svgArrow.appendChild(arrowPath);
+    
+    toggleButton.appendChild(svgArrow);
+    document.body.prepend(toggleButton);
 
     // Create overlay
     const overlay = document.createElement('div');
@@ -481,16 +489,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function toggleSidebar() {
         sidebar.classList.toggle('active');
         overlay.classList.toggle('active');
+        
+        // Change arrow direction
+        if (sidebar.classList.contains('active')) {
+            arrowPath.setAttribute("d", "M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z");
+        } else {
+            arrowPath.setAttribute("d", "M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z");
+        }
     }
 
     // Event listeners
-    hamburgerMenu.addEventListener('click', toggleSidebar);
+    toggleButton.addEventListener('click', toggleSidebar);
     overlay.addEventListener('click', toggleSidebar);
 
-    // Close sidebar when a link is clicked
-    sidebar.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', toggleSidebar);
-    });
+    // Close sidebar when a link is clicked on mobile
+    if (window.innerWidth <= 800) {
+        sidebar.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', toggleSidebar);
+        });
+    }
 });
 </script>
 </body>
