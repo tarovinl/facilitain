@@ -101,17 +101,17 @@
     background-color: var(--bs-primary);
 }
 
-/* Arrow Toggle Button - Replacing Hamburger */
+/* Arrow Toggle Button - Vertically centered */
 .hamburger-menu {
-    display: none;
     position: fixed;
-    top: 80px;
-    left: 0;
+    top: 20%; /* Center vertically */
+    transform: translateY(-50%); /* Perfect vertical centering */
+    left: 0; /* Position at the very edge */
     z-index: 1100;
     background-color: #2c2c2c;
     border: none;
     cursor: pointer;
-    width: 30px;
+    width: 20px; /* Narrower width */
     height: 50px;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
@@ -119,11 +119,24 @@
     align-items: center;
     justify-content: center;
     box-shadow: 2px 0 5px rgba(0,0,0,0.3);
-    transition: background-color 0.3s ease;
+    transition: left 0.3s ease; /* Match sidebar transition */
+    padding: 0;
+}
+
+/* When sidebar is active, move the button */
+.sidebar.active ~ .hamburger-menu {
+    left: 250px; /* Match sidebar width */
 }
 
 .hamburger-menu:hover {
     background-color: #444;
+}
+
+/* SVG Arrow styles */
+.arrow-icon {
+    width: 12px;
+    height: 12px;
+    fill: white;
 }
 
 /* Responsive Design */

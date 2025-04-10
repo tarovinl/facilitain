@@ -460,30 +460,38 @@ document.querySelector('form').addEventListener('submit', function(event) {
     });
 });
 document.addEventListener('DOMContentLoaded', function() {
-    // Create arrow toggle button with SVG arrow
+    // Create arrow toggle button 
     const toggleButton = document.createElement('button');
     toggleButton.classList.add('hamburger-menu');
     
-    // Create SVG arrow
-    const svgArrow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svgArrow.setAttribute("width", "16");
-    svgArrow.setAttribute("height", "16");
-    svgArrow.setAttribute("fill", "white");
-    svgArrow.setAttribute("viewBox", "0 0 16 16");
+    // Create modern material design arrow icon
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", "14");
+    svg.setAttribute("height", "14");
+    svg.classList.add("arrow-icon");
+    svg.style.fill = "none";
+    svg.style.stroke = "white";
+    svg.style.strokeWidth = "2";
+    svg.style.strokeLinecap = "round";
+    svg.style.strokeLinejoin = "round";
     
-    const arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    arrowPath.setAttribute("d", "M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z");
-    svgArrow.appendChild(arrowPath);
+    // Create arrow using polyline for a cleaner look
+    const polyline = document.createElementNS(svgNS, "polyline");
+    polyline.setAttribute("points", "9 18 15 12 9 6");
+    svg.appendChild(polyline);
     
-    toggleButton.appendChild(svgArrow);
-    document.body.prepend(toggleButton);
-
+    toggleButton.appendChild(svg);
+    
+    // Get the sidebar and add toggle button after it
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.parentNode.insertBefore(toggleButton, sidebar.nextSibling);
+    
     // Create overlay
     const overlay = document.createElement('div');
     overlay.classList.add('sidebar-overlay');
     document.body.prepend(overlay);
-
-    const sidebar = document.querySelector('.sidebar');
     
     // Toggle sidebar function
     function toggleSidebar() {
@@ -492,9 +500,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Change arrow direction
         if (sidebar.classList.contains('active')) {
-            arrowPath.setAttribute("d", "M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z");
+            // Left-pointing arrow when sidebar is open
+            polyline.setAttribute("points", "15 18 9 12 15 6");
         } else {
-            arrowPath.setAttribute("d", "M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z");
+            // Right-pointing arrow when sidebar is closed
+            polyline.setAttribute("points", "9 18 15 12 9 6");
         }
     }
 
@@ -505,7 +515,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close sidebar when a link is clicked on mobile
     if (window.innerWidth <= 800) {
         sidebar.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', toggleSidebar);
+            link.addEventListener('click', function() {
+                if (sidebar.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            });
         });
     }
 });
