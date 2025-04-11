@@ -383,26 +383,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                  data-last-maintenance-date="${item.lastMaintDate}" 
                                  data-no-of-days="${maint.noOfDays}" 
                                  data-no-of-days-warning="${maint.noOfDaysWarning}">
-                                <div>
-                                    <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
-                                </div>
-                                <div>
-                                <h4 class="activity-text">
+                                <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
+                                <h3 class="activity-text">
                                     Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} in <span class="remaining-days">calculating...</span> days.
-                                </h4>
-                                <h6 class="activity-text">
-                                    <c:forEach items="${FMO_TYPES_LIST}" var="type">
-                                    <c:if test="${type.itemTID == item.itemTID}">
-                                            <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
-                                            <c:if test="${type.itemCID == cat.itemCID}">
-                                                ${cat.itemCat}
-                                            </c:if>
-                                            </c:forEach>
-                                         - ${type.itemType}
-                                    </c:if>
-                                    </c:forEach>
-                                </h6>
-                                </div>
+                                </h3>
                             </div>
             
                         </c:if>
@@ -427,26 +411,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             <%-- Pass data to HTML elements using data-* attributes --%>
                             <div class="actItem"
                                  data-last-maintenance-date="${item.lastMaintDate}">
-                                <div>
-                                    <img src="resources/images/greenDot.png" alt="activity status indicator" width="28" height="28">
-                                </div>
-                                <div>
-                                    <h4 class="activity-text">
-                                        Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
-                                    </h4>
-                                    <h6>
-                                        <c:forEach items="${FMO_TYPES_LIST}" var="type">
-                                        <c:if test="${type.itemTID == item.itemTID}">
-                                                <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
-                                                <c:if test="${type.itemCID == cat.itemCID}">
-                                                    ${cat.itemCat}
-                                                </c:if>
-                                                </c:forEach>
-                                             - ${type.itemType}
-                                        </c:if>
-                                        </c:forEach>
-                                    </h6>
-                                </div>
+                                <img src="resources/images/greenDot.png" alt="activity status indicator" width="28" height="28">
+                                <h3 class="activity-text">
+                                    Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
+                                </h3>
                             </div>
                         </c:if>
                     </c:if>    
@@ -525,7 +493,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
                 const daysRemaining = noOfDays - daysSinceLastMaintenance;
                 
-                console.log(daysRemaining);
+                console.log('UA daysSinceLastMaintenance:', daysSinceLastMaintenance);
+                console.log('UA daysRemaining:', daysRemaining);
 
                 if (daysRemaining > 0 && daysRemaining <= noOfDaysWarning) {
                     const remainingDaysElement = itemDiv.querySelector('.remaining-days');
@@ -553,7 +522,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!isNaN(lastMaintenanceDate)) {
                 const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
-                //console.log('UA daysSinceLastMaintenance:', daysSinceLastMaintenance);
+                console.log('UA daysSinceLastMaintenance:', daysSinceLastMaintenance);
                 if (daysSinceLastMaintenance >= 0 && daysSinceLastMaintenance <= 30) {
                     const remainingDaysElement = itemDiv.querySelector('.remaining-days');
                     if (remainingDaysElement) {
@@ -563,7 +532,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     itemDiv.style.display = "none";
                 }
             } else {
-                //console.error("Invalid lastMaintenanceDate:", lastMaintenanceDateStr);
+                console.error("Invalid lastMaintenanceDate:", lastMaintenanceDateStr);
                 itemDiv.style.display = "none";
             }
         } else {
