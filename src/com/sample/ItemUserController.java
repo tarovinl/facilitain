@@ -53,27 +53,21 @@ public class ItemUserController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Get parameters from the form
         int userId = Integer.parseInt(request.getParameter("userId"));
         String role = request.getParameter("role");
 
-        // SQL UPDATE statement to modify the role
         String updateQuery = "UPDATE C##FMO_ADM.FMO_ITEM_DUSERS SET ROLE = ? WHERE USER_ID = ?";
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-
-            // Set parameters
             statement.setString(1, role);
             statement.setInt(2, userId);
-
-            // Execute update
             statement.executeUpdate();
         } catch (Exception e) {
             throw new ServletException("Error updating item user data", e);
         }
 
-        // Redirect to doGet to refresh the page and display the updated list
-        response.sendRedirect("itemUser");
+        // Redirect with a success flag
+        response.sendRedirect("itemUser?success=true");
     }
 }

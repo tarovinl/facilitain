@@ -46,10 +46,10 @@
                 <div class="row">
                     <c:forEach var="location" items="${locations}">
                         <c:if test="${location.locArchive == 1}">
-                            <div class="col-md-4">
-                                <div class="card mb-4 position-relative" style="border:none;">
+                            <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 ">
+                                <div class="card mb-4 position-relative border border-1 shadow-sm" >
                                     <a href="buildingDashboard?locID=${location.itemLocId}" class="text-decoration-none" style="border-radius:20px;">
-                                        <div class="card-body rounded-4" style="
+                                        <div class="card-body rounded-2" style="
                                             background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%),
                                             <c:choose>
                                                 <c:when test="${location.hasImage}">
@@ -138,26 +138,6 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-<script>
-window.onload = function() {
-    fetch('/FMOCapstone/homepage/checkNotifications')
-        .then(response => response.json())
-        .then(data => {
-            console.log("Fetched data:", data); // Ensure the data is logged correctly
-            const unreadCount = data.unreadCount;
-            if (unreadCount > 0) {
-                // Show popup with the number of unread notifications
-                document.getElementById('notificationMessage').textContent = "You have " + unreadCount + " unread notifications!";
-                $('#notificationPopup').modal('show');
-            } else {
-                console.log("No unread notifications.");
-            }
-        })
-        .catch(error => {
-            console.error('Error checking notifications:', error);
-        });
-};
 
-</script>
 </body>
 </html>

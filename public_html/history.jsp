@@ -7,6 +7,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>History Logs</title>
+     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet"/>
     <style>
@@ -27,7 +28,7 @@
                 <jsp:include page="sidebar.jsp"></jsp:include>
             </div>
             <div class="col-md-9 col-lg-10 p-4">
-                <h1 class="mb-4">History Logs</h1>
+                <h1 class="mb-4" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">History Logs</h1>
 
                 <!-- Display Table -->
                 <div class="table-responsive">

@@ -68,49 +68,54 @@ public class itemTypeController extends HttpServlet {
         request.getRequestDispatcher("/itemType.jsp").forward(request, response);
     }
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String action = request.getParameter("action");
+       protected void doPost(HttpServletRequest request, HttpServletResponse response)
+               throws ServletException, IOException {
+           String action = request.getParameter("action");
+           String redirectParams = "";
 
-        try (Connection connection = PooledConnection.getConnection()) {
-            if ("archive".equals(action)) {
-                int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
-                String query = "UPDATE C##FMO_ADM.FMO_ITEM_TYPES SET ARCHIVED_FLAG = 2 WHERE ITEM_TYPE_ID = ?";
-                try (PreparedStatement statement = connection.prepareStatement(query)) {
-                    statement.setInt(1, itemTypeId);
-                    statement.executeUpdate();
-                }
-            } else {
-                // Handle add/edit logic
-                String editMode = request.getParameter("editMode");
-                int itemCatId = Integer.parseInt(request.getParameter("itemCatId"));
-                String name = request.getParameter("name");
-                String description = request.getParameter("description");
+           try (Connection connection = PooledConnection.getConnection()) {
+               if ("archive".equals(action)) {
+                   int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
+                   String query = "UPDATE C##FMO_ADM.FMO_ITEM_TYPES SET ARCHIVED_FLAG = 2 WHERE ITEM_TYPE_ID = ?";
+                   try (PreparedStatement statement = connection.prepareStatement(query)) {
+                       statement.setInt(1, itemTypeId);
+                       statement.executeUpdate();
+                   }
+                   redirectParams = "?action=archived";
+               } else {
+                   // Handle add/edit logic
+                   String editMode = request.getParameter("editMode");
+                   int itemCatId = Integer.parseInt(request.getParameter("itemCatId"));
+                   String name = request.getParameter("name");
+                   String description = request.getParameter("description");
 
-                if ("true".equals(editMode)) {
-                    int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
-                    String updateQuery = "UPDATE C##FMO_ADM.FMO_ITEM_TYPES SET ITEM_CAT_ID = ?, NAME = ?, DESCRIPTION = ? WHERE ITEM_TYPE_ID = ?";
-                    try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-                        statement.setInt(1, itemCatId);
-                        statement.setString(2, name);
-                        statement.setString(3, description);
-                        statement.setInt(4, itemTypeId);
-                        statement.executeUpdate();
-                    }
-                } else {
-                    String insertQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_TYPES (ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (C##FMO_ADM.ITEM_TYPE_SEQ.NEXTVAL, ?, ?, ?)";
-                    try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
-                        statement.setInt(1, itemCatId);
-                        statement.setString(2, name);
-                        statement.setString(3, description);
-                        statement.executeUpdate();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                   if ("true".equals(editMode)) {
+                       int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
+                       String updateQuery = "UPDATE C##FMO_ADM.FMO_ITEM_TYPES SET ITEM_CAT_ID = ?, NAME = ?, DESCRIPTION = ? WHERE ITEM_TYPE_ID = ?";
+                       try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+                           statement.setInt(1, itemCatId);
+                           statement.setString(2, name);
+                           statement.setString(3, description);
+                           statement.setInt(4, itemTypeId);
+                           statement.executeUpdate();
+                       }
+                       redirectParams = "?action=updated";
+                   } else {
+                       String insertQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_TYPES (ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (C##FMO_ADM.ITEM_TYPE_SEQ.NEXTVAL, ?, ?, ?)";
+                       try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
+                           statement.setInt(1, itemCatId);
+                           statement.setString(2, name);
+                           statement.setString(3, description);
+                           statement.executeUpdate();
+                       }
+                       redirectParams = "?action=added";
+                   }
+               }
+           } catch (Exception e) {
+               e.printStackTrace();
+               redirectParams = "?error=true";
+           }
 
-        response.sendRedirect("itemType");
+           response.sendRedirect("itemType" + redirectParams);
+       }
     }
-}
