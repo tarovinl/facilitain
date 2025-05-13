@@ -24,10 +24,10 @@
 <body>
     <div class="container-fluid">
         <div class="row vh-100">
-            <div class="col-md-3 col-lg-2 p-0">
-                <jsp:include page="sidebar.jsp"></jsp:include>
-            </div>
-            <div class="col-md-9 col-lg-10 p-4">
+            
+                <jsp:include page="sidebar.jsp"/>
+         
+            <div class=" col-lg-10 p-4">
                 <h1 class="mb-4" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">History Logs</h1>
 
                 <!-- Display Table -->

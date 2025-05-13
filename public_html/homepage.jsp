@@ -11,6 +11,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <style>
+            .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
+
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
+    </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -18,25 +37,32 @@
         <jsp:include page="sidebar.jsp"/>
 
         <div class="col-md-10">
-            <div class="container">
-               <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="container-fluid">
+               <div class="d-flex justify-content-between align-items-center pt-4 pb-4">
 
     <div>
-        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
+        <h1  style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
     </div>
-    <div>
+    <div class="d-flex gap-2">
     <c:choose>
         <c:when test="${sessionScope.role == 'Admin'}">
-            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addBuildingModal">
-                <i class="bi bi-plus-lg"></i> Add
+            <button class="topButtons px-3 py-2 rounded-1 hover-outline text-dark" 
+        style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
+        data-bs-toggle="modal" data-bs-target="#addBuildingModal">
+         <i class="bi bi-plus-lg"></i> Add
             </button>
         </c:when>
         <c:otherwise>
         </c:otherwise>
     </c:choose>
-            <a href="./mapView" class="btn btn-warning">
+           
+            <a href="./mapView" 
+            class="topButtons px-3 py-2 rounded-1 hover-outline text-dark text-decoration-none" 
+            style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
                 Map View
-            </a>
+        </a>
+             
+           
 
     </div>
 </div>

@@ -29,7 +29,38 @@
          
          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
          <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
+            <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <style>
+    body, h1, h2, h3, h4, h5, h6, label, input, textarea, td, th, p {
+        font-family: 'NeueHaasMedium', sans-serif !important;
+    }
+    
+    .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
+
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
+
+            .buttonsBack:hover {
+                text-decoration: underline !important;
+                }
+</style>
+    
     </head>
+    
+
     
     <%
     String fullBuildingID = request.getParameter("locID");
@@ -55,24 +86,21 @@
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
-                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;">
-                <img
-                        src="resources/images/backIcon.svg" 
-                        alt="next icon"
-                        width="16"
-                        height="16"
-                        style="transform: rotateY(180deg); margin-right: 8px;"
-                    /> 
-                    Back
-                </a>
+                
+                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" 
+   style="margin-left: 2px; font-family: NeueHaasLight, sans-serif;">
+    <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
+    Back
+</a>
             </div>
         </div>
-        <div class="editbuildingName container">
-            <h1>Edit Location</h1>
+        <div class="container">
+        <div class="editbuildingName">
+            <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Edit Location</h1>
         </div>
-        <div class="floorAndButtons container">
+        <div class="floorAndButtons">
             <div class="locName">
-              <h3 class="fw-bold">${locName}</h3>
+              <h3 class="fw-bold" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">${locName}</h3>
             </div>
             <div>
                 <button class="buttonsBuilding" data-toggle="modal" data-target="#addFloor" type="button" onclick="">Add Floor</button>
@@ -196,7 +224,7 @@
                         </table>
                     </div>
                 </div>
-
+</div>
                 <!--<div class="row mt-3 mb-4">
                     <div class="col dropTbl mb-4">
                         <div class="floorDLblDiv">
