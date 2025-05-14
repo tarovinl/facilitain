@@ -47,7 +47,34 @@
         <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+        <style>
+            .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
 
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
+
+            .buttonsBack:hover {
+                text-decoration: underline !important;
+                }
+            .buildingManage:hover {
+                text-decoration: underline !important;
+                }
+
+
+</style>
         <script>
         google.charts.load('current', {packages: ['corechart']});
         google.charts.setOnLoadCallback(drawCharts);
@@ -360,20 +387,23 @@ document.addEventListener('DOMContentLoaded', function() {
           <jsp:include page="sidebar.jsp"/>
        
     
-    <div class="col-md-10">
+    <div class="col-md-10 ">
         
-          <div class="topButtons">
+          <div class="topButtons  pb-4">
             <div>
-              <a href="./homepage" class="buttonsBack d-flex align-items-center gap-2" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;font-family: NeueHaasLight, sans-serif;">
-                <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
-                Back
-              </a>
+             <a href="./homepage" class="buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" 
+   style="margin-left: 2px; font-family: NeueHaasLight, sans-serif;">
+    <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
+    Back
+</a>
+
+
             </div>
             <div>
               <!-- Edit button triggers the modal -->
                 <c:choose>
                     <c:when test="${sessionScope.role == 'Admin'}">
-                      <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
+                      <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
                         <img src="resources/images/icons/pen-solid.svg" class="pe-2" alt="edit icon" width="25" height="25">
                         Edit
                       </button>
@@ -382,13 +412,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     </c:otherwise>
                 </c:choose>
               
-              <button class="buttonsBuilding" style="font-family: NeueHaasMedium, sans-serif;">
+              <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" style="font-family: NeueHaasMedium, sans-serif;">
               <img src="resources/images/icons/file-export-solid.svg" class="pe-2" alt="generate report icon" width="25" height="25">
               Generate Report</button>
             </div>
           </div>
           
-<div class="container">
+<div class="container-fluid">
   <div class="row mb-4">
     <div class="col-12 col-lg-8 mb-3">
         <div class="buildingBanner rounded-4" style="margin-top: 14px; background-image: 
@@ -405,10 +435,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <c:if test="${floors.key == locID}">
                         <c:forEach var="floor" items="${floors.value}" varStatus="status">
                             <c:if test="${status.first}">
-                                <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" class="buildingManage d-flex align-items-center" style="font-family: NeueHaasMedium, sans-serif;">
-                                    Manage
-                                    <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
+                                <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" 
+                                class="buildingManage d-flex align-items-center text-decoration-none text-white fs-3" 
+                                style="font-family: NeueHaasMedium, sans-serif;">
+                                Manage
+                                <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
                                 </a>
+
                             </c:if>
                         </c:forEach>
                     </c:if>
