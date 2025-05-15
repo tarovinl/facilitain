@@ -20,33 +20,45 @@
         <div class="col-md-10">
             <div class="container">
                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
+                    </div>
+                    <div>
+                    <c:choose>
+                        <c:when test="${sessionScope.role == 'Admin'}">
+                            <button class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#addBuildingModal">
+                                <i class="bi bi-plus-lg"></i> Add
+                            </button>
+                        </c:when>
+                        <c:otherwise>
+                        </c:otherwise>
+                    </c:choose>
+                        <a href="./mapView" class="btn btn-warning">
+                            Map View
+                        </a>
+                    </div>
+                </div>
 
-    <div>
-        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
-    </div>
-    <div>
-    <c:choose>
-        <c:when test="${sessionScope.role == 'Admin'}">
-            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addBuildingModal">
-                <i class="bi bi-plus-lg"></i> Add
-            </button>
-        </c:when>
-        <c:otherwise>
-        </c:otherwise>
-    </c:choose>
-            <a href="./mapView" class="btn btn-warning">
-                Map View
-            </a>
-
-    </div>
-</div>
-
+                <!-- Search Bar -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <form id="searchForm" action="searchBuildings" method="get">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchInput" name="query" 
+                                    placeholder="Search buildings..." aria-label="Search buildings" aria-describedby="button-search">
+                                <button class="btn btn-warning" type="submit" id="button-search">
+                                    <i class="bi bi-search"></i> Search
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
                 <!-- Buildings Listing -->
-                <div class="row">
+                <div class="row" id="buildingsContainer">
                     <c:forEach var="location" items="${locations}">
                         <c:if test="${location.locArchive == 1}">
-                            <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 ">
+                            <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 building-card">
                                 <div class="card mb-4 position-relative border border-1 shadow-sm" >
                                     <a href="buildingDashboard?locID=${location.itemLocId}" class="text-decoration-none" style="border-radius:20px;">
                                         <div class="card-body rounded-2" style="
@@ -112,7 +124,6 @@
     </div>
 </div>
 
-
 <!-- Notification Popup -->
 <div class="modal fade" id="notificationPopup" tabindex="-1" aria-labelledby="notificationPopupLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -126,18 +137,45 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-    <a href="<%=request.getContextPath()%>/notification" class="btn btn-primary">View Notifications</a>
-            
-                
+                <a href="<%=request.getContextPath()%>/notification" class="btn btn-primary">View Notifications</a>
             </div>
         </div>
     </div>
 </div>
 
-
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const buildingCards = document.querySelectorAll('.building-card');
+    
+    // Real-time search filtering
+    searchInput.addEventListener('keyup', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        buildingCards.forEach(function(card) {
+            const title = card.querySelector('.card-title').textContent.toLowerCase();
+            const description = card.querySelector('.card-text').textContent.toLowerCase();
+            
+            if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+    
+    // Submit form handling (for server-side search if implemented)
+    const searchForm = document.getElementById('searchForm');
+    searchForm.addEventListener('submit', function(e) {
+        // If you want client-side only search, prevent the form submission
+        // e.preventDefault();
+        
+        // For server-side search, the form will submit normally to the 'searchBuildings' endpoint
+    });
+});
+</script>
 </body>
 </html>

@@ -141,6 +141,9 @@
                 <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
                     <span class="ps-4">Item Schedule</span>
                 </a>
+                <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
+                    <span class="ps-4">Item User</span>
+                </a>
             </div>
         </div>
 
