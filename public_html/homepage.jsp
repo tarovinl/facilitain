@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Clear search when the X is clicked (for browsers that support it)
+    
     searchInput.addEventListener('search', function() {
         if (this.value === '') {
             buildingCards.forEach(function(card) {
