@@ -258,7 +258,8 @@
                                         <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}"/>
                                         <input type="hidden" name="maintStatID" value="${item.itemID}" />
                                         <input type="hidden" name="oldMaintStat" value="${item.itemMaintStat}" />
-                                        <select name="statusDropdown" class="statusDropdown" onchange="this.form.submit()">
+                                        <select name="statusDropdown" class="statusDropdown">
+                                        <!--onchange="this.form.submit()"-->
                                             <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
                                                 <option value="${status.itemMaintStat}" 
                                                 <c:if test="${status.itemMaintStat == item.itemMaintStat}">selected</c:if>>
@@ -277,6 +278,27 @@
             </div>
         </div>
         </c:if>
+        
+       <!-- confirm status change-->
+        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="centered-div bg-white">
+                        <div class="container p-4 mt-4 mb-4">
+                            <p class="text-center fs-5">Are you sure you want to change the status?</p>
+                            <div class="row">
+                                <div class="col text-center">
+                                    <button id="confirmBtn" class="btn btn-warning btn-lg mt-3 w-100 fw-bold">Yes</button>
+                                </div>
+                                <div class="col text-center">
+                                    <button type="button" class="btn btn-warning btn-lg mt-3 w-100 fw-bold" data-bs-dismiss="modal" onclick="location.reload();">Cancel</button>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <!-- list of room dropdowns  (turn roomDropdown <li> into foreach)-->
         <c:if test="${floorName != 'all'}">
@@ -420,7 +442,7 @@
                                         <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}"/>
                                         <input type="hidden" name="maintStatID" value="${item.itemID}" />
                                         <input type="hidden" name="oldMaintStat" value="${item.itemMaintStat}" />
-                                        <select name="statusDropdown" class="statusDropdown" onchange="this.form.submit()">
+                                        <select name="statusDropdown" class="statusDropdown">
                                             <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
                                                 <option value="${status.itemMaintStat}" 
                                                 <c:if test="${status.itemMaintStat == item.itemMaintStat}">selected</c:if>>
@@ -904,6 +926,29 @@
 
     
     <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let selectedDropdown = null;
+        let previousValue = null;
+
+        document.querySelectorAll(".statusDropdown").forEach(dropdown => {
+            dropdown.addEventListener("change", function () {
+                selectedDropdown = this;
+                previousValue = this.getAttribute("data-prev-value") || this.value;
+                $("#confirmModal").modal("show");
+            });
+
+            // Store initial value for each dropdown
+            dropdown.setAttribute("data-prev-value", dropdown.value);
+        });
+
+        document.getElementById("confirmBtn").addEventListener("click", function () {
+            if (selectedDropdown) {
+                selectedDropdown.closest("form").submit();
+            }
+            $("#confirmModal").modal("hide");
+        });
+
+    });
     
         function showTblDiv(button) {
             var roomDropDiv = button.closest('.roomDropDiv');

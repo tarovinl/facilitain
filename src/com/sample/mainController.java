@@ -42,6 +42,10 @@ import sample.model.Maintenance;
 import sample.model.Quotation;
 import sample.model.ToDo;
 
+import com.google.gson.Gson;
+
+import java.util.TreeSet;
+
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
                                                      "/calendar", "/settings", "/maintenanceSchedule", "/mapView"})
 public class mainController extends HttpServlet {
@@ -103,7 +107,7 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntICats = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
              PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME");
              PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
-             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 ORDER BY ITEM_MS_ID");
+             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
              PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
              PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
              PreparedStatement stmntToDo = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_TO_DO_LIST");
@@ -458,7 +462,8 @@ public class mainController extends HttpServlet {
 //            response.sendRedirect(request.getContextPath() + "/homepage"); // Redirect to homepage
 //            return; // Ensure no further processing happens
 //        }
-//        end of server side invalid URl test
+//        end of server side invalid URl test        
+
 
         switch (path) {
                     case "/homepage":
@@ -485,8 +490,51 @@ public class mainController extends HttpServlet {
         //                request.getRequestDispatcher("/notification.jsp").forward(request, response);
         //                break;
                     case "/calendar":
-                        request.getRequestDispatcher("/calendar.jsp").forward(request, response);
-                        break;
+                        String eventCat = request.getParameter("eventCat");
+                            //System.out.println("controller eventCat " + eventCat);
+                                    if (eventCat != null) {
+                                        // Process the dynamic locations logic
+                                        Set<String> uniqueLocations = new TreeSet<>();
+
+                                            for (Location location : locations) {
+                                                for (Item item : listItem) {
+                                                    if (location.getItemLocId() == item.getItemLID()) {
+                                                        for (Item type : listTypes) { // Assuming listTypes represents FMO_TYPES_LIST
+                                                            if (item.getItemTID() == type.getItemTID()) {
+                                                                for (Item category : filteredCategories) { // Assuming filteredCategories represents FMO_CATEGORIES_LIST
+                                                                    if (category.getItemCat().equals(eventCat) && category.getItemCID() == type.getItemCID()) {
+                                                                        for (Maintenance maintenance : listMaintSched) { // Assuming listMaintSched represents maintenanceList
+                                                                            if (maintenance.getItemTypeId() == type.getItemTID()) {
+                                                                                
+                                                                                // Add location name if it's not already in uniqueLocations
+                                                                                if (!uniqueLocations.contains(location.getLocName())) {
+                                                                                    uniqueLocations.add(location.getLocName());
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+//                                        System.out.println("Unique locations size: " + uniqueLocations.size());
+//                                        for (String loc : uniqueLocations) {
+//                                            System.out.println("Location: " + loc);
+//                                        }
+
+                                        // Return the uniqueLocations as a JSON response
+                                        response.setContentType("application/json");
+                                        response.setCharacterEncoding("UTF-8");
+                                        response.getWriter().write(new Gson().toJson(uniqueLocations));
+
+                                    } else {
+                                        // If it's not an AJAX request, forward to the calendar page
+                                        request.getRequestDispatcher("/calendar.jsp").forward(request, response);
+                                    }
+                                    break;
         //            case "/history":
         //                request.getRequestDispatcher("/history.jsp").forward(request, response);
         //                break;

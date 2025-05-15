@@ -47,7 +47,34 @@
         <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+        <style>
+            .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
 
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
+
+            .buttonsBack:hover {
+                text-decoration: underline !important;
+                }
+            .buildingManage:hover {
+                text-decoration: underline !important;
+                }
+
+
+</style>
         <script>
         google.charts.load('current', {packages: ['corechart']});
         google.charts.setOnLoadCallback(drawCharts);
@@ -353,27 +380,30 @@ document.addEventListener('DOMContentLoaded', function() {
 });
         </script>
     </head>
-    <body>
+    <body style="background-color: #efefef;">
 <div class="container-fluid">
       <div class="row min-vh-100">
         
           <jsp:include page="sidebar.jsp"/>
        
     
-    <div class="col-md-10">
+    <div class="col-md-10 ">
         
-          <div class="topButtons">
+          <div class="topButtons  pb-4">
             <div>
-              <a href="./homepage" class="buttonsBack d-flex align-items-center gap-2" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;font-family: NeueHaasLight, sans-serif;">
-                <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
-                Back
-              </a>
+             <a href="./homepage" class="buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" 
+   style="margin-left: 2px; font-family: NeueHaasLight, sans-serif;">
+    <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
+    Back
+</a>
+
+
             </div>
             <div>
               <!-- Edit button triggers the modal -->
                 <c:choose>
                     <c:when test="${sessionScope.role == 'Admin'}">
-                      <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
+                      <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
                         <img src="resources/images/icons/pen-solid.svg" class="pe-2" alt="edit icon" width="25" height="25">
                         Edit
                       </button>
@@ -382,75 +412,59 @@ document.addEventListener('DOMContentLoaded', function() {
                     </c:otherwise>
                 </c:choose>
               
-              <button class="buttonsBuilding" style="font-family: NeueHaasMedium, sans-serif;">
+              <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" style="font-family: NeueHaasMedium, sans-serif;">
               <img src="resources/images/icons/file-export-solid.svg" class="pe-2" alt="generate report icon" width="25" height="25">
               Generate Report</button>
             </div>
           </div>
-
-          <!-- Building Banner -->
-<div class="buildingBanner rounded-4" style="margin-top: 14px; margin-bottom: 14px; background-image: 
+          
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-12 col-lg-8 mb-3">
+        <div class="buildingBanner rounded-4" style="margin-top: 14px; background-image: 
                                     linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
-                                    url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center;">
-    <!--<div class="statusDiv">
-        <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
-    </div>-->
-    <div class="buildingName text-light" style="font-family: NeueHaasMedium, sans-serif;">
-        <h1>${locName}</h1>
-    </div>
-    <div>
-        <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
-            <c:if test="${floors.key == locID}">
-                <c:forEach var="floor" items="${floors.value}" varStatus="status">
-                    <c:if test="${status.first}">
-                        <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" class="buildingManage d-flex align-items-center" style="font-family: NeueHaasMedium, sans-serif;">
-                            Manage
-                            <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
-                        </a>
+                                    url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center; height: 264px; display: flex; flex-direction:column;justify-content: flex-end;">
+            <!--<div class="statusDiv">
+                <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
+            </div>-->
+            <div class="buildingName text-light" style="font-family: NeueHaasMedium, sans-serif;">
+                <h1>${locName}</h1>
+            </div>
+            <div>
+                <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
+                    <c:if test="${floors.key == locID}">
+                        <c:forEach var="floor" items="${floors.value}" varStatus="status">
+                            <c:if test="${status.first}">
+                                <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" 
+                                class="buildingManage d-flex align-items-center text-decoration-none text-white fs-3" 
+                                style="font-family: NeueHaasMedium, sans-serif;">
+                                Manage
+                                <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
+                                </a>
+
+                            </c:if>
+                        </c:forEach>
                     </c:if>
                 </c:forEach>
-            </c:if>
-        </c:forEach>
+            </div>
+        </div>
     </div>
-</div>
-
-
-          <!-- Graphs and Charts -->
-          <div class="buildingDiagrams" >
-            <!-- Frequency of Repairs -->
-            <div class="diagram">
+    <div class="col-12 col-lg-4 mb-3" style="margin-top: 14px;">
+      	    <div class="diagram">
               <div class="diagramTitle">
-                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Repairs per Month</h2>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Repairs per Month</h4>
               </div>
-              <div style="background: green; height: 280px; ">
-                <div id="repairNoChart" style="height: 100%; width: 100%;"></div>
+              <div style="background: white; height: 220px; border-radius:15px;">
+                <div id="repairNoChart" style="height: 100%; width: 100%; overflow: hidden; border-radius:15px;"></div>
               </div>
             </div>
-            <!-- Pending Maintenance -->
-            <div class="diagram">
+    </div>
+  </div>
+  <div class="row mt-4" style="margin-top: 100px;">
+    <div class="col-12 col-lg-4 mb-3"">
+      <div class="diagram">
               <div class="diagramTitle">
-                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Pending Maintenance</h2>
-              </div>
-              <div style="background: green; height: 280px;">
-                  <div id="pendingMainChart" style="height: 100%; width: 100%;"></div>
-              </div>
-            </div>
-            <!-- Punctuality -->
-            <!--<div class="diagram">
-              <div class="diagramTitle">
-                <h2>Punctuality</h2>
-              </div>
-              <div style="background: green; height: 280px; overflow: auto;">
-                <div>graph and chart and stuff</div>
-              </div>
-            </div>-->
-          </div>
-
-          <!-- Activities -->
-        <div class="buildingActivities">
-            <div class="activity">
-              <div class="actCategories">
-                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h2>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h4>
               </div>
               <div class="actContainer" id="upcoming-activities">
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
@@ -465,10 +479,26 @@ document.addEventListener('DOMContentLoaded', function() {
                                  data-last-maintenance-date="${item.lastMaintDate}" 
                                  data-no-of-days="${maint.noOfDays}" 
                                  data-no-of-days-warning="${maint.noOfDaysWarning}">
-                                <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
-                                <h3 class="activity-text">
+                                <div>
+                                    <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
+                                </div>
+                                <div>
+                                <h4 class="activity-text">
                                     Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} in <span class="remaining-days">calculating...</span> days.
-                                </h3>
+                                </h4>
+                                <h6 class="activity-text">
+                                    <c:forEach items="${FMO_TYPES_LIST}" var="type">
+                                    <c:if test="${type.itemTID == item.itemTID}">
+                                            <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
+                                            <c:if test="${type.itemCID == cat.itemCID}">
+                                                ${cat.itemCat}
+                                            </c:if>
+                                            </c:forEach>
+                                         - ${type.itemType}
+                                    </c:if>
+                                    </c:forEach>
+                                </h6>
+                                </div>
                             </div>
             
                         </c:if>
@@ -478,9 +508,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </c:forEach>
               </div>
             </div>
-            <div class="activity">
-              <div class="actCategories">
-                <h2 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h2>
+    </div>
+    <div class="col-12 col-lg-4 mb-3"">
+      <div class="diagram">
+              <div class="diagramTitle">
+                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h4>
               </div>
               <div class="actContainer" id="recent-activities">
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
@@ -491,10 +523,26 @@ document.addEventListener('DOMContentLoaded', function() {
                             <%-- Pass data to HTML elements using data-* attributes --%>
                             <div class="actItem"
                                  data-last-maintenance-date="${item.lastMaintDate}">
-                                <img src="resources/images/greenDot.png" alt="activity status indicator" width="28" height="28">
-                                <h3 class="activity-text">
-                                    Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
-                                </h3>
+                                <div>
+                                    <img src="resources/images/greenDot.png" alt="activity status indicator" width="28" height="28">
+                                </div>
+                                <div>
+                                    <h4 class="activity-text">
+                                        Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
+                                    </h4>
+                                    <h6>
+                                        <c:forEach items="${FMO_TYPES_LIST}" var="type">
+                                        <c:if test="${type.itemTID == item.itemTID}">
+                                                <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
+                                                <c:if test="${type.itemCID == cat.itemCID}">
+                                                    ${cat.itemCat}
+                                                </c:if>
+                                                </c:forEach>
+                                             - ${type.itemType}
+                                        </c:if>
+                                        </c:forEach>
+                                    </h6>
+                                </div>
                             </div>
                         </c:if>
                     </c:if>    
@@ -503,7 +551,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 </c:forEach>
               </div>
             </div>
-          </div>
+    </div>
+    <div class="col-12 col-lg-4 mb-3" style="border-radius:15px;">
+      <div class="diagram">
+              <div class="diagramTitle">
+                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Pending Maintenance</h4>
+              </div>
+              <div style="background: white; height: 200px;border-radius:15px;">
+                  <div id="pendingMainChart" style="height: 101%; width: 100%;border-radius:15px; overflow: hidden;"></div>
+              </div>
+            </div>
+    </div>
+  </div>
+</div>
+
         </div>
       </div>
     </div>
@@ -548,12 +609,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const noOfDays = parseInt(itemDiv.getAttribute('data-no-of-days')) || 0;
         const noOfDaysWarning = parseInt(itemDiv.getAttribute('data-no-of-days-warning')) || 0;
 
+        console.log('UA Last Maintenance Date String:', lastMaintenanceDateStr);
+        console.log('UA Number of Days:', noOfDays);
+        console.log('UA Number of Days Warning:', noOfDaysWarning);
+
+
         if (lastMaintenanceDateStr) {
             const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
 
             if (!isNaN(lastMaintenanceDate)) {
                 const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
                 const daysRemaining = noOfDays - daysSinceLastMaintenance;
+                
+                console.log(daysRemaining);
 
                 if (daysRemaining > 0 && daysRemaining <= noOfDaysWarning) {
                     const remainingDaysElement = itemDiv.querySelector('.remaining-days');
@@ -574,13 +642,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('#recent-activities .actItem').forEach(function (itemDiv) {
         const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
-
+        console.log('RA Last Maintenance Date String:', lastMaintenanceDateStr);
+        
         if (lastMaintenanceDateStr) {
             const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
 
             if (!isNaN(lastMaintenanceDate)) {
                 const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
-
+                //console.log('UA daysSinceLastMaintenance:', daysSinceLastMaintenance);
                 if (daysSinceLastMaintenance >= 0 && daysSinceLastMaintenance <= 30) {
                     const remainingDaysElement = itemDiv.querySelector('.remaining-days');
                     if (remainingDaysElement) {
@@ -590,7 +659,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     itemDiv.style.display = "none";
                 }
             } else {
-                console.error("Invalid lastMaintenanceDate:", lastMaintenanceDateStr);
+                //console.error("Invalid lastMaintenanceDate:", lastMaintenanceDateStr);
                 itemDiv.style.display = "none";
             }
         } else {
@@ -601,7 +670,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </script>
 
-</script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>
