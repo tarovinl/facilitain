@@ -141,6 +141,9 @@
                 <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
                     <span class="ps-4">Item Schedule</span>
                 </a>
+                <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
+                    <span class="ps-4">Item User</span>
+                </a>
             </div>
         </div>
 
@@ -459,37 +462,68 @@ document.querySelector('form').addEventListener('submit', function(event) {
     });
 });
 document.addEventListener('DOMContentLoaded', function() {
-    // Create hamburger menu button
-    const hamburgerMenu = document.createElement('button');
-    hamburgerMenu.classList.add('hamburger-menu');
-    hamburgerMenu.innerHTML = `
-        <span></span>
-        <span></span>
-        <span></span>
-    `;
-    document.body.prepend(hamburgerMenu);
-
+    // Create arrow toggle button 
+    const toggleButton = document.createElement('button');
+    toggleButton.classList.add('hamburger-menu');
+    
+    // Create modern material design arrow icon
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", "14");
+    svg.setAttribute("height", "14");
+    svg.classList.add("arrow-icon");
+    svg.style.fill = "none";
+    svg.style.stroke = "white";
+    svg.style.strokeWidth = "2";
+    svg.style.strokeLinecap = "round";
+    svg.style.strokeLinejoin = "round";
+    
+    // Create arrow using polyline for a cleaner look
+    const polyline = document.createElementNS(svgNS, "polyline");
+    polyline.setAttribute("points", "9 18 15 12 9 6");
+    svg.appendChild(polyline);
+    
+    toggleButton.appendChild(svg);
+    
+    // Get the sidebar and add toggle button after it
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.parentNode.insertBefore(toggleButton, sidebar.nextSibling);
+    
     // Create overlay
     const overlay = document.createElement('div');
     overlay.classList.add('sidebar-overlay');
     document.body.prepend(overlay);
-
-    const sidebar = document.querySelector('.sidebar');
     
     // Toggle sidebar function
     function toggleSidebar() {
         sidebar.classList.toggle('active');
         overlay.classList.toggle('active');
+        
+        // Change arrow direction
+        if (sidebar.classList.contains('active')) {
+            // Left-pointing arrow when sidebar is open
+            polyline.setAttribute("points", "15 18 9 12 15 6");
+        } else {
+            // Right-pointing arrow when sidebar is closed
+            polyline.setAttribute("points", "9 18 15 12 9 6");
+        }
     }
 
     // Event listeners
-    hamburgerMenu.addEventListener('click', toggleSidebar);
+    toggleButton.addEventListener('click', toggleSidebar);
     overlay.addEventListener('click', toggleSidebar);
 
-    // Close sidebar when a link is clicked
-    sidebar.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', toggleSidebar);
-    });
+    // Close sidebar when a link is clicked on mobile
+    if (window.innerWidth <= 800) {
+        sidebar.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (sidebar.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            });
+        });
+    }
 });
 </script>
 </body>
