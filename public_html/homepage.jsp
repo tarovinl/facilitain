@@ -28,33 +28,6 @@
             .hover-outline:hover img {
                 filter: invert(1);
             }
-            
-            /* Search input styling */
-            .search-container {
-                position: relative;
-                margin-bottom: 2rem;
-            }
-            
-            .search-input {
-                border: 1px solid #dee2e6;
-                border-radius: 0.25rem;
-                font-family: 'NeueHaasLight', sans-serif;
-                padding-left: 2.5rem;
-                transition: all 0.3s ease;
-            }
-            
-            .search-input:focus {
-                box-shadow: 0 0 0 0.25rem rgba(252, 204, 76, 0.25);
-                border-color: #fccc4c;
-            }
-            
-            .search-icon {
-                position: absolute;
-                left: 0.75rem;
-                top: 50%;
-                transform: translateY(-50%);
-                color: #6c757d;
-            }
     </style>
 </head>
 <body>
@@ -64,10 +37,19 @@
 
         <div class="col-md-10">
             <div class="container-fluid">
-               <div class="d-flex justify-content-between align-items-center pt-4 pb-4">
+               <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pt-4 pb-4">
                     <div>
                         <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
                     </div>
+                    
+                    <!-- Search Bar -->
+                      <div class="col-12 col-md-4 position-relative">
+                        <i class="bi bi-search position-absolute" style="left: 4px; top: 50%; transform: translateY(-50%); z-index: 10; color: #6c757d;"></i>
+                        <input type="text" class="form-control ps-4" id="searchInput" 
+                            placeholder="Search buildings..." aria-label="Search buildings" 
+                            style="font-family: 'NeueHaasLight', sans-serif; padding-left: 45px; border-radius: 4px;">
+                    </div>
+                    
                     <div class="d-flex gap-2">
                         <c:choose>
                             <c:when test="${sessionScope.role == 'Admin'}">
@@ -88,21 +70,14 @@
                     </div>
                 </div>
 
-                <!-- Search Bar -->
-                <div class="search-container">
-                    <form id="searchForm" action="searchBuildings" method="get">
-                        <div class="position-relative">
-                            <span class="search-icon">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input type="text" class="form-control search-input" id="searchInput" name="query" 
-                                placeholder="Search buildings..." aria-label="Search buildings">
-                        </div>
-                    </form>
-                </div>
-
                 <!-- Buildings Listing -->
                 <div class="row" id="buildingsContainer">
+                    <!-- No results message -->
+                    <div id="noResultsMessage" class="col-12 text-center py-5" style="display: none;">
+                        <h4 style="font-family: 'NeueHaasMedium', sans-serif;">No buildings found</h4>
+                        <p style="font-family: 'NeueHaasLight', sans-serif;">Try a different search term</p>
+                    </div>
+                    
                     <c:forEach var="location" items="${locations}">
                         <c:if test="${location.locArchive == 1}">
                             <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 building-card">
@@ -205,27 +180,48 @@ document.addEventListener('DOMContentLoaded', function() {
     searchInput.addEventListener('keyup', function() {
         const searchTerm = this.value.toLowerCase();
         
+        // Count visible cards
+        let visibleCount = 0;
+        
         buildingCards.forEach(function(card) {
             const title = card.querySelector('.card-title').textContent.toLowerCase();
             const description = card.querySelector('.card-text').textContent.toLowerCase();
             
             if (title.includes(searchTerm) || description.includes(searchTerm)) {
                 card.style.display = '';
+                visibleCount++;
             } else {
                 card.style.display = 'none';
             }
         });
+        
+        // If no results, show message (add a no-results div to your page)
+        const noResultsEl = document.getElementById('noResultsMessage');
+        if (noResultsEl) {
+            if (searchTerm && visibleCount === 0) {
+                noResultsEl.style.display = 'block';
+            } else {
+                noResultsEl.style.display = 'none';
+            }
+        }
     });
     
-    
+    // Clear search when the X is clicked (for browsers that support it)
     searchInput.addEventListener('search', function() {
         if (this.value === '') {
             buildingCards.forEach(function(card) {
                 card.style.display = '';
             });
+            
+            // Hide no results message if visible
+            const noResultsEl = document.getElementById('noResultsMessage');
+            if (noResultsEl) {
+                noResultsEl.style.display = 'none';
+            }
         }
     });
 });
 </script>
 
 </body>
+</html>
