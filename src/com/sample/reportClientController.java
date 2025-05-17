@@ -18,6 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import sample.model.PooledConnection;
@@ -68,14 +69,25 @@ public class reportClientController extends HttpServlet {
         request.getRequestDispatcher("/reportsClient.jsp").forward(request, response);
     }
     
-
-   
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
+
+        // Get session for user email
+        HttpSession session = request.getSession(false);
+        String insertedBy = null;
+        
+        // Get email from session if available
+        if (session != null && session.getAttribute("email") != null) {
+            insertedBy = (String) session.getAttribute("email");
+        }
+        
+        // If no email found in session, use a default message
+        if (insertedBy == null || insertedBy.trim().isEmpty()) {
+            insertedBy = "No email provided";
+        }
 
         // Regular form submission logic
         String equipment = request.getParameter("equipment");
@@ -88,10 +100,6 @@ public class reportClientController extends HttpServlet {
         String issue = request.getParameter("issue");
         Part imagePart = request.getPart("imageUpload");
 
-        String insertedBy = request.getParameter("email");
-        if (insertedBy == null || insertedBy.trim().isEmpty()) {
-            insertedBy = "No email provided";
-        }
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
         InputStream inputStream = null;
@@ -159,5 +167,4 @@ public class reportClientController extends HttpServlet {
         // Add a unique suffix using the reportId to ensure uniqueness
         return equipmentAbbr + "-" + floorAbbr + "-" + roomAbbr + "-" + reportId;
     }
-
 }
