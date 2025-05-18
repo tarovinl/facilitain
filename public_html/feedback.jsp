@@ -3,14 +3,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
-<head>
+    <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Feedback</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <script src="https://www.gstatic.com/charts/loader.js"></script>
-     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <!-- Include DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
@@ -23,7 +24,7 @@
             <div class="col-md-10">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1 style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Feedback</h1>
-                    <button class="btn btn-warning" id="download-chart">Generate Report</button>
+                    <button class="btn btn-warning" id="download-chart" ${empty feedbackList ? 'disabled' : ''}>Generate Report</button>
                 </div>
 
                 <div class="card mb-4">
@@ -33,53 +34,48 @@
                     </div>
                 </div>
 
-                <!-- Feedback Table -->
-                <table id="feedbackTable" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Rating</th>
-                            <th>Room</th>
-                            <th>Location</th>
-                            <th>Suggestions</th>
-                            <th>Equipment Type</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                   <tbody>
-    <c:forEach var="feedback" items="${feedbackList}">
-        <tr>
-            <td>${feedback.rating}</td>
-            <td>${feedback.room}</td>
-            <td>${feedback.location}</td>
-            <td>${feedback.suggestions}</td>
-            <td>${feedback.itemCatName}</td>  <!-- Display itemCatName -->
-            <td><fmt:formatDate value="${feedback.recInsDt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-        </tr>
-    </c:forEach>
-</tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Confirmation Modal -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteLabel">Confirm Deletion</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this feedback?
-                </div>
-                <div class="modal-footer">
-                    <form id="deleteForm" action="feedback" method="post">
-                        <input type="hidden" name="feedbackId" id="feedbackId">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </form>
+                <!-- Feedback Table with clarification about displaying 15 most recent feedbacks -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Recent Feedbacks</h5>
+                        <p class="text-muted">Showing the 15 most recent feedbacks</p>
+                        
+                        <c:choose>
+                            <c:when test="${empty feedbackList}">
+                                <div class="text-center p-5">
+                                    <i class="bi bi-clipboard-x fs-1 text-muted"></i>
+                                    <h4 class="mt-3">No Feedback Data Available</h4>
+                                    <p class="text-muted">Feedback will appear here when users submit their responses.</p>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <table id="feedbackTable" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Rating</th>
+                                            <th>Room</th>
+                                            <th>Location</th>
+                                            <th>Suggestions</th>
+                                            <th>Equipment Type</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="feedback" items="${feedbackList}">
+                                            <tr>
+                                                <td>${feedback.rating}</td>
+                                                <td>${feedback.room}</td>
+                                                <td>${feedback.location}</td>
+                                                <td>${feedback.suggestions}</td>
+                                                <td>${feedback.itemCatName}</td>
+                                                <td><fmt:formatDate value="${feedback.recInsDt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
             </div>
         </div>
@@ -92,6 +88,37 @@
         let chart;
 
         function drawChart() {
+            const chartDiv = document.getElementById('chart_div');
+            
+            // Check if there's data to display
+            if (${empty satisfactionRates}) {
+                // No data available - display a message
+                chartDiv.innerHTML = '<div class="text-center p-5">' +
+                                     '<i class="bi bi-exclamation-circle fs-1 text-muted"></i>' +
+                                     '<h4 class="mt-3">No feedback data available</h4>' +
+                                     '<p class="text-muted">The chart will appear when feedback is submitted.</p>' +
+                                     '</div>';
+                // Create empty chart for report generation
+                chart = {
+                    getImageURI: function() {
+                        // Create a canvas with "No Data" message
+                        const canvas = document.createElement('canvas');
+                        canvas.width = chartDiv.offsetWidth;
+                        canvas.height = chartDiv.offsetHeight;
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = '#f8f9fa';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.fillStyle = '#6c757d';
+                        ctx.font = '20px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('No feedback data available', canvas.width/2, canvas.height/2);
+                        return canvas.toDataURL();
+                    }
+                };
+                return;
+            }
+            
+            // Data is available, create the chart
             const generalAverage = ${generalAverage};
             const data = google.visualization.arrayToDataTable([
                 ['Month', 'Satisfaction Rate', { role: 'style' }],
@@ -107,7 +134,7 @@
                 legend: 'none',
             };
 
-            chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart = new google.visualization.ColumnChart(chartDiv);
             chart.draw(data, options);
         }
 
@@ -188,21 +215,35 @@
 
             // Get all feedback rows from the page
             const feedbackRows = document.querySelectorAll('.table tbody tr');
-            feedbackRows.forEach(row => {
-                const tr = document.createElement('tr');
-
-                // Extract data from existing table rows
-                const cells = row.querySelectorAll('td');
-                for (let i = 0; i < 5; i++) {
-                    const td = document.createElement('td');
-                    td.textContent = cells[i].textContent;
-                    td.style.border = '1px solid #ddd';
-                    td.style.padding = '8px';
-                    tr.appendChild(td);
-                }
-
-                tbody.appendChild(tr);
-            });
+            
+            if (feedbackRows.length === 0) {
+                // No feedback data available
+                const noDataRow = document.createElement('tr');
+                const noDataCell = document.createElement('td');
+                noDataCell.colSpan = 5;
+                noDataCell.style.textAlign = 'center';
+                noDataCell.style.padding = '20px';
+                noDataCell.textContent = 'No feedback data available';
+                noDataRow.appendChild(noDataCell);
+                tbody.appendChild(noDataRow);
+            } else {
+                // Process feedback rows
+                feedbackRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    
+                    // Extract data from existing table rows
+                    const cells = row.querySelectorAll('td');
+                    for (let i = 0; i < 5; i++) {
+                        const td = document.createElement('td');
+                        td.textContent = cells[i].textContent;
+                        td.style.border = '1px solid #ddd';
+                        td.style.padding = '8px';
+                        tr.appendChild(td);
+                    }
+                    
+                    tbody.appendChild(tr);
+                });
+            }
 
             tableEl.appendChild(tbody);
             reportContainer.appendChild(tableEl);
@@ -249,20 +290,20 @@
             });
         });
 
-        function setFeedbackId(id) {
-            document.getElementById('feedbackId').value = id;
-        }
-
-        // Initialize DataTable
+        // Initialize DataTable with reduced pagination options and clear actions column
         $(document).ready(function () {
-            $('#feedbackTable').DataTable({
-                paging: true,
-                searching: true,
-                ordering: true,
-                columnDefs: [
-                    { targets: 6, orderable: false }  // Disable sorting for the Actions column
-                ]
-            });
+            if ($('#feedbackTable').length) {
+                $('#feedbackTable').DataTable({
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    pageLength: 5,
+                    lengthMenu: [5, 10, 15],
+                    language: {
+                        emptyTable: "No feedback data available"
+                    }
+                });
+            }
         });
     </script>
 
