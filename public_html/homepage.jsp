@@ -63,7 +63,7 @@
                 color: #6c757d;
                 z-index: 2;
                 pointer-events: none;
-                font-size: 1rem; /* Control icon size */
+                font-size: 1rem; 
             }
             .card:focus,
             .card:active {
@@ -75,7 +75,7 @@
            .hover-underline-title:hover .card-title {
                  text-decoration: underline;
                      text-decoration-color: white;
-                text-underline-offset: 3px; /* optional: makes it look cleaner */
+                text-underline-offset: 3px; 
                 }
                 
             /* Responsive adjustments */
