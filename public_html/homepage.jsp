@@ -32,15 +32,18 @@
             /* Search input styling */
             .search-container {
                 position: relative;
-                margin-bottom: 2rem;
+                width: 100%;
+                max-width: 500px;
             }
             
             .search-input {
                 border: 1px solid #dee2e6;
                 border-radius: 0.25rem;
                 font-family: 'NeueHaasLight', sans-serif;
-                padding-left: 2.5rem;
+                padding: 0.5rem 0.75rem 0.5rem 4rem; 
                 transition: all 0.3s ease;
+                width: 100%;
+                 text-indent: 1rem;
             }
             
             .search-input:focus {
@@ -48,12 +51,19 @@
                 border-color: #fccc4c;
             }
             
+            .search-input::placeholder {
+                padding-left: 2rem; 
+            }
+            
             .search-icon {
                 position: absolute;
-                left: 0.75rem;
+                left: 0.5rem; 
                 top: 50%;
                 transform: translateY(-50%);
                 color: #6c757d;
+                z-index: 2;
+                pointer-events: none;
+                font-size: 1rem; /* Control icon size */
             }
             .card:focus,
             .card:active {
@@ -67,6 +77,25 @@
                      text-decoration-color: white;
                 text-underline-offset: 3px; /* optional: makes it look cleaner */
                 }
+                
+            /* Responsive adjustments */
+            @media (max-width: 767.98px) {
+                .header-row {
+                    flex-direction: column;
+                    align-items: flex-start !important;
+                }
+                .header-title {
+                    margin-bottom: 1rem;
+                }
+                .header-controls {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+                .search-container {
+                    margin: 1rem 0;
+                    max-width: 100%;
+                }
+            }
     </style>
 </head>
 <body>
@@ -76,11 +105,29 @@
 
         <div class="col-md-10">
             <div class="container-fluid">
-               <div class="d-flex justify-content-between align-items-center pt-4 pb-4">
-                    <div>
+                <!-- Header Section with Search Bar in Middle -->
+                <div class="row header-row align-items-center py-4">
+                    <div class="col-md-3 header-title">
                         <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
                     </div>
-                    <div class="d-flex flex-column flex-md-row gap-2">
+                    
+                    <!-- Search Bar (Middle) -->
+                    <div class="col-md-6 d-flex justify-content-center">
+                        <div class="search-container">
+                            <form id="searchForm" action="searchBuildings" method="get">
+                                <div class="position-relative">
+                                    <span class="search-icon">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" class="form-control search-input" id="searchInput" name="query" 
+                                        placeholder="Search buildings..." aria-label="Search buildings">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons (Right) -->
+                    <div class="col-md-3 d-flex justify-content-end header-controls gap-2">
                         <c:choose>
                             <c:when test="${sessionScope.role == 'Admin'}">
                                 <button class="align-items-center d-flex btn btn-md topButtons px-3 py-2 rounded-1 hover-outline text-dark" 
@@ -102,21 +149,8 @@
                     </div>
                 </div>
 
-                <!-- Search Bar -->
-                <div class="search-container">
-                    <form id="searchForm" action="searchBuildings" method="get">
-                        <div class="position-relative">
-                            <span class="search-icon">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input type="text" class="form-control search-input" id="searchInput" name="query" 
-                                placeholder="Search buildings..." aria-label="Search buildings">
-                        </div>
-                    </form>
-                </div>
-
                 <!-- Buildings Listing -->
-                <div class="row" id="buildingsContainer">
+                <div class="row mt-4" id="buildingsContainer">
                     <c:forEach var="location" items="${locations}">
                         <c:if test="${location.locArchive == 1}">
                             <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 building-card">
@@ -248,3 +282,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 </body>
+</html>
