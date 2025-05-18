@@ -100,6 +100,8 @@ public class itemController extends HttpServlet {
 
         String itemAID = request.getParameter("itemArchiveID");
         
+        String itemMaintType = request.getParameter("itemMaintType");
+        
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date sqlDate = null;
         Date sqlEditDate = null;
@@ -162,8 +164,7 @@ public class itemController extends HttpServlet {
                 sql = "INSERT INTO C##FMO_ADM.FMO_ITEMS (ITEM_TYPE_ID,NAME,LOCATION_ID,LOCATION_TEXT,FLOOR_NO,ROOM_NO,DATE_INSTALLED,BRAND_NAME,EXPIRY_DATE,REMARKS,PC_CODE,AC_ACCU,AC_FCU,AC_INVERTER,CAPACITY,UNIT_OF_MEASURE,ELECTRICAL_V,ELECTRICAL_PH,ELECTRICAL_HZ,MAINTENANCE_STATUS,ITEM_STAT_ID,QUANTITY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,1,1)";
                 //System.out.println("add this " + itemName);
             }
-            
-            
+           
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 if(itemEID != null && !itemEID.isEmpty()){
@@ -308,7 +309,7 @@ public class itemController extends HttpServlet {
                 
                 stmt.executeUpdate();
             }
-            
+
             // Check conditions for FMO_ITEM_REPAIRS
                 if ("3".equals(oldMaintStat) && "1".equals(maintStatus)) {
                     action = "modify_status";
@@ -326,6 +327,7 @@ public class itemController extends HttpServlet {
                                 // Update NUM_OF_REPAIRS if entry exists
                                 int repairCount = rs.getInt("NUM_OF_REPAIRS");
                                 String updateRepairsSql = "UPDATE C##FMO_ADM.FMO_ITEM_REPAIRS SET NUM_OF_REPAIRS = ? WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
+                                System.out.println("yo mama test: " + itemMaintType);
                                 try (PreparedStatement updateStmt = conn.prepareStatement(updateRepairsSql)) {
                                     updateStmt.setInt(1, repairCount + 1);
                                     updateStmt.setInt(2, Integer.parseInt(currentMonth));
