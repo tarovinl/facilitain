@@ -14,7 +14,73 @@
  
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./resources/css/sidebar.css">
-    
+    <style>
+.maintenance-container {
+    margin: 10px 0;
+}
+
+.maintenance-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.maintenance-header:hover {
+    background-color: #444;
+    border-radius: 5px;
+}
+
+.maintenance-header i {
+    transition: transform 0.3s;
+}
+
+.maintenance-items {
+    display: none;
+    background-color: #3c3c3c;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.maintenance-items a {
+    padding: 8px 15px;
+    color: white;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+.maintenance-items a:hover {
+    background-color: #4a4a4a;
+}
+
+.maintenance-items a.active {
+    background-color: #ffca2c;
+    color: black;
+}
+
+/* Class for when menu is open */
+.maintenance-container.open .maintenance-items {
+    display: block;
+}
+
+.maintenance-container.open .maintenance-header i {
+    transform: rotate(180deg);
+}
+
+
+#notificationBadge {
+    position: relative;
+    padding: 0.25em 0.6em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    vertical-align: middle;
+    border-radius: 50%;
+    display: inline-block;
+}
+</style>
 </head>
 <body>
     <div class="sidebar">
@@ -33,10 +99,12 @@
                 <img src="resources/images/icons/house.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Homepage
             </a>
-            <a href="notification" class="${page == 'notification' ? 'active' : ''}">
-                <img src="resources/images/icons/bell-solid.svg" alt="Notifications" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Notifications
-            </a>
+            <a href="notification" class="${page == 'notification' ? 'active' : ''}" style="position: relative;">
+             <img src="resources/images/icons/bell-solid.svg" alt="Notifications" class="icon pe-2" 
+                 style="width: 2em; height: 2em; vertical-align: middle;">
+                Notifications 
+            <span id="notificationBadge" class="badge bg-warning text-dark ms-2">0</span>
+            </a>     
             <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
                 <img src="resources/images/icons/calendar-solid.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Calendar
@@ -57,10 +125,34 @@
                 <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Map View
             </a>-->
+ <div class="maintenance-container">
+            <div class="maintenance-header">
+                <img src="resources/images/icons/gear-solid.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                <span>Maintenance</span>
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </div>
+            <div class="maintenance-items">
+                <a href="itemType" class="${page == 'itemType' ? 'active' : ''}">
+                    <span class="ps-4">Item Types</span>
+                </a>
+                <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}">
+                    <span class="ps-4">Item Categories</span>
+                </a>
+                <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
+                    <span class="ps-4">Item Schedule</span>
+                </a>
+                <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
+                    <span class="ps-4">Item User</span>
+                </a>
+            </div>
+        </div>
+
+            
             <a href="settings" class="${page == 'settings' ? 'active' : ''}">
                 <img src="resources/images/icons/gear-solid.svg" alt="Settings" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Settings
             </a>
+             
         </div>
         <div class="todo-list">
             <div class="d-flex justify-content-between align-items-center">
@@ -238,7 +330,30 @@
 //                ]
 //            });
 //        });
+  const maintenanceDropdown = document.querySelector('.maintenance-dropdown');
+        maintenanceDropdown.addEventListener('click', function() {
+            const arrow = this.querySelector('.dropdown-arrow');
+            arrow.style.transform = this.getAttribute('aria-expanded') === 'true' ? 'rotate(0deg)' : 'rotate(90deg)';
+        });
+    });
 
+
+document.addEventListener("DOMContentLoaded", function() {
+    fetch('/FMOCapstone/homepage/checkNotifications')
+        .then(response => response.json())
+        .then(data => {
+            const unreadCount = data.unreadCount;
+            const badge = document.getElementById('notificationBadge');
+
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount; // Update the count
+                badge.style.display = 'inline-block'; // Show the badge
+            } else {
+                badge.style.display = 'none'; 
+            }
+        })
+        .catch(error => console.error('Error fetching notification count:', error));
+});
 function openAddToDoModal() {
     // Hide the first modal
     const firstTModal = bootstrap.Modal.getInstance(document.getElementById('showToDo'));
@@ -308,38 +423,107 @@ document.querySelector('form').addEventListener('submit', function(event) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     
   <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Initialize the notification badge as hidden
+    const badge = document.getElementById('notificationBadge');
+    badge.style.display = 'none';
+    
+    // Fetch notification count
+    fetch('/FMOCapstone/homepage/checkNotifications')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const unreadCount = data.unreadCount;
+            
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching notification count:', error);
+            // For testing - remove in production
+            // badge.textContent = "3";
+            // badge.style.display = 'inline-block';
+        });
+});
+  document.addEventListener('DOMContentLoaded', function() {
+    const maintenanceHeader = document.querySelector('.maintenance-header');
+    const maintenanceContainer = document.querySelector('.maintenance-container');
+    
+    maintenanceHeader.addEventListener('click', function() {
+        maintenanceContainer.classList.toggle('open');
+    });
+});
 document.addEventListener('DOMContentLoaded', function() {
-    // Create hamburger menu button
-    const hamburgerMenu = document.createElement('button');
-    hamburgerMenu.classList.add('hamburger-menu');
-    hamburgerMenu.innerHTML = `
-        <span></span>
-        <span></span>
-        <span></span>
-    `;
-    document.body.prepend(hamburgerMenu);
-
+    // Create arrow toggle button 
+    const toggleButton = document.createElement('button');
+    toggleButton.classList.add('hamburger-menu');
+    
+    // Create modern material design arrow icon
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", "14");
+    svg.setAttribute("height", "14");
+    svg.classList.add("arrow-icon");
+    svg.style.fill = "none";
+    svg.style.stroke = "white";
+    svg.style.strokeWidth = "2";
+    svg.style.strokeLinecap = "round";
+    svg.style.strokeLinejoin = "round";
+    
+    // Create arrow using polyline for a cleaner look
+    const polyline = document.createElementNS(svgNS, "polyline");
+    polyline.setAttribute("points", "9 18 15 12 9 6");
+    svg.appendChild(polyline);
+    
+    toggleButton.appendChild(svg);
+    
+    // Get the sidebar and add toggle button after it
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.parentNode.insertBefore(toggleButton, sidebar.nextSibling);
+    
     // Create overlay
     const overlay = document.createElement('div');
     overlay.classList.add('sidebar-overlay');
     document.body.prepend(overlay);
-
-    const sidebar = document.querySelector('.sidebar');
     
     // Toggle sidebar function
     function toggleSidebar() {
         sidebar.classList.toggle('active');
         overlay.classList.toggle('active');
+        
+        // Change arrow direction
+        if (sidebar.classList.contains('active')) {
+            // Left-pointing arrow when sidebar is open
+            polyline.setAttribute("points", "15 18 9 12 15 6");
+        } else {
+            // Right-pointing arrow when sidebar is closed
+            polyline.setAttribute("points", "9 18 15 12 9 6");
+        }
     }
 
     // Event listeners
-    hamburgerMenu.addEventListener('click', toggleSidebar);
+    toggleButton.addEventListener('click', toggleSidebar);
     overlay.addEventListener('click', toggleSidebar);
 
-    // Close sidebar when a link is clicked
-    sidebar.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', toggleSidebar);
-    });
+    // Close sidebar when a link is clicked on mobile
+    if (window.innerWidth <= 800) {
+        sidebar.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (sidebar.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            });
+        });
+    }
 });
 </script>
 </body>

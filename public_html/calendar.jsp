@@ -251,29 +251,7 @@
 
     <style>
     /* Apply custom styles for smaller screens */
-    @media (max-width: 768px) {
-        .fc-toolbar {
-            display: flex;
-            flex-direction: column; /* Stack the toolbar items vertically */
-            align-items: center;
-        }
-
-        .fc-toolbar-chunk {
-            display: flex;
-            flex-wrap: wrap; /* Allow wrapping if necessary */
-            justify-content: center;
-            margin-bottom: 0.5rem; /* Add spacing between rows */
-        }
-
-        .fc-toolbar-title {
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem; /* Adjust title size for better readability */
-        }
-
-        .fc-button {
-            margin: 0.2rem; /* Add spacing around buttons */
-        }
-    }
+    
     
     .fc-button.fc-dayGridMonth-button,
     .fc-button.fc-timeGridWeek-button,
@@ -311,8 +289,8 @@
 <div class="row min-vh-100">
     <jsp:include page="sidebar.jsp"/>
     
-    <div class="col-md-10">
-        <div class="mt-4">
+    <div class="col-md-10 p-4">
+        <div class="">
             <h1>Maintenance Calendar</h1>
         </div>
         <div class="mb-4">
