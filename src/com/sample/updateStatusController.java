@@ -66,6 +66,8 @@ public class updateStatusController extends HttpServlet {
 //        System.out.println("old equip status: " + oldEquipmentStatus);
 //        System.out.println("new equip status: " + newEquipmentStatus);
         
+        
+        
         try (Connection conn = PooledConnection.getConnection()) {
             String sql;
             
@@ -96,6 +98,18 @@ public class updateStatusController extends HttpServlet {
                     e.printStackTrace();
                 }
                 action = "modify_status";
+            }
+            
+            //in maintenance to operational turn maint_assign entry is_completed to 1
+            if (oldEquipmentStatus.equals("3") && newEquipmentStatus.equals("1")) {
+                String assSQL = "UPDATE C##FMO_ADM.FMO_MAINTENANCE_ASSIGN SET IS_COMPLETED = 1 WHERE ITEM_ID = ?";
+                try (PreparedStatement astmt = conn.prepareStatement(assSQL)) {
+                    astmt.setInt(1, Integer.parseInt(updateEquipmentID));
+                    astmt.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                action = "3to1";
             }
             
             response.sendRedirect("maintenancePage" + "?action=" + action + "&status=" + status);

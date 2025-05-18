@@ -9,6 +9,9 @@
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.js"></script>
   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
@@ -61,6 +64,25 @@
         }
     </style>
 </head>
+
+
+                <c:set var="equipmentListString" value="" />
+                <c:forEach items="${FMO_ITEMS_LIST}" var="item" varStatus="status">
+                    <c:if test="${item.itemMaintStat != 1}">
+                        <c:set var="itemAssigned" value="false" />
+                        
+                        <c:forEach items="${FMO_MAINT_ASSIGN}" var="maintass">
+                            <c:if test="${maintass.itemID == item.itemID}">
+                                <c:set var="itemAssigned" value="true" />
+                            </c:if>
+                        </c:forEach>
+                
+                        <c:if test="${itemAssigned == false}">
+                            <c:set var="equipmentListString" value="${equipmentListString}${item.itemName}${status.last ? '' : ', '}" />
+                        </c:if>
+                    </c:if>
+                </c:forEach>
+                
 <body>
 <div class="container-fluid">
     <div class="row min-vh-100">
@@ -137,10 +159,22 @@
                                                     <c:set var="statName" value="${status.maintStatName}" />
                                                 </c:if>
                                             </c:forEach>
+                                            
+                                            <c:set var="canUpdate" value="false" />
+                                            <c:forEach var="assign" items="${FMO_MAINT_ASSIGN}">
+                                                <c:if test="${assign.itemID == item.itemID}">
+                                                    <c:forEach var="user" items="${FMO_USERS}">
+                                                        <c:if test="${user.name == sessionScope.name && user.userId == assign.userID}">
+                                                            <c:set var="canUpdate" value="true" />
+                                                        </c:if>
+                                                    </c:forEach>
+                                                </c:if>
+                                            </c:forEach>
                                         <tr data-id="${item.itemID}"
-                                        data-equipment="${itemCat} - ${itemType}"
+                                        data-equipment="${itemCat} - ${itemType}" 
                                         data-status="${item.itemMaintStat}" data-serial="${item.itemName}" data-brand="${item.itemBrand}"
-                                        data-location="${itemLoc}, ${item.itemFloor}" data-statname="${statName}">
+                                        data-location="${itemLoc}, ${item.itemFloor}" data-statname="${statName}"
+                                        data-canupdate="${canUpdate}">
                                             <td>${item.itemName}</td>
                                             <td>
                                             <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
@@ -195,7 +229,8 @@
                                         <div id="detailLocation">Building A, Floor 1</div>
                                     </div>
                                     <div class="d-grid gap-2 mt-4">
-                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateStatusModal">
+                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateStatusModal"
+                                        id="updateStatusBtn" style="display: none;">
                                             Update Status
                                         </button>
                                     </div>
@@ -222,6 +257,7 @@
                                     </thead>
                                     <tbody>
                                         <c:forEach items="${FMO_MAINT_ASSIGN}" var="maintass" >
+                                        <c:if test="${maintass.isCompleted == 0}">
                                         <tr>
                                             <td>
                                                 <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
@@ -246,6 +282,7 @@
                                             </td>
                                             <td>${maintass.dateOfMaint}</td>
                                         </tr>
+                                        </c:if>
                                         </c:forEach>
                                         <!--<tr data-id="3" data-equipment="Elevator Motor" data-status="Needs Maintenance" data-serial="ELV-33321" 
                                             data-brand="LiftTech" data-location="Building C, Floor 1">
@@ -276,17 +313,17 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="equipmentId" class="form-label">Equipment</label>
-                        <select class="form-select" id="equipmentId" name="equipmentId" required>
-                            <option value="" selected disabled>Select Equipment</option>
-                            <!-- Static options -->
-                            <option value="1">Fire Extinguisher</option>
-                            <option value="2">Aircon</option>
-                            <option value="3">Elevator</option>
-                        </select>
+                        <div>
+                        <label for="equipmentName" class="form-label">Equipment Name <span style="color: red;">*</span></label>
+                        </div>
+                        <div class="w-100">
+                        <input class="form-control awesomplete w-100" id="equipmentName" data-list="${equipmentListString}" 
+                               name="equipmentName" maxlength="24" required style="width: 100%;" onchange="updateEquipmentId()" >
+                        <!--<input type="text" id="equipmentMaintId" name="equipmentMaintId">-->
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="maintenanceType" class="form-label">Maintenance Type</label>
+                        <label for="maintenanceType" class="form-label">Maintenance Type <span style="color: red;">*</span></label>
                         <select class="form-select" id="maintenanceType" name="maintenanceType" required>
                             <option value="" selected disabled>Select Type</option>
                             <c:forEach items="${FMO_MAINTTYPE_LIST}" var="mtype" >
@@ -295,7 +332,7 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="assignedTo" class="form-label">Assign To</label>
+                        <label for="assignedTo" class="form-label">Assign To <span style="color: red;">*</span></label>
                         <select class="form-select" id="assignedTo" name="assignedTo" required>
                             <option value="" selected disabled>Select User</option>
                             <c:forEach items="${FMO_USERS}" var="user" >
@@ -311,8 +348,8 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter maintenance details"></textarea>
+                        <label for="" class="form-label">Date of Maintenance <span style="color: red;">*</span></label>
+                        <input type="date" name="dateMaint" id="dateMaint" class="form-control" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -334,8 +371,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="updateEquipmentId" name="equipmentId" value="1">
-                    <input type="hidden" id="updateEquipmentStatus" name="equipmentStatus" value="1">
+                    <input type="hidden" id="updateEquipmentId" name="equipmentId" value="1"/>
+                    <input type="hidden" id="updateEquipmentStatus" name="equipmentStatus" value="1"/>
                     <div class="d-flex align-items-center mb-3">
                     <!-- Disabled Dropdown -->
                     <div class="me-3">
@@ -368,7 +405,7 @@
 
                     <div id="updateForms" class="mb-3">
                         <div id="formInput1">
-                            <input type="text" id="input1" name="2to3Input" placeholder="Maintenance Required to In Maintenance input" />
+                            <!--<input type="text" id="input1" name="2to3Input" placeholder="Maintenance Required to In Maintenance input" />-->
                             <!--<input type="text" name="locID" value="${locID}">
                             <input type="text" name="floorName" value="${floorName}">-->
                             
@@ -409,6 +446,7 @@
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
 
 <script>
     $(document).ready(function() {
@@ -481,9 +519,17 @@
             const brand = $(this).data('brand');
             const location = $(this).data('location');
             
+            const canUpdate = $(this).data('canupdate'); // Get access info
+            
             // Update the hidden input for the update modal
             $('#updateEquipmentId').val(equipmentId);
             $('#updateEquipmentStatus').val(status2);
+            
+            if (canUpdate === true || canUpdate === "true") {
+                $('#updateStatusBtn').show(); // Adjust selector to your button
+            } else {
+                $('#updateStatusBtn').hide();
+            }
             
             //modal maint status dropdown select initial value
             const statusDropdown = document.getElementById("status");
@@ -553,6 +599,7 @@
                     // Clear and reset visibility on modal open
                     statusDropdownNew.value = "1";
                     updateInputVisibility();
+                    console.log()
                 });
             }
        
@@ -568,6 +615,7 @@
                 maintenanceTable.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
             }
+            
         });
         
         // Select the first row by default
@@ -595,6 +643,9 @@
       case 'modify_status':
         toastMessage = 'The equipment status was modified successfully.';
         break;
+      case '3to1':
+        toastMessage = 'The equipment is now operational.';
+        break;
       default:
         toastMessage = 'Operation completed successfully.';
         break;
@@ -619,8 +670,26 @@
       timer: 3000,
       timerProgressBar: true
     });
+  } else if (status === 'error_assign') {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'Equipment already assigned for maintenance.',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
   }
 </script>
+
+<script>
+    window.onload = function() {
+        var today = new Date().toISOString().split("T")[0];
+        document.getElementById("dateMaint").min = today;
+    };
+</script>
+
 
 </body>
 </html>
