@@ -258,6 +258,7 @@
                                         <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}"/>
                                         <input type="hidden" name="maintStatID" value="${item.itemID}" />
                                         <input type="hidden" name="oldMaintStat" value="${item.itemMaintStat}" />
+                                        <input type="hidden" name="itemMaintType" id="itemMaintType" class="form-control" value=""/>
                                         <select name="statusDropdown" class="statusDropdown">
                                         <!--onchange="this.form.submit()"-->
                                             <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
@@ -280,7 +281,7 @@
         </c:if>
         
        <!-- confirm status change-->
-        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="confirmModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="centered-div bg-white">
@@ -298,6 +299,26 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="modal fade" id="specialConfirmModal" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="specialConfirmModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="centered-div bg-white">
+                <div class="container p-4 mt-4 mb-4">
+                <input type="hidden" id="modalItemMaintType" value="3" />
+                  <p class="text-center fs-5 specialModalText">Are you sure you want to reset the status back to "Operational"?</p>
+                  <div class="row">
+                    <div class="col text-center">
+                      <button id="specialConfirmBtn" class="btn btn-danger btn-lg mt-3 w-100 fw-bold">Yes</button>
+                    </div>
+                    <div class="col text-center">
+                      <button type="button" class="btn btn-danger btn-lg mt-3 w-100 fw-bold" data-bs-dismiss="modal" onclick="location.reload();">Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         
         <!-- list of room dropdowns  (turn roomDropdown <li> into foreach)-->
@@ -440,6 +461,7 @@
                                       <form action="itemcontroller" method="POST">
                                         <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}"/>
                                         <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}"/>
+                                        <input type="hidden" name="itemMaintType" id="itemMaintType" class="form-control" value=""/>
                                         <input type="hidden" name="maintStatID" value="${item.itemID}" />
                                         <input type="hidden" name="oldMaintStat" value="${item.itemMaintStat}" />
                                         <select name="statusDropdown" class="statusDropdown">
@@ -926,29 +948,93 @@
 
     
     <script>
+    const locID1 = "<%= locID %>"; // Embed locID from JSP
+    const floorName1 = "<%= floorName %>";
     document.addEventListener("DOMContentLoaded", function () {
         let selectedDropdown = null;
         let previousValue = null;
-
+        let backdropDismissed = true;
+        
+    
+        // Get both tables
+        const allItemsTable = document.getElementById("allItemsTable");
+        const itemsTable = document.getElementById("itemsTable");
+    
+        // Function to handle dropdown changes
+        function handleDropdownChange(event) {
+            const target = event.target;
+            if (target && target.classList.contains("statusDropdown")) {
+                backdropDismissed = true;
+                selectedDropdown = target;
+                previousValue = target.getAttribute("data-prev-value") || target.value;
+    
+                const newValue = target.value;
+    
+                if (previousValue === "3" && newValue === "1") {
+                    new bootstrap.Modal(document.getElementById("specialConfirmModal")).show();
+                } else {
+                    new bootstrap.Modal(document.getElementById("confirmModal")).show();
+                }
+            }
+        }
+    
+        // Attach to both tables if they exist
+        if (allItemsTable) {
+            allItemsTable.addEventListener("change", handleDropdownChange);
+        }
+        if (itemsTable) {
+            itemsTable.addEventListener("change", handleDropdownChange);
+        }
+    
+        // Initialize original dropdown values
         document.querySelectorAll(".statusDropdown").forEach(dropdown => {
-            dropdown.addEventListener("change", function () {
-                selectedDropdown = this;
-                previousValue = this.getAttribute("data-prev-value") || this.value;
-                $("#confirmModal").modal("show");
-            });
-
-            // Store initial value for each dropdown
             dropdown.setAttribute("data-prev-value", dropdown.value);
         });
-
+    
+        // Special modal confirm
+        document.getElementById("specialConfirmBtn").addEventListener("click", function () {
+            if (selectedDropdown) {
+                const form = selectedDropdown.closest("form");
+                const itemMaintTypeInput = form.querySelector("input[name='itemMaintType']");
+                const modalItemMaintTypeValue = document.getElementById("modalItemMaintType").value;
+    
+                if (itemMaintTypeInput) {
+                    itemMaintTypeInput.value = modalItemMaintTypeValue;
+                    itemMaintTypeInput.disabled = false;
+                }
+                setTimeout(() => {
+                    form.submit();
+                }, 200);
+            }
+            bootstrap.Modal.getInstance(document.getElementById("specialConfirmModal")).hide();
+        });
+    
+        // Regular modal confirm
         document.getElementById("confirmBtn").addEventListener("click", function () {
             if (selectedDropdown) {
-                selectedDropdown.closest("form").submit();
+                const form = selectedDropdown.closest("form");
+                const itemMaintTypeInput = form.querySelector("input[name='itemMaintType']");
+                if (itemMaintTypeInput) {
+                    itemMaintTypeInput.disabled = true;
+                }
+                setTimeout(() => {
+                    form.submit();
+                }, 200);
             }
-            $("#confirmModal").modal("hide");
+            bootstrap.Modal.getInstance(document.getElementById("confirmModal")).hide();
         });
-
+    
+        // Optional reload on backdrop dismiss
+        $("#confirmModal, #specialConfirmModal").on("hide.bs.modal", function () {
+            if (backdropDismissed) {
+                setTimeout(() => {
+                    location.reload();
+                }, 150);
+            }
+        });
     });
+
+
     
         function showTblDiv(button) {
             var roomDropDiv = button.closest('.roomDropDiv');

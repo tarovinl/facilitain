@@ -35,6 +35,7 @@ public class Item {
     private int maintSchedDays;
     private int maintSchedWarn;
     private Date expiration;
+    private Date plannedMaintDate;
     private Date lastMaintDate;
 
     // Getters and Setters
@@ -286,5 +287,13 @@ public class Item {
 
     public Date getLastMaintDate() {
         return lastMaintDate;
+    }
+
+    public void setPlannedMaintDate(Date plannedMaintDate) {
+        this.plannedMaintDate = plannedMaintDate;
+    }
+
+    public Date getPlannedMaintDate() {
+        return plannedMaintDate;
     }
 }

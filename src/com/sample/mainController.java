@@ -41,13 +41,16 @@ import sample.model.Jobs;
 import sample.model.Maintenance;
 import sample.model.Quotation;
 import sample.model.ToDo;
+import sample.model.MaintAssign;
 
 import com.google.gson.Gson;
 
 import java.util.TreeSet;
 
+import sample.model.ItemUser;
+
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
-                                                     "/calendar", "/settings", "/maintenanceSchedule", "/mapView"})
+                                                     "/calendar", "/settings", "/maintenanceSchedule", "/mapView", "/maintenancePage"})
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
@@ -78,11 +81,14 @@ public class mainController extends HttpServlet {
 
         ArrayList<Item> listMaintStat = new ArrayList<>();
         ArrayList<Maintenance> listMaintSched = new ArrayList<>();
+        ArrayList<Maintenance> listMaintType = new ArrayList<>();
         
         ArrayList<Repairs> listRepairs = new ArrayList<>();
         ArrayList<Jobs> listJobs = new ArrayList<>();
         ArrayList<ToDo> listToDo = new ArrayList<>();
         ArrayList<Maps> listMap = new ArrayList<>();
+        ArrayList<MaintAssign> listAssign = new ArrayList<>();
+        ArrayList<ItemUser> listDUsers = new ArrayList<>();
         
         List<String> months = new ArrayList<>();
                     months.add("January");
@@ -108,7 +114,10 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME");
              PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
              PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
+             PreparedStatement stmntMaintType = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES");
              PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
+             PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
+             PreparedStatement stmntDUsers = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_DUSERS ORDER BY USER_ID");
              PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
              PreparedStatement stmntToDo = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_TO_DO_LIST");
              PreparedStatement stmntMap = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOC_MAP");
@@ -170,6 +179,7 @@ public class mainController extends HttpServlet {
                 items.setItemArchive(rsItem.getInt("ITEM_STAT_ID"));
                 items.setItemMaintStat(rsItem.getInt("MAINTENANCE_STATUS"));
                 items.setLastMaintDate(rsItem.getDate("LAST_MAINTENANCE_DATE"));
+                items.setPlannedMaintDate(rsItem.getDate("PLANNED_MAINTENANCE_DATE"));
                 
                 items.setItemPCC(rsItem.getInt("PC_CODE"));
                 items.setAcACCU(rsItem.getInt("AC_ACCU"));
@@ -246,6 +256,39 @@ public class mainController extends HttpServlet {
                 listMaintSched.add(msched);
             }
             rsMaintSched.close();
+            
+            ResultSet rsMaintType = stmntMaintType.executeQuery();
+            while (rsMaintType.next()) {
+                Maintenance mtype = new Maintenance();
+                mtype.setItemTypeId(rsMaintType.getInt("MAIN_TYPE_ID"));
+                mtype.setItemTypeName(rsMaintType.getString("NAME"));
+                listMaintType.add(mtype);
+            }
+            rsMaintType.close();
+            
+            ResultSet rsAssign = stmntAssign.executeQuery();
+            while (rsAssign.next()) {
+                MaintAssign mass = new MaintAssign();
+                mass.setAssignID(rsAssign.getInt("ASSIGN_ID"));
+                mass.setItemID(rsAssign.getInt("ITEM_ID"));
+                mass.setUserID(rsAssign.getInt("USER_ID"));
+                mass.setMaintTID(rsAssign.getInt("MAIN_TYPE_ID"));
+                mass.setDateOfMaint(rsAssign.getDate("DATE_OF_MAINTENANCE"));
+                mass.setIsCompleted(rsAssign.getInt("IS_COMPLETED"));
+                listAssign.add(mass);
+            }
+            rsAssign.close();
+            
+            ResultSet rsDUsers = stmntDUsers.executeQuery();
+            while (rsDUsers.next()) {
+                ItemUser itemUser = new ItemUser();
+                itemUser.setUserId(rsDUsers.getInt("USER_ID"));
+                itemUser.setName(rsDUsers.getString("NAME"));
+                itemUser.setEmail(rsDUsers.getString("EMAIL"));
+                itemUser.setRole(rsDUsers.getString("ROLE"));
+                listDUsers.add(itemUser);
+            }
+            rsDUsers.close();
             
             ResultSet rsQuot = stmntQuotations.executeQuery();
                        while (rsQuot.next()) {
@@ -402,7 +445,6 @@ public class mainController extends HttpServlet {
             }
         }
 
-        
         // Store locations in the request scope to pass to JSP
         request.setAttribute("locations", locations);
         request.setAttribute("FMO_FLOORS_LIST", groupedFloors);
@@ -415,6 +457,7 @@ public class mainController extends HttpServlet {
         request.setAttribute("FMO_BRANDS_LIST", listBrands);
         request.setAttribute("maintenanceList", listMaintSched);
         request.setAttribute("FMO_MAINTSTAT_LIST", listMaintStat);
+        request.setAttribute("FMO_MAINTTYPE_LIST", listMaintType);
 
         request.setAttribute("currentYear", currentYear);
         request.setAttribute("currentMonth", currentMonth);
@@ -424,9 +467,11 @@ public class mainController extends HttpServlet {
         request.setAttribute("FMO_MAP_LIST", listMap);
         request.setAttribute("calendarSched", listJobs);
         request.setAttribute("FMO_TO_DO_LIST", listToDo);
+        request.setAttribute("FMO_MAINT_ASSIGN", listAssign);
+        request.setAttribute("FMO_USERS", listDUsers);
         
-        request.setAttribute("quotations", quotations);
-        getServletContext().setAttribute("quotations", quotations);
+        request.setAttribute("quotations", quotations); // per session
+
 
 //        SharedData.getInstance().setItemsList(listItem);
 //        SharedData.getInstance().setMaintStat(listMaintStat);
@@ -552,6 +597,9 @@ public class mainController extends HttpServlet {
                         break;
                     case "/mapView":
                         request.getRequestDispatcher("/mapView.jsp").forward(request, response);
+                        break;
+                    case "/maintenancePage":
+                        request.getRequestDispatcher("/pending.jsp").forward(request, response);
                         break;
                     default:
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
