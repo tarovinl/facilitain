@@ -148,11 +148,7 @@
         </div>
 
             
-            <a href="settings" class="${page == 'settings' ? 'active' : ''}">
-                <img src="resources/images/icons/gear-solid.svg" alt="Settings" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Settings
-            </a>
-             
+           
         </div>
         <div class="todo-list">
             <div class="d-flex justify-content-between align-items-center">
