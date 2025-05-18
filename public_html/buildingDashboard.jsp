@@ -382,7 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
   <div class="row mt-4" style="margin-top: 100px;">
-    <div class="col-12 col-lg-4 mb-3"">
+    <div class="col-12 col-lg-4 mb-3">
       <div class="diagram">
               <div class="diagramTitle">
                 <h4 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h4>
@@ -398,6 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                  data-item-name="${item.itemName}" 
                                  data-item-room="${item.itemRoom}" 
                                  data-last-maintenance-date="${item.lastMaintDate}" 
+                                 data-planned-maintenance-date="${item.plannedMaintDate}" 
                                  data-no-of-days="${maint.noOfDays}" 
                                  data-no-of-days-warning="${maint.noOfDaysWarning}">
                                 <div>
@@ -430,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
               </div>
             </div>
     </div>
-    <div class="col-12 col-lg-4 mb-3"">
+    <div class="col-12 col-lg-4 mb-3">
       <div class="diagram">
               <div class="diagramTitle">
                 <h4 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h4>
@@ -443,7 +444,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
                             <div class="actItem"
-                                 data-last-maintenance-date="${item.lastMaintDate}">
+                                data-last-maintenance-date="${item.lastMaintDate}"
+                                 data-planned-maintenance-date="${item.plannedMaintDate}">
+                                 
                                 <div>
                                     <img src="resources/images/greenDot.png" alt="activity status indicator" width="28" height="28">
                                 </div>
@@ -527,20 +530,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('#upcoming-activities .actItem').forEach(function (itemDiv) {
         const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
+        const plannedMaintenanceDateStr = itemDiv.getAttribute('data-planned-maintenance-date');
         const noOfDays = parseInt(itemDiv.getAttribute('data-no-of-days')) || 0;
         const noOfDaysWarning = parseInt(itemDiv.getAttribute('data-no-of-days-warning')) || 0;
 
-        console.log('UA Last Maintenance Date String:', lastMaintenanceDateStr);
+        console.log('UA Planned Maintenance Date String:', plannedMaintenanceDateStr);
         console.log('UA Number of Days:', noOfDays);
         console.log('UA Number of Days Warning:', noOfDaysWarning);
 
 
-        if (lastMaintenanceDateStr) {
-            const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
+        if (plannedMaintenanceDateStr) {
+            const plannedMaintenanceDate = new Date(plannedMaintenanceDateStr);
 
-            if (!isNaN(lastMaintenanceDate)) {
-                const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
-                const daysRemaining = noOfDays - daysSinceLastMaintenance;
+            if (!isNaN(plannedMaintenanceDate)) {
+                const daysSincePlannedMaintenance = (currentDate - plannedMaintenanceDate) / (1000 * 60 * 60 * 24);
+                const daysRemaining = noOfDays - daysSincePlannedMaintenance;
                 
                 console.log(daysRemaining);
 
@@ -553,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     itemDiv.style.display = "none";
                 }
             } else {
-                console.error("Invalid lastMaintenanceDate:", lastMaintenanceDateStr);
+                console.error("Invalid lastMaintenanceDate:", plannedMaintenanceDateStr);
                 itemDiv.style.display = "none";
             }
         } else {
@@ -562,6 +566,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.querySelectorAll('#recent-activities .actItem').forEach(function (itemDiv) {
+        const plannedMaintenanceDateStr = itemDiv.getAttribute('data-planned-maintenance-date');
         const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
         console.log('RA Last Maintenance Date String:', lastMaintenanceDateStr);
         
