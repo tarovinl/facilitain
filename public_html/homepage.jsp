@@ -55,6 +55,18 @@
                 transform: translateY(-50%);
                 color: #6c757d;
             }
+            .card:focus,
+            .card:active {
+                 outline: none;
+            }
+            .hover-shadow:hover {
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4) !important;
+            }
+           .hover-underline-title:hover .card-title {
+                 text-decoration: underline;
+                     text-decoration-color: white;
+                text-underline-offset: 3px; /* optional: makes it look cleaner */
+                }
     </style>
 </head>
 <body>
@@ -68,21 +80,23 @@
                     <div>
                         <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
                     </div>
-                    <div class="d-flex gap-2">
+                    <div class="d-flex flex-column flex-md-row gap-2">
                         <c:choose>
                             <c:when test="${sessionScope.role == 'Admin'}">
-                                <button class="topButtons px-3 py-2 rounded-1 hover-outline text-dark" 
+                                <button class="align-items-center d-flex btn btn-md topButtons px-3 py-2 rounded-1 hover-outline text-dark" 
                                     style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
                                     data-bs-toggle="modal" data-bs-target="#addBuildingModal">
-                                    <i class="bi bi-plus-lg"></i> Add
+                                    <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> 
+                                    Add
                                 </button>
                             </c:when>
                             <c:otherwise>
                             </c:otherwise>
                         </c:choose>
                         <a href="./mapView" 
-                            class="topButtons px-3 py-2 rounded-1 hover-outline text-dark text-decoration-none" 
+                            class="align-items-center d-flex btn btn-md topButtons px-3 py-1 rounded-2 hover-outline text-dark text-decoration-none" 
                             style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
+                             <img src="resources/images/icons/map.svg" alt="map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                             Map View
                         </a>
                     </div>
@@ -106,7 +120,7 @@
                     <c:forEach var="location" items="${locations}">
                         <c:if test="${location.locArchive == 1}">
                             <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 building-card">
-                                <div class="card mb-4 position-relative border border-1 shadow-sm" >
+                                <div class="card mb-4 position-relative shadow-sm hover-shadow hover-underline-title" >
                                     <a href="buildingDashboard?locID=${location.itemLocId}" class="text-decoration-none" style="border-radius:20px;">
                                         <div class="card-body rounded-2" style="
                                             background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%),
@@ -126,7 +140,7 @@
                                             justify-content: flex-end;
                                             overflow: hidden;
                                             outline: none;">
-                                            <h5 class="card-title text-light fs-4" style="font-family: 'NeueHaasMedium', sans-serif;">${location.locName}</h5>
+                                            <h5 class="card-title text-light fs-4 " style="font-family: 'NeueHaasMedium', sans-serif;">${location.locName}</h5>
                                             <p class="card-text text-light fs-6" style="font-family: 'NeueHaasLight', sans-serif;">${location.locDescription}</p>
                                         </div>
                                     </a>
@@ -145,26 +159,31 @@
         <form action="addbuildingcontroller" method="post" enctype="multipart/form-data">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addBuildingModalLabel">Add Building</h5>
+                    <h5 class="modal-title" id="addBuildingModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Add Building</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="locName" class="form-label">Building Name</label>
-                        <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter building name" required>
+                        <label for="locName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Building Name</label>
+                        <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter building name" style="font-family: 'NeueHaasLight', sans-serif;" required>
                     </div>
                     <div class="mb-3">
-                        <label for="locDescription" class="form-label">Building Description</label>
-                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter building description" required>
+                        <label for="locDescription" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Building Description</label>
+                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter building description" style="font-family: 'NeueHaasLight', sans-serif;" required>
                     </div>
                     <div class="mb-3">
-                        <label for="buildingImage" class="form-label">Building Image</label>
-                        <input type="file" class="form-control" id="buildingImage" name="buildingImage" accept="image/*">
+                        <label for="buildingImage" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Building Image</label>
+                        <input type="file" class="form-control" id="buildingImage" name="buildingImage" accept="image/*" style="font-family: 'NeueHaasLight', sans-serif;">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">Add</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasLight', sans-serif;">
+                    Cancel
+                    </button>
+                   <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasLight', sans-serif;">
+                    Add
+                    </button>
+
                 </div>
             </div>
         </form>
@@ -177,15 +196,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="notificationPopupLabel">Unread Notifications</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="notificationPopupLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Unread Notifications</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"  style="font-family: 'NeueHaasLight', sans-serif;"></button>
             </div>
             <div class="modal-body">
-                <p id="notificationMessage"></p>
+                <p id="notificationMessage"  style="font-family: 'NeueHaasLight', sans-serif;"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <a href="<%=request.getContextPath()%>/notification" class="btn btn-primary">View Notifications</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"  style="font-family: 'NeueHaasLight', sans-serif;">Close</button>
+                <a href="<%=request.getContextPath()%>/notification" class="btn btn-primary"  style="font-family: 'NeueHaasLight', sans-serif;">View Notifications</a>
             </div>
         </div>
     </div>
