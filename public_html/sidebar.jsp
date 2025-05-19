@@ -125,30 +125,30 @@
                 <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Map View
             </a>-->
- <div class="maintenance-container">
-            <div class="maintenance-header">
-                <img src="resources/images/icons/gear-solid.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                <span>Maintenance</span>
-                <i class="fas fa-chevron-down ms-auto"></i>
-            </div>
-            <div class="maintenance-items">
-                <a href="itemType" class="${page == 'itemType' ? 'active' : ''}">
-                    <span class="ps-4">Item Types</span>
-                </a>
-                <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}">
-                    <span class="ps-4">Item Categories</span>
-                </a>
-                <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
-                    <span class="ps-4">Item Schedule</span>
-                </a>
-                <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
-                    <span class="ps-4">Item User</span>
-                </a>
-            </div>
-        </div>
-
             
-           
+            <c:if test="${sessionScope.role == 'Admin'}">
+                <div class="maintenance-container">
+                    <div class="maintenance-header">
+                        <img src="resources/images/icons/gear-solid.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                        <span>Maintenance</span>
+                        <i class="fas fa-chevron-down ms-auto"></i>
+                    </div>
+                    <div class="maintenance-items">
+                        <a href="itemType" class="${page == 'itemType' ? 'active' : ''}">
+                            <span class="ps-4">Item Types</span>
+                        </a>
+                        <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}">
+                            <span class="ps-4">Item Categories</span>
+                        </a>
+                        <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
+                            <span class="ps-4">Item Schedule</span>
+                        </a>
+                        <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
+                            <span class="ps-4">Item User</span>
+                        </a>
+                    </div>
+                </div>
+            </c:if>           
         </div>
         <div class="todo-list">
             <div class="d-flex justify-content-between align-items-center">
@@ -326,12 +326,16 @@
 //                ]
 //            });
 //        });
-  const maintenanceDropdown = document.querySelector('.maintenance-dropdown');
-        maintenanceDropdown.addEventListener('click', function() {
-            const arrow = this.querySelector('.dropdown-arrow');
-            arrow.style.transform = this.getAttribute('aria-expanded') === 'true' ? 'rotate(0deg)' : 'rotate(90deg)';
+document.addEventListener('DOMContentLoaded', function() {
+    const maintenanceHeader = document.querySelector('.maintenance-header');
+    const maintenanceContainer = document.querySelector('.maintenance-container');
+    
+    if (maintenanceHeader) {
+        maintenanceHeader.addEventListener('click', function() {
+            maintenanceContainer.classList.toggle('open');
         });
-    });
+    }
+});
 
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -449,14 +453,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
             // badge.style.display = 'inline-block';
         });
 });
-  document.addEventListener('DOMContentLoaded', function() {
-    const maintenanceHeader = document.querySelector('.maintenance-header');
-    const maintenanceContainer = document.querySelector('.maintenance-container');
-    
-    maintenanceHeader.addEventListener('click', function() {
-        maintenanceContainer.classList.toggle('open');
-    });
-});
+
 document.addEventListener('DOMContentLoaded', function() {
     // Create arrow toggle button 
     const toggleButton = document.createElement('button');
