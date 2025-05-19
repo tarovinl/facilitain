@@ -291,7 +291,7 @@
     
     <div class="col-md-10 p-4">
         <div class="">
-            <h1>Maintenance Calendar</h1>
+            <h1 style="font-family: NeueHaasMedium, sans-serif;">Maintenance Calendar</h1>
         </div>
         <div class="mb-4">
         <div id='calendar'></div>
