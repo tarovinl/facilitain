@@ -89,7 +89,7 @@
 
 
     <body>
-<div class="container-fluid">
+<div class="container-fluid p-4">
   <div class="row min-vh-100">
         <jsp:include page="sidebar.jsp"/>
     

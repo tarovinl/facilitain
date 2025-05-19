@@ -14,8 +14,8 @@
 <body>
 <div class="container-fluid">
     <div class="row vh-100">
-        <jsp:include page="sidebar.jsp"/>
-        <div class="col-md-10 bg-light p-4">
+            <jsp:include page="sidebar.jsp"></jsp:include>
+        <div class="col-md-10 p-4">
             <!-- Header Section -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="text-primary" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Item Categories</h1>

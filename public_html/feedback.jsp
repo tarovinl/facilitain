@@ -21,7 +21,7 @@
         <div class="row min-vh-100">
             <jsp:include page="sidebar.jsp" />
 
-            <div class="col-md-10">
+            <div class="col-md-10 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1 style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Feedback</h1>
                     <button class="btn btn-warning" id="download-chart" ${empty feedbackList ? 'disabled' : ''}>Generate Report</button>
