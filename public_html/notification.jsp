@@ -19,7 +19,7 @@
             <h1 class="mb-4" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Notifications</h1>
 
             <!-- Sorting and Filtering controls -->
-            <div class="d-flex justify-content-between mb-3">
+            <div class="d-flex justify-content-between mb-3 gap-2" style="font-family: NeueHaasLight, sans-serif;">
                 <form action="notification" method="get" class="d-flex" id="notificationForm">
                     <select name="sortBy" class="form-control mr-2" onchange="this.form.submit()">
                         <option value="date" <c:if test="${sortBy == 'date'}">selected</c:if>>Sort by Date</option>

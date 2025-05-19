@@ -87,7 +87,7 @@
             <div>
                 <!-- Link component remains unchanged -->
                 
-                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" 
+                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack pt-4 d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" 
    style="margin-left: 2px; font-family: NeueHaasLight, sans-serif;">
     <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
     Back
@@ -102,11 +102,20 @@
             <div class="locName">
               <h3 class="fw-bold" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">${locName}</h3>
             </div>
-            <div>
-                <button class="buttonsBuilding" data-toggle="modal" data-target="#addFloor" type="button" onclick="">Add Floor</button>
-                <!--<button class="buttonsBuilding" data-toggle="modal" data-target="#archiveFloor" type="button" onclick="">Archive Floor</button>-->
-                <button class="buttonsBuilding" data-toggle="modal" data-target="#archiveLocation" type="button" onclick="">Archive Location</button>
-            </div>
+            <div class="d-flex flex-column flex-lg-row gap-2">
+    <button class="buttonsBuilding align-items-center d-flex btn btn-md px-3 py-2 rounded-1 hover-outline text-dark" 
+        style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
+        data-toggle="modal" data-target="#addFloor" type="button">
+        Add Floor
+    </button>
+
+    <button class="buttonsBuilding align-items-center d-flex btn btn-md px-3 py-2 rounded-1 hover-outline text-dark" 
+        style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
+        data-toggle="modal" data-target="#archiveLocation" type="button">
+        Archive Location
+    </button>
+</div>
+
         </div>
 
         <form action="buildingController" method="POST" enctype="multipart/form-data">
