@@ -27,6 +27,13 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     
     <style>
+    body, h1, h2, h3, h4, th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+h5, h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
             .hover-outline {
                 transition: all 0.3s ease;
                 border: 1px solid transparent; /* Reserve space for border */
@@ -89,7 +96,7 @@
 
 
     <body>
-<div class="container-fluid">
+<div class="container-fluid p-4">
   <div class="row min-vh-100">
         <jsp:include page="sidebar.jsp"/>
     

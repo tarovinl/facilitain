@@ -17,6 +17,15 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     
+    <style>
+    body, h1, h2, h3, h4, th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+h5, h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
+    </style>
     
     <%@ page import="java.util.HashSet" %>
 <%

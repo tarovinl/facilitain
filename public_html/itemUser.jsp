@@ -10,12 +10,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
      <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+  body, h1, h2, h3, h4, th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+h5, h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
+    </style>
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row min-vh-100">
-        <jsp:include page="sidebar.jsp"/>
-        <div class="col-md-10">
+    <div class="row vh-100">
+            <jsp:include page="sidebar.jsp"></jsp:include>
+        <div class="col-md-10 p-4">
             <h1 style="font-family: 'NeueHaasMedium', sans-serif;">Manage Item Users</h1>
             <table id="itemUserTable" class="table table-striped table-bordered">
                 <thead class="table-dark">

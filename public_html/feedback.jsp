@@ -15,13 +15,22 @@
     <!-- Include DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <style>
+   body, h1, h2, h3, h4,h5 th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+    h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
+    </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row min-vh-100">
             <jsp:include page="sidebar.jsp" />
 
-            <div class="col-md-10">
+            <div class="col-md-10 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1 style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Feedback</h1>
                     <button class="btn btn-warning" id="download-chart" ${empty feedbackList ? 'disabled' : ''}>Generate Report</button>
