@@ -35,10 +35,10 @@
          <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
             <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <style>
-    body, h1, h2,h3, h4,  label,  td  {
+   body, h1, h2,h3, h4, th   {
         font-family: 'NeueHaasMedium', sans-serif !important;
     }
-    h5, h6,input, textarea,th, p{
+    h5, h6,input, textarea,td,tr, p, label{
         font-family: 'NeueHaasLight', sans-serif !important;
     }
     

@@ -11,6 +11,15 @@
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+   body, h1, h2, h3, h4, th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+h5, h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
+    </style>
 </head>
 <body>
    <div class="container-fluid">
@@ -18,7 +27,7 @@
             <jsp:include page="sidebar.jsp"></jsp:include>
         <div class="col-md-10 p-4">
             <div class="d-flex justify-content-between align-items-center">
-                <h1 class="text-primary" style="font-family: 'NeueHaasMedium', sans-serif;">Maintenance Schedule</h1>
+                <h1 class="text-dark" style="font-family: 'NeueHaasMedium', sans-serif;">Maintenance Schedule</h1>
                 <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#maintenanceModal">
                     <i class="bi bi-plus-lg"></i> Add Schedule
                 </button>

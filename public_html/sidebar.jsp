@@ -141,10 +141,10 @@
                             <span class="ps-4">Item Categories</span>
                         </a>
                         <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
-                            <span class="ps-4">Item Schedule</span>
+                            <span class="ps-4">Maintenance Schedule</span>
                         </a>
                         <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
-                            <span class="ps-4">Item User</span>
+                            <span class="ps-4">Manage Users</span>
                         </a>
                     </div>
                 </div>

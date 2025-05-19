@@ -9,6 +9,16 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap-icons/1.10.0/font/bootstrap-icons.css" rel="stylesheet">
      <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <title>Notifications</title>
+    
+    <style>
+    body, h1, h2, h3, h4, th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+h5, h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
+    </style>
 </head>
 <body>
 <div class="container-fluid">

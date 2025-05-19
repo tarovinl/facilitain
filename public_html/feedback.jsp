@@ -15,6 +15,15 @@
     <!-- Include DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <style>
+   body, h1, h2, h3, h4,h5 th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+    h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
+    </style>
 </head>
 <body>
     <div class="container-fluid">

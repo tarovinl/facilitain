@@ -11,6 +11,15 @@
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
      <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <style>
+    
+    body, h1, h2, h3, h4, th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+h5, h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
+    
         .detail-content {
             padding: 1rem;
             background-color: #f8f9fa;
