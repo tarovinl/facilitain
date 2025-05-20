@@ -11,6 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <style>
+    
             .hover-outline {
                 transition: all 0.3s ease;
                 border: 1px solid transparent; /* Reserve space for border */
@@ -214,7 +215,7 @@
                     <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasLight', sans-serif;">
                     Cancel
                     </button>
-                   <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasLight', sans-serif;">
+                   <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">
                     Add
                     </button>
 

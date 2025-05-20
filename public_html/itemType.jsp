@@ -11,10 +11,10 @@
      <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
-    body, h1, h2, h3, h4, th {
+    body, h1, h2, h3, h4, th ,h5{
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
-h5, h6, input, textarea, td, tr, p, label, select, option {
+ h6, input, textarea, td, tr, p, label, select, option {
     font-family: 'NeueHaasLight', sans-serif !important;
 }
 .hover-outline {
@@ -131,8 +131,8 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add Item Type</button>
+                                <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasLight', sans-serif;" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Add Item Type</button>
                             </div>
                         </form>
                     </div>
@@ -169,8 +169,8 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                 <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasLight', sans-serif;" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Save Changes</button>
                             </div>
                         </form>
                     </div>
