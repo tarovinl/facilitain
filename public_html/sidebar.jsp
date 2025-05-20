@@ -15,6 +15,12 @@
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./resources/css/sidebar.css">
     <style>
+    body, h1, h2, h3, h4,h5 th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+    h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
 .maintenance-container {
     margin: 10px 0;
 }
@@ -141,7 +147,7 @@
                             <span class="ps-4">Item Categories</span>
                         </a>
                         <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
-                            <span class="ps-4">Maintenance Schedule</span>
+                            <span class="ps-4">Automated Scheduling</span>
                         </a>
                         <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
                             <span class="ps-4">Manage Users</span>
@@ -179,7 +185,9 @@
             <hr class="bg-light border-2 border-top border-light"/>-->
         </div>
      <!--   Log out to Portal -->
-        <a href="<%=request.getContextPath()%>/logoutServlet" class="btn"><i class="bi bi-box-arrow-left pe-2"></i>Logout</a>
+        <a href="<%=request.getContextPath()%>/logoutServlet" class="btn">
+        <img src="resources/images/icons/logout.svg" alt="logout" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> 
+        Logout</a>
     </div>
 
 <!--to do list item modal-->
