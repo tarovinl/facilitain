@@ -102,40 +102,13 @@
         </div>
         <div class="ps-2">
             <a href="homepage" class="${page == 'homepage' ? 'active' : ''}">
-                <img src="resources/images/icons/house.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                <img src="resources/images/icons/home.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Homepage
             </a>
-            <a href="notification" class="${page == 'notification' ? 'active' : ''}" style="position: relative;">
-             <img src="resources/images/icons/bell-solid.svg" alt="Notifications" class="icon pe-2" 
-                 style="width: 2em; height: 2em; vertical-align: middle;">
-                Notifications 
-            <span id="notificationBadge" class="badge bg-warning text-dark ms-2">0</span>
-            </a>     
-            <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
-                <img src="resources/images/icons/calendar-solid.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Calendar
-            </a>
-            <a href="history" class="${page == 'history' ? 'active' : ''}">
-                <img src="resources/images/icons/clock-rotate-left-solid.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                History Logs
-            </a>
-            <a href="feedback" class="${page == 'feedback' ? 'active' : ''}">
-                <img src="resources/images/icons/comments-solid.svg" alt="Feedback" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Feedback
-            </a>
-            <a href="reports" class="${page == 'reports' ? 'active' : ''}">
-                <img src="resources/images/icons/circle-exclamation-solid.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Reports
-            </a>
-            <!--<a href="mapView" class="${page == 'mapView' ? 'active' : ''}">
-                <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Map View
-            </a>-->
-            
-            <c:if test="${sessionScope.role == 'Admin'}">
+             <c:if test="${sessionScope.role == 'Admin'}">
                 <div class="maintenance-container">
                     <div class="maintenance-header">
-                        <img src="resources/images/icons/gear-solid.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                        <img src="resources/images/icons/maintenance.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                         <span>Maintenance</span>
                         <i class="fas fa-chevron-down ms-auto"></i>
                     </div>
@@ -155,6 +128,34 @@
                     </div>
                 </div>
             </c:if>           
+            <a href="notification" class="${page == 'notification' ? 'active' : ''}" style="position: relative;">
+             <img src="resources/images/icons/notif.svg" alt="Notifications" class="icon pe-2" 
+                 style="width: 2em; height: 2em; vertical-align: middle;">
+                Notifications 
+            <span id="notificationBadge" class="badge bg-warning text-dark ms-2">0</span>
+            </a>     
+            <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
+                <img src="resources/images/icons/calendar.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                Calendar
+            </a>
+            <a href="history" class="${page == 'history' ? 'active' : ''}">
+                <img src="resources/images/icons/clock-left.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                History Logs
+            </a>
+            <a href="feedback" class="${page == 'feedback' ? 'active' : ''}">
+                <img src="resources/images/icons/feedback.svg" alt="Feedback" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                Feedback
+            </a>
+            <a href="reports" class="${page == 'reports' ? 'active' : ''}">
+                <img src="resources/images/icons/reports.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                Reports
+            </a>
+            <!--<a href="mapView" class="${page == 'mapView' ? 'active' : ''}">
+                <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                Map View
+            </a>-->
+            
+           
         </div>
         <div class="todo-list">
             <div class="d-flex justify-content-between align-items-center">
