@@ -35,10 +35,10 @@
          <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
             <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <style>
-   body, h1, h2,h3, h4, th   {
+   body, h1, h2,h3, h4,h5, th,label   {
         font-family: 'NeueHaasMedium', sans-serif !important;
     }
-    h5, h6,input, textarea,td,tr, p, label{
+     h6,input, textarea,td,tr, p, {
         font-family: 'NeueHaasLight', sans-serif !important;
     }
     
@@ -378,7 +378,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-danger" data-dismiss="modal" style="font-family: 'NeueHaasLight', sans-serif;">Cancel</button>
-          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasLight', sans-serif;">Save</button>
+          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save</button>
         </div>
       </div>
     </form>

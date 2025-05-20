@@ -11,13 +11,36 @@
      <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-  body, h1, h2, h3, h4, th {
+  body, h1, h2, h3, h4, th,h5 {
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
-h5, h6, input, textarea, td, tr, p, label, select, option {
+ h6, input, textarea, td, tr, p, label, select, option {
     font-family: 'NeueHaasLight', sans-serif !important;
 }
+.hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
 
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
+
+            .buttonsBack:hover {
+                text-decoration: underline !important;
+                }
+            .buildingManage:hover {
+                text-decoration: underline !important;
+                }
     </style>
 </head>
 <body>

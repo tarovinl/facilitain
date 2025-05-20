@@ -11,13 +11,36 @@
      <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
-    body, h1, h2, h3, h4, th {
+    body, h1, h2, h3, h4, th ,h5{
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
-h5, h6, input, textarea, td, tr, p, label, select, option {
+ h6, input, textarea, td, tr, p, label, select, option {
     font-family: 'NeueHaasLight', sans-serif !important;
 }
+.hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
 
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
+
+            .buttonsBack:hover {
+                text-decoration: underline !important;
+                }
+            .buildingManage:hover {
+                text-decoration: underline !important;
+                }
     </style>
 </head>
 <body>
@@ -27,7 +50,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         <div class="col-md-10 p-4">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="text-dark" style="font-family: 'NeueHaasMedium', sans-serif;">Item Types</h1>
-                <button class="btn btn-warning my-3" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">
+                <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">
                     <i class="bi bi-plus-lg"></i> Add Item Type
                 </button>
             </div>
@@ -86,7 +109,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                         <form action="itemType" method="post">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="addItemTypeModalLabel">Add Item Type</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="mb-3">
@@ -108,8 +131,8 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add Item Type</button>
+                                <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasLight', sans-serif;" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Add Item Type</button>
                             </div>
                         </form>
                     </div>
@@ -146,8 +169,8 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                 <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasLight', sans-serif;" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Save Changes</button>
                             </div>
                         </form>
                     </div>

@@ -5,20 +5,43 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Maintenance Schedule</title>
+    <title>Automated Scheduling</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-   body, h1, h2, h3, h4, th {
+   body, h1, h2, h3, h4, th,h5 {
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
-h5, h6, input, textarea, td, tr, p, label, select, option {
+ h6, input, textarea, td, tr, p, label, select, option {
     font-family: 'NeueHaasLight', sans-serif !important;
 }
+.hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
 
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
+
+            .buttonsBack:hover {
+                text-decoration: underline !important;
+                }
+            .buildingManage:hover {
+                text-decoration: underline !important;
+                }
     </style>
 </head>
 <body>
@@ -27,9 +50,9 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             <jsp:include page="sidebar.jsp"></jsp:include>
         <div class="col-md-10 p-4">
             <div class="d-flex justify-content-between align-items-center">
-                <h1 class="text-dark" style="font-family: 'NeueHaasMedium', sans-serif;">Maintenance Schedule</h1>
-                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#maintenanceModal">
-                    <i class="bi bi-plus-lg"></i> Add Schedule
+                <h1 class="text-dark" style="font-family: 'NeueHaasMedium', sans-serif;">Automated Scheduling</h1>
+                <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#maintenanceModal">
+                    <i class="bi bi-plus-lg"></i> Manage Automated Scheduling
                 </button>
             </div>
 
@@ -94,7 +117,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                     <div class="modal-content">
                         <form action="maintenanceSave" method="post">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="maintenanceModalLabel">Add/Edit Maintenance Schedule</h5>
+                                <h5 class="modal-title" id="maintenanceModalLabel">Manage Automated Scheduling</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -173,8 +196,8 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasLight', sans-serif;" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Save Changes</button>
                             </div>
                         </form>
                     </div>
