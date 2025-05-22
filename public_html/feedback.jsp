@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Feedback</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <script src="https://www.gstatic.com/charts/loader.js"></script>
@@ -172,154 +173,113 @@
 
         const generatedDate = '${generatedDate}';
         document.getElementById('download-chart').addEventListener('click', function () {
-            // Create a full report container
-            const reportContainer = document.createElement('div');
-            reportContainer.style.fontFamily = 'Arial, sans-serif';
-            reportContainer.style.maxWidth = '1200px';
-            reportContainer.style.margin = '0 auto';
-            reportContainer.style.padding = '20px';
+            // Initialize jsPDF
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4'); // Portrait, millimeters, A4
+            
+            let yPosition = 20;
 
-            // Add the header with inline styles for gray background
-            const header = document.createElement('header');
-            header.style.backgroundColor = '#333333'; //very gray
-            header.style.padding = '1rem 3rem';
-            header.style.display = 'flex';
-            header.style.justifyContent = 'space-between';
-            header.style.alignItems = 'center';
-            header.style.overflowX = 'auto';
-            header.style.whiteSpace = 'nowrap';
+          
+            try {
+                // Note:  need to convert your logo to base64 or use a different approach
+              
+                pdf.setFontSize(20);
+                pdf.setFont(undefined, 'bold');
+                pdf.text('University of Santo Tomas', 105, yPosition, { align: 'center' });
+                yPosition += 10;
+                
+                pdf.setFontSize(16);
+                pdf.text('Feedback Report', 105, yPosition, { align: 'center' });
+                yPosition += 20;
+            } catch (error) {
+                console.warn('Logo could not be added to PDF:', error);
+            }
 
-            // For large devices
-            const largeImg = document.createElement('img');
-            largeImg.src = 'resources/images/USTLogo.png';
-            largeImg.alt = 'UST Logo';
-            largeImg.classList.add('img-fluid', 'd-none', 'd-md-block');
-            largeImg.style.maxHeight = '6rem';
-
-            // For small devices
-            const smallImg = document.createElement('img');
-            smallImg.src = 'resources/images/USTLogo.png';
-            smallImg.alt = 'UST Logo';
-            smallImg.classList.add('img-fluid', 'd-md-none');
-            smallImg.style.maxHeight = '3rem';
-
-            header.appendChild(largeImg);
-            header.appendChild(smallImg);
-            reportContainer.appendChild(header);
-
-            // Add title
-            const titleEl = document.createElement('h1');
-            titleEl.textContent = 'Feedback Report';
-            titleEl.style.textAlign = 'center';
-            reportContainer.appendChild(titleEl);
-
-            // Add chart
+            // Add chart to PDF
             const chartImage = chart.getImageURI();
-            const chartImgElement = document.createElement('img');
-            chartImgElement.src = chartImage;
-            chartImgElement.style.width = '100%';
-            chartImgElement.style.maxHeight = '400px';
-            chartImgElement.style.objectFit = 'contain';
-            reportContainer.appendChild(chartImgElement);
+            if (chartImage) {
+                try {
+                    pdf.addImage(chartImage, 'PNG', 20, yPosition, 170, 80);
+                    yPosition += 90;
+                } catch (error) {
+                    console.warn('Chart could not be added to PDF:', error);
+                    pdf.setFontSize(12);
+                    pdf.text('Chart could not be generated', 20, yPosition);
+                    yPosition += 10;
+                }
+            }
 
-            // Recreate table with data
-            const tableEl = document.createElement('table');
-            tableEl.style.width = '100%';
-            tableEl.style.borderCollapse = 'collapse';
-            tableEl.style.marginTop = '20px';
+            // Add feedback table
+            pdf.setFontSize(14);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Recent Feedbacks', 20, yPosition);
+            yPosition += 10;
 
-            // Create table header
-            const thead = document.createElement('thead');
-            const headerRow = document.createElement('tr');
-            ['Rating', 'Room', 'Location', 'Suggestions', 'Date'].forEach(header => {
-                const th = document.createElement('th');
-                th.textContent = header;
-                th.style.border = '1px solid #ddd';
-                th.style.padding = '8px';
-                th.style.backgroundColor = '#f2f2f2';
-                headerRow.appendChild(th);
-            });
-            thead.appendChild(headerRow);
-            tableEl.appendChild(thead);
-
-            // Create table body
-            const tbody = document.createElement('tbody');
-
-            // Get all feedback rows from the page
-            const feedbackRows = document.querySelectorAll('.table tbody tr');
+            // Get feedback data from the table
+            const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
             
             if (feedbackRows.length === 0) {
-                // No feedback data available
-                const noDataRow = document.createElement('tr');
-                const noDataCell = document.createElement('td');
-                noDataCell.colSpan = 5;
-                noDataCell.style.textAlign = 'center';
-                noDataCell.style.padding = '20px';
-                noDataCell.textContent = 'No feedback data available';
-                noDataRow.appendChild(noDataCell);
-                tbody.appendChild(noDataRow);
+                pdf.setFontSize(12);
+                pdf.setFont(undefined, 'normal');
+                pdf.text('No feedback data available', 20, yPosition);
+                yPosition += 10;
             } else {
-                // Process feedback rows
-                feedbackRows.forEach(row => {
-                    const tr = document.createElement('tr');
-                    
-                    // Extract data from existing table rows
-                    const cells = row.querySelectorAll('td');
-                    for (let i = 0; i < 5; i++) {
-                        const td = document.createElement('td');
-                        td.textContent = cells[i].textContent;
-                        td.style.border = '1px solid #ddd';
-                        td.style.padding = '8px';
-                        tr.appendChild(td);
+                // Table headers
+                pdf.setFontSize(10);
+                pdf.setFont(undefined, 'bold');
+                const headers = ['Rating', 'Room', 'Location', 'Suggestions', 'Equipment', 'Date'];
+                const columnWidths = [20, 25, 25, 60, 25, 35];
+                let xPosition = 20;
+                
+                headers.forEach((header, index) => {
+                    pdf.text(header, xPosition, yPosition);
+                    xPosition += columnWidths[index];
+                });
+                yPosition += 8;
+
+                // Table data
+                pdf.setFont(undefined, 'normal');
+                feedbackRows.forEach((row, rowIndex) => {
+                    if (yPosition > 270) { // Check if we need a new page
+                        pdf.addPage();
+                        yPosition = 20;
                     }
+
+                    const cells = row.querySelectorAll('td');
+                    xPosition = 20;
                     
-                    tbody.appendChild(tr);
+                    cells.forEach((cell, cellIndex) => {
+                        if (cellIndex < 6) { // Only process first 6 columns
+                            let text = cell.textContent.trim();
+                            
+                            // Truncate long text to fit in column
+                            if (cellIndex === 3 && text.length > 30) { // Suggestions column
+                                text = text.substring(0, 27) + '...';
+                            } else if (text.length > 15 && cellIndex !== 3) {
+                                text = text.substring(0, 12) + '...';
+                            }
+                            
+                            pdf.text(text, xPosition, yPosition);
+                            xPosition += columnWidths[cellIndex];
+                        }
+                    });
+                    yPosition += 6;
                 });
             }
 
-            tableEl.appendChild(tbody);
-            reportContainer.appendChild(tableEl);
+            // Add generation date
+            yPosition += 10;
+            if (yPosition > 270) {
+                pdf.addPage();
+                yPosition = 20;
+            }
+            
+            pdf.setFontSize(10);
+            pdf.setFont(undefined, 'italic');
+            pdf.text(`Generated on: ${generatedDate}`, 105, yPosition, { align: 'center' });
 
-            // Add generation date from server
-            const dateEl = document.createElement('p');
-            dateEl.textContent = `Generated on: ${generatedDate}`;
-            dateEl.style.textAlign = 'center';
-            reportContainer.appendChild(dateEl);
-
-            // Add to body temporarily
-            reportContainer.style.position = 'absolute';
-            reportContainer.style.left = '-9999px';
-            document.body.appendChild(reportContainer);
-
-            // Convert to image
-            html2canvas(reportContainer, {
-                scale: 2,
-                backgroundColor: 'white',
-                useCORS: true,
-                logging: true
-            }).then(canvas => {
-                // Remove the temporary container
-                document.body.removeChild(reportContainer);
-
-                // Create download link
-                const link = document.createElement('a');
-                link.download = 'feedback_report.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }).catch(error => {
-                // Remove the temporary container
-                if (document.body.contains(reportContainer)) {
-                    document.body.removeChild(reportContainer);
-                }
-
-                console.error('Error converting report to image:', error);
-
-                // Fallback: download just the chart
-                const link = document.createElement('a');
-                link.download = 'feedback_report.png';
-                link.href = chartImage;
-                link.click();
-            });
+            // Save the PDF
+            pdf.save('feedback_report.pdf');
         });
 
         // Initialize DataTable with reduced pagination options and clear actions column
