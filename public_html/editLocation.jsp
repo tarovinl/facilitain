@@ -64,6 +64,26 @@
                 text-decoration: underline !important;
                 }
 </style>
+<script>
+    $(document).ready(function () {
+        const maxChars = 250;
+        const $textarea = $('#locDescription');
+        const $charCount = $('#charCount');
+
+        // Initialize the count
+        $charCount.text(`${$textarea.val().length} / ${maxChars} characters`);
+
+        $textarea.on('input', function () {
+            let text = $(this).val();
+            if (text.length > maxChars) {
+                $(this).val(text.substring(0, maxChars));
+                text = $(this).val(); // Update the value after trim
+            }
+            $charCount.text(`${text.length} / ${maxChars} characters`);
+        });
+    });
+</script>
+
     
     </head>
     
@@ -142,7 +162,8 @@
             <div class="row mt-3">
                 <div class="col">
                     <label for="locDescription" class="form-label fw-bold h4">Description</label>
-                    <textarea class="form-control" id="locDescription" name="locDescription" rows="3">${locDescription}</textarea>
+                    <textarea class="form-control" id="locDescription" name="locDescription" rows="3" maxlength="250">${locDescription}</textarea>
+                    <small id="charCount" class="form-text text-muted">0 / 250 characters</small>
                 </div>
             </div>
     
