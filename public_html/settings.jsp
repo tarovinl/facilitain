@@ -7,6 +7,7 @@
     <title>Settings</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="<%=request.getContextPath()%>/css/sidebar.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="./resources/css/custom-fonts.css">
 </head>
 <body>
 <div class="container-fluid">
@@ -39,7 +40,7 @@
                 <div class="mb-3">
                     <span class="display-1" style="color: #ffc107;"><i class="fas fa-users"></i></span>
                 </div>
-                <h5 class="card-title" style="color: black;">Users</h5>
+                <h5 class="card-title" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Users</h5>
             </div>
         </a>
     </div>
@@ -52,7 +53,7 @@
                 <div class="mb-3">
                     <span class="display-1" style="color: #ffc107;"><i class="fas fa-cogs"></i></span>
                 </div>
-                <h5 class="card-title" style="color: black;">Item Category</h5>
+                <h5 class="card-title" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Item Category</h5>
             </div>
         </a>
     </div>
@@ -67,7 +68,7 @@
                 <div class="mb-3">
                     <span class="display-1" style="color: #ffc107;"><i class="fas fa-calendar"></i></span>
                 </div>
-                <h5 class="card-title" style="color: black;"">Maintenance Schedule</h5>
+                <h5 class="card-title" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Maintenance Schedule</h5>
             </div>
         </a>
     </div>
@@ -80,7 +81,7 @@
                 <div class="mb-3">
                     <span class="display-1" style="color: #ffc107;"><i class="fas fa-gear"></i></span>
                 </div>
-                <h5 class="card-title" style="color: black;">Item Types</h5>
+                <h5 class="card-title" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Item Types</h5>
             </div>
         </a>
     </div>

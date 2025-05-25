@@ -26,6 +26,45 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     
+    <style>
+    body, h1, h2, h3, h4, th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+h5, h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
+            .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
+
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
+
+            .buttonsBack:hover {
+                text-decoration: underline !important;
+                }
+            .buildingManage:hover {
+                text-decoration: underline !important;
+                }
+            table.dataTable thead th {
+            font-family: NeueHaasMedium, sans-serif !important;
+}
+
+
+</style>
+    
     </head>
 
 <%
@@ -57,7 +96,7 @@
 
 
     <body>
-<div class="container-fluid">
+<div class="container-fluid p-4">
   <div class="row min-vh-100">
         <jsp:include page="sidebar.jsp"/>
     
@@ -67,23 +106,18 @@
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
-                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;">
-                <img
-                        src="resources/images/backIcon.svg" 
-                        alt="next icon"
-                        width="16"
-                        height="16"
-                        style="transform: rotateY(180deg); margin-right: 8px;"
-                    /> <!-- change based on state of building -->
-                    Back
+                <a href="./buildingDashboard?locID=${locID}" class="pt-4 buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" style="text-decoration: none;color: black;  margin-left: 2px; display: flex; align-items: center; font-family: NeueHaasLight, sans-serif;">
+               
+    <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
+    Back
                 </a>
             </div>
         </div>
         <div class="buildingName">
-            <h1>${locName}</h1>
+            <h1 style="font-family: NeueHaasMedium, sans-serif;">${locName}</h1>
         </div>
-        <div class="container">
-                    <a href="./buildingDashboard?locID=${locID}/manage?floor=all" class="floorLinks">
+        <div class="container-fluid pt-2 " style="font-family: NeueHaasLight, sans-serif;">
+                    <a href="./buildingDashboard?locID=${locID}/manage?floor=all" class="floorLinks fs-5">
                         All Items
                     </a>
                     <c:if test="${floorName == 'all'}">
@@ -92,7 +126,7 @@
         <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
             <c:if test="${floors.key == locID}">
                 <c:forEach var="floor" items="${floors.value}">
-                    <a href="./buildingDashboard?locID=${locID}/manage?floor=${floor}" class="floorLinks">
+                    <a href="./buildingDashboard?locID=${locID}/manage?floor=${floor}" class="floorLinks fs-5 ">
                         ${floor}
                     </a>
                     <c:if test="${floor == floorName}">
@@ -104,16 +138,16 @@
         </div>
         <div class="floorAndButtons">
             <div class="floorName">
-              <h1>${floorName == 'all' ? 'All Items' : floorName}</h1>
+              <h1 class="fs-1" style="font-family: NeueHaasMedium, sans-serif;">${floorName == 'all' ? 'All Items' : floorName}</h1>
             </div>
             <c:choose>
                     <c:when test="${sessionScope.role == 'Admin'}">
                         <div>
-                          <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'"><!--hidden if acc is not admin-->
+                          <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" style="font-family: NeueHaasMedium, sans-serif;" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'"><!--hidden if acc is not admin-->
                             Edit Location
                           </button>
                            
-                          <button class="buttonsBuilding" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender(); toggleAirconDiv(); filterTypes();">Add Equipment</button>
+                          <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" style="font-family: NeueHaasMedium, sans-serif;" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender(); toggleAirconDiv(); filterTypes();">Add Equipment</button>
                         </div>
                     </c:when>
                     <c:otherwise>
@@ -122,7 +156,7 @@
             
         </div>
         <c:if test="${floorName == 'all'}">
-        <div class="roomDropsdiv">
+        <div class="roomDropsdiv ">
             <div >
             <table id="allItemsTable" class="display " style="width:100%;   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
 			<thead>
@@ -376,7 +410,7 @@
         <c:if test="${floorName != 'all'}">
         <div class="roomDropsdiv">
             <div >
-            <table id="itemsTable" class="display" style="width:100%;">
+            <table id="itemsTable" class="display dataTable" style="width:100%;">
 			<thead>
                                 <tr>
                                     <!--<th ></th>-->

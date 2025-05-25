@@ -7,9 +7,19 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>History Logs</title>
+    <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet"/>
     <style>
+   
+   body, h1, h2, h3, h4, th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+h5, h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
+    
         td.details-control {
             cursor: pointer;
         }
@@ -18,44 +28,53 @@
             background-color: #f8f9fa;
             border-radius: 4px;
         }
+        /* Ensure sidebar and content don't overlap */
+        .main-content {
+            margin-left: 250px; /* Match sidebar width */
+            width: calc(100% - 250px);
+            padding: 20px;
+        }
+        @media (max-width: 992px) {
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row vh-100">
-            <div class="col-md-3 col-lg-2 p-0">
-                <jsp:include page="sidebar.jsp"></jsp:include>
-            </div>
-            <div class="col-md-9 col-lg-10 p-4">
-                <h1 class="mb-4">History Logs</h1>
+    <div class="d-flex">
+        <jsp:include page="sidebar.jsp"/>
+        
+        <div class="main-content flex-grow-1">
+            <h1 class="mb-4" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">History Logs</h1>
 
-                <!-- Display Table -->
-                <div class="table-responsive">
-                    <table id="historyTable" class="table table-striped table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th></th>
-                                <th>Log ID</th>
-                                <th>Table Name</th>
-                                <th>Operation Type</th>
-                                <th>Operation Timestamp</th>
-                                <th>Username</th>
+            <!-- Display Table -->
+            <div class="table-responsive">
+                <table id="historyTable" class="table table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th></th>
+                            <th>Log ID</th>
+                            <th>Table Name</th>
+                            <th>Operation Type</th>
+                            <th>Operation Timestamp</th>
+                            <th>Username</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="log" items="${historyLogs}">
+                            <tr data-row-data="${log.rowData}">
+                                <td class="details-control"></td>
+                                <td>${log.logId}</td>
+                                <td>${log.tableName}</td>
+                                <td>${log.operationType}</td>
+                                <td>${log.operationTimestamp}</td>
+                                <td>${log.username}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="log" items="${historyLogs}">
-                                <tr data-row-data="${log.rowData}">
-                                    <td class="details-control"></td>
-                                    <td>${log.logId}</td>
-                                    <td>${log.tableName}</td>
-                                    <td>${log.operationType}</td>
-                                    <td>${log.operationTimestamp}</td>
-                                    <td>${log.username}</td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
-                </div>
+                        </c:forEach>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

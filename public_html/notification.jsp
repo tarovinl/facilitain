@@ -5,9 +5,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap-icons/1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <title>Notifications</title>
+    
+    <style>
+    body, h1, h2, h3, h4, th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+h5, h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
+    </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -15,10 +26,10 @@
         <jsp:include page="sidebar.jsp"/>
 
         <div class="col-md-10 p-4">
-            <h1 class="mb-4">Notifications</h1>
+            <h1 class="mb-4" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Notifications</h1>
 
             <!-- Sorting and Filtering controls -->
-            <div class="d-flex justify-content-between mb-3">
+            <div class="d-flex justify-content-between mb-3 gap-2" style="font-family: NeueHaasLight, sans-serif;">
                 <form action="notification" method="get" class="d-flex" id="notificationForm">
                     <select name="sortBy" class="form-control mr-2" onchange="this.form.submit()">
                         <option value="date" <c:if test="${sortBy == 'date'}">selected</c:if>>Sort by Date</option>
@@ -113,7 +124,7 @@
         modal.find('#notificationId').val(notificationId); // Set the notification ID in the hidden input
     });
 </script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         </div>
     </div>
 </body>

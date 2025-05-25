@@ -8,60 +8,76 @@
     <title>Item Users</title>
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+  body, h1, h2, h3, h4, th,h5 {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+ h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+.hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
+
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
+
+            .buttonsBack:hover {
+                text-decoration: underline !important;
+                }
+            .buildingManage:hover {
+                text-decoration: underline !important;
+                }
+    </style>
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row min-vh-100">
-        <jsp:include page="sidebar.jsp"/>
-        <div class="col-md-10">
-            <h1>Manage Item Users</h1>
-            <table id="itemUserTable" class="table table-striped table-bordered mt-4">
-                <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="user" items="${itemUserList}">
+    <div class="row vh-100">
+            <jsp:include page="sidebar.jsp"></jsp:include>
+        <div class="col-md-10 p-4">
+            <h1 style="font-family: 'NeueHaasMedium', sans-serif;">Manage Item Users</h1>
+            <table id="itemUserTable" class="table table-striped table-bordered">
+                <thead class="table-dark">
                     <tr>
-                        <td>${user.userId}</td>
-                        <td>${user.name}</td>
-                        <td>${user.email}</td>
-                        <td>
-                            <form action="itemUser" method="post" class="role-form">
-                                <input type="hidden" name="userId" value="${user.userId}">
-                                <select name="role" class="form-select" onchange="this.form.submit()">
-                                    <option value="Admin" ${user.role == 'Admin' ? 'selected' : ''}>Admin</option>
-                                    <option value="Respondent" ${user.role == 'Respondent' ? 'selected' : ''}>Respondent</option>
-                                    <option value="Support" ${user.role == 'Support' ? 'selected' : ''}>Support Staff</option>
-                                </select>
-                            </form>
-                        </td>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
                     </tr>
-                </c:forEach>
+                </thead>
+                <tbody class="table-light">
+                    <c:forEach var="user" items="${itemUserList}">
+                        <tr>
+                            <td>${user.userId}</td>
+                            <td>${user.name}</td>
+                            <td>${user.email}</td>
+                            <td>
+                                <form action="itemUser" method="post" class="role-form">
+                                    <input type="hidden" name="userId" value="${user.userId}">
+                                    <select name="role" class="form-select form-select-sm" onchange="this.form.submit()">
+                                        <option value="Admin" ${user.role == 'Admin' ? 'selected' : ''}>Admin</option>
+                                        <option value="Respondent" ${user.role == 'Respondent' ? 'selected' : ''}>Respondent</option>
+                                        <option value="Support" ${user.role == 'Support' ? 'selected' : ''}>Support Staff</option>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
-        </div>
-    </div>
-</div>
-
-<!-- Success Message Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="successModalLabel">Success</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Role updated successfully!
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
@@ -73,14 +89,19 @@
     $(document).ready(function () {
         $('#itemUserTable').DataTable();
 
-        // Trigger success modal if the session contains the success message
-        const successMessage = "${sessionScope.updateSuccess}";
-        if (successMessage) {
-            const modal = new bootstrap.Modal(document.getElementById('successModal'));
-            modal.show();
-
-            // Remove the success message from the session
-            <c:remove var="updateSuccess" scope="session" />
+        // Show SweetAlert2 alert if success parameter is present
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            Swal.fire({
+                title: 'Role Updated!',
+                text: 'The user role has been successfully updated.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                // Remove the 'success' parameter from the URL
+                const newUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+            });
         }
     });
 </script>
