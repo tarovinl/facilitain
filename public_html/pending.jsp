@@ -72,8 +72,10 @@
                         <c:set var="itemAssigned" value="false" />
                         
                         <c:forEach items="${FMO_MAINT_ASSIGN}" var="maintass">
+                            <c:if test="${maintass.isCompleted == 0}">
                             <c:if test="${maintass.itemID == item.itemID}">
                                 <c:set var="itemAssigned" value="true" />
+                            </c:if>
                             </c:if>
                         </c:forEach>
                 
@@ -162,12 +164,14 @@
                                             
                                             <c:set var="canUpdate" value="false" />
                                             <c:forEach var="assign" items="${FMO_MAINT_ASSIGN}">
+                                                <c:if test="${assign.isCompleted == 0}">
                                                 <c:if test="${assign.itemID == item.itemID}">
                                                     <c:forEach var="user" items="${FMO_USERS}">
                                                         <c:if test="${user.name == sessionScope.name && user.userId == assign.userID}">
                                                             <c:set var="canUpdate" value="true" />
                                                         </c:if>
                                                     </c:forEach>
+                                                </c:if>
                                                 </c:if>
                                             </c:forEach>
                                         <tr data-id="${item.itemID}"
@@ -354,7 +358,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">Submit</button>
+                    <button type="submit" class="btn btn-warning">Add</button>
                 </div>
             </div>
         </form>
@@ -411,18 +415,18 @@
                             
                             <div class="mb-3">
                                 <label for="quotationFile" class="form-label">Upload File</label>
-                                <input class="form-control" type="file" name="quotationFile" id="quotationFile" accept=".pdf, image/*" required>
+                                <input class="form-control" type="file" name="quotationFile" id="quotationFile" accept=".pdf, image/*">
                             </div>
                             <div class="mb-3">
                                 <label for="quotationDescription" class="form-label">Quotation Description</label>
-                                <textarea class="form-control" name="description" id="quotationDescription" rows="3" required></textarea>
+                                <textarea class="form-control" name="description" id="quotationDescription" rows="3"></textarea>
                             </div>
                         </div>
                         <div id="formInput2">
                             <!--<input type="text" id="input2" name="3to1Input" placeholder="In Maintenance to Operational input" />-->
                         </div>                    
                         <div id="formInput3">
-                            <input type="text" id="input3" name="to4Input" 
+                            <input type="hidden" id="input3" name="to4Input" 
                                    placeholder="to Needs Replacement input" />
                         </div>
                     </div>
@@ -548,6 +552,10 @@
                     if (option.value && option.value === String(status3)) {
                         option.disabled = true;
                     }
+                    //maintenance reqd to operational bad
+                    if (statusDropdown.value === "2" && option.value === "1") {
+                        option.disabled = true;
+                    }
                 });
                 
                 statusDropdownNew.addEventListener("change", updateInputVisibility);
@@ -557,7 +565,7 @@
                 const oldVal = statusDropdown.value;
                 const newVal = statusDropdownNew.value;
             
-                const formInput1 = document.getElementById("formInput1"); // 2 to 3
+                const formInput1 = document.getElementById("formInput1"); // 2 or 4 to 3
                 const formInput2 = document.getElementById("formInput2"); // 3 to 1
                 const formInput3 = document.getElementById("formInput3"); // 3 to 4
             
@@ -574,15 +582,15 @@
                 });
             
                 // Show relevant form input div and add back requireds
-                if (oldVal === "2" && newVal === "3") {
+                if ((oldVal === "2" || oldVal === "4") && newVal === "3") {
                     formInput1.style.display = "block";
             
                     // Reapply required only to visible inputs
-                    const fileInput = document.getElementById("quotationFile");
-                    const descriptionInput = document.getElementById("quotationDescription");
-            
-                    if (fileInput) fileInput.setAttribute("required", "required");
-                    if (descriptionInput) descriptionInput.setAttribute("required", "required");
+//                    const fileInput = document.getElementById("quotationFile");
+//                    const descriptionInput = document.getElementById("quotationDescription");
+//            
+//                    if (fileInput) fileInput.setAttribute("required", "required");
+//                    if (descriptionInput) descriptionInput.setAttribute("required", "required");
                 } else if (oldVal === "3" && newVal === "1") {
                     formInput2.style.display = "block";
                     
@@ -661,26 +669,30 @@
       timerProgressBar: true
     });
   } else if (status === 'error') {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'error',
-      title: 'An error occurred while processing your request.',
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
-  } else if (status === 'error_assign') {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'error',
-      title: 'Equipment already assigned for maintenance.',
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
-  }
+      let errorMessage = '';
+    
+      switch (action) {
+        case 'assign':
+          errorMessage = 'Equipment already assigned for maintenance.';
+          break;
+        case '2to1':
+          errorMessage = 'Equipment must be maintained before changing to operational.';
+          break;
+        default:
+          errorMessage = 'An error occurred while processing your request.';
+          break;
+      }
+    
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: errorMessage,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+    }
 </script>
 
 <script>
