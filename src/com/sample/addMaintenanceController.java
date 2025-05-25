@@ -112,14 +112,14 @@ public class addMaintenanceController extends HttpServlet {
         
         boolean isAlreadyAssigned = false;
         for (MaintAssign assignz : listAssign) {
-            if (assignz.getItemID() == equipmentMaintId) { 
+            if (assignz.getItemID() == equipmentMaintId && assignz.getIsCompleted() == 0) { 
                 isAlreadyAssigned = true;
                 break; // Exit loop once a match is found
             }
         }
         // If the equipment is already assigned, handle the error
         if (isAlreadyAssigned) {
-            status = "error_assign";
+            status = "error";
             response.sendRedirect("maintenancePage?action=assign" + "&status=" + status);
             return; // Stop execution
         }

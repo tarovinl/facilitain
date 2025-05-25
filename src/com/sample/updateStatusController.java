@@ -65,8 +65,18 @@ public class updateStatusController extends HttpServlet {
 //        System.out.println("equip ID: " + updateEquipmentID);
 //        System.out.println("old equip status: " + oldEquipmentStatus);
 //        System.out.println("new equip status: " + newEquipmentStatus);
-        
-        
+        if (newEquipmentStatus == null || newEquipmentStatus.isEmpty()) {
+            status = "error";
+            response.sendRedirect("maintenancePage?action=" + action + "&status=" + status);
+            return;
+        }
+        //maintenance required to operational mistake checker
+        if (oldEquipmentStatus.equals("2") && newEquipmentStatus.equals("1")) {
+            status = "error";
+            action = "2to1";
+            response.sendRedirect("maintenancePage" + "?action=" + action + "&status=" + status);
+            return;
+        }
         
         try (Connection conn = PooledConnection.getConnection()) {
             String sql;
