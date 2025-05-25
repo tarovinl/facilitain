@@ -111,7 +111,7 @@
 .roomDropdiv {
 }
 
-thead{
+/*thead{
     background-color: black !important;
     color: white !important;
 }
@@ -129,8 +129,8 @@ table.dataTable thead>tr>td.dt-orderable-asc span:hover,
 table.dataTable thead>tr>td.dt-orderable-desc span:hover,
 table.dataTable thead>tr>td.dt-ordering-asc span:hover,
 table.dataTable thead>tr>td.dt-ordering-desc span:hover {
-    color: black; /* Change this to your hover color */
-}
+    color: black;*/ /* Change this to your hover color */
+/*}*/
 div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-paging .dt-paging-button.current:hover {
   border: 1px solid black !important;
   background-color: #fccc4c !important;
@@ -168,14 +168,14 @@ div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-pagi
     width: 100%; /* Ensure the table takes up the full width of the div */
     font-weight: bold;
 }
-.roomDTblDiv th {
+/*.roomDTblDiv th {
     background-color: black;
     color: white;
     border: solid 1px black;
 }
 .roomDTblDiv tr {
     border: solid 1px black;
-}
+}*/
 
 .statusDropdown {
     font-size: 16px;
@@ -187,14 +187,14 @@ div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-pagi
     width: 100%; /* Ensure the table takes up the full width of the div */
     font-weight: bold;
 }
-.roomDTblDiv2 th {
+/*.roomDTblDiv2 th {
     background-color: black;
     color: white;
     border: solid 1px black;
 }
 .roomDTblDiv2 tr {
     border: solid 1px black;
-}
+}*/
 
 /*.working {
     background-color: green;
@@ -212,23 +212,23 @@ div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-pagi
     font-weight: bold;
 }*/
 
-table {
-        border-collapse: collapse; /* Collapse borders to avoid double borders */
-        width: 100%; /* Optional: Set table width */
-        margin: 0; /* Reset margin */
-            padding: 0; /* Reset padding */
-    }
+/*table {
+        border-collapse: collapse;*/ /* Collapse borders to avoid double borders */
+        /*width: 100%;*/ /* Optional: Set table width */
+        /*margin: 0;*/ /* Reset margin */
+            /*padding: 0;*/ /* Reset padding */
+    /*}
 
-    table th, table td {
-    border-left: 1px solid #ccc; /* More specific selector */
-    border-right: 1px solid #ccc; /* More specific selector */
-}
+    table th {
+    border-left: 1px solid #ccc;*/ /* More specific selector */
+    /*border-right: 1px solid #ccc;*/ /* More specific selector */
+/*}*/
 
 
     /* Optional: Change the border color on hover */
-    tr:hover {
-        background-color: #f9f9f9; /* Light gray background on row hover */
-    }
+    /*tr:hover {
+        background-color: #f9f9f9;*/ /* Light gray background on row hover */
+    /*}*/
     
 
 .onlyAir {

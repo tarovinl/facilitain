@@ -13,6 +13,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import java.io.InputStream;
+
+import java.math.BigDecimal;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -21,6 +26,12 @@ import java.text.SimpleDateFormat;
 
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+
+import java.util.Arrays;
+import java.util.Map;
+
+import javax.servlet.annotation.MultipartConfig;
 
 @WebServlet(name = "itemController", urlPatterns = { "/itemcontroller" })
 public class itemController extends HttpServlet {
@@ -44,6 +55,8 @@ public class itemController extends HttpServlet {
         
         String loc = request.getParameter("itemLID");
         String flr = request.getParameter("itemFlr");
+        String canUpdate = request.getParameter("canUpdate");
+        String hasAssignment = request.getParameter("hasAssignment");
             
         String itemName = request.getParameter("itemCode");
         String itemBuilding = request.getParameter("itemBuilding");
@@ -68,7 +81,7 @@ public class itemController extends HttpServlet {
         String itemEPH = request.getParameter("itemElecPH");
         String itemEHZ = request.getParameter("itemElecHZ");
         
-        
+        System.out.println("can user update status: " + canUpdate);
         
         String itemEID = request.getParameter("itemEditID");
         String itemEditName = request.getParameter("itemEditCode");
@@ -130,6 +143,7 @@ public class itemController extends HttpServlet {
             e.printStackTrace();
         }
         
+        
 //        System.out.println(itemName);
 //        System.out.println(itemBuilding);
 //        System.out.println(itemCat);
@@ -145,6 +159,30 @@ public class itemController extends HttpServlet {
         
 //        System.out.println(sqlDate);
         
+        if ("false".equals(canUpdate)) {
+            status = "error_assign";
+            response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
+            return; // Prevent further execution
+        }
+        
+        if ("2".equals(oldMaintStat) && "3".equals(maintStatus)) {
+            if ("true".equals(hasAssignment)) {
+                status = "error_2to3";
+                response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
+                return;
+            } else{
+                status = "error_assign";
+                response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
+                return;
+            }
+        }
+        if ("2".equals(oldMaintStat) && "1".equals(maintStatus)) {
+            if ("true".equals(hasAssignment)) {
+                status = "error";
+                response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
+                return;
+            }
+        }
         
         try (Connection conn = PooledConnection.getConnection()) {
             String sql;
@@ -312,44 +350,52 @@ public class itemController extends HttpServlet {
 
             // Check conditions for FMO_ITEM_REPAIRS
                 if ("3".equals(oldMaintStat) && "1".equals(maintStatus)) {
-                    action = "modify_status";
-                    String currentMonth = String.valueOf(java.time.LocalDate.now().getMonthValue());
-                    String currentYear = String.valueOf(java.time.LocalDate.now().getYear());
-
-                    // Check if an entry for the current month and year exists
-                    String selectRepairsSql = "SELECT NUM_OF_REPAIRS FROM C##FMO_ADM.FMO_ITEM_REPAIRS WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
-                    try (PreparedStatement selectStmt = conn.prepareStatement(selectRepairsSql)) {
-                        selectStmt.setInt(1, Integer.parseInt(currentMonth));
-                        selectStmt.setInt(2, Integer.parseInt(currentYear));
-                        selectStmt.setInt(3, Integer.parseInt(loc));
-                        try (ResultSet rs = selectStmt.executeQuery()) {
-                            if (rs.next()) {
-                                // Update NUM_OF_REPAIRS if entry exists
-                                int repairCount = rs.getInt("NUM_OF_REPAIRS");
-                                String updateRepairsSql = "UPDATE C##FMO_ADM.FMO_ITEM_REPAIRS SET NUM_OF_REPAIRS = ? WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
-                                System.out.println("yo mama test: " + itemMaintType);
-                                try (PreparedStatement updateStmt = conn.prepareStatement(updateRepairsSql)) {
-                                    updateStmt.setInt(1, repairCount + 1);
-                                    updateStmt.setInt(2, Integer.parseInt(currentMonth));
-                                    updateStmt.setInt(3, Integer.parseInt(currentYear));
-                                    updateStmt.setInt(4, Integer.parseInt(loc));
-                                    updateStmt.executeUpdate();
-                                }
-                            } else {
-                                // Insert a new row if no entry exists
-                                String insertRepairsSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPAIRS (REPAIR_MONTH, REPAIR_YEAR, NUM_OF_REPAIRS, ITEM_LOC_ID) VALUES (?, ?, ?, ?)";
-                                try (PreparedStatement insertStmt = conn.prepareStatement(insertRepairsSql)) {
-                                    insertStmt.setInt(1, Integer.parseInt(currentMonth));
-                                    insertStmt.setInt(2, Integer.parseInt(currentYear));
-                                    insertStmt.setInt(3, 1);
-                                    insertStmt.setInt(4, Integer.parseInt(loc));
-                                    insertStmt.executeUpdate();
-                                }
-                            }
-                        }
+                    String assSQL = "UPDATE C##FMO_ADM.FMO_MAINTENANCE_ASSIGN SET IS_COMPLETED = 1 WHERE ITEM_ID = ?";
+                    try (PreparedStatement astmt = conn.prepareStatement(assSQL)) {
+                        astmt.setInt(1, Integer.parseInt(maintStatID));
+                        astmt.executeUpdate();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
+                    action = "3to1";
+//                    action = "modify_status";
+//                    String currentMonth = String.valueOf(java.time.LocalDate.now().getMonthValue());
+//                    String currentYear = String.valueOf(java.time.LocalDate.now().getYear());
+//
+//                    // Check if an entry for the current month and year exists
+//                    String selectRepairsSql = "SELECT NUM_OF_REPAIRS FROM C##FMO_ADM.FMO_ITEM_REPAIRS WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
+//                    try (PreparedStatement selectStmt = conn.prepareStatement(selectRepairsSql)) {
+//                        selectStmt.setInt(1, Integer.parseInt(currentMonth));
+//                        selectStmt.setInt(2, Integer.parseInt(currentYear));
+//                        selectStmt.setInt(3, Integer.parseInt(loc));
+//                        try (ResultSet rs = selectStmt.executeQuery()) {
+//                            if (rs.next()) {
+//                                // Update NUM_OF_REPAIRS if entry exists
+//                                int repairCount = rs.getInt("NUM_OF_REPAIRS");
+//                                String updateRepairsSql = "UPDATE C##FMO_ADM.FMO_ITEM_REPAIRS SET NUM_OF_REPAIRS = ? WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
+//                                System.out.println("yo mama test: " + itemMaintType);
+//                                try (PreparedStatement updateStmt = conn.prepareStatement(updateRepairsSql)) {
+//                                    updateStmt.setInt(1, repairCount + 1);
+//                                    updateStmt.setInt(2, Integer.parseInt(currentMonth));
+//                                    updateStmt.setInt(3, Integer.parseInt(currentYear));
+//                                    updateStmt.setInt(4, Integer.parseInt(loc));
+//                                    updateStmt.executeUpdate();
+//                                }
+//                            } else {
+//                                // Insert a new row if no entry exists
+//                                String insertRepairsSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPAIRS (REPAIR_MONTH, REPAIR_YEAR, NUM_OF_REPAIRS, ITEM_LOC_ID) VALUES (?, ?, ?, ?)";
+//                                try (PreparedStatement insertStmt = conn.prepareStatement(insertRepairsSql)) {
+//                                    insertStmt.setInt(1, Integer.parseInt(currentMonth));
+//                                    insertStmt.setInt(2, Integer.parseInt(currentYear));
+//                                    insertStmt.setInt(3, 1);
+//                                    insertStmt.setInt(4, Integer.parseInt(loc));
+//                                    insertStmt.executeUpdate();
+//                                }
+//                            }
+//                        }
+//                    }
                 }
-
+            
             // Redirect to homepage after processing
             response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
         } catch (SQLException e) {

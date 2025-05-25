@@ -124,18 +124,10 @@
         <c:if test="${floorName == 'all'}">
         <div class="roomDropsdiv">
             <div >
-            <table id="allItemsTable" class="display" style="width:100%;">
+            <table id="allItemsTable" class="display " style="width:100%;   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
 			<thead>
                                 <tr>
                                     <!--<th ></th>-->
-                                    <c:choose>
-                                        <c:when test="${sessionScope.role == 'Admin'}">
-                                            <th >Edit</th>
-                                            <th >Archive</th>
-                                        </c:when>
-                                        <c:otherwise>
-                                        </c:otherwise>
-                                    </c:choose>
                                     <th >ID</th>
                                     <th >Codename</th>
                                     <th >Category</th>
@@ -146,12 +138,19 @@
                                         Quotation
                                     </th>
                                     <th >Status</th>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.role == 'Admin'}">
+                                            <th >Actions</th>
+                                        </c:when>
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </tr>
                          </thead>   
                             <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
                             <c:if test="${item.itemArchive == 1}">
                                 <c:if test="${item.itemLID == locID}">
-                                <tr style="border: solid 1px black;">
+                                <tr>
                                 
                                 <c:forEach items="${FMO_TYPES_LIST}" var="type" >
                                     <c:if test="${type.itemTID == item.itemTID}">
@@ -171,57 +170,6 @@
                                         width="24" 
                                         height="24"/>
                                     </td>-->
-                                    <c:choose>
-                                        <c:when test="${sessionScope.role == 'Admin'}">
-                                            <td>
-                                                <input type="image" 
-                                                src="resources/images/editItem.svg" 
-                                                id="editModalButton" 
-                                                alt="Open Edit Modal" 
-                                                width="24" 
-                                                height="24" 
-                                                data-toggle="modal" 
-                                                data-target="#editEquipment"
-                                                data-itemid="${item.itemID}"
-                                                data-itemname="${item.itemName}"
-                                                data-itembrand="${item.itemBrand}"
-                                                data-dateinst="${item.dateInstalled}"
-                                                data-itemexpiry="${item.expiration}"
-                                                data-itemcat="${itemEditCat}"
-                                                data-itemfloor="${item.itemFloor}"
-                                                data-itemroom="${item.itemRoom}"
-                                                data-itemtype="${itemEditType}"
-                                                data-itemloctext="${item.itemLocText}"
-                                                data-itemremarks="${item.itemRemarks}"
-        
-                                                data-itempcc="${item.itemPCC}"
-                                                data-accu="${item.acACCU}"
-                                                data-fcu="${item.acFCU}"
-                                                data-inverter="${item.acINVERTER}"
-                                                data-itemcapacity="${item.itemCapacity}"
-                                                data-itemmeasure="${item.itemUnitMeasure}"
-                                                data-itemev="${item.itemEV}"
-                                                data-itemeph="${item.itemEPH}"
-                                                data-itemehz="${item.itemEHZ}"
-                                                onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/> 
-                                            </td>
-                                            <td>
-                                                <input type="image" 
-                                                src="resources/images/archiveItem.svg" 
-                                                id="archiveModalButton" 
-                                                alt="Open Archive Modal" 
-                                                width="24" 
-                                                height="24"
-                                                data-toggle="modal"
-                                                data-itemaid="${item.itemID}"
-                                                data-itemaname="${item.itemName}"
-                                                data-target="#archiveEquipment"
-                                                onclick="populateArchModal(this)"/>
-                                            </td>
-                                        </c:when>
-                                        <c:otherwise>
-                                        </c:otherwise>
-                                    </c:choose>
                                     <td >${item.itemID}</td>
                                     <td >${item.itemName}</td>
                                     <c:forEach items="${FMO_TYPES_LIST}" var="type" >
@@ -252,8 +200,24 @@
                                             data-bs-target="#quotEquipmentModal"
                                             onclick="openQuotModal(this)">
                                     </td>
-                                    <td >
+                                    <td>
                                       <form action="itemcontroller" method="POST">
+                                        <c:set var="canUpdate" value="true" />
+                                        <c:set var="hasAssignment" value="false" />
+                                    
+                                        <c:forEach var="assign" items="${FMO_MAINT_ASSIGN}">
+                                            <c:if test="${assign.itemID == item.itemID}">
+                                                <c:set var="hasAssignment" value="true" />
+                                                <c:set var="canUpdate" value="false" /> <!-- override default, assume restricted unless match -->
+                                                <c:forEach var="user" items="${FMO_USERS}">
+                                                    <c:if test="${user.name == sessionScope.name && user.userId == assign.userID}">
+                                                        <c:set var="canUpdate" value="true" />
+                                                    </c:if>
+                                                </c:forEach>
+                                            </c:if>
+                                        </c:forEach>
+                                        <input type="hidden" name="canUpdate" value="${canUpdate}" />
+                                        <input type="hidden" name="hasAssignment" value="${hasAssignment}" />
                                         <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}"/>
                                         <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}"/>
                                         <input type="hidden" name="maintStatID" value="${item.itemID}" />
@@ -263,13 +227,69 @@
                                         <!--onchange="this.form.submit()"-->
                                             <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
                                                 <option value="${status.itemMaintStat}" 
-                                                <c:if test="${status.itemMaintStat == item.itemMaintStat}">selected</c:if>>
+                                                <c:if test="${status.itemMaintStat == item.itemMaintStat}">selected</c:if>
+                                                <c:if test="${item.itemMaintStat == 1 && status.itemMaintStat == 3}">disabled</c:if>
+                                                >
                                                 ${status.maintStatName}
                                                 </option>
                                             </c:forEach>
                                         </select>
                                       </form>
                                     </td>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.role == 'Admin'}">
+                                            <td>
+                                              <div class="dropdown">
+                                                <button class="btn btn-link p-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                  <img src="resources/images/kebabMenu.svg" alt="Actions" width="20" height="20">
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                  <!-- Edit Option -->
+                                                  <a class="dropdown-item"
+                                                     href="#"
+                                                     data-toggle="modal"
+                                                     data-target="#editEquipment"
+                                                     data-itemid="${item.itemID}"
+                                                     data-itemname="${item.itemName}"
+                                                     data-itembrand="${item.itemBrand}"
+                                                     data-dateinst="${item.dateInstalled}"
+                                                     data-itemexpiry="${item.expiration}"
+                                                     data-itemcat="${itemEditCat}"
+                                                     data-itemfloor="${item.itemFloor}"
+                                                     data-itemroom="${item.itemRoom}"
+                                                     data-itemtype="${itemEditType}"
+                                                     data-itemloctext="${item.itemLocText}"
+                                                     data-itemremarks="${item.itemRemarks}"
+                                                     data-itempcc="${item.itemPCC}"
+                                                     data-accu="${item.acACCU}"
+                                                     data-fcu="${item.acFCU}"
+                                                     data-inverter="${item.acINVERTER}"
+                                                     data-itemcapacity="${item.itemCapacity}"
+                                                     data-itemmeasure="${item.itemUnitMeasure}"
+                                                     data-itemev="${item.itemEV}"
+                                                     data-itemeph="${item.itemEPH}"
+                                                     data-itemehz="${item.itemEHZ}"
+                                                     onclick="populateEditModal(this); floorERender(); setFloorSelection(this); toggleEAirconDiv(${itemEditCat});">
+                                                    Edit
+                                                  </a>
+                                            
+                                                  <!-- Archive Option -->
+                                                  <a class="dropdown-item"
+                                                     href="#"
+                                                     data-toggle="modal"
+                                                     data-target="#archiveEquipment"
+                                                     data-itemaid="${item.itemID}"
+                                                     data-itemaname="${item.itemName}"
+                                                     onclick="populateArchModal(this)">
+                                                    Archive
+                                                  </a>
+                                                </div>
+                                              </div>
+                                            </td>
+                                        </c:when>
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </tr>
                                 </c:if>
                             </c:if>
@@ -309,7 +329,38 @@
                   <p class="text-center fs-5 specialModalText">Are you sure you want to reset the status back to "Operational"?</p>
                   <div class="row">
                     <div class="col text-center">
-                      <button id="specialConfirmBtn" class="btn btn-danger btn-lg mt-3 w-100 fw-bold">Yes</button>
+                      <button id="specialConfirmBtn" class="btn btn-warning btn-lg mt-3 w-100 fw-bold">Yes</button>
+                    </div>
+                    <div class="col text-center">
+                      <button type="button" class="btn btn-warning btn-lg mt-3 w-100 fw-bold" data-bs-dismiss="modal" onclick="location.reload();">Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--<div class="modal fade" id="quotConfirmModal" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="quotConfirmModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="centered-div bg-white">
+                <div class="container p-4 mt-4 mb-4">
+                  <div class="row">
+                    <p class="text-center fs-5 specialModalText fw-bold">Are you sure you want to change the status from Maintenance Required to In Maintenance?</p>
+                  </div>
+                  <div class="row">
+                            <div class="mb-3">
+                                <label for="quotationFile" class="form-label">Upload File</label>
+                                <input class="form-control" type="file" name="quotationFile" id="quotationFile" accept=".pdf, image/*">
+                            </div>
+                            <div class="mb-3">
+                                <label for="quotationDescription" class="form-label">Quotation Description</label>
+                                <textarea class="form-control" name="description" id="quotationDescription" rows="3"></textarea>
+                            </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center">
+                      <button id="quotConfirmBtn" class="btn btn-danger btn-lg mt-3 w-100 fw-bold">Yes</button>
                     </div>
                     <div class="col text-center">
                       <button type="button" class="btn btn-danger btn-lg mt-3 w-100 fw-bold" data-bs-dismiss="modal" onclick="location.reload();">Cancel</button>
@@ -319,7 +370,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
         
         <!-- list of room dropdowns  (turn roomDropdown <li> into foreach)-->
         <c:if test="${floorName != 'all'}">
@@ -329,15 +380,6 @@
 			<thead>
                                 <tr>
                                     <!--<th ></th>-->
-                                    <c:choose>
-                                        <c:when test="${sessionScope.role == 'Admin'}">
-                                            <th >Edit</th>
-                                            <th >Archive</th>
-                                        </c:when>
-                                        <c:otherwise>
-                                        </c:otherwise>
-                                    </c:choose>
-                                    
                                     <th >ID</th>
                                     <th >Codename</th>
 				    <th >Room</th>
@@ -349,13 +391,20 @@
                                         Quotation
                                     </th>
                                     <th >Status</th>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.role == 'Admin'}">
+                                            <th >Actions</th>
+                                        </c:when>
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </tr>
                          </thead>   
                             <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
                             <c:if test="${item.itemArchive == 1}">
                                 <c:if test="${item.itemLID == locID}">
 				<c:if test="${item.itemFloor == floorName}">
-                                <tr style="border: solid 1px black;">
+                                <tr>
                                 
                                 <c:forEach items="${FMO_TYPES_LIST}" var="type" >
                                     <c:if test="${type.itemTID == item.itemTID}">
@@ -375,57 +424,6 @@
                                         width="24" 
                                         height="24"/>
                                     </td>-->
-                                    <c:choose>
-                                        <c:when test="${sessionScope.role == 'Admin'}">
-                                            <td>
-                                                <input type="image" 
-                                                src="resources/images/editItem.svg" 
-                                                id="editModalButton" 
-                                                alt="Open Edit Modal" 
-                                                width="24" 
-                                                height="24" 
-                                                data-toggle="modal" 
-                                                data-target="#editEquipment"
-                                                data-itemid="${item.itemID}"
-                                                data-itemname="${item.itemName}"
-                                                data-itembrand="${item.itemBrand}"
-                                                data-dateinst="${item.dateInstalled}"
-                                                data-itemexpiry="${item.expiration}"
-                                                data-itemcat="${itemEditCat}"
-                                                data-itemfloor="${item.itemFloor}"
-                                                data-itemroom="${item.itemRoom}"
-                                                data-itemtype="${itemEditType}"
-                                                data-itemloctext="${item.itemLocText}"
-                                                data-itemremarks="${item.itemRemarks}"
-        
-                                                data-itempcc="${item.itemPCC}"
-                                                data-accu="${item.acACCU}"
-                                                data-fcu="${item.acFCU}"
-                                                data-inverter="${item.acINVERTER}"
-                                                data-itemcapacity="${item.itemCapacity}"
-                                                data-itemmeasure="${item.itemUnitMeasure}"
-                                                data-itemev="${item.itemEV}"
-                                                data-itemeph="${item.itemEPH}"
-                                                data-itemehz="${item.itemEHZ}"
-                                                onclick="populateEditModal(this);floorERender();setFloorSelection(this);toggleEAirconDiv(${itemEditCat});"/> 
-                                            </td>
-                                            <td>
-                                                <input type="image" 
-                                                src="resources/images/archiveItem.svg" 
-                                                id="archiveModalButton" 
-                                                alt="Open Archive Modal" 
-                                                width="24" 
-                                                height="24"
-                                                data-toggle="modal"
-                                                data-itemaid="${item.itemID}"
-                                                data-itemaname="${item.itemName}"
-                                                data-target="#archiveEquipment"
-                                                onclick="populateArchModal(this)"/>
-                                            </td>
-                                        </c:when>
-                                        <c:otherwise>
-                                        </c:otherwise>
-                                    </c:choose>
                                     <td >${item.itemID}</td>
                                     <td >${item.itemName}</td>
 				    <td >${item.itemRoom != null ? item.itemRoom : 'N/A'}</td>
@@ -459,6 +457,22 @@
                                     </td>
                                     <td >
                                       <form action="itemcontroller" method="POST">
+                                        <c:set var="canUpdate" value="true" />
+                                        <c:set var="hasAssignment" value="false" />
+                                    
+                                        <c:forEach var="assign" items="${FMO_MAINT_ASSIGN}">
+                                            <c:if test="${assign.itemID == item.itemID}">
+                                                <c:set var="hasAssignment" value="true" />
+                                                <c:set var="canUpdate" value="false" /> <!-- override default, assume restricted unless match -->
+                                                <c:forEach var="user" items="${FMO_USERS}">
+                                                    <c:if test="${user.name == sessionScope.name && user.userId == assign.userID}">
+                                                        <c:set var="canUpdate" value="true" />
+                                                    </c:if>
+                                                </c:forEach>
+                                            </c:if>
+                                        </c:forEach>
+                                        <input type="hidden" name="canUpdate" value="${canUpdate}" />
+                                        <input type="hidden" name="hasAssignment" value="${hasAssignment}" />
                                         <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}"/>
                                         <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}"/>
                                         <input type="hidden" name="itemMaintType" id="itemMaintType" class="form-control" value=""/>
@@ -467,13 +481,69 @@
                                         <select name="statusDropdown" class="statusDropdown">
                                             <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
                                                 <option value="${status.itemMaintStat}" 
-                                                <c:if test="${status.itemMaintStat == item.itemMaintStat}">selected</c:if>>
+                                                <c:if test="${status.itemMaintStat == item.itemMaintStat}">selected</c:if>
+                                                <c:if test="${item.itemMaintStat == 1 && status.itemMaintStat == 3}">disabled</c:if>
+                                                >
                                                 ${status.maintStatName}
                                                 </option>
                                             </c:forEach>
                                         </select>
                                       </form>
                                     </td>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.role == 'Admin'}">
+                                            <td>
+                                              <div class="dropdown">
+                                                <button class="btn btn-link p-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                  <img src="resources/images/kebabMenu.svg" alt="Actions" width="20" height="20">
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                  <!-- Edit Option -->
+                                                  <a class="dropdown-item"
+                                                     href="#"
+                                                     data-toggle="modal"
+                                                     data-target="#editEquipment"
+                                                     data-itemid="${item.itemID}"
+                                                     data-itemname="${item.itemName}"
+                                                     data-itembrand="${item.itemBrand}"
+                                                     data-dateinst="${item.dateInstalled}"
+                                                     data-itemexpiry="${item.expiration}"
+                                                     data-itemcat="${itemEditCat}"
+                                                     data-itemfloor="${item.itemFloor}"
+                                                     data-itemroom="${item.itemRoom}"
+                                                     data-itemtype="${itemEditType}"
+                                                     data-itemloctext="${item.itemLocText}"
+                                                     data-itemremarks="${item.itemRemarks}"
+                                                     data-itempcc="${item.itemPCC}"
+                                                     data-accu="${item.acACCU}"
+                                                     data-fcu="${item.acFCU}"
+                                                     data-inverter="${item.acINVERTER}"
+                                                     data-itemcapacity="${item.itemCapacity}"
+                                                     data-itemmeasure="${item.itemUnitMeasure}"
+                                                     data-itemev="${item.itemEV}"
+                                                     data-itemeph="${item.itemEPH}"
+                                                     data-itemehz="${item.itemEHZ}"
+                                                     onclick="populateEditModal(this); floorERender(); setFloorSelection(this); toggleEAirconDiv(${itemEditCat});">
+                                                    Edit
+                                                  </a>
+                                            
+                                                  <!-- Archive Option -->
+                                                  <a class="dropdown-item"
+                                                     href="#"
+                                                     data-toggle="modal"
+                                                     data-target="#archiveEquipment"
+                                                     data-itemaid="${item.itemID}"
+                                                     data-itemaname="${item.itemName}"
+                                                     onclick="populateArchModal(this)">
+                                                    Archive
+                                                  </a>
+                                                </div>
+                                              </div>
+                                            </td>
+                                        </c:when>
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </tr>
 				</c:if>
                                 </c:if>
@@ -883,10 +953,9 @@
                         scrollX: true,
                         columnDefs: [
                             { targets: "_all", className: "dt-center" }, // Center-align all columns
-                            { targets: 0, orderable: false },
-                            { targets: 1, orderable: false },
-                            { targets: 8, orderable: false }, 
-                            { targets: 9, orderable: false } 
+                            { targets: 6, orderable: false },
+                            { targets: 7, orderable: false }, 
+                            { targets: 8, orderable: false } 
                         ]
                     });
     
@@ -900,10 +969,9 @@
                         scrollX: true,
                         columnDefs: [
                             { targets: "_all", className: "dt-center" }, // Center-align all columns
-                            { targets: 0, orderable: false },
-                            { targets: 1, orderable: false },
-                            { targets: 9, orderable: false },
-                            { targets: 10, orderable: false }
+                            { targets: 7, orderable: false },
+                            { targets: 8, orderable: false },
+                            { targets: 9, orderable: false }
                         ]
                     });
                 });
@@ -996,8 +1064,7 @@
             if (selectedDropdown) {
                 const form = selectedDropdown.closest("form");
                 const itemMaintTypeInput = form.querySelector("input[name='itemMaintType']");
-                const modalItemMaintTypeValue = document.getElementById("modalItemMaintType").value;
-    
+                const modalItemMaintTypeValue = document.getElementById("modalItemMaintType").value;    
                 if (itemMaintTypeInput) {
                     itemMaintTypeInput.value = modalItemMaintTypeValue;
                     itemMaintTypeInput.disabled = false;
@@ -1032,6 +1099,7 @@
                 }, 150);
             }
         });
+        
     });
 
 
@@ -1500,6 +1568,9 @@ function roomEditRenderCopy() {
       case 'modify_status':
         toastMessage = 'The equipment status was modified successfully.';
         break;
+      case '3to1':
+        toastMessage = 'The equipment is now operational.';
+        break;
       default:
         toastMessage = 'Operation completed successfully.';
         break;
@@ -1522,6 +1593,26 @@ function roomEditRenderCopy() {
       title: 'An error occurred while processing your request.',
       showConfirmButton: false,
       timer: 3000,
+      timerProgressBar: true
+    });
+  } else if (status === 'error_assign') {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'Equipment is not assigned to user.',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+  } else if (status === 'error_2to3') {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'Maintenance Required to In Maintenance can only be changed in the Maintenance Page.',
+      showConfirmButton: false,
+      timer: 5000,
       timerProgressBar: true
     });
   }
