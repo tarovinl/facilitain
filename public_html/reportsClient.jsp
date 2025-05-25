@@ -72,9 +72,9 @@
 </div>
 
                      <!-- Location -->
-                    <label for="location" class="mt-2">Location</label>
+                    <label for="location" class="mt-2">Location <span style="color: red;"> *</span></label>
                     <div class="mt-1">
-                        <select name="location" id="location" class="form-control w-100">
+                        <select name="location" id="location" class="form-control w-100" onchange="loadFloors()" required>
                             <option value="">Select a location</option>
                             <c:forEach var="location" items="${locationList}">
                                 <option value="${location.key}">${location.value}</option>
@@ -84,16 +84,20 @@
                     </div>
 
                     <!-- Floor -->
-                    <label for="floor"class="mt-2">Floor</label>
+                    <label for="floor"class="mt-2">Floor <span style="color: red;"> *</span></label>
                     <div class="mt-1">
-                        <input type="text" name="floor" id="floor" class="form-control w-100" placeholder="Enter floor">
+                        <select name="floor" id="floor" class="form-control w-100" onchange="loadRooms()" required disabled>
+                            <option value="">Select a floor</option>
+                        </select>
                         <div id="floorError" class="error-message"></div>
                     </div>
 
              
                     <label for="room"class="mt-2">Room <span style="color: red;"> *</span></label>
                     <div class="mt-1">
-                        <input type="text" name="room" id="room" class="form-control w-100" placeholder="Enter room" required>
+                        <select name="room" id="room" class="form-control w-100" required disabled>
+                            <option value="">Select a room</option>
+                        </select>
                         <div id="roomError" class="error-message"></div>
                     </div>
                     
@@ -163,6 +167,69 @@
             }
         }
         
+        // Function to load floors based on selected location
+        function loadFloors() {
+            const locationId = document.getElementById("location").value;
+            const floorSelect = document.getElementById("floor");
+            const roomSelect = document.getElementById("room");
+            
+            // Reset and disable floor and room dropdowns
+            floorSelect.innerHTML = '<option value="">Select a floor</option>';
+            floorSelect.disabled = true;
+            roomSelect.innerHTML = '<option value="">Select a room</option>';
+            roomSelect.disabled = true;
+            
+            if (locationId) {
+                // Make AJAX call to get floors
+                fetch('reportsClient?action=getFloors&locationId=' + locationId)
+                    .then(response => response.json())
+                    .then(floors => {
+                        floorSelect.innerHTML = '<option value="">Select a floor</option>';
+                        floors.forEach(floor => {
+                            const option = document.createElement('option');
+                            option.value = floor;
+                            option.textContent = floor;
+                            floorSelect.appendChild(option);
+                        });
+                        floorSelect.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error loading floors:', error);
+                        floorSelect.innerHTML = '<option value="">Error loading floors</option>';
+                    });
+            }
+        }
+        
+        // Function to load rooms based on selected location and floor
+        function loadRooms() {
+            const locationId = document.getElementById("location").value;
+            const floorNo = document.getElementById("floor").value;
+            const roomSelect = document.getElementById("room");
+            
+            // Reset room dropdown
+            roomSelect.innerHTML = '<option value="">Select a room</option>';
+            roomSelect.disabled = true;
+            
+            if (locationId && floorNo) {
+                // Make AJAX call to get rooms
+                fetch('reportsClient?action=getRooms&locationId=' + locationId + '&floorNo=' + encodeURIComponent(floorNo))
+                    .then(response => response.json())
+                    .then(rooms => {
+                        roomSelect.innerHTML = '<option value="">Select a room</option>';
+                        rooms.forEach(room => {
+                            const option = document.createElement('option');
+                            option.value = room;
+                            option.textContent = room;
+                            roomSelect.appendChild(option);
+                        });
+                        roomSelect.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error loading rooms:', error);
+                        roomSelect.innerHTML = '<option value="">Error loading rooms</option>';
+                    });
+            }
+        }
         
         function updateCharCount() {
             const issueField = document.getElementById('issue');
