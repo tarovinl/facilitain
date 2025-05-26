@@ -516,7 +516,42 @@ public class mainController extends HttpServlet {
                         break;
                     case "/buildingDashboard":
                         if (queryString != null && queryString.contains("/manage")) {
-                            request.getRequestDispatcher("/manageBuilding.jsp").forward(request, response);
+                            String itemHIDParam = request.getParameter("itemHID");
+                            if (itemHIDParam != null && !itemHIDParam.isEmpty()) {
+                                int itemHID = Integer.parseInt(itemHIDParam);
+                                List<MaintAssign> historyList = new ArrayList<>();
+                                
+                                try (Connection conn = PooledConnection.getConnection();
+                                     PreparedStatement stmt = conn.prepareStatement(
+                                         "SELECT ma.ASSIGN_ID, ma.MAIN_TYPE_ID, ma.USER_ID, ma.DATE_OF_MAINTENANCE, u.NAME AS NAME " +
+                                         "FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
+                                         "JOIN C##FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID " +
+                                         "WHERE ma.ITEM_ID = ? AND ma.IS_COMPLETED = 1")) {
+                                    
+                                    stmt.setInt(1, itemHID);
+                                    ResultSet rsH = stmt.executeQuery();
+                                    
+                                    while (rsH.next()) {
+                                        MaintAssign massH = new MaintAssign();
+                                        massH.setAssignID(rsH.getInt("ASSIGN_ID"));
+                                        massH.setUserID(rsH.getInt("USER_ID"));
+                                        massH.setUserName(rsH.getString("NAME"));
+                                        massH.setMaintTID(rsH.getInt("MAIN_TYPE_ID"));
+                                        massH.setDateOfMaint(rsH.getDate("DATE_OF_MAINTENANCE"));
+                                        historyList.add(massH);
+                                    }
+                                    rsH.close();
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+
+                                response.setContentType("application/json");
+                                response.setCharacterEncoding("UTF-8");
+                                response.getWriter().write(new Gson().toJson(historyList));
+                            } else {
+                                System.out.println("itemHID is null or empty, handle logic here.");
+                                request.getRequestDispatcher("/manageBuilding.jsp").forward(request, response);
+                            }
         //                    System.out.println(locID);
         //                    System.out.println(locID.substring(locID.indexOf("floor=") + 6));
                         } else if (queryString != null && queryString.contains("/edit")) {
