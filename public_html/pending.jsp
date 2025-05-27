@@ -90,11 +90,11 @@
     <div class="row min-vh-100">
         <jsp:include page="sidebar.jsp"/>
 
-        <div class="col-md-10">
-            <div class="container">
+        <div class="col-md-10 p-4">
+            <div class="container-fluid">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
                     <div>
-                        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Maintenance</h1>
+                        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Maintenance</h1>
                     </div>
                     <div class="mt-3 mt-md-0">
                         <%--<c:choose>
