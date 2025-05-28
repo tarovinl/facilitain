@@ -272,7 +272,14 @@
                                                      onclick="populateEditModal(this); floorERender(); setFloorSelection(this); toggleEAirconDiv(${itemEditCat});">
                                                     Edit
                                                   </a>
-                                            
+                                                  <!-- History Option -->
+                                                  <a class="dropdown-item history-btn"
+                                                     href="#"
+                                                     data-toggle="modal"
+                                                     data-target="#historyEquipment"
+                                                     data-itemhid="${item.itemID}">
+                                                    History
+                                                  </a>
                                                   <!-- Archive Option -->
                                                   <a class="dropdown-item"
                                                      href="#"
@@ -1661,7 +1668,7 @@ const LID = "<%= locID %>"; // Embed JSP variable
 const flrN = "<%= floorName %>";
 
 $(document).ready(function() {
-    $('.history-btn').on('click', function() {
+    $(document).on('click', '.history-btn', function() {
         var itemHID = $(this).data('itemhid');
 
         $.ajax({

@@ -544,7 +544,7 @@ public class mainController extends HttpServlet {
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
-
+                                System.out.println("Equipment History Item ID: "+itemHID);
                                 response.setContentType("application/json");
                                 response.setCharacterEncoding("UTF-8");
                                 response.getWriter().write(new Gson().toJson(historyList));
