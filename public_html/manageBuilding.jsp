@@ -9,7 +9,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Manage Location</title>
-        <link rel="stylesheet" href="resources/css/mBuilding.css">
+     
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!-- DataTables CSS -->
@@ -27,6 +27,221 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     
     <style>
+    
+thead{
+    background-color: black !important;
+    color: white !important;
+    
+}
+
+
+.floorContainer {
+    
+    display: flex;
+}
+
+
+.floorAndButtons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+   
+    margin-top: 8px;
+}
+
+.floorName {
+    display: flex;
+    vertical-align: middle;
+}
+.floorName h1 {
+    font-size: 44px;
+    font-weight: bold;
+}
+
+
+.roomDropsdiv {
+    margin-top: 20px;
+    
+}
+
+.roomDropdowns {
+    list-style-type: none;
+}
+#paginationControls {
+    text-align: center;
+    margin-top: 15px;
+}
+.page-btn {
+    margin: 0 5px;
+    
+    border: 1px solid black; /* Border color */
+    background-color: #fccc4c;   /* Background color */
+    color: black;            /* Text color */
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s; /* Add a smooth hover effect */
+}
+.page-btn:hover {
+    background-color: #ffcc00; /* Blue background on hover */
+    color: black;              /* White text on hover */
+}
+.page-btn.active {
+    background-color: black; /* Active button background */
+    color: #fccc4c;              /* Active button text color */
+    border-color: black;     /* Border color for the active button */
+}
+
+
+.roomDropdown {
+}
+
+.roomDropdiv {
+}
+
+/*thead{
+    background-color: black !important;
+    color: white !important;
+}
+table.dataTable>thead>tr:hover td,
+table.dataTable>thead>tr:hover th {
+  background-color: #fccc4c !important;
+  color: black !important;
+  border: solid 1px black !important;
+}
+table.dataTable thead>tr>th.dt-orderable-asc span:hover,
+table.dataTable thead>tr>th.dt-orderable-desc span:hover,
+table.dataTable thead>tr>th.dt-ordering-asc span:hover,
+table.dataTable thead>tr>th.dt-ordering-desc span:hover,
+table.dataTable thead>tr>td.dt-orderable-asc span:hover,
+table.dataTable thead>tr>td.dt-orderable-desc span:hover,
+table.dataTable thead>tr>td.dt-ordering-asc span:hover,
+table.dataTable thead>tr>td.dt-ordering-desc span:hover {
+    color: black;*/ /* Change this to your hover color */
+/*}*/
+div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-paging .dt-paging-button.current:hover {
+  border: 1px solid black !important;
+  background-color: #fccc4c !important;
+}
+
+
+.roomDLblDiv {
+    background-color: #fccc4c;
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: solid 1px black;
+}
+.roomDLblDiv button:hover {
+    background-color: #ffcc00; /* Change button color on hover */
+}
+.roomDLblDiv:has(button:hover) {
+    background-color: #ffcc00; /* Change div color when button is hovered */
+}
+.roomDLblDiv button {
+    background-color: #fccc4c;
+    font-weight: bold;
+    margin-top: 8px;
+    
+    border: none;
+}
+
+.roomDTblDiv {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+.roomDTblDiv table {
+    width: 100%; /* Ensure the table takes up the full width of the div */
+    font-weight: bold;
+}
+/*.roomDTblDiv th {
+    background-color: black;
+    color: white;
+    border: solid 1px black;
+}
+.roomDTblDiv tr {
+    border: solid 1px black;
+}*/
+
+.statusDropdown {
+    font-size: 16px;
+    
+    width: 160px;
+}
+
+.roomDTblDiv2 table {
+    width: 100%; /* Ensure the table takes up the full width of the div */
+    font-weight: bold;
+}
+/*.roomDTblDiv2 th {
+    background-color: black;
+    color: white;
+    border: solid 1px black;
+}
+.roomDTblDiv2 tr {
+    border: solid 1px black;
+}*/
+
+/*.working {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+}
+.nwork {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
+.maintenance {
+    background-color: orange;
+    color: white;
+    font-weight: bold;
+}*/
+
+/*table {
+        border-collapse: collapse;*/ /* Collapse borders to avoid double borders */
+        /*width: 100%;*/ /* Optional: Set table width */
+        /*margin: 0;*/ /* Reset margin */
+            /*padding: 0;*/ /* Reset padding */
+    /*}
+
+    table th {
+    border-left: 1px solid #ccc;*/ /* More specific selector */
+    /*border-right: 1px solid #ccc;*/ /* More specific selector */
+/*}*/
+
+
+    /* Optional: Change the border color on hover */
+    /*tr:hover {
+        background-color: #f9f9f9;*/ /* Light gray background on row hover */
+    /*}*/
+    
+
+.onlyAir {
+    display: none;
+}
+.onlyEditAir{
+    display:none;
+}
+
+@media (max-width: 800px) {
+    .roomDTblDiv tr {
+        margin-bottom: 10px;
+    }
+    .buttonsBuilding{
+        
+        font-size: 16px;
+    }
+    .buttonsBuilding {
+        
+        font-size: 16px;
+    }
+  
+}
+    
     body, h1, h2, h3, h4, th {
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
@@ -60,7 +275,21 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                 }
             table.dataTable thead th {
             font-family: NeueHaasMedium, sans-serif !important;
-}
+            }
+            
+            .floorLinks {
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            color: black;
+                        }
+            .floorLinks:visited {
+            text-decoration: underline !important;
+                                }
+            .floorLinks:hover {
+                color: #fccc4c;
+                            }
+
 
 
 </style>
@@ -106,27 +335,58 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
-                <a href="./buildingDashboard?locID=${locID}" class="pt-4 buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" style="text-decoration: none;color: black;  margin-left: 2px; display: flex; align-items: center; font-family: NeueHaasLight, sans-serif;">
+                <a href="./buildingDashboard?locID=${locID}" class=" buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" style="text-decoration: none;color: black;  display: flex; align-items: center; font-family: NeueHaasLight, sans-serif;">
                
     <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
     Back
                 </a>
             </div>
         </div>
-        <div class="buildingName">
-            <h1 style="font-family: NeueHaasMedium, sans-serif;">${locName}</h1>
-        </div>
-        <div class="container-fluid pt-2 " style="font-family: NeueHaasLight, sans-serif;">
-                    <a href="./buildingDashboard?locID=${locID}/manage?floor=all" class="floorLinks fs-5">
-                        All Items
-                    </a>
-                    <c:if test="${floorName == 'all'}">
-                        <c:set var="flrMatchFound" value="true" />
-                    </c:if>
+        <div class="d-flex justify-content-between align-items-center border-bottom pt-2">
+    <div class="buildingName">
+        <h1 class="display-4" style="font-family: NeueHaasMedium, sans-serif;">${locName}</h1>
+    </div>
+    <div class="floorAndButtons">
+        <c:choose>
+            <c:when test="${sessionScope.role == 'Admin'}">
+                <div class="d-flex gap-2">
+                    <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline"
+                            style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
+                            onclick="window.location.href='buildingDashboard?locID=${locID}/edit'">
+                        Edit Location
+                    </button>
+                    <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline"
+                            style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
+                            data-toggle="modal" data-target="#addEquipment" type="button"
+                            onclick="QOLLocSet(); floorRender(); toggleAirconDiv(); filterTypes();">
+                        Add Equipment
+                    </button>
+                </div>
+            </c:when>
+        </c:choose>
+    </div>
+</div>
+
+<div class=" container-fluid p-0 d-flex border-bottom justify-content-between align-items-center flex-wrap">
+    <!-- Left side: Floor name -->
+    <div class="floorName">
+        <h1 class="display-1 mt-2" style="font-family: NeueHaasMedium, sans-serif;color: #212529;">
+            ${floorName == 'all' ? 'All Items' : floorName}
+        </h1>
+    </div>
+
+    <!-- Right side: Floor selection links -->
+    <div class="d-flex flex-wrap gap-3" style="font-family: NeueHaasLight, sans-serif;">
+        <a href="./buildingDashboard?locID=${locID}/manage?floor=all" class="floorLinks fs-5">
+            All Items
+        </a>
+        <c:if test="${floorName == 'all'}">
+            <c:set var="flrMatchFound" value="true" />
+        </c:if>
         <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
             <c:if test="${floors.key == locID}">
                 <c:forEach var="floor" items="${floors.value}">
-                    <a href="./buildingDashboard?locID=${locID}/manage?floor=${floor}" class="floorLinks fs-5 ">
+                    <a href="./buildingDashboard?locID=${locID}/manage?floor=${floor}" class="floorLinks fs-5">
                         ${floor}
                     </a>
                     <c:if test="${floor == floorName}">
@@ -134,31 +394,17 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                     </c:if>
                 </c:forEach>
             </c:if>
-        </c:forEach>    
-        </div>
-        <div class="floorAndButtons">
-            <div class="floorName">
-              <h1 class="fs-1" style="font-family: NeueHaasMedium, sans-serif;">${floorName == 'all' ? 'All Items' : floorName}</h1>
-            </div>
-            <c:choose>
-                    <c:when test="${sessionScope.role == 'Admin'}">
-                        <div>
-                          <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" style="font-family: NeueHaasMedium, sans-serif;" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'"><!--hidden if acc is not admin-->
-                            Edit Location
-                          </button>
-                           
-                          <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" style="font-family: NeueHaasMedium, sans-serif;" data-toggle="modal" data-target="#addEquipment" type="button" onclick="QOLLocSet(); floorRender(); toggleAirconDiv(); filterTypes();">Add Equipment</button>
-                        </div>
-                    </c:when>
-                    <c:otherwise>
-                    </c:otherwise>
-            </c:choose>
-            
-        </div>
+        </c:forEach>
+    </div>
+</div>
+
+
+         
+        
         <c:if test="${floorName == 'all'}">
         <div class="roomDropsdiv ">
             <div >
-            <table id="allItemsTable" class="display " style="width:100%;   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <table id="allItemsTable" class="display " style="width:100%;  ">
 			<thead>
                                 <tr>
                                     <!--<th ></th>-->
