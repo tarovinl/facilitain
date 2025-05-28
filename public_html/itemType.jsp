@@ -41,6 +41,27 @@
             .buildingManage:hover {
                 text-decoration: underline !important;
                 }
+    a.paginate-button {
+    margin: 0 5px;
+    
+    border: 1px solid black; /* Border color */
+    background-color: #fccc4c;   /* Background color */
+    color: black;            /* Text color */
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s; /* Add a smooth hover effect */
+}
+a.paginate-button:hover {
+    background-color: #ffcc00; /* Blue background on hover */
+    color: black;              /* White text on hover */
+}
+a.paginate-button.active {
+    background-color: black; /* Active button background */
+    color: #fccc4c;              /* Active button text color */
+    border-color: black;     /* Border color for the active button */
+}
     </style>
 </head>
 <body>

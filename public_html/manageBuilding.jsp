@@ -28,6 +28,12 @@
     
     <style>
     
+thead{
+    background-color: black !important;
+    color: white !important;
+    
+}
+
 
 .floorContainer {
     
