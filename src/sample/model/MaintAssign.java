@@ -9,6 +9,7 @@ public class MaintAssign {
     private int maintTID;
     private Date dateOfMaint;
     private int isCompleted;
+    private String userName;
 
     public void setIsCompleted(int isCompleted) {
         this.isCompleted = isCompleted;
@@ -56,5 +57,13 @@ public class MaintAssign {
 
     public Date getDateOfMaint() {
         return dateOfMaint;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }

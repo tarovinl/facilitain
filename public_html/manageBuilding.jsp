@@ -552,7 +552,14 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                                      onclick="populateEditModal(this); floorERender(); setFloorSelection(this); toggleEAirconDiv(${itemEditCat});">
                                                     Edit
                                                   </a>
-                                            
+                                                  <!-- History Option -->
+                                                  <a class="dropdown-item history-btn"
+                                                     href="#"
+                                                     data-toggle="modal"
+                                                     data-target="#historyEquipment"
+                                                     data-itemhid="${item.itemID}">
+                                                    History
+                                                  </a>
                                                   <!-- Archive Option -->
                                                   <a class="dropdown-item"
                                                      href="#"
@@ -806,7 +813,14 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                                      onclick="populateEditModal(this); floorERender(); setFloorSelection(this); toggleEAirconDiv(${itemEditCat});">
                                                     Edit
                                                   </a>
-                                            
+                                                  <!-- History Option -->
+                                                  <a class="dropdown-item history-btn"
+                                                     href="#"
+                                                     data-toggle="modal"
+                                                     data-target="#historyEquipment"
+                                                     data-itemhid="${item.itemID}">
+                                                    History
+                                                  </a>
                                                   <!-- Archive Option -->
                                                   <a class="dropdown-item"
                                                      href="#"
@@ -1181,6 +1195,37 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         </div>
     </div>
     <!--end of edit equipment modal-->
+    
+    <!--equipment maintenance history modal-->
+    <div class="modal fade" tabindex="-1" id="historyEquipment">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Maintenance History</h5>
+            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table id="historyTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Assign ID</th>
+                        <th>Maintenance Type</th>
+                        <th>Assigned User</th>
+                        <th>Date of Maintenance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be inserted here dynamically -->
+                </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
     
     <!--archive equipment modal-->
 <div class="modal fade" id="archiveEquipment" tabindex="-1" role="dialog" aria-labelledby="archiveEquipment" aria-hidden="true">
@@ -1821,6 +1866,7 @@ function roomEditRenderCopy() {
     </script>
     
 <script>
+
   // Helper function to get query parameter by name
   function getQueryParam(name) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -1896,6 +1942,48 @@ function roomEditRenderCopy() {
       timerProgressBar: true
     });
   }
+</script>
+<script>
+const LID = "<%= locID %>"; // Embed JSP variable
+const flrN = "<%= floorName %>";
+
+$(document).ready(function() {
+    $(document).on('click', '.history-btn', function() {
+        var itemHID = $(this).data('itemhid');
+
+        $.ajax({
+            url: `buildingDashboard?locID=${LID}/manage?floor=${flrN}`,
+            type: 'GET',
+            data: { itemHID: itemHID },
+            dataType: "json",
+            success: function(response) {
+                let historyTable = $('#historyTable tbody'); 
+                historyTable.empty();
+                if (Array.isArray(response)) {
+                    response.forEach(entry => {
+                        console.log("Entry:", entry); //
+            
+                        historyTable.append(`
+                        <tr>
+                            <td>`+entry.assignID+`</td>
+                            <td>`+entry.maintTID+`</td>
+                            <td>`+entry.userName+`</td> 
+                            <td>`+entry.dateOfMaint+`</td>
+                        </tr>
+                        `);
+                    });
+                    $('#historyEquipment').modal('show'); 
+                    
+                } else {
+                    console.error("Unexpected response format:", response);
+                }
+            },
+            error: function() {
+                alert('Failed to load history data.');
+            }
+        });
+    });
+});
 </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script> 
