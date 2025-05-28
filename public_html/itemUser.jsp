@@ -48,7 +48,7 @@
     <div class="row vh-100">
             <jsp:include page="sidebar.jsp"></jsp:include>
         <div class="col-md-10 p-4">
-            <h1 style="font-family: 'NeueHaasMedium', sans-serif;">Manage Item Users</h1>
+            <h1 style="font-family: 'NeueHaasMedium', sans-serif;">Manage Users</h1>
             <table id="itemUserTable" class="table table-striped table-bordered">
                 <thead class="table-dark">
                     <tr>

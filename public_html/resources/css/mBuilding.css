@@ -7,17 +7,6 @@
     
 }
 
-.buildingName {
-    
-    border-bottom: 1px black solid;
-}
-.buildingName h1 {
-    margin-bottom: 0;
-    line-height: 1;
-    font-size: 60px;
-    font-weight: bold;
-}
-
 .floorContainer {
     
     display: flex;

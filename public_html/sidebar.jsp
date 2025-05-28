@@ -122,9 +122,7 @@
                         <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
                             <span class="ps-4">Automated Scheduling</span>
                         </a>
-                        <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
-                            <span class="ps-4">Manage Users</span>
-                        </a>
+                        
                     </div>
                 </div>
             </c:if>           
@@ -149,6 +147,10 @@
             <a href="reports" class="${page == 'reports' ? 'active' : ''}">
                 <img src="resources/images/icons/reports.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Reports
+            </a>
+            <a href="itemUser" class="${page == 'reports' ? 'active' : ''}">
+                <img src="resources/images/icons/user.svg" alt="User" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                Users
             </a>
             <!--<a href="mapView" class="${page == 'mapView' ? 'active' : ''}">
                 <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
