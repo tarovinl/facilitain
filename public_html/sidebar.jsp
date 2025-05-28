@@ -105,6 +105,10 @@
                 <img src="resources/images/icons/home.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Homepage
             </a>
+             <a href="maintenancePage" class="${page == 'pending' ? 'active' : ''}">
+                <img src="resources/images/icons/maintenance.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                Maintenance
+            </a>
              <c:if test="${sessionScope.role == 'Admin'}">
                 <div class="maintenance-container">
                     <div class="maintenance-header">
@@ -114,13 +118,13 @@
                     </div>
                     <div class="maintenance-items">
                         <a href="itemType" class="${page == 'itemType' ? 'active' : ''}">
-                            <span class="ps-4">Item Types</span>
+                            <span class=" fs-6">Item Types</span>
                         </a>
                         <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}">
-                            <span class="ps-4">Item Categories</span>
+                            <span class="">Item Categories</span>
                         </a>
                         <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
-                            <span class="ps-4">Automated Scheduling</span>
+                            <span class="">Automated Scheduling</span>
                         </a>
                         
                     </div>
@@ -148,7 +152,7 @@
                 <img src="resources/images/icons/reports.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Reports
             </a>
-            <a href="itemUser" class="${page == 'reports' ? 'active' : ''}">
+            <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
                 <img src="resources/images/icons/user.svg" alt="User" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Users
             </a>

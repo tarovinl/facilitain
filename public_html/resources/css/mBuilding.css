@@ -11,19 +11,7 @@
     
     display: flex;
 }
-.floorLinks {
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 18px;
-    margin-left: 16px;
-    color: black;
-}
-.floorLinks:visited {
-    text-decoration: none;
-}
-.floorLinks:hover {
-    color: #fccc4c;
-}
+
 
 .floorAndButtons {
     display: flex;
@@ -41,20 +29,7 @@
     font-size: 44px;
     font-weight: bold;
 }
-.buttonsBuilding {
-    margin: 8px 8px;
-    background-color: #fccc4c;
-    border: none;
-    font-weight: bold;
-   
-    font-size: 18px;
-    -webkit-appearance: none; /* Reset button appearance for WebKit browsers */
-    -moz-appearance: none; /* Reset button appearance for Mozilla browsers */
-    appearance: none; /* Reset button appearance for other browsers */
-}
-.buttonsBuilding:hover {
-    background-color: #ffcc00;
-}
+
 
 .roomDropsdiv {
     margin-top: 20px;

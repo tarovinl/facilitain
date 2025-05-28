@@ -15,7 +15,7 @@
   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
@@ -62,6 +62,12 @@
         #maintenanceTable tbody tr.selected {
             background-color: rgba(0,0,0,0.1);
         }
+          body, h1, h2, h3, h4,h5, h6, th,label,.custom-label {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+ input, textarea, td, tr, p, select, option,id {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
     </style>
 </head>
 
@@ -213,24 +219,24 @@
                                 <!-- Static equipment details -->
                                 <div id="equipmentDetails">
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Equipment Type</label>
-                                        <div id="detailEquipment">Fire Extinguisher</div>
+                                        <label class="form-label custom-label" style=" font-family: 'NeueHaasMedium', sans-serif;">Equipment Type</label>
+                                        <div id="detailEquipment" style=" font-family: 'NeueHaasLight', sans-serif;">Fire Extinguisher</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Status</label>
-                                        <div id="detailStatus">In Progress</div>
+                                        <label class="form-label custom-label">Status</label>
+                                        <div id="detailStatus" style=" font-family: 'NeueHaasLight', sans-serif;">In Progress</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Codename</label>
-                                        <div id="detailSerial">09222222</div>
+                                        <label class="form-label custom-label">Codename</label>
+                                        <div id="detailSerial" style=" font-family: 'NeueHaasLight', sans-serif;">09222222</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Brand Name</label>
-                                        <div id="detailBrand">XYZ Fire Safety</div>
+                                        <label class="form-label custom-label">Brand Name</label>
+                                        <div id="detailBrand" style=" font-family: 'NeueHaasLight', sans-serif;">XYZ Fire Safety</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Location</label>
-                                        <div id="detailLocation">Building A, Floor 1</div>
+                                        <label class="form-label custom-label">Location</label>
+                                        <div id="detailLocation" style=" font-family: 'NeueHaasLight', sans-serif;">Building A, Floor 1</div>
                                     </div>
                                     <div class="d-grid gap-2 mt-4">
                                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateStatusModal"

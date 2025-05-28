@@ -336,7 +336,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                 </a>
             </div>
         </div>
-        <div class="d-flex justify-content-between align-items-center border-bottom pt-4">
+        <div class="d-flex justify-content-between align-items-center border-bottom pt-2">
     <div class="buildingName">
         <h1 class="display-4" style="font-family: NeueHaasMedium, sans-serif;">${locName}</h1>
     </div>
@@ -361,7 +361,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     </div>
 </div>
 
-<div class="container-fluid p-0 d-flex justify-content-between align-items-center flex-wrap">
+<div class=" container-fluid p-0 d-flex border-bottom justify-content-between align-items-center flex-wrap">
     <!-- Left side: Floor name -->
     <div class="floorName">
         <h1 class="display-1 mt-2" style="font-family: NeueHaasMedium, sans-serif;color: #212529;">
