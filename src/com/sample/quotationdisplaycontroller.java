@@ -51,7 +51,7 @@ public class quotationdisplaycontroller extends HttpServlet {
         }
 
         try (Connection conn = PooledConnection.getConnection()) {
-            String updateQuery = "UPDATE C##FMO_ADM.FMO_ITEM_QUOTATIONS SET ARCHIVED_FLAG = 2 WHERE QUOTATION_ID = ?";
+            String updateQuery = "UPDATE FMO_ADM.FMO_ITEM_QUOTATIONS SET ARCHIVED_FLAG = 2 WHERE QUOTATION_ID = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(updateQuery)) {
                 pstmt.setInt(1, Integer.parseInt(quotationIdParam));
 
@@ -132,7 +132,7 @@ public class quotationdisplaycontroller extends HttpServlet {
     private ArrayList<Quotation> fetchQuotationsFromDatabase(int itemID) {
         ArrayList<Quotation> quotations = new ArrayList<>();
         String query = "SELECT QUOTATION_ID, ITEM_ID, DESCRIPTION, DATE_UPLOADED, QUOTATION_IMAGE, ARCHIVED_FLAG " +
-                      "FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS WHERE ITEM_ID = ? AND (ARCHIVED_FLAG IS NULL OR ARCHIVED_FLAG = 1)";
+                      "FROM FMO_ADM.FMO_ITEM_QUOTATIONS WHERE ITEM_ID = ? AND (ARCHIVED_FLAG IS NULL OR ARCHIVED_FLAG = 1)";
 
         try (Connection conn = PooledConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -202,7 +202,7 @@ public class quotationdisplaycontroller extends HttpServlet {
     
     // New method to fetch quotation image from database
     private byte[] fetchQuotationImageFromDatabase(int quotationId) {
-        String query = "SELECT QUOTATION_IMAGE FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS WHERE QUOTATION_ID = ?";
+        String query = "SELECT QUOTATION_IMAGE FROM FMO_ADM.FMO_ITEM_QUOTATIONS WHERE QUOTATION_ID = ?";
         
         try (Connection conn = PooledConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {

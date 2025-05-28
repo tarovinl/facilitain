@@ -48,8 +48,8 @@ public class reportClientController extends HttpServlet {
         List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
         List<Map.Entry<Integer, String>> equipmentList = new ArrayList<>();
 
-        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
-        String equipmentQuery = "SELECT ITEM_CAT_ID, NAME FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1 ORDER BY NAME";
+        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
+        String equipmentQuery = "SELECT ITEM_CAT_ID, NAME FROM FMO_ADM.FMO_ITEM_CATEGORIES WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1 ORDER BY NAME";
 
         try (Connection connection = PooledConnection.getConnection()) {
 
@@ -91,7 +91,7 @@ public class reportClientController extends HttpServlet {
         List<String> floors = new ArrayList<>();
         
         if (locationId != null && !locationId.isEmpty()) {
-            String floorQuery = "SELECT DISTINCT NAME FROM C##FMO_ADM.FMO_ITEM_LOC_FLOORS WHERE ITEM_LOC_ID = ? AND ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2 ORDER BY NAME";
+            String floorQuery = "SELECT DISTINCT NAME FROM FMO_ADM.FMO_ITEM_LOC_FLOORS WHERE ITEM_LOC_ID = ? AND ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2 ORDER BY NAME";
             
             try (Connection connection = PooledConnection.getConnection();
                  PreparedStatement stmt = connection.prepareStatement(floorQuery)) {
@@ -123,7 +123,7 @@ public class reportClientController extends HttpServlet {
         List<String> rooms = new ArrayList<>();
         
         if (locationId != null && !locationId.isEmpty() && floorNo != null && !floorNo.isEmpty()) {
-            String roomQuery = "SELECT DISTINCT ROOM_NO FROM C##FMO_ADM.FMO_ITEMS WHERE LOCATION_ID = ? AND FLOOR_NO = ? AND ROOM_NO IS NOT NULL AND ITEM_STAT_ID != 2 ORDER BY ROOM_NO";
+            String roomQuery = "SELECT DISTINCT ROOM_NO FROM FMO_ADM.FMO_ITEMS WHERE LOCATION_ID = ? AND FLOOR_NO = ? AND ROOM_NO IS NOT NULL AND ITEM_STAT_ID != 2 ORDER BY ROOM_NO";
             
             try (Connection connection = PooledConnection.getConnection();
                  PreparedStatement stmt = connection.prepareStatement(roomQuery)) {
@@ -191,7 +191,7 @@ public class reportClientController extends HttpServlet {
 
         try (Connection connection = PooledConnection.getConnection()) {
             // Get the max REPORT_ID and increment it by 1
-            String getMaxIdQuery = "SELECT COALESCE(MAX(REPORT_ID), 0) + 1 AS NEXT_ID FROM C##FMO_ADM.FMO_ITEM_REPORTS";
+            String getMaxIdQuery = "SELECT COALESCE(MAX(REPORT_ID), 0) + 1 AS NEXT_ID FROM FMO_ADM.FMO_ITEM_REPORTS";
             int reportId = 0;
             try (Statement stmt = connection.createStatement();
                  ResultSet rs = stmt.executeQuery(getMaxIdQuery)) {
@@ -204,7 +204,7 @@ public class reportClientController extends HttpServlet {
             String reportCode = generateReportCode(equipment, floor, room, reportId);
 
             // Insert the new report, including STATUS and REPORT_CODE
-            String insertQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPORTS (REPORT_ID, EQUIPMENT_TYPE, ITEM_LOC_ID, REPORT_FLOOR, REPORT_ROOM, REPORT_ISSUE, REPORT_PICTURE, REC_INST_DT, REC_INST_BY, STATUS, REPORT_CODE) " +
+            String insertQuery = "INSERT INTO FMO_ADM.FMO_ITEM_REPORTS (REPORT_ID, EQUIPMENT_TYPE, ITEM_LOC_ID, REPORT_FLOOR, REPORT_ROOM, REPORT_ISSUE, REPORT_PICTURE, REC_INST_DT, REC_INST_BY, STATUS, REPORT_CODE) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
                 pstmt.setInt(1, reportId);

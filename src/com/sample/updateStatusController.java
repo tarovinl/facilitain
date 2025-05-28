@@ -81,7 +81,7 @@ public class updateStatusController extends HttpServlet {
         try (Connection conn = PooledConnection.getConnection()) {
             String sql;
             
-            sql = "UPDATE C##FMO_ADM.FMO_ITEMS SET MAINTENANCE_STATUS = ? WHERE ITEM_ID = ?";
+            sql = "UPDATE FMO_ADM.FMO_ITEMS SET MAINTENANCE_STATUS = ? WHERE ITEM_ID = ?";
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, Integer.parseInt(newEquipmentStatus));
@@ -96,7 +96,7 @@ public class updateStatusController extends HttpServlet {
                 BigDecimal quotationID = generateQuotationID(conn);
 
 
-                String insertSQL = "INSERT INTO C##FMO_ADM.FMO_ITEM_QUOTATIONS (ITEM_ID, DESCRIPTION, QUOTATION_ID, QUOTATION_IMAGE, DATE_UPLOADED) VALUES (?, ?, ?, ?, ?)";
+                String insertSQL = "INSERT INTO FMO_ADM.FMO_ITEM_QUOTATIONS (ITEM_ID, DESCRIPTION, QUOTATION_ID, QUOTATION_IMAGE, DATE_UPLOADED) VALUES (?, ?, ?, ?, ?)";
                 try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
                     pstmt.setBigDecimal(1, itemID);
                     pstmt.setString(2, description);
@@ -112,7 +112,7 @@ public class updateStatusController extends HttpServlet {
             
             //in maintenance to operational turn maint_assign entry is_completed to 1
             if (oldEquipmentStatus.equals("3") && newEquipmentStatus.equals("1")) {
-                String assSQL = "UPDATE C##FMO_ADM.FMO_MAINTENANCE_ASSIGN SET IS_COMPLETED = 1 WHERE ITEM_ID = ?";
+                String assSQL = "UPDATE FMO_ADM.FMO_MAINTENANCE_ASSIGN SET IS_COMPLETED = 1 WHERE ITEM_ID = ?";
                 try (PreparedStatement astmt = conn.prepareStatement(assSQL)) {
                     astmt.setInt(1, Integer.parseInt(updateEquipmentID));
                     astmt.executeUpdate();
@@ -131,7 +131,7 @@ public class updateStatusController extends HttpServlet {
     
     private BigDecimal generateQuotationID(Connection conn) {
         BigDecimal newID = BigDecimal.ONE;
-        String query = "SELECT MAX(QUOTATION_ID) FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS";
+        String query = "SELECT MAX(QUOTATION_ID) FROM FMO_ADM.FMO_ITEM_QUOTATIONS";
         try (PreparedStatement pstmt = conn.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
             if (rs.next()) {

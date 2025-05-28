@@ -36,7 +36,7 @@ public class buildingController extends HttpServlet {
         System.out.println("File: " + filePart);
 
         try (Connection conn = PooledConnection.getConnection()) {
-            // Update C##FMO_ADM.FMO_ITEM_LOCATIONS table
+            // Update FMO_ADM.FMO_ITEM_LOCATIONS table
             String sql;
             
             // Check if a new image is being uploaded
@@ -44,10 +44,10 @@ public class buildingController extends HttpServlet {
             
             if (hasNewImage) {
                 // Update with new image
-                sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ?, IMAGE = ? WHERE ITEM_LOC_ID = ?";
+                sql = "UPDATE FMO_ADM.FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ?, IMAGE = ? WHERE ITEM_LOC_ID = ?";
             } else {
                 // Update without changing the image
-                sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ? WHERE ITEM_LOC_ID = ?";
+                sql = "UPDATE FMO_ADM.FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ? WHERE ITEM_LOC_ID = ?";
             }
             
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -66,14 +66,14 @@ public class buildingController extends HttpServlet {
                 if (rowsUpdated > 0) {
                     System.out.println("Updated FMO_ITEM_LOCATIONS successfully");
 
-                    // Now update or insert into C##FMO_ADM.FMO_ITEM_LOC_MAP table
+                    // Now update or insert into FMO_ADM.FMO_ITEM_LOC_MAP table
                     if (!isNullOrEmpty(mapCoord)) {
                         String[] coords = mapCoord.split(",");
                         if (coords.length == 2) {
                             String latitude = coords[0].trim();
                             String longitude = coords[1].trim();
 
-                            String sqlMapUpdate = "UPDATE C##FMO_ADM.FMO_ITEM_LOC_MAP SET LATITUDE = ?, LONGITUDE = ? WHERE ITEM_LOC_ID = ?";
+                            String sqlMapUpdate = "UPDATE FMO_ADM.FMO_ITEM_LOC_MAP SET LATITUDE = ?, LONGITUDE = ? WHERE ITEM_LOC_ID = ?";
                             try (PreparedStatement stmtMapUpdate = conn.prepareStatement(sqlMapUpdate)) {
                                 stmtMapUpdate.setString(1, latitude);
                                 stmtMapUpdate.setString(2, longitude);
@@ -82,7 +82,7 @@ public class buildingController extends HttpServlet {
                                 int mapRowsUpdated = stmtMapUpdate.executeUpdate();
                                 if (mapRowsUpdated == 0) {
                                     // If no rows updated, insert a new record
-                                    String sqlMapInsert = "INSERT INTO C##FMO_ADM.FMO_ITEM_LOC_MAP (ITEM_LOC_ID, LATITUDE, LONGITUDE) VALUES (?, ?, ?)";
+                                    String sqlMapInsert = "INSERT INTO FMO_ADM.FMO_ITEM_LOC_MAP (ITEM_LOC_ID, LATITUDE, LONGITUDE) VALUES (?, ?, ?)";
                                     try (PreparedStatement stmtMapInsert = conn.prepareStatement(sqlMapInsert)) {
                                         stmtMapInsert.setInt(1, Integer.parseInt(locId));
                                         stmtMapInsert.setString(2, latitude);
