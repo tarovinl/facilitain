@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,8 +69,26 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                 <td class="details-control"></td>
                                 <td>${log.logId}</td>
                                 <td>${log.tableName}</td>
-                                <td>${log.operationType}</td>
-                                <td>${log.operationTimestamp}</td>
+                                <td>
+                                    <span class="badge fs-6
+                                    ${log.operationType == 'INSERT' ? 'bg-success' :
+                                      log.operationType == 'UPDATE' ? 'bg-warning text-dark' :
+                                      log.operationType == 'DELETE' ? 'bg-danger' : 'bg-secondary'}">
+                                    <c:choose>
+                                    <c:when test="${log.operationType == 'INSERT'}">Added</c:when>
+                                    <c:when test="${log.operationType == 'UPDATE'}">Edited</c:when>
+                                    <c:when test="${log.operationType == 'DELETE'}">Removed</c:when>
+                                    <c:otherwise>${log.operationType}</c:otherwise>
+                                    </c:choose>
+                                    <!-- fallback just in case -->
+
+                                    </span>
+                                </td>
+
+                                <td>
+                                <fmt:formatDate value="${log.operationTimestamp}" pattern="yyyy-MM-dd HH:mm:ss" />
+                                </td>
+
                                 <td>${log.username}</td>
                             </tr>
                         </c:forEach>

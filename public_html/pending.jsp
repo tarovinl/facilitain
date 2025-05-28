@@ -20,6 +20,9 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
     <style>
+    
+
+   
         .dataTables_wrapper .dataTables_filter {
             margin-bottom: 15px;
         }
@@ -125,14 +128,15 @@
                                 <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">List of Equipment</h5>
                             </div>
                             <div class="card-body">
-                                <table id="maintenanceTable" class="table table-hover" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Equipment Name</th>
-                                            <th>Status</th>
-                                            <th>Date Notified</th>
-                                        </tr>
+                                <table id="maintenanceTable" class="table table-striped table-hover" style="width:100%">
+                                    <thead class="table-dark">
+                                     <tr>
+                                    <th>Equipment Name</th>
+                                    <th>Status</th>
+                                    <th>Date Notified</th>
+                                    </tr>
                                     </thead>
+
                                     <tbody>
                                         <!-- Static data for demonstration -->
                                         <%--<c:forEach items="${FMO_TYPES_LIST}" var="type" >
@@ -256,8 +260,8 @@
                                 <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">Assigned Maintenance</h5>
                             </div>
                             <div class="card-body">
-                                <table id="scheduledMaintTable" class="table table-hover" style="width:100%">
-                                    <thead>
+                                <table id="scheduledMaintTable" class="table table-striped table-hover" style="width:100%">
+                                    <thead class="table-dark">
                                         <tr>
                                             <th>Equipment Name</th>
                                             <th>Maintenance Type</th>
