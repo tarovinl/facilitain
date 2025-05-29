@@ -41,6 +41,42 @@
             .buildingManage:hover {
                 text-decoration: underline !important;
                 }
+    a.paginate-button {
+    margin: 0 5px;
+    
+    border: 1px solid black; /* Border color */
+    background-color: #fccc4c;   /* Background color */
+    color: black;            /* Text color */
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s; /* Add a smooth hover effect */
+}
+a.paginate-button:hover {
+    background-color: #ffcc00; /* Blue background on hover */
+    color: black;              /* White text on hover */
+}
+a.paginate-button.active {
+    background-color: black; /* Active button background */
+    color: #fccc4c;              /* Active button text color */
+    border-color: black;     /* Border color for the active button */
+}
+
+.btn-cancel-outline {
+  color: #8388a4 !important;        /* Text color */
+  background-color: white !important; /* White background */
+  border: 2px solid #8388a4 !important; /* Outline */
+  box-shadow: none !important;       /* Remove default shadow */
+}
+
+/* Optional: add hover effect */
+.btn-cancel-outline:hover {
+  background-color: #f0f2f7 !important; /* Light gray bg on hover */
+  border-color: #8388a4 !important;
+  color: #8388a4 !important;
+}
+
     </style>
 </head>
 <body>
@@ -288,18 +324,24 @@
             const form = this;
             
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You want to archive this item type?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Confirm'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
+            title: 'Are you sure?',
+            text: 'You want to archive this item type?',
+            icon: 'warning',
+            showCancelButton: true,
+            reverseButtons: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#ffffff', // keep white bg from SweetAlert defaults
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel',
+            customClass: {
+             cancelButton: 'btn-cancel-outline'
+            }
+                }).then(result => {
+            if (result.isConfirmed) {
+             form.submit();
+                 }
             });
+
         }
     });
 });

@@ -107,7 +107,7 @@
         <div class="col-md-10">
             <div class="container-fluid">
                 <!-- Header Section with Search Bar in Middle -->
-                <div class="row header-row align-items-center py-4">
+                <div class="row header-row align-items-center pt-4 pb-2">
                     <div class="col-md-3 header-title">
                         <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
                     </div>
