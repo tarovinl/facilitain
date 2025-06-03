@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
@@ -59,6 +59,15 @@
     </script>
     
     <style>
+            body, h1, h2, h3, h4, h5, th, button, input[type="button"], input[type="submit"] {
+            font-family: "Montserrat", sans-serif !important;
+            font-weight: 700 !important;
+        }
+        
+        a, h6, input, textarea, td, tr, p, label, select, option {
+            font-family: "Montserrat",  sans-serif !important;
+            font-weight: 400 !important;
+        }
         body {
             height: 100vh;
             display: flex;
@@ -92,7 +101,7 @@
         
         .montserrat-bold {
             font-family: "Montserrat", sans-serif;
-            font-weight: 600;
+            font-weight: 700;
             font-style: normal;
         }
         .shared-text {
@@ -102,6 +111,9 @@
             text-align: start;
             line-height: 1.5;
         }
+  
+
+
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100" 
@@ -130,7 +142,7 @@
                          data-callback="handleCredentialResponse"
                          data-auto_prompt="false">
                     </div>
-                    <div class="g_id_signin"
+                    <div class="g_id_signin montserrat-regular"
                          data-type="standard"
                          data-size="large"
                          data-theme="outline"

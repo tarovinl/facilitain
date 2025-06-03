@@ -117,13 +117,13 @@
                         <i class="fas fa-chevron-down ms-auto"></i>
                     </div>
                     <div class="maintenance-items">
-                        <a href="itemType" class="${page == 'itemType' ? 'active' : ''}">
+                        <a href="itemType" class="${page == 'itemType' ? 'active' : ''}p-2 ">
                             <span class=" fs-6">Item Types</span>
                         </a>
-                        <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}">
+                        <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}p-2 ">
                             <span class="">Item Categories</span>
                         </a>
-                        <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
+                        <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}p-2">
                             <span class="">Automated Scheduling</span>
                         </a>
                         
