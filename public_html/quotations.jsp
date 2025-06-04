@@ -207,7 +207,7 @@
                 fileInfo.className = 'alert alert-info';
                 fileInfo.innerHTML = `
                     <strong>Selected:</strong> ${file.name}<br>
-                    <small>Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB</small>
+                    <fmt:formatNumber value="${someDouble}" pattern="#0.00" />
                 `;
                 preview.appendChild(fileInfo);
                 
