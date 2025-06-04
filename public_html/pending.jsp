@@ -109,7 +109,7 @@
                         <%--<c:choose>
                             <c:when test="${sessionScope.role == 'Admin' || sessionScope.role == 'Maintenance'}">--%>
                                 <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal">
-                                    <i class="bi bi-plus-lg"></i> Make a Maintenance
+                                    <i class="bi bi-plus-lg"></i> Schedule Maintenance
                                 </button>
                             <%--</c:when>
                             <c:otherwise>
@@ -322,7 +322,7 @@
         <form action="addmaintenancecontroller" method="post">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addMaintenanceModalLabel">Add Maintenance Record</h5>
+                    <h5 class="modal-title" id="addMaintenanceModalLabel">Schedule Maintenance</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

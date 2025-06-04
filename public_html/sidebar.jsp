@@ -112,18 +112,18 @@
              <c:if test="${sessionScope.role == 'Admin'}">
                 <div class="maintenance-container">
                     <div class="maintenance-header">
-                        <img src="resources/images/icons/maintenance.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                        <span>Maintenance</span>
+                        <img src="resources/images/icons/build.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                        <span>Maintenance Management</span>
                         <i class="fas fa-chevron-down ms-auto"></i>
                     </div>
                     <div class="maintenance-items">
-                        <a href="itemType" class="${page == 'itemType' ? 'active' : ''}">
+                        <a href="itemType" class="${page == 'itemType' ? 'active' : ''}p-2 ">
                             <span class=" fs-6">Item Types</span>
                         </a>
-                        <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}">
+                        <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}p-2 ">
                             <span class="">Item Categories</span>
                         </a>
-                        <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}">
+                        <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}p-2">
                             <span class="">Automated Scheduling</span>
                         </a>
                         
@@ -153,7 +153,7 @@
                 Reports
             </a>
             <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
-                <img src="resources/images/icons/user.svg" alt="User" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                <img src="resources/images/icons/manage-users.svg" alt="User" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Users
             </a>
             <!--<a href="mapView" class="${page == 'mapView' ? 'active' : ''}">
