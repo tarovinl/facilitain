@@ -57,6 +57,25 @@
             border-color: #28a745;
             background-color: #f8f9fa;
         }
+
+        .character-counter {
+            font-size: 0.875rem;
+            color: #6c757d;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .character-counter.warning {
+            color: #ffc107;
+        }
+
+        .character-counter.danger {
+            color: #dc3545;
+        }
+
+        .form-control.invalid {
+            border-color: #dc3545;
+        }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -137,17 +156,18 @@
                 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="quotationDescription" class="form-label">Quotation Description</label>
-                        <textarea class="form-control" name="description" id="quotationDescription" rows="3" required></textarea>
+                        <label for="quotationDescription" class="form-label">Quotation Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="description" id="quotationDescription" rows="3" maxlength="500" required></textarea>
+                        <div class="character-counter" id="characterCounter">0 / 500 characters</div>
                     </div>
                     
                     <!-- File Upload Section -->
                     <div class="row">
                         <div class="col-md-6">
                             <div class="file-upload-container" id="fileContainer1">
-                                <label for="quotationFile1" class="form-label">Upload File 1 (Required)</label>
+                                <label for="quotationFile1" class="form-label">Upload File 1 (Optional)</label>
                                 <input class="form-control" type="file" name="quotationFile1" id="quotationFile1" 
-                                       accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff" required>
+                                       accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff">
                                 <small class="text-muted">Max size: 10MB. Supported: PDF, Images</small>
                                 <div id="file1Preview" class="mt-2"></div>
                             </div>
@@ -180,6 +200,32 @@
 <script>
     // File size validation (10MB)
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+    const MAX_DESCRIPTION_LENGTH = 500;
+    
+    // Character counter functionality
+    function setupCharacterCounter() {
+        const textarea = document.getElementById('quotationDescription');
+        const counter = document.getElementById('characterCounter');
+        
+        textarea.addEventListener('input', function() {
+            const currentLength = textarea.value.length;
+            const remaining = MAX_DESCRIPTION_LENGTH - currentLength;
+            
+            // Update counter text
+            counter.textContent = `${currentLength} / ${MAX_DESCRIPTION_LENGTH} characters`;
+            
+            // Update counter styling based on character count
+            counter.classList.remove('warning', 'danger');
+            textarea.classList.remove('invalid');
+            
+            if (currentLength > MAX_DESCRIPTION_LENGTH) {
+                counter.classList.add('danger');
+                textarea.classList.add('invalid');
+            } else if (currentLength > MAX_DESCRIPTION_LENGTH * 0.8) {
+                counter.classList.add('warning');
+            }
+        });
+    }
     
     // File preview and validation
     function setupFileInput(inputId, previewId) {
@@ -207,7 +253,7 @@
                 fileInfo.className = 'alert alert-info';
                 fileInfo.innerHTML = `
                     <strong>Selected:</strong> ${file.name}<br>
-                    <fmt:formatNumber value="${someDouble}" pattern="#0.00" />
+                    <small>Size: ${(file.size / 1024 / 1024).toFixed(2)} MB</small>
                 `;
                 preview.appendChild(fileInfo);
                 
@@ -227,9 +273,10 @@
         });
     }
     
-    // Initialize file inputs
+    // Initialize file inputs and character counter
     setupFileInput('quotationFile1', 'file1Preview');
     setupFileInput('quotationFile2', 'file2Preview');
+    setupCharacterCounter();
     
     // Drag and drop functionality
     function setupDragDrop(containerId, inputId) {
@@ -268,28 +315,34 @@
         console.log("Submitting form with itemID:", hiddenItemId);
 
         // Validate required fields
-        const description = document.getElementById('quotationDescription').value;
-        const file1 = document.getElementById('quotationFile1').files[0];
+        const description = document.getElementById('quotationDescription').value.trim();
         
-        if (!description.trim()) {
+        // Validate description
+        if (!description) {
             Swal.fire({
                 title: 'Missing Description',
                 text: 'Please enter a quotation description',
                 icon: 'warning'
             });
+            document.getElementById('quotationDescription').focus();
             return;
         }
         
-        if (!file1) {
+        // Validate description length
+        if (description.length > MAX_DESCRIPTION_LENGTH) {
             Swal.fire({
-                title: 'Missing File',
-                text: 'Please select at least one file to upload',
+                title: 'Description Too Long',
+                text: `Description must be ${MAX_DESCRIPTION_LENGTH} characters or less. Current length: ${description.length}`,
                 icon: 'warning'
             });
+            document.getElementById('quotationDescription').focus();
             return;
         }
         
-        // Validate file sizes
+        // Validate file sizes (only if files are selected)
+        const file1 = document.getElementById('quotationFile1').files[0];
+        const file2 = document.getElementById('quotationFile2').files[0];
+        
         if (file1 && file1.size > MAX_FILE_SIZE) {
             Swal.fire({
                 title: 'File Too Large',
@@ -299,7 +352,6 @@
             return;
         }
         
-        const file2 = document.getElementById('quotationFile2').files[0];
         if (file2 && file2.size > MAX_FILE_SIZE) {
             Swal.fire({
                 title: 'File Too Large',
@@ -312,7 +364,7 @@
         // Show loading
         Swal.fire({
             title: 'Uploading...',
-            text: 'Please wait while your files are being uploaded',
+            text: 'Please wait while your quotation is being saved',
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
@@ -339,11 +391,18 @@
         }
         
         // Clear previous form data
-        document.getElementById('quotationDescription').value = '';
+        const textarea = document.getElementById('quotationDescription');
+        textarea.value = '';
         document.getElementById('quotationFile1').value = '';
         document.getElementById('quotationFile2').value = '';
         document.getElementById('file1Preview').innerHTML = '';
         document.getElementById('file2Preview').innerHTML = '';
+        
+        // Reset character counter
+        const counter = document.getElementById('characterCounter');
+        counter.textContent = '0 / 500 characters';
+        counter.classList.remove('warning', 'danger');
+        textarea.classList.remove('invalid');
     });
 
     $(document).on('hidden.bs.modal', function () {
