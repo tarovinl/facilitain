@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import sample.model.Quotation;
 import sample.model.PooledConnection;
 
-@WebServlet(name = "quotationdisplaycontroller", urlPatterns = { "/quotationdisplaycontroller", "/quotationImage" })
+@WebServlet(name = "quotationdisplaycontroller", urlPatterns = { "/quotationdisplaycontroller", "/quotationFile" })
 public class quotationdisplaycontroller extends HttpServlet {
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
 
@@ -24,9 +24,9 @@ public class quotationdisplaycontroller extends HttpServlet {
                                                                                           IOException {
         String path = request.getServletPath();
 
-        if (path.equals("/quotationImage")) {
-            // Handle the image view request
-            serveQuotationImage(request, response);
+        if (path.equals("/quotationFile")) {
+            // Handle the file view request
+            serveQuotationFile(request, response);
         } else {
             // Handle the default request to display quotations
             displayQuotations(request, response);
@@ -80,7 +80,7 @@ public class quotationdisplaycontroller extends HttpServlet {
         String itemIDParam = request.getParameter("itemID");
         
         if (itemIDParam == null || itemIDParam.isEmpty()) {
-            response.getWriter().write("<tr><td colspan='5'>Invalid item ID.</td></tr>");
+            response.getWriter().write("<tr><td colspan='6'>Invalid item ID.</td></tr>");
             return;
         }
 
@@ -101,9 +101,21 @@ public class quotationdisplaycontroller extends HttpServlet {
                     htmlContent.append("<td>").append(quotation.getDescription()).append("</td>");
                     htmlContent.append("<td>").append(quotation.getDateUploaded()).append("</td>");
                     
-                    // Add the "View" button
-                    htmlContent.append("<td><a href='quotationImage?quotationId=").append(quotation.getQuotationId())
-                              .append("' target='_blank' class='btn btn-primary btn-sm' title='View Quotation Image'>View</a></td>");
+                    // Add file view buttons
+                    htmlContent.append("<td>");
+                    if (quotation.getQuotationFile1() != null) {
+                        htmlContent.append("<a href='quotationFile?quotationId=").append(quotation.getQuotationId())
+                                  .append("&fileNum=1' target='_blank' class='btn btn-primary btn-sm me-1' title='View File 1'>")
+                                  .append(quotation.getFile1Name() != null ? quotation.getFile1Name() : "File 1")
+                                  .append("</a>");
+                    }
+                    if (quotation.getQuotationFile2() != null) {
+                        htmlContent.append("<a href='quotationFile?quotationId=").append(quotation.getQuotationId())
+                                  .append("&fileNum=2' target='_blank' class='btn btn-info btn-sm' title='View File 2'>")
+                                  .append(quotation.getFile2Name() != null ? quotation.getFile2Name() : "File 2")
+                                  .append("</a>");
+                    }
+                    htmlContent.append("</td>");
                     
                     // Add the "Archive" button inside a form
                     htmlContent.append("<td>");
@@ -116,7 +128,7 @@ public class quotationdisplaycontroller extends HttpServlet {
                     htmlContent.append("</tr>");
                 }
             } else {
-                htmlContent.append("<tr><td colspan='5'>No quotations available for this item.</td></tr>");
+                htmlContent.append("<tr><td colspan='6'>No quotations available for this item.</td></tr>");
             }
 
             response.setContentType("text/html");
@@ -124,14 +136,16 @@ public class quotationdisplaycontroller extends HttpServlet {
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid itemID format: " + itemIDParam);
-            response.getWriter().write("<tr><td colspan='5'>Invalid item ID format.</td></tr>");
+            response.getWriter().write("<tr><td colspan='6'>Invalid item ID format.</td></tr>");
         }
     }
 
-    // New method to fetch quotations directly from database
+    // Updated method to fetch quotations with file information
     private ArrayList<Quotation> fetchQuotationsFromDatabase(int itemID) {
         ArrayList<Quotation> quotations = new ArrayList<>();
-        String query = "SELECT QUOTATION_ID, ITEM_ID, DESCRIPTION, DATE_UPLOADED, QUOTATION_IMAGE, ARCHIVED_FLAG " +
+        String query = "SELECT QUOTATION_ID, ITEM_ID, DESCRIPTION, DATE_UPLOADED, " +
+                      "QUOTATION_FILE1, QUOTATION_FILE2, FILE1_NAME, FILE2_NAME, " +
+                      "FILE1_TYPE, FILE2_TYPE, ARCHIVED_FLAG " +
                       "FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS WHERE ITEM_ID = ? AND (ARCHIVED_FLAG IS NULL OR ARCHIVED_FLAG = 1)";
 
         try (Connection conn = PooledConnection.getConnection();
@@ -146,7 +160,14 @@ public class quotationdisplaycontroller extends HttpServlet {
                     quotation.setItemId(rs.getInt("ITEM_ID"));
                     quotation.setDescription(rs.getString("DESCRIPTION"));
                     quotation.setDateUploaded(rs.getTimestamp("DATE_UPLOADED"));
-                    quotation.setQuotationImage(rs.getBytes("QUOTATION_IMAGE"));
+                    
+                    // Set file data
+                    quotation.setQuotationFile1(rs.getBytes("QUOTATION_FILE1"));
+                    quotation.setQuotationFile2(rs.getBytes("QUOTATION_FILE2"));
+                    quotation.setFile1Name(rs.getString("FILE1_NAME"));
+                    quotation.setFile2Name(rs.getString("FILE2_NAME"));
+                    quotation.setFile1Type(rs.getString("FILE1_TYPE"));
+                    quotation.setFile2Type(rs.getString("FILE2_TYPE"));
                     
                     // Handle ARCHIVED_FLAG (might be null)
                     int archiveFlag = rs.getInt("ARCHIVED_FLAG");
@@ -169,40 +190,90 @@ public class quotationdisplaycontroller extends HttpServlet {
         return quotations;
     }
 
-    private void serveQuotationImage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void serveQuotationFile(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String quotationIdParam = request.getParameter("quotationId");
+        String fileNumParam = request.getParameter("fileNum");
 
         if (quotationIdParam == null || quotationIdParam.isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Quotation ID is required");
             return;
         }
+        
+        if (fileNumParam == null || fileNumParam.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "File number is required");
+            return;
+        }
 
         try {
             int quotationId = Integer.parseInt(quotationIdParam);
+            int fileNum = Integer.parseInt(fileNumParam);
             
-            // Fetch the specific quotation image from database
-            byte[] imageBytes = fetchQuotationImageFromDatabase(quotationId);
+            if (fileNum != 1 && fileNum != 2) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "File number must be 1 or 2");
+                return;
+            }
             
-            if (imageBytes == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "No image found for this quotation");
+            // Fetch the specific quotation file from database
+            FileInfo fileInfo = fetchQuotationFileFromDatabase(quotationId, fileNum);
+            
+            if (fileInfo == null || fileInfo.fileData == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "No file found for this quotation");
                 return;
             }
 
-            // Set the content type and write the image bytes to the response
-            response.setContentType("image/jpeg"); // or determine type dynamically
-            response.setContentLength(imageBytes.length);
+            // Set the content type based on the stored file type
+            String contentType = fileInfo.contentType;
+            if (contentType == null || contentType.isEmpty()) {
+                // Default content type based on file extension if not stored
+                if (fileInfo.fileName != null) {
+                    if (fileInfo.fileName.toLowerCase().endsWith(".pdf")) {
+                        contentType = "application/pdf";
+                    } else {
+                        contentType = "image/jpeg"; // Default for images
+                    }
+                } else {
+                    contentType = "application/octet-stream";
+                }
+            }
+            
+            response.setContentType(contentType);
+            response.setContentLength(fileInfo.fileData.length);
+            
+            // Set filename for download
+            if (fileInfo.fileName != null) {
+                response.setHeader("Content-Disposition", "inline; filename=\"" + fileInfo.fileName + "\"");
+            }
+            
             OutputStream out = response.getOutputStream();
-            out.write(imageBytes);
+            out.write(fileInfo.fileData);
             out.flush();
             
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid Quotation ID format");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid Quotation ID or File Number format");
         }
     }
     
-    // New method to fetch quotation image from database
-    private byte[] fetchQuotationImageFromDatabase(int quotationId) {
-        String query = "SELECT QUOTATION_IMAGE FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS WHERE QUOTATION_ID = ?";
+    // Helper class to hold file information
+    private static class FileInfo {
+        byte[] fileData;
+        String fileName;
+        String contentType;
+        
+        FileInfo(byte[] fileData, String fileName, String contentType) {
+            this.fileData = fileData;
+            this.fileName = fileName;
+            this.contentType = contentType;
+        }
+    }
+    
+    // Updated method to fetch quotation file from database
+    private FileInfo fetchQuotationFileFromDatabase(int quotationId, int fileNum) {
+        String columnName = (fileNum == 1) ? "QUOTATION_FILE1" : "QUOTATION_FILE2";
+        String nameColumn = (fileNum == 1) ? "FILE1_NAME" : "FILE2_NAME";
+        String typeColumn = (fileNum == 1) ? "FILE1_TYPE" : "FILE2_TYPE";
+        
+        String query = "SELECT " + columnName + ", " + nameColumn + ", " + typeColumn + 
+                      " FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS WHERE QUOTATION_ID = ?";
         
         try (Connection conn = PooledConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -211,12 +282,15 @@ public class quotationdisplaycontroller extends HttpServlet {
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getBytes("QUOTATION_IMAGE");
+                    byte[] fileData = rs.getBytes(columnName);
+                    String fileName = rs.getString(nameColumn);
+                    String contentType = rs.getString(typeColumn);
+                    return new FileInfo(fileData, fileName, contentType);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error fetching quotation image: " + e.getMessage());
+            System.out.println("Error fetching quotation file: " + e.getMessage());
         }
         
         return null;
