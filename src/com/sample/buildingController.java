@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-
 import sample.model.PooledConnection;
 
 @WebServlet("/buildingController")
@@ -36,73 +35,76 @@ public class buildingController extends HttpServlet {
         System.out.println("locDescription: " + locDescription);
         System.out.println("File: " + filePart);
 
-    
-        // Check for null or empty parameters
-//        if (isNullOrEmpty(locId) || isNullOrEmpty(locName) || isNullOrEmpty(locDescription)) {
-//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters");
-//            return;
-//        }
-
         try (Connection conn = PooledConnection.getConnection()) {
             // Update C##FMO_ADM.FMO_ITEM_LOCATIONS table
-                        String sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ?, IMAGE = ? WHERE ITEM_LOC_ID = ?";
-                        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                            stmt.setString(1, locName);
-                            stmt.setString(2, locDescription);
+            String sql;
+            
+            // Check if a new image is being uploaded
+            boolean hasNewImage = (filePart != null && filePart.getSize() > 0);
+            
+            if (hasNewImage) {
+                // Update with new image
+                sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ?, IMAGE = ? WHERE ITEM_LOC_ID = ?";
+            } else {
+                // Update without changing the image
+                sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ? WHERE ITEM_LOC_ID = ?";
+            }
+            
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, locName);
+                stmt.setString(2, locDescription);
+                
+                if (hasNewImage) {
+                    InputStream inputStream = filePart.getInputStream();
+                    stmt.setBinaryStream(3, inputStream, (int) filePart.getSize());
+                    stmt.setInt(4, Integer.parseInt(locId));
+                } else {
+                    stmt.setInt(3, Integer.parseInt(locId));
+                }
 
-                            // If an image file is uploaded, set the Blob parameter, else set it to null
-                            if (filePart != null && filePart.getSize() > 0) {
-                                InputStream inputStream = filePart.getInputStream();
-                                stmt.setBinaryStream(3, inputStream, (int) filePart.getSize());
-                            } else {
-                                stmt.setNull(3, java.sql.Types.BLOB);
-                            }
+                int rowsUpdated = stmt.executeUpdate();
+                if (rowsUpdated > 0) {
+                    System.out.println("Updated FMO_ITEM_LOCATIONS successfully");
 
-                            stmt.setInt(4, Integer.parseInt(locId));
+                    // Now update or insert into C##FMO_ADM.FMO_ITEM_LOC_MAP table
+                    if (!isNullOrEmpty(mapCoord)) {
+                        String[] coords = mapCoord.split(",");
+                        if (coords.length == 2) {
+                            String latitude = coords[0].trim();
+                            String longitude = coords[1].trim();
 
-                            int rowsUpdated = stmt.executeUpdate();
-                            if (rowsUpdated > 0) {
-                                System.out.println("Updated FMO_ITEM_LOCATIONS successfully");
+                            String sqlMapUpdate = "UPDATE C##FMO_ADM.FMO_ITEM_LOC_MAP SET LATITUDE = ?, LONGITUDE = ? WHERE ITEM_LOC_ID = ?";
+                            try (PreparedStatement stmtMapUpdate = conn.prepareStatement(sqlMapUpdate)) {
+                                stmtMapUpdate.setString(1, latitude);
+                                stmtMapUpdate.setString(2, longitude);
+                                stmtMapUpdate.setInt(3, Integer.parseInt(locId));
 
-                                // Now update or insert into C##FMO_ADM.FMO_ITEM_LOC_MAP table
-                                if (!isNullOrEmpty(mapCoord)) {
-                                    String[] coords = mapCoord.split(",");
-                                    if (coords.length == 2) {
-                                        String latitude = coords[0].trim();
-                                        String longitude = coords[1].trim();
+                                int mapRowsUpdated = stmtMapUpdate.executeUpdate();
+                                if (mapRowsUpdated == 0) {
+                                    // If no rows updated, insert a new record
+                                    String sqlMapInsert = "INSERT INTO C##FMO_ADM.FMO_ITEM_LOC_MAP (ITEM_LOC_ID, LATITUDE, LONGITUDE) VALUES (?, ?, ?)";
+                                    try (PreparedStatement stmtMapInsert = conn.prepareStatement(sqlMapInsert)) {
+                                        stmtMapInsert.setInt(1, Integer.parseInt(locId));
+                                        stmtMapInsert.setString(2, latitude);
+                                        stmtMapInsert.setString(3, longitude);
 
-                                        String sqlMapUpdate = "UPDATE C##FMO_ADM.FMO_ITEM_LOC_MAP SET LATITUDE = ?, LONGITUDE = ? WHERE ITEM_LOC_ID = ?";
-                                        try (PreparedStatement stmtMapUpdate = conn.prepareStatement(sqlMapUpdate)) {
-                                            stmtMapUpdate.setString(1, latitude);
-                                            stmtMapUpdate.setString(2, longitude);
-                                            stmtMapUpdate.setInt(3, Integer.parseInt(locId));
-
-                                            int mapRowsUpdated = stmtMapUpdate.executeUpdate();
-                                            if (mapRowsUpdated == 0) {
-                                                // If no rows updated, insert a new record
-                                                String sqlMapInsert = "INSERT INTO C##FMO_ADM.FMO_ITEM_LOC_MAP (ITEM_LOC_ID, LATITUDE, LONGITUDE) VALUES (?, ?, ?)";
-                                                try (PreparedStatement stmtMapInsert = conn.prepareStatement(sqlMapInsert)) {
-                                                    stmtMapInsert.setInt(1, Integer.parseInt(locId));
-                                                    stmtMapInsert.setString(2, latitude);
-                                                    stmtMapInsert.setString(3, longitude);
-
-                                                    stmtMapInsert.executeUpdate();
-                                                    System.out.println("Inserted new record into FMO_ITEM_LOC_MAP successfully");
-                                                }
-                                            } else {
-                                                System.out.println("Updated FMO_ITEM_LOC_MAP successfully");
-                                            }
-                                        }
+                                        stmtMapInsert.executeUpdate();
+                                        System.out.println("Inserted new record into FMO_ITEM_LOC_MAP successfully");
                                     }
+                                } else {
+                                    System.out.println("Updated FMO_ITEM_LOC_MAP successfully");
                                 }
-                                
-                                action = "building_modify";
-
-                                response.sendRedirect("buildingDashboard?locID=" + locId + "/edit&action=" + action + "&status=" + status);
-                            } else {
-                                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Location not found in FMO_ITEM_LOCATIONS");
                             }
                         }
+                    }
+                    
+                    action = "building_modify";
+
+                    response.sendRedirect("buildingDashboard?locID=" + locId + "/edit&action=" + action + "&status=" + status);
+                } else {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Location not found in FMO_ITEM_LOCATIONS");
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error saving data");

@@ -80,7 +80,6 @@
                 <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
                     <div class="card">
                         <div class="card-body">
-                            <img src="resources/images/FMO-Logo.png" alt="FMO Logo" class="img-fluid d-block mx-auto" style="max-height: 10rem;">
                             <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
                             <h3 class="text-center p-1 montserrat-bold">Sign In</h3>
                             <p class="p-2">To access MyUSTe Portal, please make sure you meet the following requirements:</p>
