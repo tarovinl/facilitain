@@ -157,8 +157,8 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="quotationDescription" class="form-label">Quotation Description <span class="text-danger">*</span></label>
-                        <textarea class="form-control" name="description" id="quotationDescription" rows="3" maxlength="500" required></textarea>
-                        <div class="character-counter" id="characterCounter">0 / 500 characters</div>
+                        <textarea class="form-control" name="description" id="quotationDescription" rows="3" maxlength="255" required></textarea>
+                        <div class="character-counter" id="characterCounter">0 / 255 characters</div>
                     </div>
                     
                     <!-- File Upload Section -->
@@ -200,7 +200,7 @@
 <script>
     // File size validation (10MB)
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
-    const MAX_DESCRIPTION_LENGTH = 500;
+    const MAX_DESCRIPTION_LENGTH = 255;
     
     // Character counter functionality
     function setupCharacterCounter() {
@@ -400,7 +400,7 @@
         
         // Reset character counter
         const counter = document.getElementById('characterCounter');
-        counter.textContent = '0 / 500 characters';
+        counter.textContent = '0 / 255 characters';
         counter.classList.remove('warning', 'danger');
         textarea.classList.remove('invalid');
     });
