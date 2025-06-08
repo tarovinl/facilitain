@@ -15,7 +15,7 @@ public class Notification {
     private String roomNo;
     private String floorNo;
     private String itemName;
-    private List<String> maintenanceItems; // For grouped maintenance notifications
+    private List<String> maintenanceItems; 
 
     // Constructor for Reports
     public Notification(int notificationId, String message, String type, boolean isRead, Timestamp createdAt, String locName, int itemLocId) {
