@@ -7,12 +7,38 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
-        .modal-backdrop {
-            z-index: 1040;
-        }
-        .modal {
-            z-index: 1050;
-        }
+       
+        body, h1, h2, h3, h4,h5, th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+ h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+       
+       .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
+
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
+
+            .buttonsBack:hover {
+                text-decoration: underline !important;
+                }
+            .buildingManage:hover {
+                text-decoration: underline !important;
+                }
+}
     </style>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -32,7 +58,7 @@
             <div class="modal-body">
                 <div class="container mt-2 mb-2">
                     <!-- Upload Quotation Button -->
-                    <button type="button" class="btn btn-warning mb-3" data-bs-toggle="modal" data-bs-target="#uploadQuotationModal">
+                    <button type="button" style="background-color: #fccc4c;" class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" data-bs-toggle="modal" data-bs-target="#uploadQuotationModal">
                         Upload Quotation
                     </button>
 
@@ -81,13 +107,18 @@
  <!-- Upload Quotation Modal -->
 <div class="modal fade" id="uploadQuotationModal" tabindex="-1" aria-labelledby="uploadQuotationLabel" aria-hidden="true">
     <div class="modal-dialog">
+     <form id="uploadQuotationForm" method="post" enctype="multipart/form-data" action="quotationcontroller" >
         <div class="modal-content">
-          <form id="uploadQuotationForm" method="post" enctype="multipart/form-data" action="quotationcontroller" >
+         <div class="modal-header">
+                    <h5 class="modal-title" id="addBuildingModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Upload Quotation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+         
             <input type="hidden" name="locID" value="${locID}">
             <input type="hidden" name="floorName" value="${floorName}">
     <!-- Hidden field to store Item ID -->
     <input type="hidden" name="itemID" id="uploadHiddenItemId">
-    
+    <div class="modal-body">
     <div class="mb-3">
         <label for="quotationDescription" class="form-label">Quotation Description</label>
         <textarea class="form-control" name="description" id="quotationDescription" rows="3" required></textarea>
@@ -96,16 +127,25 @@
         <label for="quotationFile" class="form-label">Upload File</label>
         <input class="form-control" type="file" name="quotationFile" id="quotationFile" accept=".pdf, image/*" required>
     </div>
-    
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="submitQuotationForm()">Upload</button>
     </div>
-</form>
+     <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasLight', sans-serif;">
+                    Cancel
+                    </button>
+                   <button type="button" class="btn btn-success" onclick="submitQuotationForm()" style="font-family: 'NeueHaasMedium', sans-serif;">
+                    Upload
+                    </button>
+
+                </div>
+  
+    
+
 
 
         </div>
+         </form>
     </div>
+   
 </form>
 
 </div>

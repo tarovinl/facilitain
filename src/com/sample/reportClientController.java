@@ -2,6 +2,7 @@ package com.sample;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +19,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
+import com.google.gson.Gson;
 
 import sample.model.PooledConnection;
 
@@ -29,6 +32,19 @@ public class reportClientController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        String action = request.getParameter("action");
+        
+        // Handle AJAX requests for dynamic dropdowns
+        if ("getFloors".equals(action)) {
+            getFloorsByLocation(request, response);
+            return;
+        } else if ("getRooms".equals(action)) {
+            getRoomsByLocationAndFloor(request, response);
+            return;
+        }
+        
+        // Regular page load - get locations and equipment
         List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
         List<Map.Entry<Integer, String>> equipmentList = new ArrayList<>();
 
@@ -68,14 +84,92 @@ public class reportClientController extends HttpServlet {
         request.getRequestDispatcher("/reportsClient.jsp").forward(request, response);
     }
     
-
-   
-
+    private void getFloorsByLocation(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        String locationId = request.getParameter("locationId");
+        List<String> floors = new ArrayList<>();
+        
+        if (locationId != null && !locationId.isEmpty()) {
+            String floorQuery = "SELECT DISTINCT NAME FROM C##FMO_ADM.FMO_ITEM_LOC_FLOORS WHERE ITEM_LOC_ID = ? AND ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2 ORDER BY NAME";
+            
+            try (Connection connection = PooledConnection.getConnection();
+                 PreparedStatement stmt = connection.prepareStatement(floorQuery)) {
+                
+                stmt.setInt(1, Integer.parseInt(locationId));
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        floors.add(rs.getString("NAME"));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        Gson gson = new Gson();
+        out.print(gson.toJson(floors));
+        out.flush();
+    }
+    
+    private void getRoomsByLocationAndFloor(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        String locationId = request.getParameter("locationId");
+        String floorNo = request.getParameter("floorNo");
+        List<String> rooms = new ArrayList<>();
+        
+        if (locationId != null && !locationId.isEmpty() && floorNo != null && !floorNo.isEmpty()) {
+            String roomQuery = "SELECT DISTINCT ROOM_NO FROM C##FMO_ADM.FMO_ITEMS WHERE LOCATION_ID = ? AND FLOOR_NO = ? AND ROOM_NO IS NOT NULL AND ITEM_STAT_ID != 2 ORDER BY ROOM_NO";
+            
+            try (Connection connection = PooledConnection.getConnection();
+                 PreparedStatement stmt = connection.prepareStatement(roomQuery)) {
+                
+                stmt.setInt(1, Integer.parseInt(locationId));
+                stmt.setString(2, floorNo);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        String roomNo = rs.getString("ROOM_NO");
+                        if (roomNo != null && !roomNo.trim().isEmpty()) {
+                            rooms.add(roomNo);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        Gson gson = new Gson();
+        out.print(gson.toJson(rooms));
+        out.flush();
+    }
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
+
+        // Get session for user email
+        HttpSession session = request.getSession(false);
+        String insertedBy = null;
+        
+        // Get email from session if available
+        if (session != null && session.getAttribute("email") != null) {
+            insertedBy = (String) session.getAttribute("email");
+        }
+        
+        // If no email found in session, use a default message
+        if (insertedBy == null || insertedBy.trim().isEmpty()) {
+            insertedBy = "No email provided";
+        }
 
         // Regular form submission logic
         String equipment = request.getParameter("equipment");
@@ -88,10 +182,6 @@ public class reportClientController extends HttpServlet {
         String issue = request.getParameter("issue");
         Part imagePart = request.getPart("imageUpload");
 
-        String insertedBy = request.getParameter("email");
-        if (insertedBy == null || insertedBy.trim().isEmpty()) {
-            insertedBy = "No email provided";
-        }
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
         InputStream inputStream = null;
@@ -159,5 +249,4 @@ public class reportClientController extends HttpServlet {
         // Add a unique suffix using the reportId to ensure uniqueness
         return equipmentAbbr + "-" + floorAbbr + "-" + roomAbbr + "-" + reportId;
     }
-
 }

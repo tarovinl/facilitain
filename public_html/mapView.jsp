@@ -22,11 +22,57 @@
             display: none !important; /* Overrides conflicting styles */
         }
         .map-container, #map {
-            height: 90vh !important; /* Set the map to take the full viewport height */
-            display: flex !important;
-            align-items: center !important;
-        }
+         height: 300px !important;
+        display: flex !important;
+        align-items: center !important;
+}
     }
+    
+     .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+            }
+
+            .hover-outline:hover {
+                background-color: #1C1C1C !important;
+                color: #f2f2f2 !important;
+                border: 1px solid #f2f2f2 !important;
+            }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+            }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+            }
+            
+            .leaflet-popup-content a {
+  color: #1C1C1C;              /* Same as your regular text */
+  text-decoration: none;      /* Remove underline */
+  font-family: 'NeueHaasMedium', sans-serif;
+  font-size:20px;
+}
+
+.leaflet-popup-content a:hover {
+  color: #1C1C1C;              /* Prevent blue on hover */
+  text-decoration: underline;      /* Prevent underline on hover */
+}
+
+
+.leaflet-popup-content-wrapper {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.leaflet-popup-tip {
+  background-color: #fff8e1;
+}
+
+.popup-description{
+    font-family: 'NeueHaasLight', sans-serif;
+    font-size:15px;
+}
     </style>
      
     </head>
@@ -35,18 +81,20 @@
     <div class="row min-vh-100">
         <jsp:include page="sidebar.jsp"/>
     <div class="col-md-10">
-        <div class="container mcontainer">
-            <div class="d-flex justify-content-between align-items-center mb-2 mt-2 map-header">
+        <div class="container-fluid mcontainer">
+            <div class="d-flex justify-content-between align-items-center pt-4 pb-4 map-header">
                 <div>
-                    <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
+                     <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
                 </div>
-                <a href="./homepage" class="btn btn-warning">
+                <a href="./homepage" class="align-items-center d-flex px-3 py-2 rounded-1 hover-outline text-dark text-decoration-none" style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
+                     <img src="resources/images/icons/grid.svg" alt="default" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                     Default View
                 </a>
             </div>
-            <div class="row mt-2 mb-2 map-container">
-                <div id="map" style="width: 100%; height: 100%; border-radius:5px;"></div>
-            </div>               
+            <div class="row mt-2 mb-2 map-container" style="margin: 0; padding: 0;">
+            <div id="map" style="width: 100%; height: 300px; border-radius: 5px;"></div>
+            </div>
+          
         </div>
     </div>
     </div>
@@ -82,7 +130,25 @@
     <c:forEach var="mapItem" items="${FMO_MAP_LIST}">
     L.marker([${mapItem.latitude}, ${mapItem.longitude}], { icon: customIcon }) //csen
         .addTo(map)
-        .bindPopup('<a href="./buildingDashboard?locID=${mapItem.itemLocId}" target="_blank"><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locName}</c:if></c:forEach></a>'); // Static link
+        .bindPopup(`
+    <div>
+        <a href="./buildingDashboard?locID=${mapItem.itemLocId}" target="_blank" class="popup-link">
+            <c:forEach var="locs" items="${locations}">
+                <c:if test="${locs.itemLocId == mapItem.itemLocId}">
+                    ${locs.locName}
+                </c:if>
+            </c:forEach>
+        </a>
+        <div class="popup-description" style="margin-top: 4px;">
+            <c:forEach var="locs" items="${locations}">
+                <c:if test="${locs.itemLocId == mapItem.itemLocId}">
+                    ${locs.locDescription}
+                </c:if>
+            </c:forEach>
+        </div>
+    </div>
+`);
+ // Static link
     </c:forEach>   
         
     window.addEventListener('resize', resizeMap);
