@@ -418,12 +418,12 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
           </div>
           
-<div class="container-fluid">
-  <div class="row mb-4">
-    <div class="col-12 col-lg-8 mb-3">
+<div class="container-fluid d-flex flex-column" style="min-height: 85vh;">
+  <div class="row flex-grow-1" style="min-height: 40vh;">
+    <div class="col-12 col-lg-8 vh-25 align-items-stretch mb-4">
         <div class="buildingBanner rounded-4" style="margin-top: 14px; background-image: 
                                     linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
-                                    url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center; height: 264px; display: flex; flex-direction:column;justify-content: flex-end;">
+                                    url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center; height: 80%; display: flex; flex-direction:column;justify-content: flex-end;">
             <!--<div class="statusDiv">
                 <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
             </div>-->
@@ -449,20 +449,20 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
     </div>
-    <div class="col-12 col-lg-4 mb-3" style="margin-top: 14px;">
-      	    <div class="diagram">
+    <div class="col-12 col-lg-4 vh-25 align-items-stretch mb-4" style="margin-top: 14px;">
+      	    <div class="diagram" style="height: 83%;">
               <div class="diagramTitle">
                 <h4 style=" font-family: NeueHaasMedium, sans-serif;">Repairs per Month</h4>
               </div>
-              <div style="background: white; height: 220px; border-radius:15px;">
+              <div style="background: white; height: 240px; border-radius:15px;">
                 <div id="repairNoChart" style="height: 100%; width: 100%; overflow: hidden; border-radius:15px;"></div>
               </div>
             </div>
     </div>
   </div>
-  <div class="row mt-4" style="margin-top: 100px;">
-    <div class="col-12 col-lg-4 mb-3">
-      <div class="diagram">
+  <div class="row flex-grow-1" style="min-height: 40vh;">
+    <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch">
+      <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
                 <h4 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h4>
               </div>
@@ -510,8 +510,8 @@ document.addEventListener('DOMContentLoaded', function() {
               </div>
             </div>
     </div>
-    <div class="col-12 col-lg-4 mb-3">
-      <div class="diagram">
+    <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch">
+      <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
                 <h4 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h4>
               </div>
@@ -555,8 +555,8 @@ document.addEventListener('DOMContentLoaded', function() {
               </div>
             </div>
     </div>
-    <div class="col-12 col-lg-4 mb-3" style="border-radius:15px;">
-      <div class="diagram">
+    <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch" style="border-radius:15px;">
+      <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
                 <h4 style=" font-family: NeueHaasMedium, sans-serif;">Pending Maintenance</h4>
               </div>
