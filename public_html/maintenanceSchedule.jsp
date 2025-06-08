@@ -210,7 +210,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasLight', sans-serif;" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-success">Save Changes</button>
                             </div>
                         </form>
