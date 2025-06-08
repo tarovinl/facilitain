@@ -48,6 +48,7 @@ import com.google.gson.Gson;
 import java.util.TreeSet;
 
 import sample.model.ItemUser;
+import sample.model.LocationStatus;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
                                                      "/calendar", "/settings", "/maintenanceSchedule", "/mapView", "/maintenancePage"})
@@ -89,6 +90,8 @@ public class mainController extends HttpServlet {
         ArrayList<Maps> listMap = new ArrayList<>();
         ArrayList<MaintAssign> listAssign = new ArrayList<>();
         ArrayList<ItemUser> listDUsers = new ArrayList<>();
+        
+        List<LocationStatus> locationStatuses = new ArrayList<>();
         
         List<String> months = new ArrayList<>();
                     months.add("January");
@@ -453,6 +456,38 @@ public class mainController extends HttpServlet {
                 filteredCategories.add(cat);
             }
         }
+        
+        for (Location loc : locations) {
+            int totalItems = 0;
+            int nonOptimalItems = 0;
+
+            for (Item item : listItem) {
+                if (item.getItemLID() == loc.getItemLocId()) {
+                    totalItems++;
+                    if (item.getItemMaintStat() != 1) {
+                        nonOptimalItems++;
+                    }
+                }
+            }
+
+            int status = 3; // Default to Optimal
+            if (totalItems > 0) {
+                double percentage = (double) nonOptimalItems / totalItems;
+
+                if (percentage <= 0.33) {
+                    status = 3; // Optimal
+                } else if (percentage <= 0.66) {
+                    status = 2; // Moderate
+                } else {
+                    status = 1; // Critical
+                }
+            }
+
+            LocationStatus locStatus = new LocationStatus();
+            locStatus.setLocation(loc);
+            locStatus.setStatusRating(status);
+            locationStatuses.add(locStatus);
+        }
 
         // Store locations in the request scope to pass to JSP
         request.setAttribute("locations", locations);
@@ -480,6 +515,8 @@ public class mainController extends HttpServlet {
         request.setAttribute("FMO_USERS", listDUsers);
         
         request.setAttribute("quotations", quotations); // per session
+        
+        request.setAttribute("FMO_LOCATION_STATUS_LIST", locationStatuses);
 
 
 //        SharedData.getInstance().setItemsList(listItem);

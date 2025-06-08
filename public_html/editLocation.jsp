@@ -398,7 +398,7 @@
           <input type="hidden" name="locID" value="1">
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-danger" data-dismiss="modal" style="font-family: 'NeueHaasLight', sans-serif;">Cancel</button>
+          <button type="button" class="btn btn-outline-danger" data-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
           <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save</button>
         </div>
       </div>

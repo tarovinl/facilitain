@@ -560,14 +560,12 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                                      data-itemhid="${item.itemID}">
                                                     History
                                                   </a>
-                                                  <!-- Archive Option -->
-                                                  <a class="dropdown-item"
+                                                  <!-- Archive Option data-target="#archiveEquipment" onclick="populateArchModal(this)"-->
+                                                  <a class="dropdown-item archive-maintenance-btn"
                                                      href="#"
                                                      data-toggle="modal"
-                                                     data-target="#archiveEquipment"
                                                      data-itemaid="${item.itemID}"
-                                                     data-itemaname="${item.itemName}"
-                                                     onclick="populateArchModal(this)">
+                                                     data-itemaname="${item.itemName}">
                                                     Archive
                                                   </a>
                                                 </div>
@@ -822,13 +820,11 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                                     History
                                                   </a>
                                                   <!-- Archive Option -->
-                                                  <a class="dropdown-item"
+                                                  <a class="dropdown-item archive-maintenance-btn"
                                                      href="#"
                                                      data-toggle="modal"
-                                                     data-target="#archiveEquipment"
                                                      data-itemaid="${item.itemID}"
-                                                     data-itemaname="${item.itemName}"
-                                                     onclick="populateArchModal(this)">
+                                                     data-itemaname="${item.itemName}">
                                                     Archive
                                                   </a>
                                                 </div>
@@ -1228,7 +1224,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
 
     
     <!--archive equipment modal-->
-<div class="modal fade" id="archiveEquipment" tabindex="-1" role="dialog" aria-labelledby="archiveEquipment" aria-hidden="true">
+<!--<div class="modal fade" id="archiveEquipment" tabindex="-1" role="dialog" aria-labelledby="archiveEquipment" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="centered-div bg-white">
@@ -1255,8 +1251,16 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             </div>
         </div>
     </div>
-</div>
+</div>-->
     <!--end of archive equipment modal-->
+    
+    <!--Archive Maintenance Modal but real-->
+<form id="archiveMaintenanceForm" action="itemcontroller" method="post" style="display: none;">
+    <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}">
+    <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}">
+    <input type="hidden" name="itemArchiveID" id="itemArchiveID" class="form-control">
+</form>
+
     
     <jsp:include page="quotations.jsp" />
     
@@ -1942,6 +1946,27 @@ function roomEditRenderCopy() {
       timerProgressBar: true
     });
   }
+  
+  $(document).on('click', '.archive-maintenance-btn', function(e) {
+    e.preventDefault();
+    const maintArchiveID = $(this).data('itemaid');
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to archive this equipment?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, archive it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#itemArchiveID').val(maintArchiveID);
+            $('#archiveMaintenanceForm').submit();
+        }
+    });
+});
 </script>
 <script>
 const LID = "<%= locID %>"; // Embed JSP variable

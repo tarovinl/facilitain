@@ -174,7 +174,62 @@
                                             flex-direction: column;
                                             justify-content: flex-end;
                                             overflow: hidden;
-                                            outline: none;">
+                                            outline: none;
+                                            position: relative;">
+                                            <c:forEach var="locStatus" items="${FMO_LOCATION_STATUS_LIST}">
+                                                <c:if test="${locStatus.location.itemLocId == location.itemLocId}">
+                                                        <c:choose>
+                                                            <c:when test="${locStatus.statusRating == 3}">
+                                                                <div style="
+                                                                    position: absolute;
+                                                                    top: 10px;
+                                                                    right: 10px;
+                                                                   background-color: #28a745;
+                                                                    color: white;
+                                                                    padding: 4px 8px;
+                                                                    border-radius: 5px;
+                                                                    font-size: 0.9rem;
+                                                                    font-weight: bold;
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                                                    Optimal
+                                                                </div>
+                                                            </c:when>
+                                                            <c:when test="${locStatus.statusRating == 2}">
+                                                                <div style="
+                                                                    position: absolute;
+                                                                    top: 10px;
+                                                                    right: 10px;
+                                                                    background-color: #ff9800;
+                                                                    color: white;
+                                                                    padding: 4px 8px;
+                                                                    border-radius: 5px;
+                                                                    font-size: 0.9rem;
+                                                                    font-weight: bold;
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                                                    Moderate
+                                                                </div>
+                                                            </c:when>
+                                                            <c:when test="${locStatus.statusRating == 1}">
+                                                                <div style="
+                                                                    position: absolute;
+                                                                    top: 10px;
+                                                                    right: 10px;
+                                                                    background-color: #dc3545;
+                                                                    color: white;
+                                                                    padding: 4px 8px;
+                                                                    border-radius: 5px;
+                                                                    font-size: 0.9rem;
+                                                                    font-weight: bold;
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                                                    Danger
+                                                                </div>
+                                                            </c:when>
+                                                        </c:choose>
+                                                </c:if>
+                                            </c:forEach>
                                             <h5 class="card-title text-light fs-4 " style="font-family: 'NeueHaasMedium', sans-serif;">${location.locName}</h5>
                                             <p class="card-text text-light fs-6" style="font-family: 'NeueHaasLight', sans-serif;">${location.locDescription}</p>
                                         </div>
@@ -212,7 +267,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasLight', sans-serif;">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">
                     Cancel
                     </button>
                    <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">

@@ -7,15 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>Maintenance Dashboard</title>
     
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.js"></script>
   
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
-    
+    <!-- Bootstrap 5 CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
@@ -185,9 +188,9 @@
                                                 </c:if>
                                             </c:forEach>
                                         <tr data-id="${item.itemID}"
-                                        data-equipment="${itemCat} - ${itemType}" 
+                                        data-equipment="${itemCat} - ${itemType}" data-locid="${item.itemLID}"
                                         data-status="${item.itemMaintStat}" data-serial="${item.itemName}" data-brand="${item.itemBrand}"
-                                        data-location="${itemLoc}, ${item.itemFloor}" data-statname="${statName}"
+                                        data-location="${itemLoc}, ${item.itemFloor}" data-statname="${statName}" 
                                         data-canupdate="${canUpdate}">
                                             <td>${item.itemName}</td>
                                             <td>
@@ -267,6 +270,7 @@
                                             <th>Maintenance Type</th>
                                             <th>Assigned To</th>
                                             <th>Date of Maintenance</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -277,6 +281,7 @@
                                                 <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
                                                 <c:if test="${item.itemID == maintass.itemID}">
                                                     ${item.itemName}
+                                                    <c:set var="maintName" value="${item.itemName}" />
                                                 </c:if>
                                                 </c:forEach>
                                             </td>
@@ -295,6 +300,32 @@
                                                 </c:forEach>
                                             </td>
                                             <td>${maintass.dateOfMaint}</td>
+                                            <td>
+                                              <div class="dropdown">
+                                                <button class="btn btn-link p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                  <img src="resources/images/kebabMenu.svg" alt="Actions" width="20" height="20">
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                  <!-- Edit Option -->
+                                                  <li>
+                                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editMaintenanceModal"
+                                                    data-mainteid="${maintass.assignID}"
+                                                    data-maintename="${maintName}"
+                                                    data-itemeid="${maintass.itemID}"
+                                                    data-usereid="${maintass.userID}"
+                                                    data-mainttypeeid="${maintass.maintTID}"
+                                                    data-datemaint="${maintass.dateOfMaint}"
+                                                    onclick="populateEditMaintenance(this)"
+                                                    >Edit</a>
+                                                  </li>
+                                                  <!-- Delete Option -->
+                                                  <li>
+                                                    <a class="dropdown-item delete-maintenance-btn" href="#" data-bs-toggle="modal"
+                                                    data-maintdid="${maintass.assignID}">Delete</a>
+                                                  </li>
+                                                </ul>
+                                              </div>
+                                            </td>
                                         </tr>
                                         </c:if>
                                         </c:forEach>
@@ -367,13 +398,74 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">Add</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
+                    <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
+<!-- Edit Maintenance Modal -->
+<div class="modal fade" id="editMaintenanceModal" tabindex="-1" aria-labelledby="editMaintenanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="editmaintenancecontroller" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editMaintenanceModalLabel">Edit Maintenance Record</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                    <input type="text" name="maintID" id="maintID">
+                        <div>
+                        <label for="equipmentEName" class="form-label">Equipment Name <span style="color: red;">*</span></label>
+                        </div>
+                        <div class="w-100">
+                        <input class="form-control awesomplete w-100" id="equipmentEName" data-list="${equipmentListString}" 
+                               name="equipmentEName" maxlength="24" required style="width: 100%;" onchange="updateEquipmentId()" >
+                        <!--<input type="text" id="equipmentMaintId" name="equipmentMaintId">-->
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="maintenanceEType" class="form-label">Maintenance Type <span style="color: red;">*</span></label>
+                        <select class="form-select" id="maintenanceEType" name="maintenanceEType" required>
+                            <c:forEach items="${FMO_MAINTTYPE_LIST}" var="mtype" >
+                                <option value="${mtype.itemTypeId}">${mtype.itemTypeName}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
+                        <select class="form-select" id="assignedETo" name="assignedETo" required>
+                            <c:forEach items="${FMO_USERS}" var="user" >
+                                <c:if test="${sessionScope.email == user.email}">
+                                <option value="${user.userId}">${user.name}</option>
+                                </c:if>
+                            </c:forEach>
+                            <c:forEach items="${FMO_USERS}" var="user" >
+                                <c:if test="${sessionScope.email != user.email}">
+                                <option value="${user.userId}">${user.name}</option>
+                                </c:if>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="" class="form-label">Date of Maintenance <span style="color: red;">*</span></label>
+                        <input type="date" name="dateEMaint" id="dateEMaint" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Edit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--Delete Maintenance Modal-->
+<form id="deleteMaintenanceForm" action="editmaintenancecontroller" method="post" style="display: none;">
+    <input type="hidden" name="deleteMaintID" id="deleteMaintID"/>
+</form>
 
 <!-- Update Status Modal -->
 <div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel" aria-hidden="true">
@@ -387,6 +479,7 @@
                 <div class="modal-body">
                     <input type="hidden" id="updateEquipmentId" name="equipmentId" value="1"/>
                     <input type="hidden" id="updateEquipmentStatus" name="equipmentStatus" value="1"/>
+                    <input type="hidden" id="updateEquipmentLID" name="equipmentLID" value="1"/>
                     <div class="d-flex align-items-center mb-3">
                     <!-- Disabled Dropdown -->
                     <div class="me-3">
@@ -461,6 +554,7 @@
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script> 
 
 <script>
     $(document).ready(function() {
@@ -532,12 +626,14 @@
             const serial = $(this).data('serial');
             const brand = $(this).data('brand');
             const location = $(this).data('location');
+            const locid = $(this).data('locid');
             
             const canUpdate = $(this).data('canupdate'); // Get access info
             
             // Update the hidden input for the update modal
             $('#updateEquipmentId').val(equipmentId);
             $('#updateEquipmentStatus').val(status2);
+            $('#updateEquipmentLID').val(locid);
             
             if (canUpdate === true || canUpdate === "true") {
                 $('#updateStatusBtn').show(); // Adjust selector to your button
@@ -643,6 +739,41 @@
 </script>
 
 <script>
+    function populateEditMaintenance(button) {
+        var assignID = button.getAttribute('data-mainteid');
+        var itemName = button.getAttribute('data-maintename');
+        var itemID = button.getAttribute('data-itemeid');
+        var userID = button.getAttribute('data-usereid');
+        var maintTypeID = button.getAttribute('data-mainttypeeid');
+        var dateMaint = button.getAttribute('data-datemaint');
+        document.querySelector('input[name="maintID"]').value = assignID;
+        document.querySelector('input[name="equipmentEName"]').value = itemName;
+        var maintTypeDrop = document.querySelector('select[name="maintenanceEType"]');
+        if (maintTypeDrop) {
+            var options = maintTypeDrop.options;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].value === maintTypeID) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
+        var assignedToDrop = document.querySelector('select[name="assignedETo"]');
+        if (assignedToDrop) {
+            var options = assignedToDrop.options;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].value === userID) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
+        document.querySelector('input[name="dateEMaint"]').value = dateMaint;
+    }
+</script>
+
+
+<script>
   // Helper function to get query parameter by name
   function getQueryParam(name) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -663,6 +794,12 @@
         break;
       case '3to1':
         toastMessage = 'The equipment is now operational.';
+        break;
+     case 'assign':
+        toastMessage = 'Assigned maintenance modified successfully.';
+        break;
+     case 'delete':
+        toastMessage = 'Assigned maintenance deleted successfully.';
         break;
       default:
         toastMessage = 'Operation completed successfully.';
@@ -703,12 +840,34 @@
         timerProgressBar: true
       });
     }
+
+$(document).on('click', '.delete-maintenance-btn', function(e) {
+    e.preventDefault();
+    const maintID = $(this).data('maintdid');
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to delete this maintenance assignment?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#deleteMaintID').val(maintID);
+            $('#deleteMaintenanceForm').submit();
+        }
+    });
+});
 </script>
 
 <script>
     window.onload = function() {
         var today = new Date().toISOString().split("T")[0];
         document.getElementById("dateMaint").min = today;
+        document.getElementById("dateEMaint").min = today;
     };
 </script>
 
