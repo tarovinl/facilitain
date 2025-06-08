@@ -6,6 +6,8 @@
 <%@ page import="java.time.LocalDate" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page import="java.time.temporal.ChronoUnit" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 
 <%
     java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
@@ -43,6 +45,36 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet" href="./resources/css/custom-fonts.css">
         <script src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+        <style>
+            .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
+
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
+
+            .buttonsBack:hover {
+                text-decoration: underline !important;
+                }
+            .buildingManage:hover {
+                text-decoration: underline !important;
+                }
+
+
+</style>
         <script>
         google.charts.load('current', {packages: ['corechart']});
         google.charts.setOnLoadCallback(drawCharts);
@@ -137,173 +169,214 @@
         chart.draw(data, options);
         }
 function generateReport() {
-    // Capture chart elements
-    var maintenanceChartDiv = document.getElementById('pendingMainChart');
-    
-    // Get SVG of the pie chart
-    var maintenanceChartSvg = maintenanceChartDiv.querySelector('svg');
-    
-    // Verify SVG exists
-    if (!maintenanceChartSvg) {
-        alert('Charts are not yet loaded. Please refresh the page and try again.');
-        return;
-    }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+    });
 
-    // Clone the SVG to modify without affecting the original
-    var clonedSvg = maintenanceChartSvg.cloneNode(true);
+    // Get current date from JSP (not even working)
+    const reportDate = '<%= new java.text.SimpleDateFormat("MMMM dd, yyyy").format(new java.util.Date()) %>';
     
-    // Add title to the SVG
-    var titleElement = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    titleElement.setAttribute("x", "50%");
-    titleElement.setAttribute("y", "30");
-    titleElement.setAttribute("text-anchor", "middle");
-    titleElement.setAttribute("font-size", "16");
-    titleElement.setAttribute("font-weight", "bold");
-    titleElement.textContent = "Pending Maintenance";
+  
+    doc.setFillColor(51, 51, 51);
+    doc.rect(0, 0, 210, 20, 'F');
     
-    clonedSvg.insertBefore(titleElement, clonedSvg.firstChild);
-
-    // Create a canvas to combine charts and table
-    var canvas = document.createElement('canvas');
-    canvas.width = 800;
-    canvas.height = 700; // Increased height to fit everything
-    var ctx = canvas.getContext('2d');
-    
-    // Create image from the modified maintenance pie chart SVG
-    var img2 = new Image();
-    
-    img2.onload = function() {
-        // Clear canvas with white background
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+   
+    const logoImg = new Image();
+    logoImg.src = 'resources/images/USTLogo.png';
+    logoImg.onload = function() {
+        // Left-aligned logo (15mm from left, 50mm width)
+        doc.addImage(logoImg, 'PNG', 15, 2, 50, 15);
         
-        // Add UST Logo at the top left
-        var logoImg = new Image();
-        logoImg.onload = function() {
-            // Draw logo in top left with more padding
-            ctx.drawImage(logoImg, 10, 10, 120, 60); // Slightly larger and more padded
+        // Main content starts below header
+        const contentStartY = 25;
+        
+        // Building name (centered)
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`${locName}`, 105, contentStartY + 10, {align: 'center'});
+        
+        // Add "Pending Maintenance" label above pie chart
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text("Pending Maintenance", 105, contentStartY + 25, {align: 'center'});
+        doc.setFont(undefined, 'normal');
+        
+        // Capture and add pie chart with proper margins
+        const pieChartDiv = document.getElementById('pendingMainChart');
+        
+        // Set temporary dimensions for capture
+        const originalStyles = {
+            width: pieChartDiv.style.width,
+            height: pieChartDiv.style.height,
+            overflow: pieChartDiv.style.overflow
+        };
+        pieChartDiv.style.width = '300px';
+        pieChartDiv.style.height = '300px';
+        pieChartDiv.style.overflow = 'visible';
+        
+        html2canvas(pieChartDiv, {
+            scale: 3, 
+            logging: false,
+            useCORS: true,
+            width: 300,
+            height: 300,
+            backgroundColor: null,
+            windowWidth: 300,
+            windowHeight: 300
+        }).then(canvas => {
+           
+            pieChartDiv.style.width = originalStyles.width;
+            pieChartDiv.style.height = originalStyles.height;
+            pieChartDiv.style.overflow = originalStyles.overflow;
             
-            // Draw title next to logo
-            ctx.font = '24px Arial';
-            ctx.fillStyle = 'black';
-            ctx.fillText(`${locName} - Location Dashboard`, 150, 40);
+            // Create canvas with extra padding
+            const padding = 50; // Extra padding to prevent cutoff
+            const paddedCanvas = document.createElement('canvas');
+            paddedCanvas.width = canvas.width + padding * 2;
+            paddedCanvas.height = canvas.height + padding * 2;
+            const ctx = paddedCanvas.getContext('2d');
             
-            // Draw the pie chart (now with title)
-            ctx.drawImage(img2, 200, 150, 400, 300); // Adjust positioning as needed
+           
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, paddedCanvas.width, paddedCanvas.height);
             
-            // Draw the Repairs Table title
-            ctx.font = '18px Arial';
-            ctx.fillStyle = 'black';
-            ctx.fillText('Repairs per Month', 50, 480); // Position below pie chart
-
-            var x = 50;
-            var y = 510; // Starting position for repair data
-            ctx.font = '16px Arial';
+            // Draw centered pie chart with padding
+            ctx.drawImage(
+                canvas,
+                0,
+                0,
+                canvas.width,
+                canvas.height,
+                padding,
+                padding,
+                canvas.width,
+                canvas.height
+            );
             
-            // Create HTML table for repairs data
-            var tableHtml = '<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">';
-            tableHtml += '<thead>';
-            tableHtml += '<tr><th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Month</th>';
-            tableHtml += '<th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Number of Repairs</th></tr>';
-            tableHtml += '</thead>';
-            tableHtml += '<tbody>';
+            const pieChartImg = paddedCanvas.toDataURL('image/png');
             
-            // Loop through repairs to add table rows
-            var repairData = [
-                <c:forEach var="month" items="${monthsList}" varStatus="status">
-                    <c:set var="repairCount" value="0" />
-                    <c:set var="monthNumber" value="${status.index + 1}" />
-                    <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
-                        <c:if test="${repair.repairLocID == locID2}">
-                            <c:if test="${repair.repairYear == currentYear}">
-                                <c:if test="${repair.repairMonth == monthNumber}">
-                                    <c:set var="repairCount" value="${repair.repairCount}" />
+       
+            doc.addImage(pieChartImg, 'PNG', 20, contentStartY + 30, 80, 80);
+            
+       
+            const legendStartX = 110;
+            let legendStartY = contentStartY + 40;
+            const legendItemHeight = 6;
+            
+           
+            const colors = [
+                {r: 66, g: 133, b: 244},   // Blue
+                {r: 234, g: 67, b: 53},     // Red
+                {r: 251, g: 188, b: 5},     // Yellow
+                {r: 52, g: 168, b: 83},     // Green
+                {r: 168, g: 50, b: 150},     // Purple
+                {r: 235, g: 122, b: 40}      // Orange
+            ];
+            
+            // Get the pie chart data to create the legend
+            <c:forEach var="category" items="${FMO_CATEGORIES_LIST}" varStatus="status">
+                <c:set var="itemCount" value="0" />
+                <c:forEach var="itemz" items="${FMO_ITEMS_LIST}">
+                    <c:if test="${itemz.itemLID == locID2}">
+                        <c:set var="itemCID" value="" />
+                        <c:forEach var="type" items="${FMO_TYPES_LIST}">
+                            <c:if test="${type.itemTID == itemz.itemTID}">
+                                <c:forEach var="cat" items="${FMO_CATEGORIES_LIST}">
+                                    <c:if test="${cat.itemCID == type.itemCID}">
+                                        <c:set var="itemCID" value="${cat.itemCID}" />            
+                                    </c:if>
+                                </c:forEach>
+                            </c:if>
+                        </c:forEach>
+                        <c:if test="${category.itemCID == itemCID}">
+                            <c:if test="${itemz.itemArchive == 1}">
+                                <c:if test="${itemz.itemMaintStat == 2}">
+                                    <c:set var="itemCount" value="${itemCount + 1}" />
                                 </c:if>
                             </c:if>
                         </c:if>
-                    </c:forEach>
-                    '<tr><td style="border: 1px solid #ddd; padding: 8px;">${month}</td><td style="border: 1px solid #ddd; padding: 8px;">${repairCount}</td></tr>',
+                    </c:if>
                 </c:forEach>
-            ];
-
-            // Render the repair table rows
-            repairData.forEach(function(data) {
-                tableHtml += data;
-            });
-            
-            tableHtml += '</tbody>';
-            tableHtml += '</table>';
-
-            // Create a container to hold the report content
-            const reportContainer = document.createElement('div');
-            reportContainer.style.fontFamily = 'Arial, sans-serif';
-            reportContainer.style.maxWidth = '1200px';
-            reportContainer.style.margin = '0 auto';
-            reportContainer.style.padding = '20px';
-            
-            // Add chart
-            const chartImage = img2.src;
-            const chartImgElement = document.createElement('img');
-            chartImgElement.src = chartImage;
-            chartImgElement.style.width = '100%';
-            chartImgElement.style.maxHeight = '400px';
-            chartImgElement.style.objectFit = 'contain';
-            reportContainer.appendChild(chartImgElement);
-            
-            // Add the repair table
-            reportContainer.innerHTML += tableHtml;
-
-            // Add to body temporarily
-            reportContainer.style.position = 'absolute';
-            reportContainer.style.left = '-9999px';
-            document.body.appendChild(reportContainer);
-            
-            // Convert to image
-            html2canvas(reportContainer, {
-                scale: 2,
-                backgroundColor: 'white',
-                useCORS: true,
-                logging: true
-            }).then(canvas => {
-                // Remove the temporary container
-                document.body.removeChild(reportContainer);
                 
-                // Create download link
-                const link = document.createElement('a');
-                link.download = `${locName}_dashboard_report.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }).catch(error => {
-                // Remove the temporary container
-                if (document.body.contains(reportContainer)) {
-                    document.body.removeChild(reportContainer);
+                <c:if test="${itemCount > 0}">
+                    // Draw color box
+                    const colorIndex = ${status.index} % colors.length;
+                    doc.setFillColor(
+                        colors[colorIndex].r,
+                        colors[colorIndex].g,
+                        colors[colorIndex].b
+                    );
+                    doc.rect(legendStartX, legendStartY, 4, 4, 'F');
+                    
+                    // Add category name and count
+                    doc.setFontSize(10);
+                    doc.setTextColor(0, 0, 0); // Black text
+                    doc.text(`${category.itemCat} (${itemCount})`, legendStartX + 6, legendStartY + 3);
+                    
+                    // Move to next line
+                    legendStartY += legendItemHeight;
+                </c:if>
+            </c:forEach>
+            
+            
+            const tableStartY = contentStartY + 120;
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text("Repairs per Month", 105, tableStartY - 5, {align: 'center'});
+            doc.setFont(undefined, 'normal');
+            
+            // Create and add full-width table
+            doc.autoTable({
+                startY: tableStartY,
+                margin: {left: 20, right: 20},
+                head: [["Month", "Number of Repairs"]],
+                body: [
+                    <c:forEach var="month" items="${monthsList}" varStatus="status">
+                        <c:set var="repairCount" value="0" />
+                        <c:set var="monthNumber" value="${status.index + 1}" />
+                        <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
+                            <c:if test="${repair.repairLocID == locID2}">
+                                <c:if test="${repair.repairYear == currentYear}">
+                                    <c:if test="${repair.repairMonth == monthNumber}">
+                                        <c:set var="repairCount" value="${repair.repairCount}" />
+                                    </c:if>
+                                </c:if>
+                            </c:if>
+                        </c:forEach>
+                        ['${month}', '${repairCount}'],
+                    </c:forEach>
+                ],
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [51, 51, 51],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold'
+                },
+                styles: {
+                    cellPadding: 5,
+                    fontSize: 11,
+                    valign: 'middle'
+                },
+                columnStyles: {
+                    0: { halign: 'left', cellWidth: 'auto' },
+                    1: { halign: 'center', cellWidth: 'auto' }
                 }
-                
-                console.error('Error converting report to image:', error);
-                
-                // Fallback: download just the chart
-                const link = document.createElement('a');
-                link.download = `${locName}_dashboard_report.png`;
-                link.href = chartImage;
-                link.click();
             });
-        };
-
-        logoImg.src = 'resources/images/USTLogo.png'; // Path to the logo image
+            
+            // Save the PDF
+            doc.save('${locName}_Maintenance_Report.pdf');
+        }).catch(error => {
+            console.error('Error generating PDF:', error);
+            alert('Error generating PDF. Please check console for details.');
+        });
     };
-
-    // Convert modified SVG to base64
-    img2.src = 'data:image/svg+xml;base64,' + btoa(new XMLSerializer().serializeToString(clonedSvg));
 }
 
-// Attach event listener after page load
 document.addEventListener('DOMContentLoaded', function() {
-    var generateReportButton = document.querySelector('.buttonsBuilding:nth-child(2)');
-    if (generateReportButton) {
-        generateReportButton.addEventListener('click', generateReport);
-    } else {
-        console.error('Generate Report button not found');
-    }
+    document.querySelector('.buttonsBuilding:nth-child(2)').addEventListener('click', generateReport);
 });
         </script>
     </head>
@@ -314,21 +387,24 @@ document.addEventListener('DOMContentLoaded', function() {
           <jsp:include page="sidebar.jsp"/>
        
     
-    <div class="col-md-10">
+    <div class="col-md-10 ">
         
-          <div class="topButtons">
+          <div class="topButtons  pb-4">
             <div>
-              <a href="./homepage" class="buttonsBack d-flex align-items-center gap-2" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;font-family: NeueHaasLight, sans-serif;">
-                <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
-                Back
-              </a>
+             <a href="./homepage" class="buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" 
+   style="margin-left: 2px; font-family: NeueHaasLight, sans-serif;">
+    <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
+    Back
+</a>
+
+
             </div>
             <div>
               <!-- Edit button triggers the modal -->
                 <c:choose>
                     <c:when test="${sessionScope.role == 'Admin'}">
-                      <button class="buttonsBuilding" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
-                        <img src="resources/images/icons/pen-solid.svg" class="pe-2" alt="edit icon" width="25" height="25">
+                      <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
+                        <img src="resources/images/icons/edit.svg" class="pe-2" alt="edit icon" width="25" height="25">
                         Edit
                       </button>
                     </c:when>
@@ -336,18 +412,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     </c:otherwise>
                 </c:choose>
               
-              <button class="buttonsBuilding" style="font-family: NeueHaasMedium, sans-serif;">
-              <img src="resources/images/icons/file-export-solid.svg" class="pe-2" alt="generate report icon" width="25" height="25">
+              <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" style="font-family: NeueHaasMedium, sans-serif;">
+              <img src="resources/images/icons/summarize.svg" class="pe-2" alt="generate report icon" width="25" height="25">
               Generate Report</button>
             </div>
           </div>
           
-<div class="container">
-  <div class="row mb-4">
-    <div class="col-12 col-lg-8 mb-3">
+<div class="container-fluid d-flex flex-column" style="min-height: 85vh;">
+  <div class="row flex-grow-1" style="min-height: 40vh;">
+    <div class="col-12 col-lg-8 vh-25 align-items-stretch mb-4">
         <div class="buildingBanner rounded-4" style="margin-top: 14px; background-image: 
                                     linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
-                                    url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center; height: 264px; display: flex; flex-direction:column;justify-content: flex-end;">
+                                    url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center; height: 80%; display: flex; flex-direction:column;justify-content: flex-end;">
             <!--<div class="statusDiv">
                 <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
             </div>-->
@@ -359,10 +435,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <c:if test="${floors.key == locID}">
                         <c:forEach var="floor" items="${floors.value}" varStatus="status">
                             <c:if test="${status.first}">
-                                <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" class="buildingManage d-flex align-items-center" style="font-family: NeueHaasMedium, sans-serif;">
-                                    Manage
-                                    <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
+                                <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" 
+                                class="buildingManage d-flex align-items-center text-decoration-none text-white fs-3" 
+                                style="font-family: NeueHaasMedium, sans-serif;">
+                                Manage
+                                <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
                                 </a>
+
                             </c:if>
                         </c:forEach>
                     </c:if>
@@ -370,20 +449,20 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
     </div>
-    <div class="col-12 col-lg-4 mb-3" style="margin-top: 14px;">
-      	    <div class="diagram">
+    <div class="col-12 col-lg-4 vh-25 align-items-stretch mb-4" style="margin-top: 14px;">
+      	    <div class="diagram" style="height: 83%;">
               <div class="diagramTitle">
                 <h4 style=" font-family: NeueHaasMedium, sans-serif;">Repairs per Month</h4>
               </div>
-              <div style="background: white; height: 220px; border-radius:15px;">
+              <div style="background: white; height: 240px; border-radius:15px;">
                 <div id="repairNoChart" style="height: 100%; width: 100%; overflow: hidden; border-radius:15px;"></div>
               </div>
             </div>
     </div>
   </div>
-  <div class="row mt-4" style="margin-top: 100px;">
-    <div class="col-12 col-lg-4 mb-3">
-      <div class="diagram">
+  <div class="row flex-grow-1" style="min-height: 40vh;">
+    <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch">
+      <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
                 <h4 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h4>
               </div>
@@ -431,8 +510,8 @@ document.addEventListener('DOMContentLoaded', function() {
               </div>
             </div>
     </div>
-    <div class="col-12 col-lg-4 mb-3">
-      <div class="diagram">
+    <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch">
+      <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
                 <h4 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h4>
               </div>
@@ -476,8 +555,8 @@ document.addEventListener('DOMContentLoaded', function() {
               </div>
             </div>
     </div>
-    <div class="col-12 col-lg-4 mb-3" style="border-radius:15px;">
-      <div class="diagram">
+    <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch" style="border-radius:15px;">
+      <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
                 <h4 style=" font-family: NeueHaasMedium, sans-serif;">Pending Maintenance</h4>
               </div>

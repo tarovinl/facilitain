@@ -20,10 +20,13 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.annotation.MultipartConfig;
+
+import sample.model.MaintAssign;
 
 @WebServlet(name = "updateStatusController", urlPatterns = { "/updatestatuscontroller" })
 @MultipartConfig(maxFileSize = 1024 * 1024 * 5) // 5 MB file size limit
@@ -48,6 +51,11 @@ public class updateStatusController extends HttpServlet {
         String updateEquipmentID = request.getParameter("equipmentId");
         String oldEquipmentStatus = request.getParameter("equipmentStatus");
         String newEquipmentStatus = request.getParameter("statusNew");
+        String updateEquipmentLID = request.getParameter("equipmentLID");
+
+        int equipmentIDToUpdate = Integer.parseInt(updateEquipmentID);
+        boolean isRepaired = false;
+        ArrayList<MaintAssign> listAssign2 = new ArrayList<>();
         
         String description = request.getParameter("description");
         Part filePart = request.getPart("quotationFile");
@@ -77,6 +85,38 @@ public class updateStatusController extends HttpServlet {
             response.sendRedirect("maintenancePage" + "?action=" + action + "&status=" + status);
             return;
         }
+        
+
+        try (
+             Connection con = PooledConnection.getConnection();
+             PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
+             ){
+            ResultSet rsAssign = stmntAssign.executeQuery();
+            while (rsAssign.next()) {
+                MaintAssign mass = new MaintAssign();
+                mass.setAssignID(rsAssign.getInt("ASSIGN_ID"));
+                mass.setItemID(rsAssign.getInt("ITEM_ID"));
+                mass.setUserID(rsAssign.getInt("USER_ID"));
+                mass.setMaintTID(rsAssign.getInt("MAIN_TYPE_ID"));
+                mass.setDateOfMaint(rsAssign.getDate("DATE_OF_MAINTENANCE"));
+                mass.setIsCompleted(rsAssign.getInt("IS_COMPLETED"));
+                listAssign2.add(mass);
+            }
+            rsAssign.close();
+        } catch (SQLException error) {
+            error.printStackTrace();
+        }
+
+
+        for (MaintAssign assign : listAssign2) {
+            if (assign.getItemID() == equipmentIDToUpdate &&
+                assign.getMaintTID() == 3 &&
+                assign.getIsCompleted() == 0) {
+                isRepaired = true;
+                break; // Optional: break if only one match matters
+            }
+        }
+
         
         try (Connection conn = PooledConnection.getConnection()) {
             String sql;
@@ -119,6 +159,44 @@ public class updateStatusController extends HttpServlet {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+                
+                if(isRepaired){
+                                        String currentMonth = String.valueOf(java.time.LocalDate.now().getMonthValue());
+                                        String currentYear = String.valueOf(java.time.LocalDate.now().getYear());
+                    
+                                        // Check if an entry for the current month and year exists
+                                        String selectRepairsSql = "SELECT NUM_OF_REPAIRS FROM C##FMO_ADM.FMO_ITEM_REPAIRS WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
+                                        try (PreparedStatement selectStmt = conn.prepareStatement(selectRepairsSql)) {
+                                            selectStmt.setInt(1, Integer.parseInt(currentMonth));
+                                            selectStmt.setInt(2, Integer.parseInt(currentYear));
+                                            selectStmt.setInt(3, Integer.parseInt(updateEquipmentLID));
+                                            try (ResultSet rs = selectStmt.executeQuery()) {
+                                                if (rs.next()) {
+                                                    // Update NUM_OF_REPAIRS if entry exists
+                                                    int repairCount = rs.getInt("NUM_OF_REPAIRS");
+                                                    String updateRepairsSql = "UPDATE C##FMO_ADM.FMO_ITEM_REPAIRS SET NUM_OF_REPAIRS = ? WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
+                                                    try (PreparedStatement updateStmt = conn.prepareStatement(updateRepairsSql)) {
+                                                        updateStmt.setInt(1, repairCount + 1);
+                                                        updateStmt.setInt(2, Integer.parseInt(currentMonth));
+                                                        updateStmt.setInt(3, Integer.parseInt(currentYear));
+                                                        updateStmt.setInt(4, Integer.parseInt(updateEquipmentLID));
+                                                        updateStmt.executeUpdate();
+                                                    }
+                                                } else {
+                                                    // Insert a new row if no entry exists
+                                                    String insertRepairsSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPAIRS (REPAIR_MONTH, REPAIR_YEAR, NUM_OF_REPAIRS, ITEM_LOC_ID) VALUES (?, ?, ?, ?)";
+                                                    try (PreparedStatement insertStmt = conn.prepareStatement(insertRepairsSql)) {
+                                                        insertStmt.setInt(1, Integer.parseInt(currentMonth));
+                                                        insertStmt.setInt(2, Integer.parseInt(currentYear));
+                                                        insertStmt.setInt(3, 1);
+                                                        insertStmt.setInt(4, Integer.parseInt(updateEquipmentLID));
+                                                        insertStmt.executeUpdate();
+                                                    }
+                                                }
+                                            }
+                                        }
+                }
+                
                 action = "3to1";
             }
             

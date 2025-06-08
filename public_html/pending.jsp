@@ -178,9 +178,9 @@
                                                 </c:if>
                                             </c:forEach>
                                         <tr data-id="${item.itemID}"
-                                        data-equipment="${itemCat} - ${itemType}" 
+                                        data-equipment="${itemCat} - ${itemType}" data-locid="${item.itemLID}"
                                         data-status="${item.itemMaintStat}" data-serial="${item.itemName}" data-brand="${item.itemBrand}"
-                                        data-location="${itemLoc}, ${item.itemFloor}" data-statname="${statName}"
+                                        data-location="${itemLoc}, ${item.itemFloor}" data-statname="${statName}" 
                                         data-canupdate="${canUpdate}">
                                             <td>${item.itemName}</td>
                                             <td>
@@ -469,6 +469,7 @@
                 <div class="modal-body">
                     <input type="hidden" id="updateEquipmentId" name="equipmentId" value="1"/>
                     <input type="hidden" id="updateEquipmentStatus" name="equipmentStatus" value="1"/>
+                    <input type="hidden" id="updateEquipmentLID" name="equipmentLID" value="1"/>
                     <div class="d-flex align-items-center mb-3">
                     <!-- Disabled Dropdown -->
                     <div class="me-3">
@@ -615,12 +616,14 @@
             const serial = $(this).data('serial');
             const brand = $(this).data('brand');
             const location = $(this).data('location');
+            const locid = $(this).data('locid');
             
             const canUpdate = $(this).data('canupdate'); // Get access info
             
             // Update the hidden input for the update modal
             $('#updateEquipmentId').val(equipmentId);
             $('#updateEquipmentStatus').val(status2);
+            $('#updateEquipmentLID').val(locid);
             
             if (canUpdate === true || canUpdate === "true") {
                 $('#updateStatusBtn').show(); // Adjust selector to your button
