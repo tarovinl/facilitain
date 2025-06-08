@@ -184,13 +184,14 @@
                                                                     position: absolute;
                                                                     top: 10px;
                                                                     right: 10px;
-                                                                    background-color: green;
+                                                                   background-color: #28a745;
                                                                     color: white;
                                                                     padding: 4px 8px;
                                                                     border-radius: 5px;
                                                                     font-size: 0.9rem;
                                                                     font-weight: bold;
-                                                                    z-index: 2;">
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                                                                     Optimal
                                                                 </div>
                                                             </c:when>
@@ -199,13 +200,14 @@
                                                                     position: absolute;
                                                                     top: 10px;
                                                                     right: 10px;
-                                                                    background-color: orange;
+                                                                    background-color: #ff9800;
                                                                     color: white;
                                                                     padding: 4px 8px;
                                                                     border-radius: 5px;
                                                                     font-size: 0.9rem;
                                                                     font-weight: bold;
-                                                                    z-index: 2;">
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                                                                     Moderate
                                                                 </div>
                                                             </c:when>
@@ -214,13 +216,14 @@
                                                                     position: absolute;
                                                                     top: 10px;
                                                                     right: 10px;
-                                                                    background-color: red;
+                                                                    background-color: #dc3545;
                                                                     color: white;
                                                                     padding: 4px 8px;
                                                                     border-radius: 5px;
                                                                     font-size: 0.9rem;
                                                                     font-weight: bold;
-                                                                    z-index: 2;">
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                                                                     Danger
                                                                 </div>
                                                             </c:when>
@@ -264,7 +267,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasLight', sans-serif;">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">
                     Cancel
                     </button>
                    <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">

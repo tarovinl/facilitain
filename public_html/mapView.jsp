@@ -130,25 +130,7 @@
     <c:forEach var="mapItem" items="${FMO_MAP_LIST}">
     L.marker([${mapItem.latitude}, ${mapItem.longitude}], { icon: customIcon }) //csen
         .addTo(map)
-        .bindPopup(`
-    <div>
-        <a href="./buildingDashboard?locID=${mapItem.itemLocId}" target="_blank" class="popup-link">
-            <c:forEach var="locs" items="${locations}">
-                <c:if test="${locs.itemLocId == mapItem.itemLocId}">
-                    ${locs.locName}
-                </c:if>
-            </c:forEach>
-        </a>
-        <div class="popup-description" style="margin-top: 4px;">
-            <c:forEach var="locs" items="${locations}">
-                <c:if test="${locs.itemLocId == mapItem.itemLocId}">
-                    ${locs.locDescription}
-                </c:if>
-            </c:forEach>
-        </div>
-    </div>
-`);
- // Static link
+        .bindPopup(`<div><a href="./buildingDashboard?locID=${mapItem.itemLocId}" target="_blank" class="popup-link"><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locName}</c:if></c:forEach></a><div class="popup-description" style="margin-top: 4px;"><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locDescription}</c:if></c:forEach></div></div>`);// Static link
     </c:forEach>   
         
     window.addEventListener('resize', resizeMap);
