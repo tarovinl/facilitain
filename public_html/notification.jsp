@@ -43,6 +43,11 @@
             font-size: 0.75rem;
             margin-left: 0.5rem;
         }
+
+        .assign-notification {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
     </style>
 </head>
 <body>
@@ -66,6 +71,7 @@
                         <option value="report" <c:if test="${filterBy == 'report'}">selected</c:if>>Reports</option>
                         <option value="quotation" <c:if test="${filterBy == 'quotation'}">selected</c:if>>Quotations</option>
                         <option value="maintenance" <c:if test="${filterBy == 'maintenance'}">selected</c:if>>Maintenance</option>
+                        <option value="assign" <c:if test="${filterBy == 'assign'}">selected</c:if>>Assignments</option>
                         <option value="warning" <c:if test="${filterBy == 'warning'}">selected</c:if>>Warnings</option>
                         <option value="read" <c:if test="${filterBy == 'read'}">selected</c:if>>Read Only</option>
                         <option value="unread" <c:if test="${filterBy == 'unread'}">selected</c:if>>Unread Only</option>
@@ -77,7 +83,7 @@
             <div class="overflow-auto">
                 <ul class="list-group">
                     <c:forEach var="notification" items="${notifications}">
-                        <li class="list-group-item list-group-item-action d-flex justify-content-between ${notification.isRead ? 'list-group-item-secondary' : ''}">
+                        <li class="list-group-item list-group-item-action d-flex justify-content-between ${notification.isRead ? 'list-group-item-secondary' : ''} ${notification.assignmentNotification ? 'assign-notification' : ''}">
                             <form action="notification" method="POST" class="flex-grow-1">
                                 <input type="hidden" name="id" value="${notification.notificationId}"/>
                                 <input type="hidden" name="redirectUrl" value="  
@@ -85,13 +91,21 @@
                                         <c:when test="${notification.type == 'MAINTENANCE'}"><%=request.getContextPath()%>/buildingDashboard?locID=${notification.itemLocId}</c:when>
                                         <c:when test="${notification.type == 'REPORT'}"><%=request.getContextPath()%>/reports</c:when>
                                         <c:when test="${notification.type == 'QUOTATION'}"><%=request.getContextPath()%>/buildingDashboard?locID=${notification.itemLocId}</c:when>
+                                        <c:when test="${notification.type == 'ASSIGN'}"><%=request.getContextPath()%>/maintenancePage</c:when>
                                         <c:when test="${notification.type == 'WARNING'}"><%=request.getContextPath()%>/buildingDashboard?locID=${notification.itemLocId}</c:when>
                                     </c:choose>
                                 "/>
                                 <button type="submit" class="btn btn-block text-start p-0 bg-transparent border-0 w-100">
                                     <div class="text-start">
                                         <h6 class="mb-1 text-start">
-                                            <i class="bi bi-bell-fill text-${notification.isRead ? 'secondary' : 'primary'} me-2"></i>
+                                            <c:choose>
+                                                <c:when test="${notification.assignmentNotification}">
+                                                    <i class="bi bi-person-check-fill text-info me-2"></i>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <i class="bi bi-bell-fill text-${notification.isRead ? 'secondary' : 'primary'} me-2"></i>
+                                                </c:otherwise>
+                                            </c:choose>
                                             <c:choose>
                                                 <c:when test="${notification.groupedMaintenance}">
                                                     Maintenance Required - ${notification.locName}
@@ -137,7 +151,7 @@
                 </ul>
             </div>
 
-            <!-- Modal for Deleting  -->
+            <!-- Modal for Deleting Notifications -->
             <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">

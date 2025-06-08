@@ -15,7 +15,8 @@ public class Notification {
     private String roomNo;
     private String floorNo;
     private String itemName;
-    private List<String> maintenanceItems; 
+    private List<String> maintenanceItems; // For grouped maintenance notifications
+    private String assignedUserName; // For assignment notifications
 
     // Constructor for Reports
     public Notification(int notificationId, String message, String type, boolean isRead, Timestamp createdAt, String locName, int itemLocId) {
@@ -134,11 +135,23 @@ public class Notification {
         this.maintenanceItems = maintenanceItems;
     }
 
+    public String getAssignedUserName() {
+        return assignedUserName;
+    }
+
+    public void setAssignedUserName(String assignedUserName) {
+        this.assignedUserName = assignedUserName;
+    }
+
     public boolean isGroupedMaintenance() {
         return "MAINTENANCE".equals(type) && !maintenanceItems.isEmpty();
     }
 
     public int getMaintenanceItemCount() {
         return maintenanceItems.size();
+    }
+
+    public boolean isAssignmentNotification() {
+        return "ASSIGN".equals(type);
     }
 }

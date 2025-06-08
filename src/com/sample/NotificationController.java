@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,6 +24,8 @@ public class NotificationController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Notification> notifications = new ArrayList<>();
+        HttpSession session = request.getSession();
+        String sessionUserName = (String) session.getAttribute("name");
 
         // Get the sorting and filtering parameters from request
         String sortBy = request.getParameter("sortBy");
@@ -45,6 +48,8 @@ public class NotificationController extends HttpServlet {
             filterSql = "AND n.TYPE = 'QUOTATION'";
         } else if ("maintenance".equals(filterBy)) {
             filterSql = "AND n.TYPE = 'MAINTENANCE'";
+        } else if ("assign".equals(filterBy)) {
+            filterSql = "AND n.TYPE = 'ASSIGN'";
         } else if ("warning".equals(filterBy)) { 
             filterSql = "AND n.TYPE = 'WARNING'";
         } else if ("read".equals(filterBy)) {
@@ -53,14 +58,17 @@ public class NotificationController extends HttpServlet {
             filterSql = "AND n.IS_READ = 0";
         }
 
+        // Base SQL query with user filtering for ASSIGN notifications
         String baseSql = "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
-                         "l.NAME AS locName, n.ITEM_LOC_ID " +
+                         "l.NAME AS locName, n.ITEM_LOC_ID, n.ITEM_NAME " +
                          "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
                          "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
-                         "WHERE 1=1 " + filterSql + " " + orderBy;
+                         "WHERE (n.TYPE != 'ASSIGN' OR n.ITEM_NAME = ?) " + filterSql + " " + orderBy;
 
         try (Connection conn = PooledConnection.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(baseSql)) {
+                stmt.setString(1, sessionUserName != null ? sessionUserName : "");
+                
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
                         Notification notification = new Notification(
@@ -79,6 +87,11 @@ public class NotificationController extends HttpServlet {
                             String itemsString = notification.getMessage().substring("Multiple items require maintenance: ".length());
                             List<String> items = Arrays.asList(itemsString.split("\\|"));
                             notification.setMaintenanceItems(items);
+                        }
+                        
+                        // Set assigned user name for ASSIGN notifications
+                        if ("ASSIGN".equals(notification.getType())) {
+                            notification.setAssignedUserName(rs.getString("ITEM_NAME"));
                         }
                         
                         notifications.add(notification);
