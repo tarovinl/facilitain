@@ -1,6 +1,8 @@
 package sample.model;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Notification {
     private int notificationId;
@@ -13,6 +15,7 @@ public class Notification {
     private String roomNo;
     private String floorNo;
     private String itemName;
+    private List<String> maintenanceItems; // For grouped maintenance notifications
 
     // Constructor for Reports
     public Notification(int notificationId, String message, String type, boolean isRead, Timestamp createdAt, String locName, int itemLocId) {
@@ -23,9 +26,9 @@ public class Notification {
         this.createdAt = createdAt;
         this.locName = locName;
         this.itemLocId = itemLocId;
-        
-        
+        this.maintenanceItems = new ArrayList<>();
     }
+    
     // Constructor for quotation
     public Notification(int notificationId, String message, String type, boolean isRead, Timestamp createdAt, 
                            String locName, int itemLocId, String roomNo, String floorNo, String itemName) {
@@ -38,29 +41,49 @@ public class Notification {
            this.itemLocId = itemLocId;
            this.roomNo = roomNo;
            this.floorNo = floorNo;
-           this.itemName = itemName; 
+           this.itemName = itemName;
+           this.maintenanceItems = new ArrayList<>();
        }
-
 
     // Getters and Setters
     public int getNotificationId() {
         return notificationId;
     }
 
+    public void setNotificationId(int notificationId) {
+        this.notificationId = notificationId;
+    }
+
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getType() {
         return type;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public boolean getIsRead() { 
         return isRead;
     }
 
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
+    }
+
     public Timestamp getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getLocName() {
@@ -78,6 +101,7 @@ public class Notification {
     public void setItemLocId(int itemLocId) {
         this.itemLocId = itemLocId;
     }
+    
     public String getRoomNo() {
         return roomNo;
     }
@@ -93,6 +117,7 @@ public class Notification {
     public void setFloorNo(String floorNo) {
         this.floorNo = floorNo;
     }
+    
     public String getItemName() {
            return itemName;
        }
@@ -100,4 +125,20 @@ public class Notification {
        public void setItemName(String itemName) {
            this.itemName = itemName;
        }
+
+    public List<String> getMaintenanceItems() {
+        return maintenanceItems;
+    }
+
+    public void setMaintenanceItems(List<String> maintenanceItems) {
+        this.maintenanceItems = maintenanceItems;
+    }
+
+    public boolean isGroupedMaintenance() {
+        return "MAINTENANCE".equals(type) && !maintenanceItems.isEmpty();
+    }
+
+    public int getMaintenanceItemCount() {
+        return maintenanceItems.size();
+    }
 }
