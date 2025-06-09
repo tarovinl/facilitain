@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-
 import sample.model.PooledConnection;
 
 @WebServlet("/buildingController")
@@ -124,6 +123,15 @@ public class buildingController extends HttpServlet {
                                 }
                             }
                         }
+                    }
+                    
+                    action = "building_modify";
+
+                    response.sendRedirect("buildingDashboard?locID=" + locId + "/edit&action=" + action + "&status=" + status);
+                } else {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Location not found in FMO_ITEM_LOCATIONS");
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error saving data");

@@ -1,13 +1,10 @@
 package com.sample;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 import java.util.Date;
 
 import javax.servlet.*;
@@ -101,9 +98,12 @@ public class emailResolve extends HttpServlet {
                     PrintWriter out = response.getWriter();
                     out.println("Report status updated successfully to RESOLVED.");
                     out.println("REPORT_CODE: " + reportCode);
- // (String recipientEmail, final String username, final String password, String reportCode, String location, String floor, String eqmtType, String issue, Date dateIssued, int status)
-
-                    EmailSender.sendEmail(recipientEmail, username, password, reportCode, locationName, reportFloor, reportEqmtType, reportIssue, reportDate);
+                    
+                    // Only send email if recipient email is valid
+                    if (recipientEmail != null && !recipientEmail.equals("No email provided") && recipientEmail.contains("@")) {
+                        EmailSender.sendEmail(recipientEmail, username, password, reportCode, locationName, reportFloor, reportEqmtType, reportIssue, reportDate);
+                    }
+                    
                     response.sendRedirect("reports");
                 } else {
                     response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update report status");
@@ -116,12 +116,9 @@ public class emailResolve extends HttpServlet {
         }
     }
         
-
-
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
 
-    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-                                                                                          IOException {
+    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
 }
