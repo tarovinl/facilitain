@@ -48,7 +48,7 @@ public class reportClientController extends HttpServlet {
         List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
         List<Map.Entry<Integer, String>> equipmentList = new ArrayList<>();
 
-        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2";
+        String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2 ORDER BY NAME";
         String equipmentQuery = "SELECT ITEM_CAT_ID, NAME FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1 ORDER BY NAME";
 
         try (Connection connection = PooledConnection.getConnection()) {

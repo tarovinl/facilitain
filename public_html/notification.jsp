@@ -48,6 +48,105 @@
             background-color: #e3f2fd;
             border-left: 4px solid #2196f3;
         }
+        
+        /* Enhanced read/unread styling */
+        .list-group-item.unread {
+            background-color: #f8f9ff;
+            border-left: 4px solid #0d6efd;
+            font-weight: 500;
+        }
+        
+        .list-group-item.read {
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            opacity: 0.85;
+        }
+        
+        /* Better status badges */
+        .status-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-badge.unread {
+            background-color: #0d6efd;
+            color: white;
+            box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+        }
+        
+        .status-badge.read {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        /* Subtle hover effects */
+        .list-group-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        
+        /* Better form controls */
+        .form-control {
+            border-radius: 0.5rem;
+            border: 1px solid #dee2e6;
+            padding: 0.6rem 0.75rem;
+        }
+        
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        
+        /* Pagination styling */
+        .pagination {
+            margin-top: 2rem;
+            justify-content: center;
+        }
+        
+        .pagination .page-link {
+            border-radius: 0.5rem;
+            margin: 0 0.2rem;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            padding: 0.6rem 0.9rem;
+        }
+        
+        .pagination .page-link:hover {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: white;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        /* Icon improvements */
+        .notification-icon {
+            font-size: 1.1rem;
+            margin-right: 0.5rem;
+        }
+        
+        .unread .notification-icon {
+            color: #0d6efd;
+        }
+        
+        .read .notification-icon {
+            color: #6c757d;
+        }
+        
+        /* Better spacing */
+        .list-group-item {
+            padding: 1.2rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -60,8 +159,8 @@
 
             <!-- Sorting and Filtering controls -->
             <div class="d-flex justify-content-between mb-3 gap-2" style="font-family: NeueHaasLight, sans-serif;">
-                <form action="notification" method="get" class="d-flex" id="notificationForm">
-                    <select name="sortBy" class="form-control mr-2" onchange="this.form.submit()">
+                <form action="notification" method="get" class="d-flex gap-2" id="notificationForm">
+                    <select name="sortBy" class="form-control" onchange="this.form.submit()">
                         <option value="date" <c:if test="${sortBy == 'date'}">selected</c:if>>Sort by Date</option>
                         <option value="read" <c:if test="${sortBy == 'read'}">selected</c:if>>Sort by Read Status</option>
                         <option value="unread" <c:if test="${sortBy == 'unread'}">selected</c:if>>Sort by Unread Status</option>
@@ -76,6 +175,12 @@
                         <option value="read" <c:if test="${filterBy == 'read'}">selected</c:if>>Read Only</option>
                         <option value="unread" <c:if test="${filterBy == 'unread'}">selected</c:if>>Unread Only</option>
                     </select>
+                    <select name="perPage" class="form-control" onchange="this.form.submit()">
+                        <option value="10" <c:if test="${perPage == 10}">selected</c:if>>10 per page</option>
+                        <option value="25" <c:if test="${perPage == 25}">selected</c:if>>25 per page</option>
+                        <option value="50" <c:if test="${perPage == 50}">selected</c:if>>50 per page</option>
+                    </select>
+                    <input type="hidden" name="page" value="${currentPage}">
                 </form>
             </div>
 
@@ -83,7 +188,7 @@
             <div class="overflow-auto">
                 <ul class="list-group">
                     <c:forEach var="notification" items="${notifications}">
-                        <li class="list-group-item list-group-item-action d-flex justify-content-between ${notification.isRead ? 'list-group-item-secondary' : ''} ${notification.assignmentNotification ? 'assign-notification' : ''}">
+                        <li class="list-group-item list-group-item-action d-flex justify-content-between position-relative ${notification.isRead ? 'read' : 'unread'} ${notification.assignmentNotification ? 'assign-notification' : ''}">
                             <form action="notification" method="POST" class="flex-grow-1">
                                 <input type="hidden" name="id" value="${notification.notificationId}"/>
                                 <input type="hidden" name="redirectUrl" value="  
@@ -100,10 +205,10 @@
                                         <h6 class="mb-1 text-start">
                                             <c:choose>
                                                 <c:when test="${notification.assignmentNotification}">
-                                                    <i class="bi bi-person-check-fill text-info me-2"></i>
+                                                    <i class="bi bi-person-check-fill notification-icon text-info"></i>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <i class="bi bi-bell-fill text-${notification.isRead ? 'secondary' : 'primary'} me-2"></i>
+                                                    <i class="bi bi-bell-fill notification-icon"></i>
                                                 </c:otherwise>
                                             </c:choose>
                                             <c:choose>
@@ -116,14 +221,17 @@
                                                 </c:otherwise>
                                             </c:choose>
                                         </h6>
-                                        <small class="text-muted text-start">Created At: ${notification.createdAt}</small>
-                                        <br>
-                                        <small class="text-muted text-start">Location: ${notification.locName}</small>
+                                        <small class="text-muted text-start d-block">
+                                            <i class="bi bi-clock me-1"></i>Created At: ${notification.createdAt}
+                                        </small>
+                                        <small class="text-muted text-start d-block">
+                                            <i class="bi bi-geo-alt me-1"></i>Location: ${notification.locName}
+                                        </small>
                                         
                                         <!-- Dropdown for grouped maintenance items -->
                                         <c:if test="${notification.groupedMaintenance}">
                                             <div class="maintenance-dropdown mt-2 text-start">
-                                                <strong>Items requiring maintenance:</strong>
+                                                <strong><i class="bi bi-list-check text-warning me-2"></i>Items requiring maintenance:</strong>
                                                 <c:forEach var="item" items="${notification.maintenanceItems}">
                                                     <div class="maintenance-item text-start">
                                                         <i class="bi bi-wrench text-warning me-2"></i>
@@ -136,14 +244,15 @@
                                 </button>
                             </form>
                             <div class="d-flex flex-column align-items-end">
-                                <span class="badge badge-${notification.isRead ? 'secondary' : 'primary'} mb-2">
+                                <span class="status-badge ${notification.isRead ? 'read' : 'unread'} mb-2">
+                                    <i class="bi bi-${notification.isRead ? 'check-circle-fill' : 'circle-fill'} me-1"></i>
                                     ${notification.isRead ? 'Read' : 'Unread'}
                                 </span>
                                 <button class="btn btn-danger btn-sm" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#deleteModal" 
                                         data-id="${notification.notificationId}">
-                                    Delete
+                                    <i class="bi bi-trash me-1"></i>Delete
                                 </button>
                             </div>
                         </li>
@@ -151,13 +260,59 @@
                 </ul>
             </div>
 
+            <!-- Pagination -->
+            <c:if test="${totalPages > 1}">
+                <nav aria-label="Notification pagination">
+                    <ul class="pagination">
+                        <!-- Previous Button -->
+                        <li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
+                            <a class="page-link" href="?page=${currentPage - 1}&sortBy=${sortBy}&filterBy=${filterBy}&perPage=${perPage}">
+                                <i class="bi bi-chevron-left"></i> Previous
+                            </a>
+                        </li>
+                        
+                        <!-- Page Numbers -->
+                        <c:forEach begin="1" end="${totalPages}" var="pageNum">
+                            <c:if test="${pageNum <= 5 || pageNum >= totalPages - 4 || (pageNum >= currentPage - 2 && pageNum <= currentPage + 2)}">
+                                <li class="page-item ${pageNum == currentPage ? 'active' : ''}">
+                                    <a class="page-link" href="?page=${pageNum}&sortBy=${sortBy}&filterBy=${filterBy}&perPage=${perPage}">${pageNum}</a>
+                                </li>
+                            </c:if>
+                            <c:if test="${pageNum == 6 && currentPage > 8}">
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            </c:if>
+                            <c:if test="${pageNum == totalPages - 5 && currentPage < totalPages - 7}">
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            </c:if>
+                        </c:forEach>
+                        
+                        <!-- Next Button -->
+                        <li class="page-item ${currentPage >= totalPages ? 'disabled' : ''}">
+                            <a class="page-link" href="?page=${currentPage + 1}&sortBy=${sortBy}&filterBy=${filterBy}&perPage=${perPage}">
+                                Next <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <!-- Pagination Info -->
+                <div class="text-center text-muted mt-2">
+                    <small>
+                        Showing ${(currentPage - 1) * perPage + 1} to ${currentPage * perPage > totalNotifications ? totalNotifications : currentPage * perPage} 
+                        of ${totalNotifications} notifications
+                    </small>
+                </div>
+            </c:if>
+
             <!-- Modal for Deleting Notifications -->
             <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <form action="notification" method="POST">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                                <h5 class="modal-title" id="deleteModalLabel">
+                                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>Confirm Deletion
+                                </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -167,7 +322,9 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-1"></i>Delete
+                                </button>
                             </div>
                         </form>
                     </div>
