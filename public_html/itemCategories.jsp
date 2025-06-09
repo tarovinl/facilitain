@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title>Item Categories</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
      <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -41,6 +41,28 @@
             .buildingManage:hover {
                 text-decoration: underline !important;
                 }
+
+    a.paginate-button {
+    margin: 0 5px;
+    
+    border: 1px solid black; /* Border color */
+    background-color: #fccc4c;   /* Background color */
+    color: black;            /* Text color */
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s; /* Add a smooth hover effect */
+}
+a.paginate-button:hover {
+    background-color: #ffcc00; /* Blue background on hover */
+    color: black;              /* White text on hover */
+}
+a.paginate-button.active {
+    background-color: black; /* Active button background */
+    color: #fccc4c;              /* Active button text color */
+    border-color: black;     /* Border color for the active button */
+}
                 
                 .btn-cancel-outline {
   color: #8388a4 !important;        /* Text color */
@@ -72,7 +94,7 @@
 
             <!-- Table Section -->
             <div class="table-responsive">
-                <table id="categoriesTable" class="table table-striped table-bordered align-middle">
+                <table id="categoriesTable" class="table table-striped table-bordered align-middle mt-4">
                     <thead class="table-dark">
                         <tr>
                             <th scope="col">Category ID</th>
@@ -81,7 +103,7 @@
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-light">
                         <c:forEach var="category" items="${categoryList}">
                             <c:if test="${category.archivedFlag == 1}">
                                 <tr>
@@ -155,9 +177,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
-            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
             <input type="hidden" id="editItemCID" name="itemCID">
@@ -172,8 +192,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-warning">Save Changes</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasLight', sans-serif;" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success">Save Changes</button>
         </div>
     </div>
 </form>
@@ -181,10 +201,9 @@
 </div>
 
 <!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
     $(document).ready(function () {
         // Initialize DataTable

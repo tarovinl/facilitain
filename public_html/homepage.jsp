@@ -121,7 +121,7 @@
                                         <i class="bi bi-search"></i>
                                     </span>
                                     <input type="text" class="form-control search-input" id="searchInput" name="query" 
-                                        placeholder="Search buildings..." aria-label="Search buildings">
+                                        placeholder="Search locations..." aria-label="Search buildings">
                                 </div>
                             </form>
                         </div>
