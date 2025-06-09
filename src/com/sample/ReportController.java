@@ -23,11 +23,13 @@ public class ReportController extends HttpServlet {
         
         List<Report> reportsList = new ArrayList<>();
         
-        // Fixed query - join EQUIPMENT_TYPE (string) with NAME field from FMO_ITEM_CATEGORIES
-        String retrieveReportsQuery = "SELECT R.REPORT_ID, R.EQUIPMENT_TYPE, L.NAME AS LOC_NAME, R.REPORT_FLOOR, " +
-            "R.REPORT_ROOM, R.REPORT_ISSUE, R.REPORT_PICTURE, R.REC_INST_DT, R.REC_INST_BY, R.STATUS, R.REPORT_CODE, R.ARCHIVED_FLAG " +
+        // Query to get equipment name from FMO_ITEM_TYPES table
+        String retrieveReportsQuery = "SELECT R.REPORT_ID, COALESCE(T.NAME, R.EQUIPMENT_TYPE) AS EQUIPMENT_TYPE, " +
+            "L.NAME AS LOC_NAME, R.REPORT_FLOOR, R.REPORT_ROOM, R.REPORT_ISSUE, R.REPORT_PICTURE, " +
+            "R.REC_INST_DT, R.REC_INST_BY, R.STATUS, R.REPORT_CODE, R.ARCHIVED_FLAG " +
             "FROM FMO_ADM.FMO_ITEM_REPORTS R " +
             "JOIN FMO_ADM.FMO_ITEM_LOCATIONS L ON R.ITEM_LOC_ID = L.ITEM_LOC_ID " +
+            "LEFT JOIN FMO_ADM.FMO_ITEM_TYPES T ON UPPER(TRIM(R.EQUIPMENT_TYPE)) = UPPER(TRIM(T.NAME)) " +
             "WHERE R.ARCHIVED_FLAG = 1 " +
             "ORDER BY R.REC_INST_DT DESC";
         
@@ -41,7 +43,7 @@ public class ReportController extends HttpServlet {
                 }
                 Report report = new Report(
                     rs.getInt("REPORT_ID"),
-                    rs.getString("EQUIPMENT_TYPE"), // This is already the equipment name
+                    rs.getString("EQUIPMENT_TYPE"),
                     rs.getString("LOC_NAME"),
                     rs.getString("REPORT_FLOOR"),
                     rs.getString("REPORT_ROOM"),

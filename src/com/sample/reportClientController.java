@@ -46,10 +46,10 @@ public class reportClientController extends HttpServlet {
         
         // Regular page load - get locations and equipment
         List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
-        List<Map.Entry<Integer, String>> equipmentList = new ArrayList<>();
+        List<Map.Entry<String, String>> equipmentList = new ArrayList<>(); 
 
         String locationQuery = "SELECT ITEM_LOC_ID, NAME FROM FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG != 2 ORDER BY NAME";
-        String equipmentQuery = "SELECT ITEM_CAT_ID, NAME FROM FMO_ADM.FMO_ITEM_CATEGORIES WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1 ORDER BY NAME";
+        String equipmentQuery = "SELECT * FROM FMO_ADM.FMO_ITEM_CATEGORIES WHERE ARCHIVED_FLAG = 1 ORDER BY NAME";
 
         try (Connection connection = PooledConnection.getConnection()) {
 
@@ -63,13 +63,13 @@ public class reportClientController extends HttpServlet {
                 }
             }
 
-            // Fetch equipment types
+            // Fetch equipment types 
             try (PreparedStatement equipmentStatement = connection.prepareStatement(equipmentQuery);
                  ResultSet equipmentResult = equipmentStatement.executeQuery()) {
                 while (equipmentResult.next()) {
-                    int itemCatId = equipmentResult.getInt("ITEM_CAT_ID");
                     String itemCatName = equipmentResult.getString("NAME").toUpperCase();
-                    equipmentList.add(new AbstractMap.SimpleEntry<>(itemCatId, itemCatName));
+                    // Store name as both key and value so the form sends the name
+                    equipmentList.add(new AbstractMap.SimpleEntry<>(itemCatName, itemCatName));
                 }
             }
         } catch (Exception e) {
@@ -176,6 +176,8 @@ public class reportClientController extends HttpServlet {
         if ("Other".equals(equipment)) {
             equipment = request.getParameter("otherEquipment"); // If 'Other' is selected, take the custom input
         }
+        // Now equipment contains the NAME, not the ID
+        
         String locationId = request.getParameter("location");
         String floor = request.getParameter("floor");
         String room = request.getParameter("room");
@@ -208,7 +210,7 @@ public class reportClientController extends HttpServlet {
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
                 pstmt.setInt(1, reportId);
-                pstmt.setString(2, equipment);  // This will store the selected equipment, including 'Other'
+                pstmt.setString(2, equipment); 
                 pstmt.setInt(3, Integer.parseInt(locationId));
                 pstmt.setString(4, floor);
                 pstmt.setString(5, room);
@@ -226,6 +228,7 @@ public class reportClientController extends HttpServlet {
                 int rowsInserted = pstmt.executeUpdate();
                 if (rowsInserted > 0) {
                     System.out.println("Report inserted successfully with Report Code: " + reportCode);
+                    System.out.println("Equipment stored as: " + equipment); // Log the equipment name
                 }
             }
         } catch (Exception e) {
