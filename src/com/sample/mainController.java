@@ -622,11 +622,8 @@ public class mainController extends HttpServlet {
                                                                     if (category.getItemCat().equals(eventCat) && category.getItemCID() == type.getItemCID()) {
                                                                         for (Maintenance maintenance : listMaintSched) { // Assuming listMaintSched represents maintenanceList
                                                                             if (maintenance.getItemTypeId() == type.getItemTID()) {
-                                                                                
-                                                                                // Add location name if it's not already in uniqueLocations
-                                                                                if (!uniqueLocations.contains(location.getLocName())) {
-                                                                                    uniqueLocations.add(location.getLocName());
-                                                                                }
+                                                                                uniqueLocations.add(location.getLocName());
+
                                                                             }
                                                                         }
                                                                     }

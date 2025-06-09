@@ -154,7 +154,7 @@
                     <c:forEach var="cat" items="${FMO_CATEGORIES_LIST}">
                     <c:if test="${cat.itemCID == jobNumberInt}">            
                     recurringEvents.push({
-                        title: 'Maintenance for '+'${cat.itemCat}',
+                        title: 'Biannual Maintenance for '+'${cat.itemCat}',
                         start: currentDate.toISOString().split('T')[0],
                         allDay: true
                     });
@@ -165,12 +165,17 @@
                 }
             </c:if>
             </c:forEach>
-
+            
+            <c:forEach items="${FMO_USERS}" var="user" >
+                <c:if test="${sessionScope.email == user.email}">
+                    <c:set var="empNum" value="${user.userId}" />
+                </c:if>
+            </c:forEach>
             // Other static events
             var events = [
                 ...recurringEvents,
             <c:forEach var="todos" items="${FMO_TO_DO_LIST}">
-            <c:if test="${todos.empNumber == 1234}">
+            <c:if test="${todos.empNumber == empNum}">
                 {
                     title: '${todos.listContent}', 
                     start: '${todos.startDate}',

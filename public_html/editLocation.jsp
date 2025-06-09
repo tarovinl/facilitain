@@ -77,7 +77,7 @@
             <div>
                 <button class="buttonsBuilding" data-toggle="modal" data-target="#addFloor" type="button" onclick="">Add Floor</button>
                 <!--<button class="buttonsBuilding" data-toggle="modal" data-target="#archiveFloor" type="button" onclick="">Archive Floor</button>-->
-                <button class="buttonsBuilding" data-toggle="modal" data-target="#archiveLocation" type="button" onclick="">Archive Location</button>
+                <button class="buttonsBuilding archive-location-btn" href="#" data-bs-toggle="modal" type="button" onclick="">Archive Location</button>
             </div>
         </div>
 
@@ -420,7 +420,7 @@
 
 
 <!-- archive location modal -->
-<div class="modal fade" id="archiveLocation" tabindex="-1" role="dialog" aria-labelledby="archiveLocation" aria-hidden="true">
+<!--<div class="modal fade" id="archiveLocation" tabindex="-1" role="dialog" aria-labelledby="archiveLocation" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="centered-div bg-white">
@@ -446,7 +446,12 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
+
+<form id="archiveLocForm" action="buildingController" method="POST" style="display: none;" enctype="multipart/form-data">
+    <input type="hidden" name="locID" value="${locID}">
+    <input type="hidden" name="archiveLocID" id="archiveLocID" class="form-control" value="${locID}">
+</form>
 <!-- end of archive location modal -->
 
             <script>
@@ -581,6 +586,9 @@
       case 'building_modify':
         toastMessage = 'The location was updated successfully.';
         break;
+      case 'building_archive':
+        toastMessage = 'The location was archived successfully.';
+        break;
       default:
         toastMessage = 'Operation completed successfully.';
         break;
@@ -606,6 +614,25 @@
       timerProgressBar: true
     });
   }
+  
+    $(document).on('click', '.archive-location-btn', function(e) {
+        e.preventDefault();
+    
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to archive this location?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, archive it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#archiveLocForm').submit();
+            }
+        });
+    });
 </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
