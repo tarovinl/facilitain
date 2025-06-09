@@ -88,6 +88,12 @@
 }
 </style>
 </head>
+<c:forEach items="${FMO_USERS}" var="user" >
+                <c:if test="${sessionScope.email == user.email}">
+                    <c:set var="empNum" value="${user.userId}" />
+                </c:if>
+            </c:forEach>
+
 <body>
     <div class="sidebar">
         <div class="text-center pt-4">
@@ -221,12 +227,14 @@
                     </div>
                     <div id="validationMessage" class="text-danger"></div>
                     <input type="hidden" name="originalUrl" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />
+                    <input type="hidden" name="userNum" value="${empNumber}" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasLight', sans-serif;" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success">Add</button>
                 </div>
             </div>
+            
         </form>
     </div>
 </div>
@@ -259,7 +267,7 @@
                         </thead>
                         <tbody>
                             <c:forEach var="todos" items="${FMO_TO_DO_LIST}">
-                            <c:if test="${todos.empNumber == 1234}">
+                            <c:if test="${todos.empNumber == empNum}">
                                 <c:if test="${todos.isChecked == 0}">
                                 <form action="todolistcontroller" method="post">
                                     <tr>
@@ -289,7 +297,7 @@
                             </c:if>
                             </c:forEach>
                             <c:forEach var="todos1" items="${FMO_TO_DO_LIST}">
-                            <c:if test="${todos1.empNumber == 1234}">
+                            <c:if test="${todos1.empNumber == empNum}">
                                 <c:if test="${todos1.isChecked == 1}">
                                 <form action="todolistcontroller" method="post">
                                     <tr>
