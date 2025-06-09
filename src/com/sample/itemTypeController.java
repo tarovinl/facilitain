@@ -26,8 +26,8 @@ public class itemTypeController extends HttpServlet {
         List<ItemType> itemTypeList = new ArrayList<>();
         List<Map.Entry<Integer, String>> categoryList = new ArrayList<>();
 
-        String itemTypeQuery = "SELECT ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION, ARCHIVED_FLAG FROM C##FMO_ADM.FMO_ITEM_TYPES";
-        String categoryQuery = "SELECT ITEM_CAT_ID, NAME FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE ARCHIVED_FLAG = 1";
+        String itemTypeQuery = "SELECT ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION, ARCHIVED_FLAG FROM FMO_ADM.FMO_ITEM_TYPES";
+        String categoryQuery = "SELECT ITEM_CAT_ID, NAME FROM FMO_ADM.FMO_ITEM_CATEGORIES WHERE ARCHIVED_FLAG = 1";
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement itemTypeStatement = connection.prepareStatement(itemTypeQuery);
@@ -76,7 +76,7 @@ public class itemTypeController extends HttpServlet {
            try (Connection connection = PooledConnection.getConnection()) {
                if ("archive".equals(action)) {
                    int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
-                   String query = "UPDATE C##FMO_ADM.FMO_ITEM_TYPES SET ARCHIVED_FLAG = 2 WHERE ITEM_TYPE_ID = ?";
+                   String query = "UPDATE FMO_ADM.FMO_ITEM_TYPES SET ARCHIVED_FLAG = 2 WHERE ITEM_TYPE_ID = ?";
                    try (PreparedStatement statement = connection.prepareStatement(query)) {
                        statement.setInt(1, itemTypeId);
                        statement.executeUpdate();
@@ -91,7 +91,7 @@ public class itemTypeController extends HttpServlet {
 
                    if ("true".equals(editMode)) {
                        int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
-                       String updateQuery = "UPDATE C##FMO_ADM.FMO_ITEM_TYPES SET ITEM_CAT_ID = ?, NAME = ?, DESCRIPTION = ? WHERE ITEM_TYPE_ID = ?";
+                       String updateQuery = "UPDATE FMO_ADM.FMO_ITEM_TYPES SET ITEM_CAT_ID = ?, NAME = ?, DESCRIPTION = ? WHERE ITEM_TYPE_ID = ?";
                        try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
                            statement.setInt(1, itemCatId);
                            statement.setString(2, name);
@@ -101,7 +101,7 @@ public class itemTypeController extends HttpServlet {
                        }
                        redirectParams = "?action=updated";
                    } else {
-                       String insertQuery = "INSERT INTO C##FMO_ADM.FMO_ITEM_TYPES (ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (C##FMO_ADM.ITEM_TYPE_SEQ.NEXTVAL, ?, ?, ?)";
+                       String insertQuery = "INSERT INTO FMO_ADM.FMO_ITEM_TYPES (ITEM_TYPE_ID, ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (FMO_ADM.ITEM_TYPE_SEQ.NEXTVAL, ?, ?, ?)";
                        try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
                            statement.setInt(1, itemCatId);
                            statement.setString(2, name);

@@ -23,11 +23,11 @@ public class ReportController extends HttpServlet {
         
         List<Report> reportsList = new ArrayList<>();
         
-        String retrieveReportsQuery = "SELECT R.REPORT_ID, E.NAME AS EQUIPMENT_TYPE, L.NAME AS LOC_NAME, R.REPORT_FLOOR, " +
+        // Fixed query - join EQUIPMENT_TYPE (string) with NAME field from FMO_ITEM_CATEGORIES
+        String retrieveReportsQuery = "SELECT R.REPORT_ID, R.EQUIPMENT_TYPE, L.NAME AS LOC_NAME, R.REPORT_FLOOR, " +
             "R.REPORT_ROOM, R.REPORT_ISSUE, R.REPORT_PICTURE, R.REC_INST_DT, R.REC_INST_BY, R.STATUS, R.REPORT_CODE, R.ARCHIVED_FLAG " +
-            "FROM C##FMO_ADM.FMO_ITEM_REPORTS R " +
-            "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS L ON R.ITEM_LOC_ID = L.ITEM_LOC_ID " +
-            "JOIN C##FMO_ADM.FMO_ITEM_TYPES E ON R.EQUIPMENT_TYPE = E.ITEM_TYPE_ID " +
+            "FROM FMO_ADM.FMO_ITEM_REPORTS R " +
+            "JOIN FMO_ADM.FMO_ITEM_LOCATIONS L ON R.ITEM_LOC_ID = L.ITEM_LOC_ID " +
             "WHERE R.ARCHIVED_FLAG = 1 " +
             "ORDER BY R.REC_INST_DT DESC";
         
@@ -41,7 +41,7 @@ public class ReportController extends HttpServlet {
                 }
                 Report report = new Report(
                     rs.getInt("REPORT_ID"),
-                    rs.getString("EQUIPMENT_TYPE"),
+                    rs.getString("EQUIPMENT_TYPE"), // This is already the equipment name
                     rs.getString("LOC_NAME"),
                     rs.getString("REPORT_FLOOR"),
                     rs.getString("REPORT_ROOM"),
@@ -57,13 +57,14 @@ public class ReportController extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("Database error in ReportController.doGet(): " + e.getMessage());
         }
         
         // Create a map to count similar unresolved reports
         Map<String, List<Integer>> similarReportsMap = new HashMap<>();
         Map<Integer, Boolean> hasSimilarReports = new HashMap<>();
         
-        // Group reports by equipment type (now name), location, floor, and room
+        // Group reports by equipment type, location, floor, and room
         for (Report report : reportsList) {
             if (report.getStatus() == 0) { // Only unresolved reports
                 String key = report.getRepEquipment() + "|" + report.getLocName() + "|" + 
@@ -95,13 +96,17 @@ public class ReportController extends HttpServlet {
         String reportId = request.getParameter("reportId");
         if (reportId != null) {
             try (Connection connection = PooledConnection.getConnection()) {
-                String archiveReportQuery = "UPDATE C##FMO_ADM.FMO_ITEM_REPORTS SET ARCHIVED_FLAG = 2 WHERE REPORT_ID = ?";
+                String archiveReportQuery = "UPDATE FMO_ADM.FMO_ITEM_REPORTS SET ARCHIVED_FLAG = 2 WHERE REPORT_ID = ?";
                 try (PreparedStatement stmt = connection.prepareStatement(archiveReportQuery)) {
                     stmt.setInt(1, Integer.parseInt(reportId));
-                    stmt.executeUpdate();
+                    int rowsUpdated = stmt.executeUpdate();
+                    if (rowsUpdated > 0) {
+                        System.out.println("Successfully archived report ID: " + reportId);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                System.err.println("Error archiving report ID " + reportId + ": " + e.getMessage());
             }
         }
         response.sendRedirect("reports");
