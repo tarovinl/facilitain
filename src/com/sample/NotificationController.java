@@ -31,6 +31,32 @@ public class NotificationController extends HttpServlet {
         String sortBy = request.getParameter("sortBy");
         String filterBy = request.getParameter("filterBy");
         
+        // Get pagination parameters
+        String pageParam = request.getParameter("page");
+        String perPageParam = request.getParameter("perPage");
+        
+        int currentPage = 1;
+        int perPage = 10;
+        
+        try {
+            if (pageParam != null && !pageParam.isEmpty()) {
+                currentPage = Integer.parseInt(pageParam);
+                if (currentPage < 1) currentPage = 1;
+            }
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+        }
+        
+        try {
+            if (perPageParam != null && !perPageParam.isEmpty()) {
+                perPage = Integer.parseInt(perPageParam);
+                if (perPage < 1) perPage = 10;
+                if (perPage > 100) perPage = 100; // Limit max per page
+            }
+        } catch (NumberFormatException e) {
+            perPage = 10;
+        }
+        
         String orderBy = "ORDER BY n.IS_READ ASC, n.CREATED_AT DESC";
 
         if ("date".equals(sortBy)) {
@@ -58,16 +84,57 @@ public class NotificationController extends HttpServlet {
             filterSql = "AND n.IS_READ = 0";
         }
 
-        // Base SQL query with user filtering for ASSIGN notifications
-        String baseSql = "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
-                         "l.NAME AS locName, n.ITEM_LOC_ID, n.ITEM_NAME " +
+        // First, get the total count for pagination
+        String countSql = "SELECT COUNT(*) AS total " +
                          "FROM FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
                          "JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
-                         "WHERE (n.TYPE != 'ASSIGN' OR n.ITEM_NAME = ?) " + filterSql + " " + orderBy;
+                         "WHERE (n.TYPE != 'ASSIGN' OR n.ITEM_NAME = ?) " + filterSql;
+
+        int totalNotifications = 0;
+        try (Connection conn = PooledConnection.getConnection()) {
+            try (PreparedStatement countStmt = conn.prepareStatement(countSql)) {
+                countStmt.setString(1, sessionUserName != null ? sessionUserName : "");
+                
+                try (ResultSet countRs = countStmt.executeQuery()) {
+                    if (countRs.next()) {
+                        totalNotifications = countRs.getInt("total");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error counting notifications.");
+            return;
+        }
+
+        // Calculate pagination values
+        int totalPages = (int) Math.ceil((double) totalNotifications / perPage);
+        if (currentPage > totalPages && totalPages > 0) {
+            currentPage = totalPages;
+        }
+        
+        int offset = (currentPage - 1) * perPage;
+
+        // Base SQL query with Oracle 10g pagination using ROWNUM
+        int startRow = offset + 1;
+        int endRow = offset + perPage;
+        
+        String baseSql = "SELECT * FROM (" +
+                         "  SELECT ROWNUM AS rn, inner_query.* FROM (" +
+                         "    SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
+                         "           l.NAME AS locName, n.ITEM_LOC_ID, n.ITEM_NAME " +
+                         "    FROM FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
+                         "    JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
+                         "    WHERE (n.TYPE != 'ASSIGN' OR n.ITEM_NAME = ?) " + filterSql + " " + orderBy +
+                         "  ) inner_query " +
+                         "  WHERE ROWNUM <= ?" +
+                         ") WHERE rn >= ?";
 
         try (Connection conn = PooledConnection.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(baseSql)) {
                 stmt.setString(1, sessionUserName != null ? sessionUserName : "");
+                stmt.setInt(2, endRow);
+                stmt.setInt(3, startRow);
                 
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
@@ -104,9 +171,15 @@ public class NotificationController extends HttpServlet {
             return;
         }
 
+        // Set request attributes for pagination
         request.setAttribute("notifications", notifications);
         request.setAttribute("sortBy", sortBy);
         request.setAttribute("filterBy", filterBy);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("perPage", perPage);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("totalNotifications", totalNotifications);
+        
         request.getRequestDispatcher("notification.jsp").forward(request, response);
     }
 
@@ -141,7 +214,33 @@ public class NotificationController extends HttpServlet {
             return;
         }
 
-        response.sendRedirect(request.getContextPath() + "/notification");
+        // Redirect back to the same page with current parameters
+        String sortBy = request.getParameter("sortBy");
+        String filterBy = request.getParameter("filterBy");
+        String page = request.getParameter("page");
+        String perPage = request.getParameter("perPage");
+        
+        StringBuilder redirectUrl = new StringBuilder(request.getContextPath() + "/notification");
+        boolean hasParams = false;
+        
+        if (sortBy != null && !sortBy.isEmpty()) {
+            redirectUrl.append(hasParams ? "&" : "?").append("sortBy=").append(sortBy);
+            hasParams = true;
+        }
+        if (filterBy != null && !filterBy.isEmpty()) {
+            redirectUrl.append(hasParams ? "&" : "?").append("filterBy=").append(filterBy);
+            hasParams = true;
+        }
+        if (page != null && !page.isEmpty()) {
+            redirectUrl.append(hasParams ? "&" : "?").append("page=").append(page);
+            hasParams = true;
+        }
+        if (perPage != null && !perPage.isEmpty()) {
+            redirectUrl.append(hasParams ? "&" : "?").append("perPage=").append(perPage);
+            hasParams = true;
+        }
+        
+        response.sendRedirect(redirectUrl.toString());
     }
 
     private void markAsRead(int notificationId, HttpServletRequest request, HttpServletResponse response) throws IOException {

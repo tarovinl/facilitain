@@ -101,6 +101,10 @@
    <hash n="oracle.jdeveloper.compiler.OjcConfiguration">
       <value n="webIANAEncoding" v="windows-1252"/>
    </hash>
+   <hash n="oracle.jdeveloper.model.J2eeSettings">
+      <value n="j2eeWebAppName" v="Facilitain"/>
+      <value n="j2eeWebContextRoot" v="Facilitain"/>
+   </hash>
    <hash n="oracle.jdeveloper.runner.RunConfigurations">
       <hash n="runConfigurationDefinitions">
          <hash n="Copy of Default">
@@ -154,7 +158,7 @@
          <list n="libraryDefinitions">
             <hash>
                <list n="classPath">
-                  <url path="../../../../Users/Tacula Family/Downloads/javax.mail-1.6.2.jar" jar-entry=""/>
+                  <url protocol="jar" path="file:/Users/Tacula Family/Downloads/javax.mail-1.6.2.jar!/"/>
                </list>
                <value n="deployedByDefault" v="true"/>
                <value n="description" v="Javax.mail-1.6.2.jar"/>

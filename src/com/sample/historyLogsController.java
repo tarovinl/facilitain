@@ -23,7 +23,7 @@ public class historyLogsController extends HttpServlet {
         List<HistoryLog> historyLogs = new ArrayList<>();
 
         String query = 
-            "SELECT LOG_ID, TABLE_NAME, OPERATION_TYPE, OPERATION_TIMESTAMP, USERNAME, ROW_DATA " +
+            "SELECT LOG_ID, TABLE_NAME, OPERATION_TYPE, OPERATION_TIMESTAMP, ROW_DATA " +
             "FROM FMO_ADM.FMO_ITEM_HISTORY_LOGS " +
             "ORDER BY OPERATION_TIMESTAMP DESC";
 
@@ -37,13 +37,14 @@ public class historyLogsController extends HttpServlet {
                     rs.getString("TABLE_NAME"),
                     rs.getString("OPERATION_TYPE"),
                     rs.getTimestamp("OPERATION_TIMESTAMP"),
-                    rs.getString("USERNAME"),
                     rs.getString("ROW_DATA")
                 );
                 historyLogs.add(log);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            // Add error handling
+            request.setAttribute("error", "Failed to load history logs: " + e.getMessage());
         }
 
         request.setAttribute("historyLogs", historyLogs);

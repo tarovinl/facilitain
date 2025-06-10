@@ -10,12 +10,11 @@ public class HistoryLog {
     private String username;
     private String rowData;
 
-    public HistoryLog(int logId, String tableName, String operationType, Timestamp operationTimestamp, String username, String rowData) {
+    public HistoryLog(int logId, String tableName, String operationType, Timestamp operationTimestamp, String rowData) {
         this.logId = logId;
         this.tableName = tableName;
         this.operationType = operationType;
         this.operationTimestamp = operationTimestamp;
-        this.username = username;
         this.rowData = rowData;
     }
 

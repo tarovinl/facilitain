@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(name = "NotificationPopupController", urlPatterns = {"homepage/checkNotifications"})
+@WebServlet(name = "NotificationPopupController", urlPatterns = {"Facilitain/homepage/checkNotifications"})
 public class NotificationPopupController extends HttpServlet {
 
     @Override
