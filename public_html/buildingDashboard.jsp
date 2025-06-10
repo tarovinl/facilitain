@@ -166,6 +166,7 @@
         };
         // Instantiate and draw the column chart
         var chart = new google.visualization.ColumnChart(document.getElementById('repairNoChart'));
+        console.log("Column Chart Data:", data.toJSON());
         chart.draw(data, options);
         }
 function generateReport() {
@@ -278,7 +279,7 @@ function generateReport() {
             
             // Get the pie chart data to create the legend
             <c:forEach var="category" items="${FMO_CATEGORIES_LIST}" varStatus="status">
-                <c:set var="itemCount" value="0" />
+                <c:set var="itemCount2" value="0" />
                 <c:forEach var="itemz" items="${FMO_ITEMS_LIST}">
                     <c:if test="${itemz.itemLID == locID2}">
                         <c:set var="itemCID" value="" />
@@ -294,7 +295,7 @@ function generateReport() {
                         <c:if test="${category.itemCID == itemCID}">
                             <c:if test="${itemz.itemArchive == 1}">
                                 <c:if test="${itemz.itemMaintStat == 2}">
-                                    <c:set var="itemCount" value="${itemCount + 1}" />
+                                    <c:set var="itemCount2" value="${itemCount2 + 1}" />
                                 </c:if>
                             </c:if>
                         </c:if>
@@ -335,13 +336,13 @@ function generateReport() {
                 head: [["Month", "Number of Repairs"]],
                 body: [
                     <c:forEach var="month" items="${monthsList}" varStatus="status">
-                        <c:set var="repairCount" value="0" />
-                        <c:set var="monthNumber" value="${status.index + 1}" />
+                        <c:set var="repairCount2" value="0" />
+                        <c:set var="monthNumber2" value="${status.index + 1}" />
                         <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
                             <c:if test="${repair.repairLocID == locID2}">
                                 <c:if test="${repair.repairYear == currentYear}">
-                                    <c:if test="${repair.repairMonth == monthNumber}">
-                                        <c:set var="repairCount" value="${repair.repairCount}" />
+                                    <c:if test="${repair.repairMonth == monthNumber2}">
+                                        <c:set var="repairCount2" value="${repair.repairCount}" />
                                     </c:if>
                                 </c:if>
                             </c:if>
@@ -613,9 +614,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const noOfDays = parseInt(itemDiv.getAttribute('data-no-of-days')) || 0;
         const noOfDaysWarning = parseInt(itemDiv.getAttribute('data-no-of-days-warning')) || 0;
 
-        console.log('UA Planned Maintenance Date String:', plannedMaintenanceDateStr);
-        console.log('UA Number of Days:', noOfDays);
-        console.log('UA Number of Days Warning:', noOfDaysWarning);
+//        console.log('UA Planned Maintenance Date String:', plannedMaintenanceDateStr);
+//        console.log('UA Number of Days:', noOfDays);
+//        console.log('UA Number of Days Warning:', noOfDaysWarning);
 
 
         if (plannedMaintenanceDateStr) {
@@ -625,7 +626,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const daysSincePlannedMaintenance = (currentDate - plannedMaintenanceDate) / (1000 * 60 * 60 * 24);
                 const daysRemaining = noOfDays - daysSincePlannedMaintenance;
                 
-                console.log(daysRemaining);
+//                console.log(daysRemaining);
 
                 if (daysRemaining > 0 && daysRemaining <= noOfDaysWarning) {
                     const remainingDaysElement = itemDiv.querySelector('.remaining-days');
@@ -636,7 +637,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     itemDiv.style.display = "none";
                 }
             } else {
-                console.error("Invalid lastMaintenanceDate:", plannedMaintenanceDateStr);
+//                console.error("Invalid lastMaintenanceDate:", plannedMaintenanceDateStr);
                 itemDiv.style.display = "none";
             }
         } else {
@@ -647,7 +648,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('#recent-activities .actItem').forEach(function (itemDiv) {
         const plannedMaintenanceDateStr = itemDiv.getAttribute('data-planned-maintenance-date');
         const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
-        console.log('RA Last Maintenance Date String:', lastMaintenanceDateStr);
+//        console.log('RA Last Maintenance Date String:', lastMaintenanceDateStr);
         
         if (lastMaintenanceDateStr) {
             const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
