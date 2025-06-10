@@ -362,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    fetch('/Facilitain/homepage/checkNotifications')
+  fetch('<%= request.getContextPath() %>/facilitain/homepage/checkNotifications')
         .then(response => response.json())
         .then(data => {
             const unreadCount = data.unreadCount;
@@ -452,7 +452,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
     badge.style.display = 'none';
     
     // Fetch notification count
-    fetch('/Facilitain/homepage/checkNotifications')
+   fetch('<%= request.getContextPath() %>/facilitain/homepage/checkNotifications')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');

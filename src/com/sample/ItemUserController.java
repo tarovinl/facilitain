@@ -23,7 +23,7 @@ public class ItemUserController extends HttpServlet {
             throws ServletException, IOException {
         List<ItemUser> itemUserList = new ArrayList<>();
 
-        // Query for ItemUser data
+        // Query for ItemDUser data for now
         String query = "SELECT USER_ID, NAME, EMAIL, ROLE FROM FMO_ADM.FMO_ITEM_DUSERS";
 
         try (Connection connection = PooledConnection.getConnection();

@@ -67,7 +67,7 @@ public class LogoutFilter implements Filter {
                 if (isAllowedPage) {
                     chain.doFilter(request, response);
                 } else {
-                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/feedbackClient");
+                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/index.jsp");
                 }
                 break;
 
@@ -79,6 +79,6 @@ public class LogoutFilter implements Filter {
 
     @Override
     public void destroy() {
-        // Cleanup if necessary
+       
     }
 }
