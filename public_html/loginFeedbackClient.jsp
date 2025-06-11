@@ -37,7 +37,7 @@
         }).join(''));
         const responsePayload = JSON.parse(jsonPayload);
 
-        fetch("loginServlet?loginPage=feedbackClient", {
+        fetch("${pageContext.request.contextPath}/loginServlet?loginPage=feedbackClient", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -80,7 +80,7 @@
                 <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
                     <div class="card">
                         <div class="card-body">
-                            <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
+                            <img src="${pageContext.request.contextPath}/resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
                             <h3 class="text-center p-1 montserrat-bold">Sign In to give Feedback</h3>
                             <p class="p-2">To access MyUSTe Portal, please make sure you meet the following requirements:</p>
                             <p class="p-2">
@@ -104,7 +104,7 @@
                                 </div>
                             </div>
                             <div class="text-center">
-                                <p>Need help signing in? Learn More</p>
+                                <p>Need help signing in? Learn More</p>
                             </div>
                         </div>
                     </div>
