@@ -15,12 +15,8 @@
         <!-- DataTables JS -->
         <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
         <!-- Bootstrap 5 CSS and JS -->
-       <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-        <!-- Bootstrap Bundle JS (includes Popper.js) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.7/awesomplete.min.js"></script>
@@ -33,61 +29,7 @@
          
          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
          <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
-            <link rel="stylesheet" href="./resources/css/custom-fonts.css">
-    <style>
-   body, h1, h2,h3, h4,h5, th,label   {
-        font-family: 'NeueHaasMedium', sans-serif !important;
-    }
-     h6,input, textarea,td,tr, p, {
-        font-family: 'NeueHaasLight', sans-serif !important;
-    }
-    
-    .hover-outline {
-                transition: all 0.3s ease;
-                border: 1px solid transparent; /* Reserve space for border */
-                            }
-
-            .hover-outline:hover {
-                background-color: 	#1C1C1C !important;
-                color: 	#f2f2f2 !important;
-                border: 1px solid 	#f2f2f2 !important;
-                                }
-            .hover-outline img {
-                transition: filter 0.3s ease;
-                                }
-
-            .hover-outline:hover img {
-                filter: invert(1);
-                            }
-
-            .buttonsBack:hover {
-                text-decoration: underline !important;
-                }
-</style>
-<script>
-    $(document).ready(function () {
-        const maxChars = 250;
-        const $textarea = $('#locDescription');
-        const $charCount = $('#charCount');
-
-        // Initialize the count
-        $charCount.text(`${$textarea.val().length} / ${maxChars} characters`);
-
-        $textarea.on('input', function () {
-            let text = $(this).val();
-            if (text.length > maxChars) {
-                $(this).val(text.substring(0, maxChars));
-                text = $(this).val(); // Update the value after trim
-            }
-            $charCount.text(`${text.length} / ${maxChars} characters`);
-        });
-    });
-</script>
-
-    
     </head>
-    
-
     
     <%
     String fullBuildingID = request.getParameter("locID");
@@ -113,19 +55,22 @@
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
-                
-                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack pt-4 d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" 
-   style="margin-left: 2px; font-family: NeueHaasLight, sans-serif;">
-    <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
-    Back
-</a>
+                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack" style="text-decoration: none;color: black; font-size: 20px; margin-left: 2px; display: flex; align-items: center;">
+                <img
+                        src="resources/images/backIcon.svg" 
+                        alt="next icon"
+                        width="16"
+                        height="16"
+                        style="transform: rotateY(180deg); margin-right: 8px;"
+                    /> 
+                    Back
+                </a>
             </div>
         </div>
-        <div class="container">
-        <div class="editbuildingName">
-            <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Edit Location</h1>
+        <div class="editbuildingName container">
+            <h1>Edit Location</h1>
         </div>
-        <div class="floorAndButtons">
+        <div class="floorAndButtons container">
             <div class="locName">
               <h3 class="fw-bold">${locName}</h3>
             </div>
@@ -134,20 +79,6 @@
                 <!--<button class="buttonsBuilding" data-toggle="modal" data-target="#archiveFloor" type="button" onclick="">Archive Floor</button>-->
                 <button class="buttonsBuilding archive-location-btn" href="#" data-bs-toggle="modal" type="button" onclick="">Archive Location</button>
             </div>
-            <div class="d-flex flex-column flex-lg-row gap-2">
-    <button class="buttonsBuilding align-items-center d-flex btn btn-md px-3 py-2 rounded-1 hover-outline text-dark" 
-        style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
-        data-toggle="modal" data-target="#addFloor" type="button">
-        Add Floor
-    </button>
-
-    <button class="buttonsBuilding align-items-center d-flex btn btn-md px-3 py-2 rounded-1 hover-outline text-dark" 
-        style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
-        data-toggle="modal" data-target="#archiveLocation" type="button">
-        Archive Location
-    </button>
-</div>
-
         </div>
 
         <form action="buildingController" method="POST" enctype="multipart/form-data">
@@ -167,8 +98,7 @@
             <div class="row mt-3">
                 <div class="col">
                     <label for="locDescription" class="form-label fw-bold h4">Description</label>
-                    <textarea class="form-control" id="locDescription" name="locDescription" rows="3" maxlength="250">${locDescription}</textarea>
-                    <small id="charCount" class="form-text text-muted">0 / 250 characters</small>
+                    <textarea class="form-control" id="locDescription" name="locDescription" rows="3">${locDescription}</textarea>
                 </div>
             </div>
     
@@ -187,7 +117,7 @@
             <div class="row">
                 <div class="col" id="parentMap">
                     <label for="mapCoord" class="form-label fw-bold h4">Choose your location:</label>
-                    <h6 class="text-secondary fw-normal"  style="font-family: 'NeueHaasLight', sans-serif;">Click on the map to choose the location's area. Click the Reset button to undo.</h6>
+                    <h6 class="text-secondary fw-normal">Click on the map to choose the location's area. Click the Reset button to undo.</h6>
                     <input type="hidden" class="form-control" id="mapCoord" name="mapCoord">
                     <div id="map" style="width: 100%; height: 256px; border-radius:5px;"></div>
                 </div>           
@@ -195,7 +125,7 @@
         </div>
     </div>
     <!-- Save & Reset Buttons Section -->
-    <div class="row mt-2" >
+    <div class="row mt-2">
         <div class="col text-center">
             <input type="submit" value="Save Changes" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold">
         </div> 
@@ -266,7 +196,7 @@
                         </table>
                     </div>
                 </div>
-</div>
+
                 <!--<div class="row mt-3 mb-4">
                     <div class="col dropTbl mb-4">
                         <div class="floorDLblDiv">
@@ -382,36 +312,45 @@
 
 
 <!--add floor modal-->
-<div class="modal fade" id="addFloor" tabindex="-1" aria-labelledby="addFloorLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form action="floorcontroller" method="POST">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addFloorLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Add Floor</h5>
-          <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade" id="addFloor" tabindex="-1" role="dialog" aria-labelledby="addFloor" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="centered-div bg-white">
+                <div class="container p-4 mt-4 mb-4">
+                    <form action="floorcontroller" method="POST">
+                        <div class="row">
+                            <div class="col">
+                                <h3 class="fw-bold">Add Floor</h3>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="flrName" class="fw-bold">Floor Name <span style="color: red;">*</span></label>
+                                <input type="text" name="addFlrName" id="addFlrName" class="form-control mt-3" maxlength="15" required>
+                            </div>
+                        </div>
+                        <input type="hidden" name="addFlrLocID" id="addFlrLocID" class="form-control" value="${locID}">
+                        <input type="hidden" name="locID" value="${locID}">
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="flrDesc" class="fw-bold">Floor Description</label>
+                                <textarea class="form-control mt-3" name="addFlrDesc" id="addFlrDesc" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-center">
+                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
+                            </div> 
+                            <div class="col text-center">
+                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 fw-bold" data-dismiss="modal">Cancel</button>
+                            </div> 
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="addFlrName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Floor Name <span style="color: red;">*</span></label>
-            <input type="text" name="addFlrName" id="addFlrName" class="form-control" maxlength="15" style="font-family: 'NeueHaasLight', sans-serif;" required>
-          </div>
-          <div class="mb-3">
-            <label for="addFlrDesc" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Floor Description</label>
-            <textarea class="form-control" name="addFlrDesc" id="addFlrDesc" rows="2" style="font-family: 'NeueHaasLight', sans-serif;"></textarea>
-          </div>
-          <input type="hidden" name="addFlrLocID" id="addFlrLocID" value="1">
-          <input type="hidden" name="locID" value="1">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-danger" data-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
-          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save</button>
-        </div>
-      </div>
-    </form>
-  </div>
+    </div>
 </div>
-
-
 <!-- end of add floor modal -->
 
 

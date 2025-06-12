@@ -46,6 +46,22 @@
             .buildingManage:hover {
                 text-decoration: underline !important;
                 }
+
+            .qr-button {
+                background-color: #6c757d;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                margin-left: 10px;
+            }
+
+            .qr-button:hover {
+                background-color: #5a6268;
+                color: white;
+            }
     </style>
 </head>
 <body>
@@ -56,7 +72,10 @@
             <div class="col-md-10 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1 style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Feedback</h1>
-                    <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" id="download-chart" ${empty feedbackList ? 'disabled' : ''}>Generate Report</button>
+                    <div class="d-flex align-items-center">
+                        <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" id="download-chart" ${empty feedbackList ? 'disabled' : ''}>Generate Report</button>
+                        <button id="generateQRBtn" class="qr-button">Generate QR</button>
+                    </div>
                 </div>
 
                 <div class="card mb-4">
@@ -279,6 +298,18 @@
 
             // Save the PDF
             pdf.save('feedback_report.pdf');
+        });
+
+        // QR Code download functionality
+        document.getElementById('generateQRBtn').addEventListener('click', function() {
+            // Create a temporary anchor element to trigger download
+            const link = document.createElement('a');
+            // Use relative path instead of absolute path
+            link.href = './resources/images/feedback-qr.png'; 
+            link.download = 'feedback-qr.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
 
         // Initialize DataTable with reduced pagination options and clear actions column

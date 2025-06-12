@@ -48,8 +48,7 @@ public class LogoutFilter implements Filter {
                                  uri.endsWith("/itemUser") ||
                                  uri.endsWith("/itemType") || 
                                  uri.endsWith("/itemCategories") || 
-                                 uri.endsWith("/maintenanceSchedule")||
-                                uri.endsWith("/maintenance");
+                                 uri.endsWith("/maintenanceSchedule");
         
         switch (role) {
             case "Admin":
@@ -77,7 +76,7 @@ public class LogoutFilter implements Filter {
                 if (isAllowedPage) {
                     chain.doFilter(request, response);
                 } else {
-                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/index.jsp");
+                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/unauthorized.jsp");
                 }
                 break;
                 
