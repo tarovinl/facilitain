@@ -30,6 +30,36 @@
          font-weight: 600;
          font-style: normal;
                             }
+
+        /* Override rating.css with fixed star rating */
+        .rating-wrapper {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 5px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .rating-wrapper input[type="radio"] {
+            display: none;
+        }
+
+        .rating-wrapper label {
+            cursor: pointer;
+            color: #ddd;
+            font-size: 2rem;
+            transition: color 0.2s;
+        }
+
+        .rating-wrapper input[type="radio"]:checked ~ label,
+        .rating-wrapper input[type="radio"]:checked ~ label ~ label {
+            color: #fbbe15;
+        }
+
+        .rating-wrapper label:hover,
+        .rating-wrapper label:hover ~ label {
+            color: #fbbe15;
+        }
     
     </style>
 </head>
@@ -93,23 +123,11 @@
   <div class="container d-flex align-items-center justify-content-center">
     <div class="row justify-content-center">    
       
-      <!-- star rating -->
+      <!-- star rating - FIXED ORDER: 5 to 1 for proper left-to-right display -->
       <div class="rating-wrapper">
-        <!-- star 1 -->
-        <input type="radio" id="one" name="rating" value="1" onclick="updateRatingLabel(1)">
-        <label for="one" class="star-rating star">
-          <i class="fas fa-star d-inline-block"></i>
-        </label>
-        
-        <!-- star 2 -->
-        <input type="radio" id="two" name="rating" value="2" onclick="updateRatingLabel(2)">
-        <label for="two" class="star-rating star">
-          <i class="fas fa-star d-inline-block"></i>
-        </label>
-        
-        <!-- star 3 -->
-        <input type="radio" id="three" name="rating" value="3" onclick="updateRatingLabel(3)">
-        <label for="three" class="star-rating star">
+        <!-- star 5 (rightmost in display order, but appears leftmost due to flex-reverse) -->
+        <input type="radio" id="five" name="rating" value="5" onclick="updateRatingLabel(5)">
+        <label for="five" class="star-rating">
           <i class="fas fa-star d-inline-block"></i>
         </label>
         
@@ -119,13 +137,23 @@
           <i class="fas fa-star d-inline-block"></i>
         </label>
         
-        <!-- star 5 -->
-        <input type="radio" id="five" name="rating" value="5" onclick="updateRatingLabel(5)">
-        <label for="five" class="star-rating">
+        <!-- star 3 -->
+        <input type="radio" id="three" name="rating" value="3" onclick="updateRatingLabel(3)">
+        <label for="three" class="star-rating star">
           <i class="fas fa-star d-inline-block"></i>
         </label>
-
         
+        <!-- star 2 -->
+        <input type="radio" id="two" name="rating" value="2" onclick="updateRatingLabel(2)">
+        <label for="two" class="star-rating star">
+          <i class="fas fa-star d-inline-block"></i>
+        </label>
+        
+        <!-- star 1 (leftmost in display order, but appears rightmost due to flex-reverse) -->
+        <input type="radio" id="one" name="rating" value="1" onclick="updateRatingLabel(1)">
+        <label for="one" class="star-rating star">
+          <i class="fas fa-star d-inline-block"></i>
+        </label>
        </div>
       
       

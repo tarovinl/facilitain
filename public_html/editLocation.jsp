@@ -197,7 +197,7 @@
     <!-- Save & Reset Buttons Section -->
     <div class="row mt-2" >
         <div class="col text-center">
-            <input type="submit" value="Save Changes" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold">
+            <input type="submit" value="Save Changes" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bolder">
         </div> 
         <div class="col text-center">
             <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold" onclick="location.reload()">Reset</button>
@@ -399,8 +399,8 @@
             <label for="addFlrDesc" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Floor Description</label>
             <textarea class="form-control" name="addFlrDesc" id="addFlrDesc" rows="2" style="font-family: 'NeueHaasLight', sans-serif;"></textarea>
           </div>
-          <input type="hidden" name="addFlrLocID" id="addFlrLocID" value="1">
-          <input type="hidden" name="locID" value="1">
+          <input type="hidden" name="addFlrLocID" id="addFlrLocID" class="form-control" value="${locID}">
+          <input type="hidden" name="locID" value="${locID}">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-danger" data-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>

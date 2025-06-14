@@ -96,72 +96,95 @@
 
 <body>
     <div class="sidebar">
-        <div class="text-center pt-4">
-            <a href="<%=request.getContextPath()%>/homepage" class="p-0">
-
-               <img src="resources/images/facilitain-home-logo.png" 
-
-             alt="Facilitain Home Logo" 
-             style="max-width: 100%; max-height: 100px; margin: 0 auto; display: block;" />
-            </a>
-            <p>Welcome, Admin</p>
+                    <div class="text-center pt-4">
+                <a href="<%=request.getContextPath()%>/homepage" class="p-0">
+                    <img src="resources/images/facilitain-home-logo.png" 
+                         alt="Facilitain Home Logo" 
+                         style="max-width: 100%; max-height: 100px; margin: 0 auto; display: block;" />
+                </a>
+                
+                
+                <c:choose>
+                    <c:when test="${sessionScope.role == 'Admin'}">
+                        <p>Welcome, Admin</p>
+                    </c:when>
+                    <c:when test="${sessionScope.role == 'Support'}">
+                        <p>Welcome, Support</p>
+                    </c:when>
+                    <c:otherwise>
+                        <p>Welcome</p>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+                       <div class="ps-2">
+    <a href="homepage" class="${page == 'homepage' ? 'active' : ''}">
+        <img src="resources/images/icons/home.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+        Homepage
+    </a>
+    
+   
+        <a href="maintenancePage" class="${page == 'pending' ? 'active' : ''}">
+            <img src="resources/images/icons/maintenance.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+            Maintenance
+        </a>
+   
+    
+    <!-- Maintenance Management section - Admin only -->
+    <c:if test="${sessionScope.role == 'Admin'}">
+        <div class="maintenance-container">
+            <div class="maintenance-header">
+                <img src="resources/images/icons/build.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                <span>Maintenance Management</span>
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </div>
+            <div class="maintenance-items">
+                <a href="itemType" class="${page == 'itemType' ? 'active' : ''}p-2 ">
+                    <span class=" fs-6">Item Types</span>
+                </a>
+                <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}p-2 ">
+                    <span class="">Item Categories</span>
+                </a>
+                <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}p-2">
+                    <span class="">Automated Scheduling</span>
+                </a>
+            </div>
         </div>
-        <div class="ps-2">
-            <a href="homepage" class="${page == 'homepage' ? 'active' : ''}">
-                <img src="resources/images/icons/home.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Homepage
-            </a>
-             <a href="maintenancePage" class="${page == 'pending' ? 'active' : ''}">
-                <img src="resources/images/icons/maintenance.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Maintenance
-            </a>
-             <c:if test="${sessionScope.role == 'Admin'}">
-                <div class="maintenance-container">
-                    <div class="maintenance-header">
-                        <img src="resources/images/icons/build.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                        <span>Maintenance Management</span>
-                        <i class="fas fa-chevron-down ms-auto"></i>
-                    </div>
-                    <div class="maintenance-items">
-                        <a href="itemType" class="${page == 'itemType' ? 'active' : ''}p-2 ">
-                            <span class=" fs-6">Item Types</span>
-                        </a>
-                        <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}p-2 ">
-                            <span class="">Item Categories</span>
-                        </a>
-                        <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}p-2">
-                            <span class="">Automated Scheduling</span>
-                        </a>
-                        
-                    </div>
-                </div>
-            </c:if>           
-            <a href="notification" class="${page == 'notification' ? 'active' : ''}" style="position: relative;">
-             <img src="resources/images/icons/notif.svg" alt="Notifications" class="icon pe-2" 
-                 style="width: 2em; height: 2em; vertical-align: middle;">
-                Notifications 
-            <span id="notificationBadge" class="badge bg-warning text-dark ms-2">0</span>
-            </a>     
-            <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
-                <img src="resources/images/icons/calendar.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Calendar
-            </a>
-            <a href="history" class="${page == 'history' ? 'active' : ''}">
-                <img src="resources/images/icons/clock-left.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                History Logs
-            </a>
-            <a href="feedback" class="${page == 'feedback' ? 'active' : ''}">
-                <img src="resources/images/icons/feedback.svg" alt="Feedback" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Feedback
-            </a>
-            <a href="reports" class="${page == 'reports' ? 'active' : ''}">
-                <img src="resources/images/icons/reports.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Reports
-            </a>
-            <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
-                <img src="resources/images/icons/manage-users.svg" alt="User" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                Users
-            </a>
+    </c:if>
+    
+    <a href="notification" class="${page == 'notification' ? 'active' : ''}" style="position: relative;">
+     <img src="resources/images/icons/notif.svg" alt="Notifications" class="icon pe-2" 
+         style="width: 2em; height: 2em; vertical-align: middle;">
+        Notifications 
+    <span id="notificationBadge" class="badge bg-warning text-dark ms-2">0</span>
+    </a>     
+    
+    <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
+        <img src="resources/images/icons/calendar.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+        Calendar
+    </a>
+    
+    <a href="history" class="${page == 'history' ? 'active' : ''}">
+        <img src="resources/images/icons/clock-left.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+        History Logs
+    </a>
+    
+    <a href="feedback" class="${page == 'feedback' ? 'active' : ''}">
+        <img src="resources/images/icons/feedback.svg" alt="Feedback" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+        Feedback
+    </a>
+    
+    <a href="reports" class="${page == 'reports' ? 'active' : ''}">
+        <img src="resources/images/icons/reports.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+        Reports
+    </a>
+    
+    <!-- Only show Users link for Admin users -->
+    <c:if test="${sessionScope.role == 'Admin'}">
+        <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
+            <img src="resources/images/icons/manage-users.svg" alt="User" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+            Users
+        </a>
+    </c:if>
             <!--<a href="mapView" class="${page == 'mapView' ? 'active' : ''}">
                 <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Map View
@@ -227,7 +250,7 @@
                     </div>
                     <div id="validationMessage" class="text-danger"></div>
                     <input type="hidden" name="originalUrl" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />
-                    <input type="hidden" name="userNum" value="${empNumber}" />
+                    <input type="hidden" name="userNum" value="${empNum}" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasLight', sans-serif;" data-bs-dismiss="modal">Cancel</button>
@@ -360,9 +383,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
 document.addEventListener("DOMContentLoaded", function() {
-    fetch('/FMOCapstone/homepage/checkNotifications')
+  fetch('<%= request.getContextPath() %>/facilitain/homepage/checkNotifications')
         .then(response => response.json())
         .then(data => {
             const unreadCount = data.unreadCount;
@@ -452,7 +474,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
     badge.style.display = 'none';
     
     // Fetch notification count
-    fetch('/FMOCapstone/homepage/checkNotifications')
+   fetch('<%= request.getContextPath() %>/facilitain/homepage/checkNotifications')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
