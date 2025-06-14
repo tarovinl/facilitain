@@ -31,6 +31,8 @@ public class ToDoListController extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(CONTENT_TYPE);
         
+        
+        String userNum = request.getParameter("userNum");
         String fullUrl = request.getParameter("originalUrl");
         if (fullUrl != null) {
             // Remove "?null" if it exists
@@ -104,7 +106,7 @@ public class ToDoListController extends HttpServlet {
             }else if ("uncheck".equals(tdAction)) {
                 sql = "UPDATE C##FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 0 WHERE LIST_ITEM_ID = ?";
             }else{
-                sql = "INSERT INTO C##FMO_ADM.FMO_TO_DO_LIST (EMP_NUMBER, LIST_CONTENT, START_DATE, END_DATE) VALUES (1234, ?, ?, ?)";
+                sql = "INSERT INTO C##FMO_ADM.FMO_TO_DO_LIST (EMP_NUMBER, LIST_CONTENT, START_DATE, END_DATE) VALUES (?, ?, ?, ?)";
             }
                 
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -115,9 +117,10 @@ public class ToDoListController extends HttpServlet {
                     }else if ("uncheck".equals(tdAction)) {
                         stmt.setInt(1, Integer.parseInt(tdListID));
                     }else{
-                        stmt.setString(1, tdListContent);
-                        stmt.setTimestamp(2, sqlStartTimestamp);
-                        stmt.setTimestamp(3, sqlEndTimestamp);
+                        stmt.setInt(1, Integer.parseInt(userNum) );
+                        stmt.setString(2, tdListContent);
+                        stmt.setTimestamp(3, sqlStartTimestamp);
+                        stmt.setTimestamp(4, sqlEndTimestamp);
                     }
                     
                     stmt.executeUpdate();

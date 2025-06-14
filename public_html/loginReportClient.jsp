@@ -37,7 +37,7 @@
                     }).join(''));
                     const responsePayload = JSON.parse(jsonPayload);
 
-                    fetch("loginServlet?loginPage=reportsClient", {
+                    fetch("${pageContext.request.contextPath}/loginServlet?loginPage=reportsClient", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -80,9 +80,8 @@
                 <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
                     <div class="card">
                         <div class="card-body">
-                            <img src="resources/images/FMO-Logo.png" alt="FMO Logo" class="img-fluid d-block mx-auto" style="max-height: 10rem;">
-                            <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
-                            <h3 class="text-center p-1 montserrat-bold">Sign In</h3>
+                            <img src="${pageContext.request.contextPath}/resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
+                            <h3 class="text-center p-1 montserrat-bold">Sign In to Report</h3>
                             <p class="p-2">To access MyUSTe Portal, please make sure you meet the following requirements:</p>
                             <p class="p-2">
                                 1. UST Google Workspace Personal Account <br/>
@@ -105,7 +104,7 @@
                                 </div>
                             </div>
                             <div class="text-center">
-                                <p>Need help signing in? Learn More</p>
+                                <p>Need help signing in? Learn More</p>
                             </div>
                         </div>
                     </div>
