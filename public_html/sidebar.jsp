@@ -383,7 +383,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
 document.addEventListener("DOMContentLoaded", function() {
   fetch('<%= request.getContextPath() %>/facilitain/homepage/checkNotifications')
         .then(response => response.json())

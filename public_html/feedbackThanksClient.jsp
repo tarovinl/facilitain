@@ -47,11 +47,7 @@
          We greatly appreciate you taking the time to complete the form. Your input helps us improve our services.
           </p>
             
-             <div class="container mt-3 d-flex justify-content-center"> <!-- Centering with flexbox -->
-         <button class="btn  w-100 " style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
-                     onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
-                    onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';" onclick="window.location.href='menuClient.jsp';">Back to Menu</button>
-            </div>
+             
             <div class="container mt-3 d-flex justify-content-center">
          <button class="btn  w-100"  style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
                      onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 

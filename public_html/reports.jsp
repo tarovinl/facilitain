@@ -9,12 +9,38 @@
     <title>Reports</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <style>
+    
+    body, h1, h2, h3, h4, th {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+h5, h6, input, textarea, td, tr, p, label, select, option {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+
+    
         .detail-content {
             padding: 1rem;
             background-color: #f8f9fa;
             border-radius: 4px;
             margin: 0.5rem 0;
+        }
+        
+        .similar-report-indicator {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            color: #856404;
+            margin-left: 5px;
+            display: inline-block;
+        }
+        
+        .similar-report-icon {
+            color: #f39c12;
+            margin-right: 3px;
         }
     </style>
 </head>
@@ -25,7 +51,7 @@
 
         <div class="col-md-10 p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1>Reports</h1>
+                <h1 style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Reports</h1>
                 <select id="statusFilter" class="form-select w-auto">
                     <option value="">All Status</option>
                     <option value="Resolved">Resolved</option>
@@ -52,7 +78,14 @@
                             data-repissue="${report.repissue}"
                             data-report-id="${report.reportId}">
                             <td>${report.reportId}</td>
-                            <td>${report.repEquipment}</td>
+                            <td>
+                                ${report.repEquipment}
+                                <c:if test="${hasSimilarReports[report.reportId] && report.status == 0}">
+                                    <span class="similar-report-indicator" title="Similar unresolved reports exist">
+                                        <i class="similar-report-icon">⚠</i>Similar
+                                    </span>
+                                </c:if>
+                            </td>
                             <td>${report.locName}</td>
                             <td><fmt:formatDate value="${report.recInstDt}" pattern="yyyy-MM-dd"/></td>
                             <td>
