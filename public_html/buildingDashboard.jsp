@@ -47,6 +47,7 @@
         <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+        <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
         <style>
         body, h1, h2, h3, h4,h5, h6, th,label,.custom-label {
     font-family: 'NeueHaasMedium', sans-serif !important;

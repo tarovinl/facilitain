@@ -6,10 +6,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports</title>
+    <title>Feedback</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
      <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+     <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <style>
     
     body, h1, h2, h3, h4, th {
@@ -19,7 +20,24 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     font-family: 'NeueHaasLight', sans-serif !important;
 }
 
-    
+     .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+            }
+
+            .hover-outline:hover {
+                background-color: #1C1C1C !important;
+                color: #f2f2f2 !important;
+                border: 1px solid #f2f2f2 !important;
+            }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+            }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+            }
+            
         .detail-content {
             padding: 1rem;
             background-color: #f8f9fa;
@@ -43,20 +61,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             margin-right: 3px;
         }
 
-        .qr-button {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .qr-button:hover {
-            background-color: #5a6268;
-            color: white;
-        }
+       
     </style>
 </head>
 <body>
@@ -68,12 +73,12 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h1 style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Reports</h1>
                 <div class="d-flex gap-2">
-                    <button id="generateQRBtn" class="qr-button">Generate QR</button>
                     <select id="statusFilter" class="form-select w-auto">
                         <option value="">All Status</option>
                         <option value="Resolved">Resolved</option>
                         <option value="Not Resolved">Not Resolved</option>
                     </select>
+                     <button id="generateQRBtn" class="align-items-center d-flex btn btn-md topButtons px-3 py-2 rounded-1 hover-outline text-dark" style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">Generate QR</button>
                 </div>
             </div>
 

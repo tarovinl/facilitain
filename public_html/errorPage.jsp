@@ -9,6 +9,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+        <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
         <style>
         body, h1, h2, h3, h4,h5, h6, th,label,.custom-label {
     font-family: 'NeueHaasMedium', sans-serif !important;

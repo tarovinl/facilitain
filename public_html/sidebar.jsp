@@ -78,13 +78,17 @@
 
 
 #notificationBadge {
-    position: relative;
-    padding: 0.25em 0.6em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5em;
+    height: 1.5em;
     font-size: 0.75rem;
     font-weight: 700;
-    vertical-align: middle;
+    color: white;
+    background-color: red;
     border-radius: 50%;
-    display: inline-block;
+    position: relative;
 }
 </style>
 </head>
@@ -155,7 +159,7 @@
      <img src="resources/images/icons/notif.svg" alt="Notifications" class="icon pe-2" 
          style="width: 2em; height: 2em; vertical-align: middle;">
         Notifications 
-    <span id="notificationBadge" class="badge bg-warning text-dark ms-2">0</span>
+    <span id="notificationBadge" class="badge ms-2">0</span>
     </a>     
     
     <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
