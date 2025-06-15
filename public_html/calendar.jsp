@@ -16,7 +16,7 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
-    
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <style>
     body, h1, h2, h3, h4, th {
     font-family: 'NeueHaasMedium', sans-serif !important;

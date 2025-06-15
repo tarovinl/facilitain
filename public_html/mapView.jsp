@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
@@ -87,7 +88,7 @@
                      <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
                 </div>
                 <a href="./homepage" class="align-items-center d-flex px-3 py-2 rounded-1 hover-outline text-dark text-decoration-none" style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
-                     <img src="resources/images/icons/grid.svg" alt="default" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                     <img src="resources/images/icons/grid.svg" alt="default" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25">
                     Default View
                 </a>
             </div>

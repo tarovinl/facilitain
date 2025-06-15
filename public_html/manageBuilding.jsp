@@ -25,7 +25,7 @@
         
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
-    
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <style>
     
 thead{
@@ -364,15 +364,17 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         <c:choose>
             <c:when test="${sessionScope.role == 'Admin'}">
                 <div class="d-flex gap-2">
-                    <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline"
+                    <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-1 hover-outline"
                             style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
                             onclick="window.location.href='buildingDashboard?locID=${locID}/edit'">
+                        <img src="resources/images/icons/edit.svg" class="pe-2" alt="edit icon" width="25" height="25">
                         Edit Location
                     </button>
-                    <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline"
+                    <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-1 hover-outline"
                             style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
                             data-toggle="modal" data-target="#addEquipment" type="button"
                             onclick="QOLLocSet(); floorRender(); toggleAirconDiv(); filterTypes();">
+                        <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25">
                         Add Equipment
                     </button>
                 </div>

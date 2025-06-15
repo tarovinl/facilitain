@@ -10,6 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
      <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+     <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <style>
     
     body, h1, h2, h3, h4, th {
@@ -19,6 +20,23 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     font-family: 'NeueHaasLight', sans-serif !important;
 }
 
+    .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+                            }
+
+            .hover-outline:hover {
+                background-color: 	#1C1C1C !important;
+                color: 	#f2f2f2 !important;
+                border: 1px solid 	#f2f2f2 !important;
+                                }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+                                }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+                            }
     
         .detail-content {
             padding: 1rem;
@@ -42,6 +60,21 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             color: #f39c12;
             margin-right: 3px;
         }
+
+        .qr-button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .qr-button:hover {
+            background-color: #5a6268;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -52,11 +85,15 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         <div class="col-md-10 p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h1 style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Reports</h1>
-                <select id="statusFilter" class="form-select w-auto">
-                    <option value="">All Status</option>
-                    <option value="Resolved">Resolved</option>
-                    <option value="Not Resolved">Not Resolved</option>
-                </select>
+                <div class="d-flex gap-2">
+                    
+                    <select id="statusFilter" class="form-select w-auto">
+                        <option value="">All Status</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Not Resolved">Not Resolved</option>
+                    </select>
+                    <button id="generateQRBtn" class="px-3 py-2 rounded-1 hover-outline d-flex align-items-center" style="background-color: #fccc4c;"><img src="resources/images/icons/qr.svg" class="pe-2" alt="qr" width="25" height="25">Generate QR</button>
+                </div>
             </div>
 
             <table id="reportsTable" class="table table-striped table-hover">
@@ -150,6 +187,18 @@ $(document).ready(function() {
             targets: 5,
             orderable: false
         }]
+    });
+
+    // QR Code download functionality
+    $('#generateQRBtn').on('click', function() {
+        // Create a temporary anchor element to trigger download
+        const link = document.createElement('a');
+        // Use relative path instead of absolute path
+        link.href = './resources/images/report-qr.png'; 
+        link.download = 'report-qr.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     });
 
     // Function to format the details content and open the modal

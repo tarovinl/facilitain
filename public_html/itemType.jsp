@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
      <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+     <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
     body, h1, h2, h3, h4, th ,h5{
@@ -84,10 +85,10 @@ a.paginate-button.active {
     <div class="row vh-100">
             <jsp:include page="sidebar.jsp"></jsp:include>
         <div class="col-md-10 p-4">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="text-dark" style="font-family: 'NeueHaasMedium', sans-serif;">Item Types</h1>
-                <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">
-                    <i class="bi bi-plus-lg"></i> Add Item Type
+                <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">
+                    <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25">  Add
                 </button>
             </div>
 

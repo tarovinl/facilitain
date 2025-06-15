@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
@@ -142,13 +143,15 @@
                          data-callback="handleCredentialResponse"
                          data-auto_prompt="false">
                     </div>
-                    <div class="g_id_signin montserrat-regular"
-                         data-type="standard"
-                         data-size="large"
-                         data-theme="outline"
-                         data-text="signin_with"
-                         data-shape="rectangular"
-                         data-logo_alignment="left">
+                    <div class="d-flex justify-content-center">
+                      <div class="g_id_signin montserrat-regular"
+                           data-type="standard"
+                           data-size="large"
+                           data-theme="outline"
+                           data-text="signin_with"
+                           data-shape="rectangular"
+                           data-logo_alignment="left">
+                      </div>
                     </div>
                     <a href="#" class="d-block mt-3 text-decoration-none text-dark montserrat-regular text-center">Need help signing in? <strong>Learn More</strong></a>
                 </div>
