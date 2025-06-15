@@ -72,6 +72,7 @@
                 font-family: 'NeueHaasLight', sans-serif;
                 font-size:15px;
             }
+            
     </style>
      
     </head>
@@ -128,7 +129,7 @@
     <c:forEach var="mapItem" items="${FMO_MAP_LIST}">
     L.marker([${mapItem.latitude}, ${mapItem.longitude}], { icon: customIcon }) //csen
         .addTo(map)
-        .bindPopup('<div style="position: relative; padding-top: 44px; padding-left: 10px;"><c:forEach var="locStatus" items="${FMO_LOCATION_STATUS_LIST}"><c:if test="${locStatus.location.itemLocId == mapItem.itemLocId}"><c:choose><c:when test="${locStatus.statusRating == 3}"><div style="position: absolute; top: 10px; left: 10px; background-color: #28a745; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Optimal</div></c:when><c:when test="${locStatus.statusRating == 2}"><div style="position: absolute; top: 10px; left: 10px; background-color: #ff9800; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Moderate</div></c:when><c:when test="${locStatus.statusRating == 1}"><div style="position: absolute; top: 10px; left: 10px; background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Danger</div></c:when></c:choose></c:if></c:forEach><a href="./buildingDashboard?locID=${mapItem.itemLocId}" class="popup-link"><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locName}</c:if></c:forEach></a><div class="popup-description" style="margin-top: 4px;"><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locDescription}</c:if></c:forEach></div></div>'); // Static link
+        .bindPopup('<div style="position: relative; "><c:forEach var="locStatus" items="${FMO_LOCATION_STATUS_LIST}"><c:if test="${locStatus.location.itemLocId == mapItem.itemLocId}"><c:choose><c:when test="${locStatus.statusRating == 3}"><div style="position: relative; display: block; width: fit-content; background-color: #28a745; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Optimal</div></c:when><c:when test="${locStatus.statusRating == 2}"><div style="position: relative; display: block; width: fit-content; background-color: #ff9800; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Moderate</div></c:when><c:when test="${locStatus.statusRating == 1}"><div style="position: relative; display: block; width: fit-content; background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Danger</div></c:when></c:choose></c:if></c:forEach><a href="./buildingDashboard?locID=${mapItem.itemLocId}" class="popup-link" style="margin-top: 4px; display: inline-block;" ><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locName}</c:if></c:forEach></a><div class="popup-description" style="margin-top: 4px;"><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locDescription}</c:if></c:forEach></div></div>'); // Static link
     </c:forEach>   
         
     window.addEventListener('resize', resizeMap);

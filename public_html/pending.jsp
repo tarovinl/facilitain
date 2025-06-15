@@ -74,6 +74,25 @@
  input, textarea, td, tr, p, select, option,id {
     font-family: 'NeueHaasLight', sans-serif !important;
 }
+  .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+            }
+
+            .hover-outline:hover {
+                background-color: #1C1C1C !important;
+                color: #f2f2f2 !important;
+                border: 1px solid #f2f2f2 !important;
+            }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+            }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+            }
+            
+
     </style>
 </head>
 
@@ -111,7 +130,8 @@
                     <div class="mt-3 mt-md-0">
                         <%--<c:choose>
                             <c:when test="${sessionScope.role == 'Admin' || sessionScope.role == 'Maintenance'}">--%>
-                                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal">
+                                <button class="align-items-center d-flex btn btn-md topButtons px-3 py-2 rounded-1 hover-outline text-dark" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal" 
+                                style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
                                     <i class="bi bi-plus-lg"></i> Schedule Maintenance
                                 </button>
                             <%--</c:when>
