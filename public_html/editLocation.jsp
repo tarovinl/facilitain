@@ -144,11 +144,7 @@
             <div class="locName">
               <h3 class="fw-bold">${locName}</h3>
             </div>
-            <div>
-                <button class="buttonsBuilding" data-toggle="modal" data-target="#addFloor" type="button" onclick="">Add Floor</button>
-                <!--<button class="buttonsBuilding" data-toggle="modal" data-target="#archiveFloor" type="button" onclick="">Archive Floor</button>-->
-                <button class="buttonsBuilding archive-location-btn" href="#" data-bs-toggle="modal" type="button" onclick="">Archive Location</button>
-            </div>
+            
             <div class="d-flex flex-column flex-lg-row gap-2">
     <button class="buttonsBuilding align-items-center d-flex btn btn-md px-3 py-2 rounded-1 hover-outline text-dark" 
         style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
@@ -156,9 +152,9 @@
         Add Floor
     </button>
 
-    <button class="buttonsBuilding align-items-center d-flex btn btn-md px-3 py-2 rounded-1 hover-outline text-dark" 
+    <button class="buttonsBuilding archive-location-btn align-items-center d-flex btn btn-md px-3 py-2 rounded-1 hover-outline text-dark" 
         style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
-        data-toggle="modal" data-target="#archiveLocation" type="button">
+        href="#" data-bs-toggle="modal" type="button" onclick="">
         Archive Location
     </button>
 </div>
