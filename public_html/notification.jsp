@@ -18,7 +18,10 @@
         h5, h6, input, textarea, td, tr, p, label, select, option {
             font-family: 'NeueHaasLight', sans-serif !important;
         }
-        
+        .font-light {
+          font-family: 'NeueHaasLight', sans-serif !important;
+        }
+
         .maintenance-dropdown {
             background-color: #f8f9fa;
             border: 1px solid #dee2e6;
@@ -202,7 +205,7 @@
                                     </c:choose>
                                 "/>
                                 <button type="submit" class="btn btn-block text-start p-0 bg-transparent border-0 w-100">
-                                    <div class="text-start">
+                                    </button><div class="text-start">
                                         <h6 class="mb-1 text-start">
                                             <c:choose>
                                                 <c:when test="${notification.assignmentNotification}">
@@ -212,22 +215,26 @@
                                                     <i class="bi bi-bell-fill notification-icon"></i>
                                                 </c:otherwise>
                                             </c:choose>
-                                            <c:choose>
-                                                <c:when test="${notification.groupedMaintenance}">
+                                           </h6><div class="font-light">
+                                              <h6 class="mb-1">
+                                                <c:choose>
+                                                  <c:when test="${notification.groupedMaintenance}">
                                                     Maintenance Required - ${notification.locName}
                                                     <span class="maintenance-count">${notification.maintenanceItemCount}</span>
-                                                </c:when>
-                                                <c:otherwise>
+                                                  </c:when>
+                                                  <c:otherwise>
                                                     ${notification.message}
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </h6>
-                                        <small class="text-muted text-start d-block">
-                                            <i class="bi bi-clock me-1"></i>Created At: ${notification.createdAt}
-                                        </small>
-                                        <small class="text-muted text-start d-block">
-                                            <i class="bi bi-geo-alt me-1"></i>Location: ${notification.locName}
-                                        </small>
+                                                  </c:otherwise>
+                                                </c:choose>
+                                              </h6>
+                                              <small class="text-muted text-start d-block">
+                                                Created At: ${notification.createdAt}
+                                              </small>
+                                              <small class="text-muted text-start d-block">
+                                               Location: ${notification.locName}
+                                              </small>
+                                            </div>
+
                                         
                                         <!-- Dropdown for grouped maintenance items -->
                                         <c:if test="${notification.groupedMaintenance}">
