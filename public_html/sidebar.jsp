@@ -15,10 +15,10 @@
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./resources/css/sidebar.css">
     <style>
-    body, h1, h2, h3, h4,h5 th {
+    body, h1, h2, h3,h5, th {
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
-    h6, input, textarea, td, tr, p, label, select, option {
+   h4, h6, input, textarea, td, tr, p, label, select, option {
     font-family: 'NeueHaasLight', sans-serif !important;
 }
 .maintenance-container {
@@ -204,9 +204,7 @@
                 <button class="btn btn-sm icon-button" data-bs-toggle="modal" data-bs-target="#showToDo">
                   <img src="resources/images/icons/open.svg" alt="open" class="icon" width="30" height="30"> 
                 </button>
-                <button class="btn btn-sm icon-button" data-bs-toggle="modal" data-bs-target="#addToDo">
-                  <img src="resources/images/icons/add-white.svg" alt="add" class="icon" width="30" height="30"> 
-                </button>
+
               </div>
             </div>
 
