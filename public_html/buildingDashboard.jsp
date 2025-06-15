@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <c:if test="${status.first}">
                                 <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" 
                                 class="buildingManage d-flex align-items-center text-decoration-none text-white fs-3" 
-                                style="font-family: NeueHaasMedium, sans-serif;">
+                                style="font-family: NeueHaasLight, sans-serif;">
                                 Manage
                                 <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
                                 </a>

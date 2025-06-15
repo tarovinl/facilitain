@@ -21,6 +21,24 @@
    h4, h6, input, textarea, td, tr, p, label, select, option {
     font-family: 'NeueHaasLight', sans-serif !important;
 }
+  .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+            }
+
+            .hover-outline:hover {
+                background-color: #1C1C1C !important;
+                color: #f2f2f2 !important;
+                border: 1px solid #f2f2f2 !important;
+            }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+            }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+            }
+            
 .maintenance-container {
     margin: 10px 0;
 }
@@ -188,25 +206,29 @@
             <img src="resources/images/icons/manage-users.svg" alt="User" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
             Users
         </a>
+    
+    
     </c:if>
             <!--<a href="mapView" class="${page == 'mapView' ? 'active' : ''}">
                 <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Map View
             </a>-->
-            
-           
-        </div>
-        <div class="todo-list">
-            <div class="d-flex justify-content-between align-items-center">
-              <h4 class="ps-1 mb-0">To-Do</h4> <!-- Remove margin bottom for vertical alignment -->
-              
-              <div class="d-flex align-items-center gap-1">
-                <button class="btn btn-sm icon-button" data-bs-toggle="modal" data-bs-target="#showToDo">
-                  <img src="resources/images/icons/open.svg" alt="open" class="icon" width="30" height="30"> 
-                </button>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#showToDo" class="d-flex align-items-center ${page == 'todo' ? 'active' : ''}">
+    <img src="resources/images/icons/open.svg" alt="To-Do" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+    To-Do
+</a>
+       <!-- Sidebar container -->
+<div class="d-flex flex-column pt-4" style="height: 100%;">
+  
+  <!-- ... other sidebar links ... -->
 
-              </div>
-            </div>
+  <a href="<%=request.getContextPath()%>/logoutServlet"
+     class="btn mt-auto d-flex justify-content-center align-items-center">
+    <img src="resources/images/icons/logout.svg" alt="logout"
+         class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> 
+    Logout
+  </a>
+</div>
 
             <!--<hr class="bg-light border-2 border-top border-light"/>
             <div class="todo-item d-flex justify-content-between align-items-center">
@@ -225,9 +247,7 @@
             <hr class="bg-light border-2 border-top border-light"/>-->
         </div>
      <!--   Log out to Portal -->
-        <a href="<%=request.getContextPath()%>/logoutServlet" class="btn">
-        <img src="resources/images/icons/logout.svg" alt="logout" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> 
-        Logout</a>
+        
     </div>
 
 <!--to do list item modal-->
@@ -272,16 +292,17 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="addToDoListLabel">To-Do List</h4>
+                <h4 class="modal-title" id="addToDoListLabel" style="font-family: 'NeueHaasMedium', sans-serif !important;">To-Do List</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="mb-3 d-flex justify-content-end">
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addToDo" onclick="openAddToDoModal()">
+                <div class="mb-3 d-flex justify-content-end align-items-center">
+                    <button type="button" class="btn hover-outline"  style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#addToDo" onclick="openAddToDoModal()">
+                       <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25">
                         Add
                     </button>
                 </div>
-                <div style="border: 1px solid black; max-height: 300px; overflow-y: auto;">
+                <div style=" max-height: 300px; overflow-y: auto;">
                     <table class="table table-bordered" id="tdTable" style="width:100%;">
                         <thead>
                             <tr>
