@@ -408,11 +408,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
             </div>
-            <div>
+            <div class="d-flex">
               <!-- Edit button triggers the modal -->
                 <c:choose>
                     <c:when test="${sessionScope.role == 'Admin'}">
-                      <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
+                      <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-1 hover-outline" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
                         <img src="resources/images/icons/edit.svg" class="pe-2" alt="edit icon" width="25" height="25">
                         Edit
                       </button>
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </c:otherwise>
                 </c:choose>
               
-              <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" style="font-family: NeueHaasMedium, sans-serif;">
+              <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-1 hover-outline" style="font-family: NeueHaasMedium, sans-serif;">
               <img src="resources/images/icons/summarize.svg" class="pe-2" alt="generate report icon" width="25" height="25">
               Generate Report</button>
             </div>

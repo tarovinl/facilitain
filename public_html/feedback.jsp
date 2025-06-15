@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <style>
    body, h1, h2, h3, h4,h5 th {
     font-family: 'NeueHaasMedium', sans-serif !important;
@@ -72,9 +73,9 @@
             <div class="col-md-10 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1 style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Feedback</h1>
-                    <div class="d-flex align-items-center">
-                        <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" id="download-chart" ${empty feedbackList ? 'disabled' : ''}>Generate Report</button>
-                        <button id="generateQRBtn" class="qr-button">Generate QR</button>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class=" px-3 py-2 rounded-1 hover-outline d-flex align-items-center" style="background-color: #fccc4c;" id="download-chart" ${empty feedbackList ? 'disabled' : ''}><img src="resources/images/icons/summarize.svg" class="pe-2" alt="generate report icon" width="25" height="25">Generate Report</button>
+                        <button id="generateQRBtn" class=" px-3 py-2 rounded-1 hover-outline d-flex align-items-center" style="background-color: #fccc4c;"><img src="resources/images/icons/qr.svg" class="pe-2" alt="qr" width="25" height="25">Generate QR</button>
                     </div>
                 </div>
 

@@ -134,7 +134,7 @@
                                 <button class="align-items-center d-flex btn btn-md topButtons px-3 py-2 rounded-1 hover-outline text-dark" 
                                     style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
                                     data-bs-toggle="modal" data-bs-target="#addBuildingModal">
-                                    <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> 
+                                    <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"> 
                                     Add
                                 </button>
                             </c:when>
@@ -144,7 +144,7 @@
                         <a href="./mapView" 
                             class="align-items-center d-flex btn btn-md topButtons px-3 py-1 rounded-2 hover-outline text-dark text-decoration-none" 
                             style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
-                             <img src="resources/images/icons/map.svg" alt="map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                             <img src="resources/images/icons/map.svg" alt="map" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"">
                             Map View
                         </a>
                     </div>

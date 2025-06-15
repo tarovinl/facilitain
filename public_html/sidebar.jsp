@@ -198,16 +198,18 @@
         </div>
         <div class="todo-list">
             <div class="d-flex justify-content-between align-items-center">
-                <h4 class="ps-1">To-Do</h4>
-                <div>
+              <h4 class="ps-1 mb-0">To-Do</h4> <!-- Remove margin bottom for vertical alignment -->
+              
+              <div class="d-flex align-items-center gap-1">
                 <button class="btn btn-sm icon-button" data-bs-toggle="modal" data-bs-target="#showToDo">
-                    <img src="resources/images/icons/external-link.svg" alt="All Items" class="icon" style="width: 2em; height: 2em; vertical-align: middle;">
+                  <img src="resources/images/icons/open.svg" alt="open" class="icon" width="30" height="30"> 
                 </button>
                 <button class="btn btn-sm icon-button" data-bs-toggle="modal" data-bs-target="#addToDo">
-                    <img src="resources/images/icons/plus-solid.svg" alt="Add" class="icon" style="width: 2em; height: 2em; vertical-align: middle;">
+                  <img src="resources/images/icons/add-white.svg" alt="add" class="icon" width="30" height="30"> 
                 </button>
-                </div>
+              </div>
             </div>
+
             <!--<hr class="bg-light border-2 border-top border-light"/>
             <div class="todo-item d-flex justify-content-between align-items-center">
                 <div class="ps-2">

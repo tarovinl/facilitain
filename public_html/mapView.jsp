@@ -88,7 +88,7 @@
                      <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
                 </div>
                 <a href="./homepage" class="align-items-center d-flex px-3 py-2 rounded-1 hover-outline text-dark text-decoration-none" style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
-                     <img src="resources/images/icons/grid.svg" alt="default" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                     <img src="resources/images/icons/grid.svg" alt="default" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25">
                     Default View
                 </a>
             </div>

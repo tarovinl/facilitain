@@ -133,7 +133,7 @@
                             <c:when test="${sessionScope.role == 'Admin' || sessionScope.role == 'Maintenance'}">--%>
                                 <button class="align-items-center d-flex btn btn-md topButtons px-3 py-2 rounded-1 hover-outline text-dark" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal" 
                                 style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
-                                    <i class="bi bi-plus-lg"></i> Schedule Maintenance
+                                    <img src="resources/images/icons/schedule.svg" alt="schedule" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"> Schedule Maintenance
                                 </button>
                             <%--</c:when>
                             <c:otherwise>

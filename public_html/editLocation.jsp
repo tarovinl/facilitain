@@ -39,7 +39,7 @@
    body, h1, h2,h3, h4,h5, th,label   {
         font-family: 'NeueHaasMedium', sans-serif !important;
     }
-     h6,input, textarea,td,tr, p, {
+     h6,input, textarea,td,tr, p {
         font-family: 'NeueHaasLight', sans-serif !important;
     }
     
@@ -212,10 +212,10 @@
     <!-- Save & Reset Buttons Section -->
     <div class="row mt-2" >
         <div class="col text-center">
-            <input type="submit" value="Save Changes" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bolder">
+            <input type="submit" value="Save Changes" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bolder" style="font-family: NeueHaasMedium, sans-serif !important;">
         </div> 
         <div class="col text-center">
-            <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold" onclick="location.reload()">Reset</button>
+            <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold"  style="font-family: NeueHaasMedium, sans-serif !important;" onclick="location.reload()">Reset</button>
         </div> 
     </div>
 </form>
