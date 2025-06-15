@@ -143,13 +143,15 @@
                          data-callback="handleCredentialResponse"
                          data-auto_prompt="false">
                     </div>
-                    <div class="g_id_signin montserrat-regular"
-                         data-type="standard"
-                         data-size="large"
-                         data-theme="outline"
-                         data-text="signin_with"
-                         data-shape="rectangular"
-                         data-logo_alignment="left">
+                    <div class="d-flex justify-content-center">
+                      <div class="g_id_signin montserrat-regular"
+                           data-type="standard"
+                           data-size="large"
+                           data-theme="outline"
+                           data-text="signin_with"
+                           data-shape="rectangular"
+                           data-logo_alignment="left">
+                      </div>
                     </div>
                     <a href="#" class="d-block mt-3 text-decoration-none text-dark montserrat-regular text-center">Need help signing in? <strong>Learn More</strong></a>
                 </div>
