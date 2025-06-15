@@ -291,6 +291,20 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                             }
 
 
+.btn-cancel-outline {
+  color: #8388a4 !important;        /* Text color */
+  background-color: white !important; /* White background */
+  border: 2px solid #8388a4 !important; /* Outline */
+  box-shadow: none !important;       /* Remove default shadow */
+}
+
+/* Optional: add hover effect */
+.btn-cancel-outline:hover {
+  background-color: #f0f2f7 !important; /* Light gray bg on hover */
+  border-color: #8388a4 !important;
+  color: #8388a4 !important;
+}
+
 
 </style>
     
@@ -1953,13 +1967,17 @@ function roomEditRenderCopy() {
 
     Swal.fire({
         title: 'Are you sure?',
-        text: "You want to archive this equipment?",
+        text: "Do you want to archive this equipment?",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, archive it!',
-        cancelButtonText: 'Cancel'
+        reverseButtons: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#ffffff',
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        customClass: {
+             cancelButton: 'btn-cancel-outline'
+            }
     }).then((result) => {
         if (result.isConfirmed) {
             $('#itemArchiveID').val(maintArchiveID);

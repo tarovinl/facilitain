@@ -48,6 +48,13 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
         <style>
+        body, h1, h2, h3, h4,h5, h6, th,label,.custom-label {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+ input, textarea, td, tr, p, select, option,id {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+        
             .hover-outline {
                 transition: all 0.3s ease;
                 border: 1px solid transparent; /* Reserve space for border */

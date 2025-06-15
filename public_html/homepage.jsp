@@ -249,20 +249,20 @@
         <form action="addbuildingcontroller" method="post" enctype="multipart/form-data">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addBuildingModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Add Building</h5>
+                    <h5 class="modal-title" id="addBuildingModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Add Location</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="locName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Building Name</label>
-                        <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter building name" style="font-family: 'NeueHaasLight', sans-serif;" required>
+                        <label for="locName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Name</label>
+                        <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter location name" style="font-family: 'NeueHaasLight', sans-serif;" required>
                     </div>
                     <div class="mb-3">
-                        <label for="locDescription" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Building Description</label>
-                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter building description" style="font-family: 'NeueHaasLight', sans-serif;" required>
+                        <label for="locDescription" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Description</label>
+                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter location description" style="font-family: 'NeueHaasLight', sans-serif;" required>
                     </div>
                     <div class="mb-3">
-                        <label for="buildingImage" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Building Image</label>
+                        <label for="buildingImage" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Image</label>
                         <input type="file" class="form-control" id="buildingImage" name="buildingImage" accept="image/*" style="font-family: 'NeueHaasLight', sans-serif;">
                     </div>
                 </div>
