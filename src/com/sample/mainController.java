@@ -693,6 +693,21 @@ public class mainController extends HttpServlet {
     private boolean isValidPathAndQuery(String path, String queryString) {
         if (path == null) return false;
 
+        // Remove global "harmless" parameters (action=..., status=...) regardless of values
+        if (queryString != null) {
+            // Remove action=<anything> and status=<anything> (alphanumeric, underscore, dash)
+            queryString = queryString
+                .replaceAll("(?i)&?action=[\\w\\-]+", "")
+                .replaceAll("(?i)&?status=[\\w\\-]+", "")
+                .replaceAll("^&+", "")     // remove leading '&'
+                .replaceAll("&{2,}", "&"); // fix accidental '&&'
+            
+            // Clean up empty query string
+            if (queryString.isEmpty()) {
+                queryString = null;
+            }
+        }
+        
         switch (path) {
             case "/buildingDashboard":
                 // Allow no query, or valid locID and optional /manage or /edit

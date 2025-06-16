@@ -867,14 +867,14 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     <div class="modal fade" id="addEquipment" tabindex="-1" role="dialog" aria-labelledby="equipmentAdd" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-                <div class="centered-div bg-white">
-                    <div class="container p-4 mt-4 mb-4">
+                
                         <form action="itemcontroller" method="POST">
-                            <div class="row">
-                                <div class="col">
-                                    <h3 class="fw-bold">Add Equipment</h3>
-                                </div>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addEquipmentModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Add Equipment</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
+                            <div class="modal-body">
+                            
                             <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}">
                             <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}">
                             <div class="row mt-1">
@@ -1018,17 +1018,13 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                     <textarea class="form-control" id="remarks" name="remarks" rows="2" maxlength="200"></textarea>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col text-center">
-                                    <input type="submit" value="Save" class="btn btn-warning btn-lg mt-3 w-100 fw-bold">
-                                </div> 
-                                <div class="col text-center">
-                                    <button type="button" class="btn btn-warning btn-lg mt-3 w-100 fw-bold" data-dismiss="modal">Cancel</button>
-                                </div> 
+                            </div>
+                            <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+                                    <input type="submit" value="Save" class="btn btn-success">
                             </div>
                         </form>
-                    </div>     
-                </div>
+                    
             
         </div>
     </div>
@@ -1039,14 +1035,13 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     <div class="modal fade" id="editEquipment" tabindex="-1" role="dialog" aria-labelledby="equipmentEdit" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-                <div class="centered-div bg-white">
-                    <div class="container p-4 mt-4 mb-4">
+        
                         <form action="itemcontroller" method="POST">
-                            <div class="row">
-                                <div class="col">
-                                    <h3 class="fw-bold">Edit Equipment</h3>
-                                </div>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editEquipmentModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Edit Equipment</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
+                            <div class="modal-body">
                             <input type="hidden" name="itemEditID" id="itemIDField" class="form-control">
                             <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}">
                             <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}">
@@ -1191,17 +1186,12 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                     <textarea class="form-control" id="remarks" name="editRemarks" rows="2" maxlength="200"></textarea>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col text-center">
-                                    <input type="submit" value="Save" class="btn btn-warning btn-lg mt-5 w-100 fw-bold">
-                                </div> 
-                                <div class="col text-center">
-                                    <button type="button" class="btn btn-warning btn-lg mt-5 w-100 fw-bold" data-dismiss="modal">Cancel</button>
-                                </div> 
+                            </div>
+                            <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+                                    <input type="submit" value="Save" class="btn btn-success">
                             </div>
                         </form>
-                    </div>     
-                </div>
             
             </div>
         </div>
