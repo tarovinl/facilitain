@@ -12,7 +12,7 @@
          <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
-        
+        <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
         <title>Thank you!</title>
          <style>
         .montserrat-regular {
@@ -37,10 +37,13 @@
         
     <div class="container justify-content-center align-items-center flex-grow-1 my-5 montserrat-regular">
         <div class="row justify-content-center align-items-center">
-            <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-6 col-xl-6">
                 <div class="card">
                     <div class="card-body   text-center ">
-             <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4" style="max-height: 4rem;">
+             <img src="resources/images/FACILITAIN_WLOGO2.png" 
+     alt="FACILITAIN" 
+     class="img-fluid mb-4 d-block mx-auto" 
+     style="max-height: 5rem;">
             <h3 class="text-center ">Feedback Form</h3>
           <p class=" text-center p-5"> 
          Thank you for your feedback! <br/>

@@ -24,10 +24,10 @@
         style="overflow-x: auto; white-space: nowrap;">
     
             <!-- For large devices -->
-            <img src="resources/images/USTLogo.png" alt="UST Logo" class="img-fluid d-none d-md-block" style="max-height: 6rem;">
+            <img src="resources/images/USTLogo2.png" alt="UST Logo" class="img-fluid d-none d-md-block" style="max-height: 4rem;">
 
             <!-- For small devices -->
-            <img src="resources/images/USTLogo.png" alt="UST Logo" class="img-fluid d-md-none" style="max-height: 3rem;">
+            <img src="resources/images/USTLogo2.png" alt="UST Logo" class="img-fluid d-md-none" style="max-height: 2rem;">
             
             <% 
                 boolean isLoggedIn = session != null && session.getAttribute("email") != null;

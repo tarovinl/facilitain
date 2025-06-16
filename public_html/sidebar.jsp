@@ -96,18 +96,23 @@
 
 
 #notificationBadge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.5em;
-    height: 1.5em;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: white;
-    background-color: red;
-    border-radius: 50%;
-    position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5em;
+  height: 1.5em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+  background-color: red;
+  border-radius: 50%;
+  position: relative;
+  line-height: 1; /* Prevents vertical misalignment */
+  text-align: center;
+  vertical-align: middle; /* Helps in inline contexts */
 }
+
+
 </style>
 </head>
 <c:forEach items="${FMO_USERS}" var="user" >
@@ -120,7 +125,7 @@
     <div class="sidebar">
                     <div class="text-center pt-4">
                 <a href="<%=request.getContextPath()%>/homepage" class="p-0">
-                    <img src="resources/images/facilitain-home-logo.png" 
+                    <img src="resources/images/FACILITAIN_WLOGO.png" 
                          alt="Facilitain Home Logo" 
                          style="max-width: 100%; max-height: 100px; margin: 0 auto; display: block;" />
                 </a>
