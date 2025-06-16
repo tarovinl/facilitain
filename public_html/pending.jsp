@@ -19,10 +19,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
     <style>
+    
+
+   
         .dataTables_wrapper .dataTables_filter {
             margin-bottom: 15px;
         }
@@ -65,6 +69,31 @@
         #maintenanceTable tbody tr.selected {
             background-color: rgba(0,0,0,0.1);
         }
+          body, h1, h2, h3, h4,h5, h6, th,label,.custom-label {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+ input, textarea, td, tr, p, select, option,id {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+  .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+            }
+
+            .hover-outline:hover {
+                background-color: #1C1C1C !important;
+                color: #f2f2f2 !important;
+                border: 1px solid #f2f2f2 !important;
+            }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+            }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+            }
+            
+
     </style>
 </head>
 
@@ -93,17 +122,18 @@
     <div class="row min-vh-100">
         <jsp:include page="sidebar.jsp"/>
 
-        <div class="col-md-10">
-            <div class="container">
+        <div class="col-md-10 p-4">
+            <div class="container-fluid">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
                     <div>
-                        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Maintenance</h1>
+                        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Maintenance</h1>
                     </div>
                     <div class="mt-3 mt-md-0">
                         <%--<c:choose>
                             <c:when test="${sessionScope.role == 'Admin' || sessionScope.role == 'Maintenance'}">--%>
-                                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal">
-                                    <i class="bi bi-plus-lg"></i> Make a Maintenance
+                                <button class="align-items-center d-flex btn btn-md topButtons px-3 py-2 rounded-1 hover-outline text-dark" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal" 
+                                style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
+                                    <img src="resources/images/icons/schedule.svg" alt="schedule" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"> Schedule Maintenance
                                 </button>
                             <%--</c:when>
                             <c:otherwise>
@@ -112,8 +142,7 @@
                     </div>
                 </div>
 
-                <!-- Maintenance Dashboard Panels -->
-                <!-- Changed class name from maintenance-container to dashboard-maintenance-container -->
+               
                 <div class="row dashboard-maintenance-container">
                     <!-- Maintenance List Panel -->
                     <div class="col-lg-6 mb-4 equal-height">
@@ -122,14 +151,16 @@
                                 <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">List of Equipment</h5>
                             </div>
                             <div class="card-body">
-                                <table id="maintenanceTable" class="table table-hover" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Equipment Name</th>
-                                            <th>Status</th>
-                                            <th>Date Notified</th>
-                                        </tr>
+                                <table id="maintenanceTable" class="table table-striped table-hover" style="width:100%">
+                                    <thead class="table-dark">
+                                     <tr>
+                                    <th>Equipment Name</th>
+                                    <th>Status</th>
+                                    <th>Date Notified</th>
+                                    <th style="display: none;">Equipment Details</th>
+                                    </tr>
                                     </thead>
+
                                     <tbody>
                                         <!-- Static data for demonstration -->
                                         <%--<c:forEach items="${FMO_TYPES_LIST}" var="type" >
@@ -191,6 +222,7 @@
                                             </c:forEach>
                                             </td>
                                             <td>${item.plannedMaintDate}</td>
+                                            <td style="display: none;">${itemCat} ${itemType} ${item.itemBrand} ${itemLoc} ${item.itemFloor}</td>
                                         </tr>
                                         </c:if>
                                     </c:forEach>
@@ -216,24 +248,24 @@
                                 <!-- Static equipment details -->
                                 <div id="equipmentDetails">
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Equipment Type</label>
-                                        <div id="detailEquipment">Fire Extinguisher</div>
+                                        <label class="form-label custom-label" style=" font-family: 'NeueHaasMedium', sans-serif;">Equipment Type</label>
+                                        <div id="detailEquipment" style=" font-family: 'NeueHaasLight', sans-serif;">Fire Extinguisher</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Status</label>
-                                        <div id="detailStatus">In Progress</div>
+                                        <label class="form-label custom-label">Status</label>
+                                        <div id="detailStatus" style=" font-family: 'NeueHaasLight', sans-serif;">In Progress</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Codename</label>
-                                        <div id="detailSerial">09222222</div>
+                                        <label class="form-label custom-label">Codename</label>
+                                        <div id="detailSerial" style=" font-family: 'NeueHaasLight', sans-serif;">09222222</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Brand Name</label>
-                                        <div id="detailBrand">XYZ Fire Safety</div>
+                                        <label class="form-label custom-label">Brand Name</label>
+                                        <div id="detailBrand" style=" font-family: 'NeueHaasLight', sans-serif;">XYZ Fire Safety</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Location</label>
-                                        <div id="detailLocation">Building A, Floor 1</div>
+                                        <label class="form-label custom-label">Location</label>
+                                        <div id="detailLocation" style=" font-family: 'NeueHaasLight', sans-serif;">Building A, Floor 1</div>
                                     </div>
                                     <div class="d-grid gap-2 mt-4">
                                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateStatusModal"
@@ -253,25 +285,48 @@
                                 <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">Assigned Maintenance</h5>
                             </div>
                             <div class="card-body">
-                                <table id="scheduledMaintTable" class="table table-hover" style="width:100%">
-                                    <thead>
+                                <table id="scheduledMaintTable" class="table table-striped table-hover" style="width:100%">
+                                    <thead class="table-dark">
                                         <tr>
                                             <th>Equipment Name</th>
                                             <th>Maintenance Type</th>
                                             <th>Assigned To</th>
                                             <th>Date of Maintenance</th>
                                             <th>Actions</th>
+                                            <th style="display: none;">Equipment Details</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <c:forEach items="${FMO_MAINT_ASSIGN}" var="maintass" >
                                         <c:if test="${maintass.isCompleted == 0}">
+                                        <c:set var="maintName" value="" />
+                                        <c:set var="maintEquipmentDetails" value="" />
                                         <tr>
                                             <td>
                                                 <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
                                                 <c:if test="${item.itemID == maintass.itemID}">
                                                     ${item.itemName}
                                                     <c:set var="maintName" value="${item.itemName}" />
+                                                    
+                                                    <!-- Get equipment details for this item -->
+                                                    <c:forEach items="${FMO_TYPES_LIST}" var="type" >
+                                                    <c:if test="${type.itemTID == item.itemTID}">
+                                                        <c:set var="maintItemType" value="${type.itemType}" />
+                                                        <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
+                                                            <c:if test="${cat.itemCID == type.itemCID}">
+                                                                <c:set var="maintItemCat" value="${cat.itemCat}" />
+                                                            </c:if>
+                                                        </c:forEach>
+                                                    </c:if>
+                                                    </c:forEach>
+                                                    
+                                                    <c:forEach items="${locations}" var="loc" >
+                                                    <c:if test="${loc.itemLocId == item.itemLID}">
+                                                        <c:set var="maintItemLoc" value="${loc.locName}" />
+                                                    </c:if>
+                                                    </c:forEach>
+                                                    
+                                                    <c:set var="maintEquipmentDetails" value="${maintItemCat} ${maintItemType} ${item.itemBrand} ${maintItemLoc} ${item.itemFloor}" />
                                                 </c:if>
                                                 </c:forEach>
                                             </td>
@@ -316,6 +371,7 @@
                                                 </ul>
                                               </div>
                                             </td>
+                                            <td style="display: none;">${maintEquipmentDetails}</td>
                                         </tr>
                                         </c:if>
                                         </c:forEach>
@@ -343,7 +399,7 @@
         <form action="addmaintenancecontroller" method="post">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addMaintenanceModalLabel">Add Maintenance Record</h5>
+                    <h5 class="modal-title" id="addMaintenanceModalLabel">Schedule Maintenance</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -388,8 +444,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">Add</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
+                    <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
                 </div>
             </div>
         </form>
@@ -548,7 +604,57 @@
 
 <script>
     $(document).ready(function() {
-        // Initialize DataTable
+        // Custom search function for equipment details
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+               
+                if (settings.nTable.id !== 'maintenanceTable' && settings.nTable.id !== 'scheduledMaintTable') {
+                    return true;
+                }
+                
+                var searchTerm = settings.oPreviousSearch.sSearch.toLowerCase();
+                if (!searchTerm) {
+                    return true;
+                }
+                
+                // Get the row element to access data attributes
+                var row = $(settings.nTable).find('tbody tr').eq(dataIndex);
+                
+                // For maintenanceTable, search through data attributes
+                if (settings.nTable.id === 'maintenanceTable') {
+                    var equipment = (row.data('equipment') || '').toString().toLowerCase();
+                    var brand = (row.data('brand') || '').toString().toLowerCase();
+                    var location = (row.data('location') || '').toString().toLowerCase();
+                    var serial = (row.data('serial') || '').toString().toLowerCase();
+                    var statname = (row.data('statname') || '').toString().toLowerCase();
+                    
+                    // Also search in visible columns
+                    var visibleText = data.join(' ').toLowerCase();
+                    
+                    // Check if search term matches any of the fields
+                    if (visibleText.indexOf(searchTerm) !== -1 ||
+                        equipment.indexOf(searchTerm) !== -1 ||
+                        brand.indexOf(searchTerm) !== -1 ||
+                        location.indexOf(searchTerm) !== -1 ||
+                        serial.indexOf(searchTerm) !== -1 ||
+                        statname.indexOf(searchTerm) !== -1) {
+                        return true;
+                    }
+                }
+                
+                // For scheduledMaintTable, search through visible columns and hidden equipment details column
+                if (settings.nTable.id === 'scheduledMaintTable') {
+                    var allText = data.join(' ').toLowerCase();
+                    if (allText.indexOf(searchTerm) !== -1) {
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+        );
+        
+        // Initialize DataTable for maintenance table
         var maintenanceTable = $('#maintenanceTable').DataTable({
             responsive: true,
             order: [[2, 'desc']], // Sort by Date Notified in descending order
@@ -564,12 +670,16 @@
                 }
             },
             pageLength: 5, // Show 5 entries per page to match panel height
-            lengthMenu: [5, 10, 25, 50]
+            lengthMenu: [5, 10, 25, 50],
+            columnDefs: [
+                { targets: [3], visible: false, searchable: true } // Hide equipment details column but keep it searchable
+            ]
         });
         
+        // Initialize DataTable for scheduled maintenance table
         var scheduledMaintTable = $('#scheduledMaintTable').DataTable({
             responsive: true,
-            order: [[2, 'desc']], // Sort by Date Notified in descending order
+            order: [[3, 'desc']], // Sort by Date of Maintenance in descending order
             language: {
                 search: "Search:",
                 lengthMenu: "Show _MENU_ entries",
@@ -582,7 +692,10 @@
                 }
             },
             pageLength: 5, // Show 5 entries per page to match panel height
-            lengthMenu: [5, 10, 25, 50]
+            lengthMenu: [5, 10, 25, 50],
+            columnDefs: [
+                { targets: [5], visible: false, searchable: true } // Hide equipment details column but keep it searchable
+            ]
         });
 
         // Ensure equal heights of both panels

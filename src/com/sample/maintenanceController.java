@@ -67,23 +67,26 @@ public class maintenanceController extends HttpServlet {
 //         request.getRequestDispatcher("/maintenanceSchedule.jsp").forward(request, response);
 //     }
 
-   @Override
+      @Override
 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String action = request.getParameter("action");
+    String redirectParams = "";
 
     try (Connection con = PooledConnection.getConnection()) {
-            if ("archive".equals(action)) {
-                // Archive the maintenance schedule
-                int itemMsId = Integer.parseInt(request.getParameter("itemMsId"));
-                String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ARCHIVED_FLAG = 2 WHERE ITEM_MS_ID = ?";
-                try (PreparedStatement ps = con.prepareStatement(updateSql)) {
-                    ps.setInt(1, itemMsId);
-                    int rowsUpdated = ps.executeUpdate();
-                    System.out.println("Rows updated: " + rowsUpdated); // Debugging line
+        if ("archive".equals(action)) {
+            int itemMsId = Integer.parseInt(request.getParameter("itemMsId"));
+            String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ARCHIVED_FLAG = 2 WHERE ITEM_MS_ID = ?";
+            try (PreparedStatement ps = con.prepareStatement(updateSql)) {
+                ps.setInt(1, itemMsId);
+                int rowsUpdated = ps.executeUpdate();
+                if (rowsUpdated > 0) {
+                    redirectParams = "?action=archived";
+                } else {
+                    redirectParams = "?error=true";
                 }
-            
+            }
         } else {
-            // Add or Edit maintenance schedule
+            // Get all parameters
             int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
             int noOfDays = Integer.parseInt(request.getParameter("noOfDays"));
             String remarks = request.getParameter("remarks");
@@ -91,45 +94,65 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             String quarterlySchedule = request.getParameter("quarterlySchedule");
             String yearlySchedule = request.getParameter("yearlySchedule");
             String itemMsIdStr = request.getParameter("itemMsId");
-            int itemMsId = itemMsIdStr.isEmpty() ? 0 : Integer.parseInt(itemMsIdStr);
 
+            // Check if this is an edit operation
+            boolean isEdit = itemMsIdStr != null && !itemMsIdStr.trim().isEmpty();
             String sql;
-            if (itemMsId == 0) {
-                // Insert new record
-                sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED (ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, NO_OF_DAYS_WARNING, QUARTERLY_SCHED_NO, YEARLY_SCHED_NO) VALUES (?, ?, ?, ?, ?, ?)";
-            } else {
+            
+            if (isEdit) {
                 // Update existing record
-                sql = "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ITEM_TYPE_ID = ?, NO_OF_DAYS = ?, REMARKS = ?, NO_OF_DAYS_WARNING = ?, QUARTERLY_SCHED_NO = ?, YEARLY_SCHED_NO = ? WHERE ITEM_MS_ID = ?";
+                sql = "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+                      "SET ITEM_TYPE_ID = ?, " +
+                      "NO_OF_DAYS = ?, " +
+                      "REMARKS = ?, " +
+                      "NO_OF_DAYS_WARNING = ?, " +
+                      "QUARTERLY_SCHED_NO = ?, " +
+                      "YEARLY_SCHED_NO = ? " +
+                      "WHERE ITEM_MS_ID = ?";
+            } else {
+                // Insert new record
+                sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+                      "(ITEM_MS_ID, ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, NO_OF_DAYS_WARNING, QUARTERLY_SCHED_NO, YEARLY_SCHED_NO, ARCHIVED_FLAG) " +
+                      "VALUES (C##FMO_ADM.ITEM_MS_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, 1)";
             }
 
             try (PreparedStatement ps = con.prepareStatement(sql)) {
+                // Set common parameters
                 ps.setInt(1, itemTypeId);
                 ps.setInt(2, noOfDays);
                 ps.setString(3, remarks);
                 ps.setInt(4, noOfDaysWarning);
 
-                if (noOfDays == 90 && quarterlySchedule != null) {
-                    ps.setInt(5, Integer.parseInt(quarterlySchedule)); // Set Quarterly Schedule
-                    ps.setNull(6, java.sql.Types.INTEGER); // Clear Yearly Schedule
-                } else if (noOfDays == 365 && yearlySchedule != null) {
-                    ps.setNull(5, java.sql.Types.INTEGER); // Clear Quarterly Schedule
-                    ps.setInt(6, Integer.parseInt(yearlySchedule)); // Set Yearly Schedule
+                // Handle quarterly and yearly schedule
+                if (noOfDays == 90 && quarterlySchedule != null && !quarterlySchedule.isEmpty()) {
+                    ps.setInt(5, Integer.parseInt(quarterlySchedule));
+                    ps.setNull(6, java.sql.Types.INTEGER);
+                } else if ((noOfDays == 365 || noOfDays == 180) && yearlySchedule != null && !yearlySchedule.isEmpty()) {
+                    ps.setNull(5, java.sql.Types.INTEGER);
+                    ps.setInt(6, Integer.parseInt(yearlySchedule));
                 } else {
-                    ps.setNull(5, java.sql.Types.INTEGER); // Clear both
+                    ps.setNull(5, java.sql.Types.INTEGER);
                     ps.setNull(6, java.sql.Types.INTEGER);
                 }
 
-                if (itemMsId != 0) {
-                    ps.setInt(7, itemMsId); // Set ID for update
+                // Set the ID parameter for UPDATE operations
+                if (isEdit) {
+                    ps.setInt(7, Integer.parseInt(itemMsIdStr));
                 }
 
-                ps.executeUpdate();
+                int result = ps.executeUpdate();
+                if (result > 0) {
+                    redirectParams = isEdit ? "?action=updated" : "?action=added";
+                } else {
+                    redirectParams = "?error=true";
+                }
             }
         }
     } catch (Exception e) {
         e.printStackTrace();
+        redirectParams = "?error=true";
     }
 
-    response.sendRedirect("maintenanceSchedule"); // Redirect to the main schedule page
+    response.sendRedirect("maintenanceSchedule" + redirectParams);
 }
-}
+   }

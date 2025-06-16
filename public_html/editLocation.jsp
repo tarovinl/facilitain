@@ -34,11 +34,12 @@
          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
          <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
             <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+            <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <style>
    body, h1, h2,h3, h4,h5, th,label   {
         font-family: 'NeueHaasMedium', sans-serif !important;
     }
-     h6,input, textarea,td,tr, p, {
+     h6,input, textarea,td,tr, p {
         font-family: 'NeueHaasLight', sans-serif !important;
     }
     
@@ -63,6 +64,20 @@
             .buttonsBack:hover {
                 text-decoration: underline !important;
                 }
+                
+.btn-cancel-outline {
+  color: #8388a4 !important;        /* Text color */
+  background-color: white !important; /* White background */
+  border: 2px solid #8388a4 !important; /* Outline */
+  box-shadow: none !important;       /* Remove default shadow */
+}
+
+/* Optional: add hover effect */
+.btn-cancel-outline:hover {
+  background-color: #f0f2f7 !important; /* Light gray bg on hover */
+  border-color: #8388a4 !important;
+  color: #8388a4 !important;
+}
 </style>
 <script>
     $(document).ready(function () {
@@ -129,11 +144,21 @@
             <div class="locName">
               <h3 class="fw-bold">${locName}</h3>
             </div>
-            <div>
-                <button class="buttonsBuilding" data-toggle="modal" data-target="#addFloor" type="button" onclick="">Add Floor</button>
-                <!--<button class="buttonsBuilding" data-toggle="modal" data-target="#archiveFloor" type="button" onclick="">Archive Floor</button>-->
-                <button class="buttonsBuilding archive-location-btn" href="#" data-bs-toggle="modal" type="button" onclick="">Archive Location</button>
-            </div>
+            
+            <div class="d-flex flex-column flex-lg-row gap-2">
+    <button class="buttonsBuilding align-items-center d-flex btn btn-md px-3 py-2 rounded-1 hover-outline text-dark" 
+        style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
+        data-toggle="modal" data-target="#addFloor" type="button">
+        Add Floor
+    </button>
+
+    <button class="buttonsBuilding archive-location-btn align-items-center d-flex btn btn-md px-3 py-2 rounded-1 hover-outline text-dark" 
+        style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
+        href="#" data-bs-toggle="modal" type="button" onclick="">
+        Archive Location
+    </button>
+</div>
+
         </div>
 
         <form action="buildingController" method="POST" enctype="multipart/form-data">
@@ -183,10 +208,10 @@
     <!-- Save & Reset Buttons Section -->
     <div class="row mt-2" >
         <div class="col text-center">
-            <input type="submit" value="Save Changes" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bolder">
+            <input type="submit" value="Save Changes" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bolder" style="font-family: NeueHaasMedium, sans-serif !important;">
         </div> 
         <div class="col text-center">
-            <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold" onclick="location.reload()">Reset</button>
+            <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold"  style="font-family: NeueHaasMedium, sans-serif !important;" onclick="location.reload()">Reset</button>
         </div> 
     </div>
 </form>
@@ -667,13 +692,17 @@
     
         Swal.fire({
             title: 'Are you sure?',
-            text: "You want to archive this location?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, archive it!',
-            cancelButtonText: 'Cancel'
+        text: "Do you want to archive this location?",
+        icon: 'warning',
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#ffffff',
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        customClass: {
+             cancelButton: 'btn-cancel-outline'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#archiveLocForm').submit();

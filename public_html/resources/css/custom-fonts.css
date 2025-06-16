@@ -3,7 +3,7 @@
 
 @font-face {
     font-family: "NeueHaasLight";
-    src: url("../fonts/NeueHaasDisplayLight.ttf") format("truetype");
+    src: url("../fonts/OverusedGrotesk-Roman.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
 }
@@ -11,7 +11,7 @@
 
 @font-face {
     font-family: "NeueHaasMedium";
-    src: url("../fonts/NeueHaasDisplayMedium.ttf") format("truetype");
+    src: url("../fonts/Montserrat-Bold.ttf") format("truetype");
     font-weight:bold;
     font-style:normal;
          

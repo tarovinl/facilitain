@@ -15,12 +15,30 @@
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./resources/css/sidebar.css">
     <style>
-    body, h1, h2, h3, h4,h5 th {
+    body, h1, h2, h3,h5, th {
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
-    h6, input, textarea, td, tr, p, label, select, option {
+   h4, h6, input, textarea, td, tr, p, label, select, option {
     font-family: 'NeueHaasLight', sans-serif !important;
 }
+  .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+            }
+
+            .hover-outline:hover {
+                background-color: #1C1C1C !important;
+                color: #f2f2f2 !important;
+                border: 1px solid #f2f2f2 !important;
+            }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+            }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+            }
+            
 .maintenance-container {
     margin: 10px 0;
 }
@@ -78,13 +96,17 @@
 
 
 #notificationBadge {
-    position: relative;
-    padding: 0.25em 0.6em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5em;
+    height: 1.5em;
     font-size: 0.75rem;
     font-weight: 700;
-    vertical-align: middle;
+    color: white;
+    background-color: red;
     border-radius: 50%;
-    display: inline-block;
+    position: relative;
 }
 </style>
 </head>
@@ -133,8 +155,8 @@
     <c:if test="${sessionScope.role == 'Admin'}">
         <div class="maintenance-container">
             <div class="maintenance-header">
-                <img src="resources/images/icons/build.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                <span>Maintenance Management</span>
+                <img src="resources/images/icons/construction.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                <span>Maintenance Configuration</span>
                 <i class="fas fa-chevron-down ms-auto"></i>
             </div>
             <div class="maintenance-items">
@@ -155,7 +177,7 @@
      <img src="resources/images/icons/notif.svg" alt="Notifications" class="icon pe-2" 
          style="width: 2em; height: 2em; vertical-align: middle;">
         Notifications 
-    <span id="notificationBadge" class="badge bg-warning text-dark ms-2">0</span>
+    <span id="notificationBadge" class="badge ms-2">0</span>
     </a>     
     
     <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
@@ -184,26 +206,30 @@
             <img src="resources/images/icons/manage-users.svg" alt="User" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
             Users
         </a>
+    
+    
     </c:if>
             <!--<a href="mapView" class="${page == 'mapView' ? 'active' : ''}">
                 <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Map View
             </a>-->
-            
-           
-        </div>
-        <div class="todo-list">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="ps-1">To-Do</h4>
-                <div>
-                <button class="btn btn-sm icon-button" data-bs-toggle="modal" data-bs-target="#showToDo">
-                    <img src="resources/images/icons/external-link.svg" alt="All Items" class="icon" style="width: 2em; height: 2em; vertical-align: middle;">
-                </button>
-                <button class="btn btn-sm icon-button" data-bs-toggle="modal" data-bs-target="#addToDo">
-                    <img src="resources/images/icons/plus-solid.svg" alt="Add" class="icon" style="width: 2em; height: 2em; vertical-align: middle;">
-                </button>
-                </div>
-            </div>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#showToDo" class="d-flex align-items-center ${page == 'todo' ? 'active' : ''}">
+    <img src="resources/images/icons/open.svg" alt="To-Do" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+    To-Do
+</a>
+       <!-- Sidebar container -->
+<div class="d-flex flex-column pt-4" style="height: 100%;">
+  
+  <!-- ... other sidebar links ... -->
+
+  <a href="<%=request.getContextPath()%>/logoutServlet"
+     class="btn mt-auto d-flex justify-content-center align-items-center">
+    <img src="resources/images/icons/logout.svg" alt="logout"
+         class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> 
+    Logout
+  </a>
+</div>
+
             <!--<hr class="bg-light border-2 border-top border-light"/>
             <div class="todo-item d-flex justify-content-between align-items-center">
                 <div class="ps-2">
@@ -221,9 +247,7 @@
             <hr class="bg-light border-2 border-top border-light"/>-->
         </div>
      <!--   Log out to Portal -->
-        <a href="<%=request.getContextPath()%>/logoutServlet" class="btn">
-        <img src="resources/images/icons/logout.svg" alt="logout" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> 
-        Logout</a>
+        
     </div>
 
 <!--to do list item modal-->
@@ -253,7 +277,7 @@
                     <input type="hidden" name="userNum" value="${empNum}" />
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasLight', sans-serif;" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success">Add</button>
                 </div>
             </div>
@@ -268,16 +292,17 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="addToDoListLabel">To-Do List</h4>
+                <h4 class="modal-title" id="addToDoListLabel" style="font-family: 'NeueHaasMedium', sans-serif !important;">To-Do List</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="mb-3 d-flex justify-content-end">
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addToDo" onclick="openAddToDoModal()">
+                <div class="mb-3 d-flex justify-content-end align-items-center">
+                    <button type="button" class="btn hover-outline"  style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#addToDo" onclick="openAddToDoModal()">
+                       <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25">
                         Add
                     </button>
                 </div>
-                <div style="border: 1px solid black; max-height: 300px; overflow-y: auto;">
+                <div style=" max-height: 300px; overflow-y: auto;">
                     <table class="table table-bordered" id="tdTable" style="width:100%;">
                         <thead>
                             <tr>
@@ -382,7 +407,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
 
 document.addEventListener("DOMContentLoaded", function() {
   fetch('<%= request.getContextPath() %>/facilitain/homepage/checkNotifications')

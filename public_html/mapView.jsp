@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
@@ -72,6 +73,7 @@
                 font-family: 'NeueHaasLight', sans-serif;
                 font-size:15px;
             }
+            
     </style>
      
     </head>
@@ -80,12 +82,13 @@
     <div class="row min-vh-100">
         <jsp:include page="sidebar.jsp"/>
     <div class="col-md-10">
-        <div class="container mcontainer">
-            <div class="d-flex justify-content-between align-items-center mb-2 mt-2 map-header">
+        <div class="container-fluid mcontainer">
+            <div class="d-flex justify-content-between align-items-center pt-4 pb-4 map-header">
                 <div>
-                    <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Homepage</h1>
+                     <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
                 </div>
-                <a href="./homepage" class="btn btn-warning">
+                <a href="./homepage" class="align-items-center d-flex px-3 py-2 rounded-1 hover-outline text-dark text-decoration-none" style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
+                     <img src="resources/images/icons/grid.svg" alt="default" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25">
                     Default View
                 </a>
             </div>
@@ -127,7 +130,7 @@
     <c:forEach var="mapItem" items="${FMO_MAP_LIST}">
     L.marker([${mapItem.latitude}, ${mapItem.longitude}], { icon: customIcon }) //csen
         .addTo(map)
-        .bindPopup('<div style="position: relative; padding-top: 44px; padding-left: 10px;"><c:forEach var="locStatus" items="${FMO_LOCATION_STATUS_LIST}"><c:if test="${locStatus.location.itemLocId == mapItem.itemLocId}"><c:choose><c:when test="${locStatus.statusRating == 3}"><div style="position: absolute; top: 10px; left: 10px; background-color: #28a745; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Optimal</div></c:when><c:when test="${locStatus.statusRating == 2}"><div style="position: absolute; top: 10px; left: 10px; background-color: #ff9800; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Moderate</div></c:when><c:when test="${locStatus.statusRating == 1}"><div style="position: absolute; top: 10px; left: 10px; background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Danger</div></c:when></c:choose></c:if></c:forEach><a href="./buildingDashboard?locID=${mapItem.itemLocId}" class="popup-link"><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locName}</c:if></c:forEach></a><div class="popup-description" style="margin-top: 4px;"><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locDescription}</c:if></c:forEach></div></div>'); // Static link
+        .bindPopup('<div style="position: relative; "><c:forEach var="locStatus" items="${FMO_LOCATION_STATUS_LIST}"><c:if test="${locStatus.location.itemLocId == mapItem.itemLocId}"><c:choose><c:when test="${locStatus.statusRating == 3}"><div style="position: relative; display: block; width: fit-content; background-color: #28a745; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Optimal</div></c:when><c:when test="${locStatus.statusRating == 2}"><div style="position: relative; display: block; width: fit-content; background-color: #ff9800; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Moderate</div></c:when><c:when test="${locStatus.statusRating == 1}"><div style="position: relative; display: block; width: fit-content; background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; z-index: 1;">Danger</div></c:when></c:choose></c:if></c:forEach><a href="./buildingDashboard?locID=${mapItem.itemLocId}" class="popup-link" style="margin-top: 4px; display: inline-block;" ><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locName}</c:if></c:forEach></a><div class="popup-description" style="margin-top: 4px;"><c:forEach var="locs" items="${locations}"><c:if test="${locs.itemLocId == mapItem.itemLocId}">${locs.locDescription}</c:if></c:forEach></div></div>'); // Static link
     </c:forEach>   
         
     window.addEventListener('resize', resizeMap);
