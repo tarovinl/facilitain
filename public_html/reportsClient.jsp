@@ -14,7 +14,7 @@
          <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
-
+        <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
         <title>Reports</title>
         <style>
             .error-message {
@@ -47,7 +47,10 @@
             <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
                 <div class="card">
                     <div class="card-body ">
-                <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
+                <img src="resources/images/FACILITAIN_WLOGO2.png" 
+     alt="FACILITAIN" 
+     class="img-fluid mb-4 d-block mx-auto" 
+     style="max-height: 5rem;">
                 <h3 class="text-center montserrat-bold">Report a Problem</h3>
 
                 <!-- Form Starts Here -->

@@ -126,11 +126,11 @@
 
     <div class="container text-center">
         <div class="row">
-            <div class="d-flex col-md-6 align-items-center">
-               <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
+            <div class="d-flex col-md-6 align-items-center mb-4 mb-md-0">
+               <img src="resources/images/FACILITAIN_FINAL.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 10rem;">
             </div>
             <div class="col-md-6">
-                <div class="login-container">
+                <div class="login-container p-4 p-md-5 rounded-1">
                     <h3 class="mb-4 montserrat-bold text-start">Sign in</h3>
                     <p class="montserrat-regular text-dark text-start shared-text">To access MyUSTe Portal, please make sure you meet the following requirements:</p>
                     <ol class="text-start montserrat-regular">
@@ -153,7 +153,8 @@
                            data-logo_alignment="left">
                       </div>
                     </div>
-                    <a href="#" class="d-block mt-3 text-decoration-none text-dark montserrat-regular text-center">Need help signing in? <strong>Learn More</strong></a>
+                    <hr class="my-3">
+                    <a href="#" class="d-block text-decoration-none text-dark montserrat-regular text-start" style="font-size: 0.80rem;">Need help signing in? <strong>Learn More</strong></a>
                 </div>
             </div>
         </div>

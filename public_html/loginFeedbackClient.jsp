@@ -13,6 +13,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
+        <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
         <title>Login Feedback</title>
         <style>
             .montserrat-regular {
@@ -80,7 +81,10 @@
                 <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
                     <div class="card">
                         <div class="card-body">
-                            <img src="${pageContext.request.contextPath}/resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
+                            <img src="resources/images/FACILITAIN_WLOGO2.png" 
+                             alt="FACILITAIN" 
+                             class="img-fluid mb-4 d-block mx-auto" 
+                             style="max-height: 5rem;">
                             <h3 class="text-center p-1 montserrat-bold">Sign in to Give Feedback</h3>
                             <p class="p-2">To access MyUSTe Portal, please make sure you meet the following requirements:</p>
                             <p class="p-2">
@@ -103,8 +107,9 @@
                                      data-logo_alignment="left">
                                 </div>
                             </div>
+                            <hr class="my-3">
                             <div class="text-center">
-                                <p>Need help signing in? Learn More</p>
+                               <a href="#" class="d-block text-decoration-none text-dark montserrat-regular text-center" style="font-size: 1rem;">Need help signing in? <strong>Learn More</strong></a>
                             </div>
                         </div>
                     </div>
