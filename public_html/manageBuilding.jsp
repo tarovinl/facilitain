@@ -985,7 +985,7 @@
     <jsp:include page="quotations.jsp" />
     
     <c:if test="${locMatchFound == false || flrMatchFound == false}">
-        <meta http-equiv="refresh" content="0; URL=./homepage" /> 
+        <meta http-equiv="refresh" content="0; URL=./errorPage.jsp" /> 
     </c:if>
     
     <c:choose>
