@@ -155,8 +155,8 @@
     <c:if test="${sessionScope.role == 'Admin'}">
         <div class="maintenance-container">
             <div class="maintenance-header">
-                <img src="resources/images/icons/build.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                <span>Maintenance Management</span>
+                <img src="resources/images/icons/construction.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                <span>Maintenance Configuration</span>
                 <i class="fas fa-chevron-down ms-auto"></i>
             </div>
             <div class="maintenance-items">
