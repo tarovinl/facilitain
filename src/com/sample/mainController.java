@@ -529,7 +529,11 @@ public class mainController extends HttpServlet {
         String role = (session != null) ? (String) session.getAttribute("role") : null;
 
         String locID = request.getParameter("locID");
-
+        
+        if (!isValidPathAndQuery(path, queryString)) {
+            request.getRequestDispatcher("/errorPage.jsp").forward(request, response);
+            return;
+        }
 //        server side redirect when invalid URL test:            
 //        boolean locMatchFound = false;
 //        boolean flrMatchFound = false;
@@ -680,10 +684,42 @@ public class mainController extends HttpServlet {
                         request.getRequestDispatcher("/pending.jsp").forward(request, response);
                         break;
                     default:
-                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                        request.getRequestDispatcher("/errorPage.jsp").forward(request, response);
                         break;
                 }
         
-    }}
+        
+    }
+    private boolean isValidPathAndQuery(String path, String queryString) {
+        if (path == null) return false;
+
+        switch (path) {
+            case "/buildingDashboard":
+                // Allow no query, or valid locID and optional /manage or /edit
+                if (queryString == null) return true;
+
+                // Validate expected patterns
+                if (queryString.matches("locID=\\d+(/manage)?") || 
+                    queryString.matches("locID=\\d+(/edit)?") || 
+                    queryString.matches("locID=\\d+(/manage\\?floor=\\w+)?")) {
+                    return true;
+                }
+                return false;
+            case "/homepage":
+            case "/calendar":
+            case "/settings":
+            case "/mapView":
+            case "/maintenanceSchedule":
+            case "/maintenancePage":
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+}
+
+
 
     

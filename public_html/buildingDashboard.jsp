@@ -29,11 +29,11 @@
 </c:forEach>
 <c:set var="currentYear" value="${currentYear}" />
 <c:set var="currentMonth" value="${currentMonth}" />
-<c:if test="${matchFound == false}">
+<%--<c:if test="${matchFound == false}">
     <script>
         window.location.href = './homepage'; 
     </script>
-</c:if>
+</c:if>--%>
 
 <html>
     <head>
