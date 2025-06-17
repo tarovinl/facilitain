@@ -21,8 +21,9 @@ public class LogoutFilter implements Filter {
         HttpSession session = httpRequest.getSession(false); // Get session if it exists
         String uri = httpRequest.getRequestURI(); // Get the requested URI
 
-        // Allow access to login, logout, and public static resources
+        // Allow access to login, logout, public pages, and static resources without session
         if (uri.contains("login") || uri.contains("logout") || uri.endsWith("index.jsp") ||
+                uri.endsWith("termsClient.jsp") || uri.endsWith("privacyClient.jsp") ||
                 uri.startsWith(httpRequest.getContextPath() + "/static/")) {
             chain.doFilter(request, response);
             return;
@@ -62,12 +63,11 @@ public class LogoutFilter implements Filter {
                 boolean isAllowedPage = uri.endsWith("/feedbackClient") || 
                                         uri.endsWith("/reportsClient") || 
                                         uri.endsWith("reportsThanksClient.jsp") || 
-                                        uri.endsWith("termsClient.jsp") || 
                                         uri.endsWith("feedbackThanksClient.jsp");
                 if (isAllowedPage) {
                     chain.doFilter(request, response);
                 } else {
-                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/feedbackClient");
+                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/unauthorized.jsp");
                 }
                 break;
 
