@@ -238,17 +238,17 @@
     To-Do
 </a>
        <!-- Sidebar container -->
-<div class="d-flex flex-column pt-4" style="height: 100%;">
+<a href="<%=request.getContextPath()%>/logoutServlet"
+   class="d-flex align-items-center mt-auto px-3 py-2 text-danger"
+   style="text-decoration: none;">
   
-  <!-- ... other sidebar links ... -->
+  <img src="resources/images/icons/logout.svg" alt="Logout"
+       class="icon pe-2"
+       style="width: 2em; height: 2em; vertical-align: middle; filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(4900%) hue-rotate(352deg) brightness(90%) contrast(120%);">
+  
+  Logout
+</a>
 
-  <a href="<%=request.getContextPath()%>/logoutServlet"
-     class="btn mt-auto d-flex justify-content-center align-items-center">
-    <img src="resources/images/icons/logout.svg" alt="logout"
-         class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> 
-    Logout
-  </a>
-</div>
 
             <!--<hr class="bg-light border-2 border-top border-light"/>
             <div class="todo-item d-flex justify-content-between align-items-center">
