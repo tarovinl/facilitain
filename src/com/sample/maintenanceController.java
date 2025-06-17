@@ -113,7 +113,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
                 // Insert new record
                 sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
                       "(ITEM_MS_ID, ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, NO_OF_DAYS_WARNING, QUARTERLY_SCHED_NO, YEARLY_SCHED_NO, ARCHIVED_FLAG) " +
-                      "VALUES (C##FMO_ADM.ITEM_MS_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, 1)";
+                      "VALUES (C##FMO_ADM.FMO_ITEM_MS_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, 1)";
             }
 
             try (PreparedStatement ps = con.prepareStatement(sql)) {

@@ -74,7 +74,7 @@ public class itemCategoriesController extends HttpServlet {
                 }
                 redirectParams = "?action=updated";
             } else if (itemCID == null) {  // This is a new record
-                String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_CATEGORIES (ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (C##FMO_ADM.ITEM_CAT_SEQ.NEXTVAL, ?, ?)";
+                String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_CATEGORIES (ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (C##FMO_ADM.FMO_ITEM_CAT_ID_SEQ.NEXTVAL, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
                     stmt.setString(1, categoryName);
                     stmt.setString(2, description);
