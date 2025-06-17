@@ -124,20 +124,21 @@
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100" 
-      style="background: linear-gradient(rgba(128, 128, 128, 0.8), rgba(128, 128, 128, 0.8)), 
-             url('${pageContext.request.contextPath}/resources/images/arch-bg.jpg'); 
-             background-size: cover; 
-             background-position: center; 
-             background-repeat: no-repeat;">
+     style="background: linear-gradient(rgba(30, 30, 30, 0.85), rgba(30, 30, 30, 0.85)), 
+        url('${pageContext.request.contextPath}/resources/images/arch-bg.jpg'); 
+       background-size: cover; 
+       background-position: center; 
+       background-repeat: no-repeat;">
+
 
     <div class="container text-center">
         <div class="row">
             <div class="d-flex col-md-6 align-items-center mb-4 mb-md-0">
                <!-- Use context path for logo -->
-               <img src="${pageContext.request.contextPath}/resources/images/FACILITAIN_FINAL.png" 
+               <img src="${pageContext.request.contextPath}/resources/images/FACILITAIN_WLOGO3.png" 
                     alt="FACILITAIN" 
                     class="img-fluid mb-4 d-block mx-auto" 
-                    style="max-height: 10rem;">
+                    style="max-height: 8rem;">
             </div>
             <div class="col-md-6">
                 <div class="login-container p-4 p-md-5 rounded-1">
