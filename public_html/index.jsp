@@ -7,8 +7,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./resources/css/custom-fonts.css">
-    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
+    <!-- Use context path for CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/custom-fonts.css">
+    <!-- Use context path for favicon -->
+    <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/resources/images/FMO-Logo.ico">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
@@ -60,15 +62,16 @@
     </script>
     
     <style>
-            body, h1, h2, h3, h4, h5, th, button, input[type="button"], input[type="submit"] {
+        body, h1, h2, h3, h4, h5, th, button, input[type="button"], input[type="submit"] {
             font-family: "Montserrat", sans-serif !important;
             font-weight: 700 !important;
         }
         
         a, h6, input, textarea, td, tr, p, label, select, option {
-            font-family: "Montserrat",  sans-serif !important;
+            font-family: "Montserrat", sans-serif !important;
             font-weight: 400 !important;
         }
+        
         body {
             height: 100vh;
             display: flex;
@@ -76,24 +79,29 @@
             justify-content: center;
             color: #000000;
         }
+        
         .login-container {
             background-color: white;
             padding: 20px;
             max-width: 600px;
             width: 100%;
         }
+        
         .login-container h1 {
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
             color: #FFC107;
         }
+        
         .login-container p {
             font-size: 0.9rem;
             color: #ddd;
         }
+        
         .g_id_signin {
             width: 100%;
         }
+        
         .montserrat-regular {
             font-family: "Montserrat", sans-serif;
             font-weight: 400;
@@ -105,6 +113,7 @@
             font-weight: 700;
             font-style: normal;
         }
+        
         .shared-text {
             font-family: 'Montserrat', sans-serif;
             font-size: 14.4px;
@@ -112,14 +121,11 @@
             text-align: start;
             line-height: 1.5;
         }
-  
-
-
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100" 
       style="background: linear-gradient(rgba(128, 128, 128, 0.8), rgba(128, 128, 128, 0.8)), 
-             url('resources/images/arch-bg.jpg'); 
+             url('${pageContext.request.contextPath}/resources/images/arch-bg.jpg'); 
              background-size: cover; 
              background-position: center; 
              background-repeat: no-repeat;">
@@ -127,7 +133,11 @@
     <div class="container text-center">
         <div class="row">
             <div class="d-flex col-md-6 align-items-center mb-4 mb-md-0">
-               <img src="resources/images/FACILITAIN_FINAL.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 10rem;">
+               <!-- Use context path for logo -->
+               <img src="${pageContext.request.contextPath}/resources/images/FACILITAIN_FINAL.png" 
+                    alt="FACILITAIN" 
+                    class="img-fluid mb-4 d-block mx-auto" 
+                    style="max-height: 10rem;">
             </div>
             <div class="col-md-6">
                 <div class="login-container p-4 p-md-5 rounded-1">
