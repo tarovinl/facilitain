@@ -178,12 +178,27 @@
         </div>
     </c:if>
     
-    <a href="notification" class="${page == 'notification' ? 'active' : ''}" style="position: relative;">
-     <img src="resources/images/icons/notif.svg" alt="Notifications" class="icon pe-2" 
+<a href="notification" class="${page == 'notification' ? 'active' : ''}">
+  <span style="position: relative; display: inline-block;">
+    <img src="resources/images/icons/notif.svg" alt="Notifications"
+         class="icon pe-2"
          style="width: 2em; height: 2em; vertical-align: middle;">
-        Notifications 
-    <span id="notificationBadge" class="badge ms-2">0</span>
-    </a>     
+
+    <!-- Badge now properly anchored to the bell icon -->
+    <span id="notificationBadge"
+          class="badge bg-danger position-absolute rounded-pill"
+          style="top: -0.3em; right: -0.1em; font-size: 0.55rem; padding: 0.3em 0.45em;">
+      0
+    </span>
+  </span>
+
+  Notifications
+</a>
+
+
+
+
+  
     
     <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
         <img src="resources/images/icons/calendar.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
