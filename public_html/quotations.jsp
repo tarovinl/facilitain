@@ -94,7 +94,8 @@
             <div class="modal-body">
                 <div class="container mt-2 mb-2">
                     <!-- Upload Quotation Button -->
-                    <button type="button" style="background-color: #fccc4c;" class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" data-bs-toggle="modal" data-bs-target="#uploadQuotationModal">
+                    <button type="button" style="background-color: #fccc4c;" class="buttonsBuilding px-3 py-2 rounded-1 hover-outline d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#uploadQuotationModal">
+                         <img src="resources/images/icons/upload.svg" class="pe-2" alt="upload icon" width="25" height="25">
                         Upload Quotation
                     </button>
 
@@ -124,12 +125,19 @@
 <script>
     function confirmArchive(quotationId) {
         Swal.fire({
+           
             title: 'Are you sure?',
-            text: 'This action will archive the selected quotation.',
+            text: "This action will archive the selected quotation.",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Yes, Archive it!',
+            reverseButtons: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#ffffff',
+            confirmButtonText: 'Confirm',
             cancelButtonText: 'Cancel',
+            customClass: {
+                 cancelButton: 'btn-cancel-outline'
+                }
         }).then((result) => {
             if (result.isConfirmed) {
                 // Submit the specific form for the quotation
