@@ -871,7 +871,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                         <form action="itemcontroller" method="POST">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="addEquipmentModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Add Equipment</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                             
@@ -1021,7 +1021,8 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                             </div>
                             <div class="modal-footer">
                                     <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
-                                    <input type="submit" value="Save" class="btn btn-success">
+                                    <input type="submit" value="Save" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif !important;">
+
                             </div>
                         </form>
                     
@@ -1039,7 +1040,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                         <form action="itemcontroller" method="POST">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="editEquipmentModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Edit Equipment</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                             <input type="hidden" name="itemEditID" id="itemIDField" class="form-control">
@@ -1189,7 +1190,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                             </div>
                             <div class="modal-footer">
                                     <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
-                                    <input type="submit" value="Save" class="btn btn-success">
+                                    <input type="submit" value="Save" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif !important;">
                             </div>
                         </form>
             
