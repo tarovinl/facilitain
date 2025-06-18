@@ -92,7 +92,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                         <option value="Resolved">Resolved</option>
                         <option value="Not Resolved">Not Resolved</option>
                     </select>
-                    <button id="generateQRBtn" class="px-3 py-2 rounded-1 hover-outline d-flex align-items-center" style="background-color: #fccc4c;"><img src="resources/images/icons/qr.svg" class="pe-2" alt="qr" width="25" height="25">Generate QR</button>
+                    <button id="generateQRBtn" class="px-3 py-2 rounded-1 hover-outline d-flex align-items-center" style="background-color: #fccc4c;"><img src="resources/images/icons/qr.svg" class="pe-2" alt="qr" width="25" height="25">Download QR</button>
                 </div>
             </div>
 

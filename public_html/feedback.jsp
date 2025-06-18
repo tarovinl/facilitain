@@ -75,7 +75,7 @@
                     <h1 style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Feedback</h1>
                     <div class="d-flex align-items-center gap-2">
                         <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline d-flex align-items-center " style="background-color: #fccc4c;" id="download-chart" ${empty feedbackList ? 'disabled' : ''}> <img src="resources/images/icons/summarize.svg" class="pe-2" alt="generate report icon" width="25" height="25">Generate Report</button>
-                        <button id="generateQRBtn" class="px-3 py-2 rounded-1 hover-outline d-flex align-items-center" style="background-color: #fccc4c;"><img src="resources/images/icons/qr.svg" class="pe-2" alt="qr" width="25" height="25">Generate QR</button>
+                        <button id="generateQRBtn" class="px-3 py-2 rounded-1 hover-outline d-flex align-items-center" style="background-color: #fccc4c;"><img src="resources/images/icons/qr.svg" class="pe-2" alt="qr" width="25" height="25">Download QR</button>
                     </div>
                 </div>
 
