@@ -27,9 +27,9 @@ public class FeedbackClientController extends HttpServlet {
         List<Map.Entry<Integer, String>> typeList = new ArrayList<>();
         List<Map.Entry<Integer, String>> catList = new ArrayList<>();
 
-        String locationQuery = "SELECT * FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ARCHIVED_FLAG = 1 ORDER BY NAME";
-        String typeQuery = "SELECT * FROM C##FMO_ADM.FMO_ITEM_FEEDBACK_TYPE";
-        String categoryQuery = "SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE ARCHIVED_FLAG = 1 ORDER BY NAME";
+        String locationQuery = "SELECT * FROM FMO_ITEM_LOCATIONS WHERE ARCHIVED_FLAG = 1 ORDER BY NAME";
+        String typeQuery = "SELECT * FROM FMO_ITEM_FEEDBACK_TYPE";
+        String categoryQuery = "SELECT * FROM FMO_ITEM_CATEGORIES WHERE ARCHIVED_FLAG = 1 ORDER BY NAME";
 
         try (
             Connection connection = PooledConnection.getConnection();
@@ -108,7 +108,7 @@ public class FeedbackClientController extends HttpServlet {
             }
             
             // SQL query to insert the feedback - adjust based on available columns
-            StringBuilder insertQuery = new StringBuilder("INSERT INTO C##FMO_ADM.FMO_ITEM_FEEDBACK ");
+            StringBuilder insertQuery = new StringBuilder("INSERT INTO FMO_ITEM_FEEDBACK ");
             StringBuilder columns = new StringBuilder("(FEEDBACK_ID, ITEM_LOC_ID, ROOM, RATING, SUGGESTIONS, REC_INS_DT, REC_INS_BY");
             StringBuilder values = new StringBuilder("VALUES (?, ?, ?, ?, ?, SYSDATE, USER");
             

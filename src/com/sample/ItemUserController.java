@@ -24,7 +24,7 @@ public class ItemUserController extends HttpServlet {
         List<ItemUser> itemUserList = new ArrayList<>();
 
         // Query for ItemUser data
-        String query = "SELECT USER_ID, NAME, EMAIL, ROLE FROM C##FMO_ADM.FMO_ITEM_DUSERS";
+        String query = "SELECT USER_ID, NAME, EMAIL, ROLE FROM FMO_ITEM_DUSERS";
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
@@ -56,7 +56,7 @@ public class ItemUserController extends HttpServlet {
         int userId = Integer.parseInt(request.getParameter("userId"));
         String role = request.getParameter("role");
 
-        String updateQuery = "UPDATE C##FMO_ADM.FMO_ITEM_DUSERS SET ROLE = ? WHERE USER_ID = ?";
+        String updateQuery = "UPDATE FMO_ITEM_DUSERS SET ROLE = ? WHERE USER_ID = ?";
 
         try (Connection connection = PooledConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(updateQuery)) {

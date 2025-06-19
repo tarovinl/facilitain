@@ -58,8 +58,8 @@ public class editMaintenanceController extends HttpServlet {
         //item list maker to check equipmentName
         try (
             Connection con = PooledConnection.getConnection();
-            PreparedStatement stmntItems = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEMS ORDER BY LOCATION_ID, CASE WHEN REGEXP_LIKE(FLOOR_NO, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(FLOOR_NO, '^[0-9]+')) ELSE 9999 END, ROOM_NO, ITEM_ID");
-            PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
+            PreparedStatement stmntItems = con.prepareCall("SELECT * FROM FMO_ITEMS ORDER BY LOCATION_ID, CASE WHEN REGEXP_LIKE(FLOOR_NO, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(FLOOR_NO, '^[0-9]+')) ELSE 9999 END, ROOM_NO, ITEM_ID");
+            PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
         ){
             ResultSet rsItem = stmntItems.executeQuery();
             while (rsItem.next()) {
@@ -109,9 +109,9 @@ public class editMaintenanceController extends HttpServlet {
             String sql;
             
             if(maintDeleteID != null && !maintDeleteID.isEmpty()){
-                sql = "DELETE FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN WHERE assign_id = ?";
+                sql = "DELETE FROM FMO_MAINTENANCE_ASSIGN WHERE assign_id = ?";
             }else{
-                sql = "UPDATE C##FMO_ADM.FMO_MAINTENANCE_ASSIGN SET item_id = ?, main_type_id = ?, user_id = ?, date_of_maintenance = ? WHERE assign_id = ?";
+                sql = "UPDATE FMO_MAINTENANCE_ASSIGN SET item_id = ?, main_type_id = ?, user_id = ?, date_of_maintenance = ? WHERE assign_id = ?";
             }
             
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {

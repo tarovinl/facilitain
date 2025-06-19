@@ -24,7 +24,7 @@ public class NotificationPopupController extends HttpServlet {
         int unreadCount = 0;
 
         // SQL query to count unread notifications
-        String sql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS WHERE IS_READ = 0";
+        String sql = "SELECT COUNT(*) FROM FMO_ITEM_NOTIFICATIONS WHERE IS_READ = 0";
 
         try (Connection conn = PooledConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);

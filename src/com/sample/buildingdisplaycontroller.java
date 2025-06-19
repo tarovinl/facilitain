@@ -34,7 +34,7 @@ public class buildingdisplaycontroller extends HttpServlet {
         }
 
         try (Connection conn = PooledConnection.getConnection()) {
-            String sql = "SELECT IMAGE FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ITEM_LOC_ID = ?";
+            String sql = "SELECT IMAGE FROM FMO_ITEM_LOCATIONS WHERE ITEM_LOC_ID = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, Integer.parseInt(locId));
                 try (ResultSet rs = stmt.executeQuery()) {

@@ -31,15 +31,15 @@ public class FeedbackController extends HttpServlet {
             "SELECT * FROM (" +
             "  SELECT F.FEEDBACK_ID, L.NAME AS LOCATION, F.ROOM, F.RATING, F.SUGGESTIONS, F.REC_INS_DT, " +
             "         COALESCE(IC.NAME, F.SPECIFY) AS ITEM_CAT_NAME " +
-            "  FROM C##FMO_ADM.FMO_ITEM_FEEDBACK F " +
-            "  JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS L ON F.ITEM_LOC_ID = L.ITEM_LOC_ID " +
-            "  LEFT JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES IC ON F.ITEM_CAT_ID = IC.ITEM_CAT_ID " +
+            "  FROM FMO_ITEM_FEEDBACK F " +
+            "  JOIN FMO_ITEM_LOCATIONS L ON F.ITEM_LOC_ID = L.ITEM_LOC_ID " +
+            "  LEFT JOIN FMO_ITEM_CATEGORIES IC ON F.ITEM_CAT_ID = IC.ITEM_CAT_ID " +
             "  ORDER BY F.REC_INS_DT DESC" +
             ") WHERE ROWNUM <= 15";
 
         String satisfactionQuery =
             "SELECT TO_CHAR(REC_INS_DT, 'Mon') AS MONTH, AVG(RATING) AS AVERAGE_RATING " +
-            "FROM C##FMO_ADM.FMO_ITEM_FEEDBACK " +
+            "FROM FMO_ITEM_FEEDBACK " +
             "GROUP BY TO_CHAR(REC_INS_DT, 'Mon') " +
             "ORDER BY TO_DATE(MONTH, 'Mon')";
 
@@ -91,7 +91,7 @@ public class FeedbackController extends HttpServlet {
         String feedbackIdStr = request.getParameter("feedbackId");
         if (feedbackIdStr != null && !feedbackIdStr.isEmpty()) {
             int feedbackId = Integer.parseInt(feedbackIdStr);
-            String deleteQuery = "DELETE FROM C##FMO_ADM.FMO_ITEM_FEEDBACK WHERE FEEDBACK_ID = ?";
+            String deleteQuery = "DELETE FROM FMO_ITEM_FEEDBACK WHERE FEEDBACK_ID = ?";
 
             try (Connection conn = PooledConnection.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(deleteQuery)) {

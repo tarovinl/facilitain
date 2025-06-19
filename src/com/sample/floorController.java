@@ -60,13 +60,13 @@ public class floorController extends HttpServlet {
             String sql;
 
                 if (editFlrID != null && !editFlrID.isEmpty()) {
-                            sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOC_FLOORS SET NAME = ?, DESCRIPTION = ? WHERE ITEM_LOC_FLR_ID = ?";
+                            sql = "UPDATE FMO_ITEM_LOC_FLOORS SET NAME = ?, DESCRIPTION = ? WHERE ITEM_LOC_FLR_ID = ?";
                         } else if (archFlrID != null && !archFlrID.isEmpty()) {
-                            sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOC_FLOORS SET ARCHIVED_FLAG = 2 WHERE ITEM_LOC_FLR_ID = ?";
+                            sql = "UPDATE FMO_ITEM_LOC_FLOORS SET ARCHIVED_FLAG = 2 WHERE ITEM_LOC_FLR_ID = ?";
                         } else if (actFlrID != null && !actFlrID.isEmpty()) {
-                            sql = "UPDATE C##FMO_ADM.FMO_ITEM_LOC_FLOORS SET ARCHIVED_FLAG = 1 WHERE ITEM_LOC_FLR_ID = ?";
+                            sql = "UPDATE FMO_ITEM_LOC_FLOORS SET ARCHIVED_FLAG = 1 WHERE ITEM_LOC_FLR_ID = ?";
                         } else {
-                            sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_LOC_FLOORS (ITEM_LOC_ID, NAME, DESCRIPTION, ARCHIVED_FLAG) VALUES (?, ?, ?, 1)";
+                            sql = "INSERT INTO FMO_ITEM_LOC_FLOORS (ITEM_LOC_ID, NAME, DESCRIPTION, ARCHIVED_FLAG) VALUES (?, ?, ?, 1)";
                         }
                         
                         try (PreparedStatement stmt = conn.prepareStatement(sql)) {

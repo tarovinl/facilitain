@@ -26,7 +26,7 @@ public class reportimageviewer extends HttpServlet {
         }
 
         try (Connection connection = PooledConnection.getConnection()) {
-            String query = "SELECT REPORT_PICTURE FROM C##FMO_ADM.FMO_ITEM_REPORTS WHERE REPORT_ID = ?";
+            String query = "SELECT REPORT_PICTURE FROM FMO_ITEM_REPORTS WHERE REPORT_ID = ?";
             try (PreparedStatement stmt = connection.prepareStatement(query)) {
                 stmt.setInt(1, Integer.parseInt(reportId));
                 try (ResultSet rs = stmt.executeQuery()) {
