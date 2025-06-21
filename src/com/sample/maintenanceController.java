@@ -32,8 +32,8 @@ public class maintenanceController extends HttpServlet {
 //             // Fetch maintenance schedule data
 //             PreparedStatement ps = con.prepareStatement(
 //                 "SELECT m.ITEM_MS_ID, m.ITEM_TYPE_ID, m.NO_OF_DAYS, m.REMARKS, m.NO_OF_DAYS_WARNING, t.NAME AS ITEM_TYPE_NAME " +
-//                 "FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED m " +
-//                 "LEFT JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON m.ITEM_TYPE_ID = t.ITEM_TYPE_ID");
+//                 "FROM C##FMO_ITEM_MAINTENANCE_SCHED m " +
+//                 "LEFT JOIN C##FMO_ITEM_TYPES t ON m.ITEM_TYPE_ID = t.ITEM_TYPE_ID");
 //             ResultSet rs = ps.executeQuery();
 
 //             while (rs.next()) {
@@ -48,7 +48,7 @@ public class maintenanceController extends HttpServlet {
 //             }
 
 //             // Fetch item type data for dropdown
-//             ps = con.prepareStatement("SELECT ITEM_TYPE_ID, NAME FROM C##FMO_ADM.FMO_ITEM_TYPES WHERE ACTIVE_FLAG = 1");
+//             ps = con.prepareStatement("SELECT ITEM_TYPE_ID, NAME FROM C##FMO_ITEM_TYPES WHERE ACTIVE_FLAG = 1");
 //             rs = ps.executeQuery();
 
 //             while (rs.next()) {
@@ -75,7 +75,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
     try (Connection con = PooledConnection.getConnection()) {
         if ("archive".equals(action)) {
             int itemMsId = Integer.parseInt(request.getParameter("itemMsId"));
-            String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ARCHIVED_FLAG = 2 WHERE ITEM_MS_ID = ?";
+            String updateSql = "UPDATE C##FMO_ITEM_MAINTENANCE_SCHED SET ARCHIVED_FLAG = 2 WHERE ITEM_MS_ID = ?";
             try (PreparedStatement ps = con.prepareStatement(updateSql)) {
                 ps.setInt(1, itemMsId);
                 int rowsUpdated = ps.executeUpdate();
@@ -95,6 +95,14 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             String yearlySchedule = request.getParameter("yearlySchedule");
             String itemMsIdStr = request.getParameter("itemMsId");
 
+            System.out.println("itemTypeId: " + itemTypeId);
+            System.out.println("noOfDays: " + noOfDays);
+            System.out.println("remarks: " + remarks);
+            System.out.println("noOfDaysWarning: " + noOfDaysWarning);
+            System.out.println("quarterlySchedule: " + quarterlySchedule);
+            System.out.println("yearlySchedule: " + yearlySchedule);
+            System.out.println("itemMsIdStr: " + itemMsIdStr);
+
             // Check if this is an edit operation
             boolean isEdit = itemMsIdStr != null && !itemMsIdStr.trim().isEmpty();
             String sql;
@@ -110,34 +118,59 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
                       "YEARLY_SCHED_NO = ? " +
                       "WHERE ITEM_MS_ID = ?";
             } else {
-                // Insert new record
+                // Get the next available ID
+                int nextId = 1; // Default if table is empty
+                String getMaxIdSql = "SELECT COALESCE(MAX(ITEM_MS_ID), 0) + 1 FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED";
+                try (PreparedStatement maxPs = con.prepareStatement(getMaxIdSql)) {
+                    ResultSet maxRs = maxPs.executeQuery();
+                    if (maxRs.next()) {
+                        nextId = maxRs.getInt(1);
+                    }
+                }
+                
+                // Insert new record with calculated ID
                 sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
-                      "(ITEM_MS_ID, ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, NO_OF_DAYS_WARNING, QUARTERLY_SCHED_NO, YEARLY_SCHED_NO, ARCHIVED_FLAG) " +
-                      "VALUES (C##FMO_ADM.ITEM_MS_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, 1)";
+                      "(ITEM_MS_ID, ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, NO_OF_DAYS_WARNING, QUARTERLY_SCHED_NO, YEARLY_SCHED_NO, ARCHIVED_FLAG, MAIN_TYPE_ID) " +
+                      "VALUES (?, ?, ?, ?, ?, ?, ?, 1, 1)";
             }
 
             try (PreparedStatement ps = con.prepareStatement(sql)) {
+                int paramIndex = 1;
+                
+                // Set ID parameter for INSERT operations
+                if (!isEdit) {
+                    int nextId = 1; // Default if table is empty
+                    String getMaxIdSql = "SELECT COALESCE(MAX(ITEM_MS_ID), 0) + 1 FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED";
+                    try (PreparedStatement maxPs = con.prepareStatement(getMaxIdSql)) {
+                        ResultSet maxRs = maxPs.executeQuery();
+                        if (maxRs.next()) {
+                            nextId = maxRs.getInt(1);
+                        }
+                    }
+                    ps.setInt(paramIndex++, nextId);
+                }
+                
                 // Set common parameters
-                ps.setInt(1, itemTypeId);
-                ps.setInt(2, noOfDays);
-                ps.setString(3, remarks);
-                ps.setInt(4, noOfDaysWarning);
+                ps.setInt(paramIndex++, itemTypeId);
+                ps.setInt(paramIndex++, noOfDays);
+                ps.setString(paramIndex++, remarks);
+                ps.setInt(paramIndex++, noOfDaysWarning);
 
                 // Handle quarterly and yearly schedule
                 if (noOfDays == 90 && quarterlySchedule != null && !quarterlySchedule.isEmpty()) {
-                    ps.setInt(5, Integer.parseInt(quarterlySchedule));
-                    ps.setNull(6, java.sql.Types.INTEGER);
+                    ps.setInt(paramIndex++, Integer.parseInt(quarterlySchedule));
+                    ps.setNull(paramIndex++, java.sql.Types.INTEGER);
                 } else if ((noOfDays == 365 || noOfDays == 180) && yearlySchedule != null && !yearlySchedule.isEmpty()) {
-                    ps.setNull(5, java.sql.Types.INTEGER);
-                    ps.setInt(6, Integer.parseInt(yearlySchedule));
+                    ps.setNull(paramIndex++, java.sql.Types.INTEGER);
+                    ps.setInt(paramIndex++, Integer.parseInt(yearlySchedule));
                 } else {
-                    ps.setNull(5, java.sql.Types.INTEGER);
-                    ps.setNull(6, java.sql.Types.INTEGER);
+                    ps.setNull(paramIndex++, java.sql.Types.INTEGER);
+                    ps.setNull(paramIndex++, java.sql.Types.INTEGER);
                 }
 
                 // Set the ID parameter for UPDATE operations
                 if (isEdit) {
-                    ps.setInt(7, Integer.parseInt(itemMsIdStr));
+                    ps.setInt(paramIndex, Integer.parseInt(itemMsIdStr));
                 }
 
                 int result = ps.executeUpdate();

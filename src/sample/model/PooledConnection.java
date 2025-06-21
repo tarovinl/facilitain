@@ -20,7 +20,7 @@ public class PooledConnection {
         try {
             Context ic = new InitialContext();
             // local database
-            ds = (DataSource) ic.lookup("jdbc/fmo_admDS");
+            ds = (DataSource) ic.lookup("jdbc/localDBDS");
         } catch (NamingException ne) {
             System.err.println(ne.getMessage());
         }

@@ -158,7 +158,7 @@ a.paginate-button.active {
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea class="form-control" id="description" name="description" required></textarea>
+                        <textarea class="form-control" id="description" name="description" ></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
