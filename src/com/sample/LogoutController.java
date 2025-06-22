@@ -11,33 +11,32 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet("/LogoutController")
 public class LogoutController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
     public LogoutController() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession(false);
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        
+        // Get the role BEFORE invalidating the session
+        String role = null;
         if (session != null) {
-            session.invalidate();
+            role = (String) session.getAttribute("role");
+            session.invalidate(); // Invalidate after getting the role
         }
 
         // Determine redirect URL based on source parameter and user role
         String source = request.getParameter("source");
-        String role = null;
-        if (session != null) {
-            role = (String) session.getAttribute("role");
-        }
-
         String redirectUrl;
+        
         if ("Respondent".equals(role) && source != null) {
             switch (source) {
                 case "feedback":
@@ -57,14 +56,12 @@ public class LogoutController extends HttpServlet {
 
         // Redirect to appropriate login page
         response.sendRedirect(redirectUrl);
-	}
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
 }
