@@ -238,7 +238,7 @@
     To-Do
 </a>
        <!-- Sidebar container -->
-<a href="<%=request.getContextPath()%>/logoutServlet"
+<a href="<%=request.getContextPath()%>/LogoutController"
    class="d-flex align-items-center mt-auto px-3 py-2 text-danger"
    style="text-decoration: none;">
   
