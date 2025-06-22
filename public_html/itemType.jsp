@@ -221,36 +221,7 @@ a.paginate-button.active {
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script>
-    $(document).ready(function () {
-        // Initialize DataTable
-        $('#itemTypeTable').DataTable();
-
-        // Prefill Edit Modal with selected item data
-        const editModal = document.getElementById('editItemTypeModal');
-        editModal.addEventListener('show.bs.modal', event => {
-            const button = event.relatedTarget;
-            document.getElementById('editItemTypeId').value = button.getAttribute('data-itemtypeid');
-            document.getElementById('editItemCatId').value = button.getAttribute('data-itemcatid');
-            document.getElementById('editName').value = button.getAttribute('data-name');
-            document.getElementById('editDescription').value = button.getAttribute('data-description');
-        });
-
-        // SweetAlert2 for Success Messages
-        const urlParams = new URLSearchParams(window.location.search);
-        const successMessage = urlParams.get('successMessage');
-        if (successMessage) {
-            Swal.fire({
-                title: 'Success!',
-                text: successMessage,
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                // Remove the success parameter from the URL
-                const newUrl = window.location.origin + window.location.pathname;
-                window.history.replaceState({}, document.title, newUrl);
-            });
-        }
-    });$(document).ready(function () {
+$(document).ready(function () {
     // Initialize DataTable
     $('#itemTypeTable').DataTable();
 
@@ -264,7 +235,7 @@ a.paginate-button.active {
         document.getElementById('editDescription').value = button.getAttribute('data-description');
     });
 
-    // Handle SweetAlert2 notifications
+    // Handle SweetAlert2 notifications for success/error messages
     const urlParams = new URLSearchParams(window.location.search);
     const action = urlParams.get('action');
     const error = urlParams.get('error');
@@ -318,31 +289,41 @@ a.paginate-button.active {
         });
     }
 
-   
-    $('form').on('submit', function(e) {
-        if ($(this).find('input[name="action"][value="archive"]').length) {
+    // Archive confirmation handler - target Archive buttons specifically
+    $(document).on('click', '.btn-danger', function(e) {
+        // Check if this button is within a form with archive action
+        const form = $(this).closest('form');
+        const archiveInput = form.find('input[name="action"][value="archive"]');
+        
+        if (archiveInput.length > 0) {
             e.preventDefault();
-            const form = this;
+            e.stopPropagation();
+            
+            const formElement = form[0];
             
             Swal.fire({
-            title: 'Are you sure?',
-            text: 'You want to archive this item type?',
-            icon: 'warning',
-            showCancelButton: true,
-            reverseButtons: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#ffffff', // keep white bg from SweetAlert defaults
-            confirmButtonText: 'Confirm',
-            cancelButtonText: 'Cancel',
-            customClass: {
-             cancelButton: 'btn-cancel-outline'
-            }
-                }).then(result => {
-            if (result.isConfirmed) {
-             form.submit();
-                 }
+                title: 'Are you sure?',
+                text: 'You want to archive this item type?',
+                icon: 'warning',
+                showCancelButton: true,
+                reverseButtons: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, Archive it!',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    cancelButton: 'btn-cancel-outline'
+                },
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the form directly
+                    formElement.submit();
+                }
             });
-
+            
+            return false;
         }
     });
 });

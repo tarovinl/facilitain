@@ -319,30 +319,41 @@
         });
     }
 
-    // Handle archive confirmation with SweetAlert2
-    $('form').on('submit', function(e) {
-        if ($(this).find('input[name="action"][value="archive"]').length) {
+    // Archive confirmation handler 
+    $(document).on('click', '.btn-danger', function(e) {
+        // Check if this button is within a form with archive action
+        const form = $(this).closest('form');
+        const archiveInput = form.find('input[name="action"][value="archive"]');
+        
+        if (archiveInput.length > 0) {
             e.preventDefault();
-            const form = this;
+            e.stopPropagation();
+            
+            const formElement = form[0];
             
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You want to archive this maintenance schedule?",
+                text: 'You want to archive this maintenance schedule?',
                 icon: 'warning',
                 showCancelButton: true,
-            reverseButtons: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#ffffff', // keep white bg from SweetAlert defaults
-            confirmButtonText: 'Confirm',
-            cancelButtonText: 'Cancel',
-            customClass: {
-             cancelButton: 'btn-cancel-outline'
-            }
+                reverseButtons: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, Archive it!',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    cancelButton: 'btn-cancel-outline'
+                },
+                allowOutsideClick: false,
+                allowEscapeKey: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    // Submit the form directly
+                    formElement.submit();
                 }
             });
+            
+            return false;
         }
     });
 });
