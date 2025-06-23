@@ -135,7 +135,7 @@
                                     style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
                                     data-bs-toggle="modal" data-bs-target="#addBuildingModal">
                                     <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"> 
-                                    Add
+                                    Add Location
                                 </button>
                             </c:when>
                             <c:otherwise>

@@ -67,7 +67,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="text-dark" style="font-family: 'NeueHaasMedium', sans-serif;">Automated Scheduling</h1>
                 <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#maintenanceModal">
-                     <img src="resources/images/icons/autorenew.svg" alt="schedule" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"> Manage
+                      <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"> Add
                 </button>
             </div>
 
@@ -132,7 +132,7 @@
                     <div class="modal-content">
                         <form action="maintenanceSave" method="post">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="maintenanceModalLabel">Manage Automated Scheduling</h5>
+                                <h5 class="modal-title" id="maintenanceModalLabel">Add Automated Schedule</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -211,8 +211,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-success">Save Changes</button>
+                                <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-success">Add</button>
                             </div>
                         </form>
                     </div>
