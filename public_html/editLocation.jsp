@@ -223,16 +223,17 @@
                                                 onclick="populateEditModal(this)">
                                         </th>
                                         <td>
+                                            <!--data-target="#archiveFloor"-->
                                             <input type="image" 
                                                 src="resources/images/archiveItem.svg" 
                                                 id="archFlrModalButton" 
                                                 alt="Open Archive Modal" 
+                                                class="archive-floor-btn"
                                                 width="24" 
                                                 height="24" 
                                                 data-toggle="modal"
                                                 data-aflrid="${floors.itemLocFlrId}"
                                                 data-aflrname="${floors.locFloor}"
-                                                data-target="#archiveFloor"
                                                 onclick="populateArchFlrModal(this)">
                                         </th>
                                         <td>${floors.itemLocFlrId}</td>
@@ -325,42 +326,36 @@
 
 <!-- edit floor modal -->
 <div class="modal fade" id="editFloor" tabindex="-1" role="dialog" aria-labelledby="editFloor" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <div class="centered-div bg-white">
-                <div class="container p-4 mt-4 mb-4">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editFloorLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Edit Floor</h5>
+              <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
                     <form action="floorcontroller" method="POST">
-                        <div class="row">
-                            <div class="col">
-                                <h3 class="fw-bold">Edit Floor</h3>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <div class="col">
+                                    <label for="flrName" class="fw-bold">Floor Name <span style="color: red;">*</span></label>
+                                    <input type="text" name="editFlrName" id="editFlrName" class="form-control mt-3" maxlength="15" required>
+                                </div>
+                            </div>
+                            <input type="hidden" name="editFlrLocID" id="editFlrLocID" class="form-control" value="${locID}">
+                            <input type="hidden" name="editFlrID" id="editFlrID" class="form-control">
+                            <input type="hidden" name="locID" value="${locID}">
+                            <div class="mb-3">
+                                <div class="col">
+                                    <label for="flrDesc" class="fw-bold">Floor Description</label>
+                                    <textarea class="form-control mt-3" name="editFlrDesc" id="editFlrDesc" rows="2"></textarea>
+                                </div>
                             </div>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col">
-                                <label for="flrName" class="fw-bold">Floor Name</label>
-                                <input type="text" name="editFlrName" id="editFlrName" class="form-control mt-3" maxlength="15" required>
-                            </div>
-                        </div>
-                        <input type="hidden" name="editFlrLocID" id="editFlrLocID" class="form-control" value="${locID}">
-                        <input type="hidden" name="editFlrID" id="editFlrID" class="form-control">
-                        <input type="hidden" name="locID" value="${locID}">
-                        <div class="row mt-3">
-                            <div class="col">
-                                <label for="flrDesc" class="fw-bold">Floor Description</label>
-                                <textarea class="form-control mt-3" name="editFlrDesc" id="editFlrDesc" rows="2"></textarea>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col text-center">
-                                <input type="submit" value="Save" class="btn btn-warning btn-lg mt-4 w-100 fw-bold">
-                            </div> 
-                            <div class="col text-center">
-                                <button type="button" class="btn btn-warning btn-lg mt-4 w-100 fw-bold" data-dismiss="modal">Cancel</button>
-                            </div> 
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-outline-danger" data-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
+                          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save</button>
                         </div>
                     </form>
-                </div>
-            </div>
+                
         </div>
     </div>
 </div>
@@ -402,7 +397,7 @@
 
 
 <!-- archive floor modal -->
-<div class="modal fade" id="archiveFloor" tabindex="-1" role="dialog" aria-labelledby="archiveFloor" aria-hidden="true">
+<!--<div class="modal fade" id="archiveFloor" tabindex="-1" role="dialog" aria-labelledby="archiveFloor" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="centered-div bg-white">
@@ -430,7 +425,13 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
+<form id="archiveFloor" action="floorcontroller" method="POST" style="display: none;">
+    <input type="hidden" name="locID" value="${locID}">
+    <input type="hidden" name="archiveFlrLocID" id="archiveFlrLocID" class="form-control" value="${locID}">
+    <input type="hidden" name="archiveFlrID" id="archiveFlrID" class="form-control">
+    <input type="hidden" name="archiveFlr" id="archiveFlr" class="form-control">
+</form>
 <!-- end of archive floor modal -->
 
 <!-- activate floor modal -->
@@ -677,6 +678,25 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#archiveLocForm').submit();
+            }
+        });
+    });
+    
+    $(document).on('click', '.archive-floor-btn', function(e) {
+        e.preventDefault();
+    
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to archive this floor?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, archive it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#archiveFloor').submit();
             }
         });
     });
