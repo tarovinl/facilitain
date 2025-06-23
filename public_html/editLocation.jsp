@@ -138,23 +138,20 @@
         </div>
         <div class="container">
         <div class="editbuildingName">
-            <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Edit Location</h1>
+            <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.0;">Edit Location</h1>
         </div>
         <div class="floorAndButtons">
             <div class="locName">
               <h3 class="fw-bold">${locName}</h3>
             </div>
             
-            <div class="d-flex flex-column flex-lg-row gap-2">
-    <button class="buttonsBuilding align-items-center d-flex btn btn-md px-3 py-2 rounded-1 hover-outline text-dark" 
-        style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
-        data-toggle="modal" data-target="#addFloor" type="button">
-        Add Floor
-    </button>
+            <div class="d-flex flex-column flex-lg-row">
+
 
     <button class="buttonsBuilding archive-location-btn align-items-center d-flex btn btn-md px-3 py-2 rounded-1 hover-outline text-dark" 
         style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
         href="#" data-bs-toggle="modal" type="button" onclick="">
+        <img src="resources/images/icons/archive.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25">
         Archive Location
     </button>
 </div>
@@ -415,7 +412,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-danger" data-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
-          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save</button>
+          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
         </div>
       </div>
     </form>

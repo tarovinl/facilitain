@@ -157,7 +157,7 @@
                                         <c:choose>
                                             <c:when test="${log.operationType == 'INSERT'}">Added</c:when>
                                             <c:when test="${log.operationType == 'UPDATE'}">Edited</c:when>
-                                            <c:when test="${log.operationType == 'DELETE'}">Removed</c:when>
+                                            <c:when test="${log.operationType == 'DELETE'}">Archived</c:when>
                                             <c:otherwise>${log.operationType}</c:otherwise>
                                         </c:choose>
                                     </span>
