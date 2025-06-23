@@ -9,7 +9,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap-icons/1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
-    <title>Notifications</title>
+    <title>Notifications - Facilitain</title>
     
     <style>
         body, h1, h2, h3, h4, th {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - Facilitain</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
@@ -143,11 +143,9 @@
             <div class="col-md-6">
                 <div class="login-container p-4 p-md-5 rounded-1">
                     <h3 class="mb-4 montserrat-bold text-start">Sign in</h3>
-                    <p class="montserrat-regular text-dark text-start shared-text">To access MyUSTe Portal, please make sure you meet the following requirements:</p>
-                    <ol class="text-start montserrat-regular">
-                        <li class="shared-text">UST Google Workspace Personal Account</li>
-                        <li class="shared-text">Google Authenticator Application</li>
-                    </ol>
+                    
+                    <p class="montserrat-regular text-dark text-start shared-text">Track and maintain facilities within the University of Santo Tomas! Please make sure to login with your <strong> UST Google Workspace Personal Account </strong> to access <strong> FACILITAIN. </strong></p>
+                    
                     <div id="g_id_onload"
                          data-client_id="103164757802-4v37vphomb6foi27vbhhc4advakt16q3.apps.googleusercontent.com"
                          data-context="signin"
@@ -165,7 +163,10 @@
                       </div>
                     </div>
                     <hr class="my-3">
-                    <a href="#" class="d-block text-decoration-none text-dark montserrat-regular text-start" style="font-size: 0.80rem;">Need help signing in? <strong>Learn More</strong></a>
+                    <a href="#" class="d-block text-decoration-none text-dark montserrat-regular text-start" style="font-size: 0.80rem;">
+  FACILITAIN values your privacy. View our <strong>Privacy Policy</strong>.
+</a>
+
                 </div>
             </div>
         </div>

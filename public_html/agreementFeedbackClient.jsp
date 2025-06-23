@@ -14,7 +14,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
         <!-- Optional: Add a custom title -->
-        <title>Agreement</title>
+        <title>Agreement - Facilitain</title>
         <style>
         .montserrat-regular {
          font-family: "Montserrat", sans-serif;
@@ -53,14 +53,14 @@
           </p>
             <!-- Example Bootstrap Button -->
              <div class="mt-3 d-flex justify-content-center px-0">
-                <button type ="button" onclick="window.location.href='menuClient.jsp';" class="montserrat-bold btn w-100 py-3 fs-5"  style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
+                <button type ="button" onclick="window.location.href='feedbackClient.jsp';" class="montserrat-bold btn w-100 py-3 fs-5"  style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
         onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
         onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
                 Agree
                 </button>
             </div>
             <div class="mt-3 d-flex justify-content-center px-0">
-                 <button type ="button" onclick="window.location.href='loginClient.jsp';" class="montserrat-bold btn w-100 py-3 fs-5"  style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
+                 <button type ="button" onclick="window.location.href='loginFeedbackClient.jsp';" class="montserrat-bold btn w-100 py-3 fs-5"  style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
         onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
         onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
                 Disagree
