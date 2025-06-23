@@ -1021,7 +1021,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                             </div>
                             <div class="modal-footer">
                                     <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
-                                    <input type="submit" value="Save" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif !important;">
+                                    <input type="submit" value="Add" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif !important;">
 
                             </div>
                         </form>
