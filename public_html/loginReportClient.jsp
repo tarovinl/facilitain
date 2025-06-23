@@ -86,11 +86,7 @@
                              class="img-fluid mb-4 d-block mx-auto" 
                              style="max-height: 5rem;">
                             <h3 class="text-center p-1 montserrat-bold">Sign in to Report</h3>
-                            <p class="p-2">To access MyUSTe Portal, please make sure you meet the following requirements:</p>
-                            <p class="p-2">
-                                1. UST Google Workspace Personal Account <br/>
-                                2. Google Authenticator Application
-                            </p>
+                            <p class="p-2">Submit equipment reports with ease! Please log in using your <strong>UST Google Workspace Personal Account</strong> to access the <strong>FACILITAIN Reports Portal</strong>.</p>
                             <div class="mt-3 d-flex justify-content-center px-0">
                                 <div id="g_id_onload"
                                      data-client_id="103164757802-4v37vphomb6foi27vbhhc4advakt16q3.apps.googleusercontent.com"
