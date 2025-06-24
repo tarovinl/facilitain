@@ -211,17 +211,17 @@ a.paginate-button.active {
         $('#categoriesTable').DataTable();
 
         // Prefill Edit Modal with data
-      const editModal = document.getElementById('editCategoryModal');
-editModal.addEventListener('show.bs.modal', event => {
-    const button = event.relatedTarget;
-    const cid = button.getAttribute('data-cid');
-    const name = button.getAttribute('data-name');
-    const description = button.getAttribute('data-description');
+        const editModal = document.getElementById('editCategoryModal');
+        editModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const cid = button.getAttribute('data-cid');
+            const name = button.getAttribute('data-name');
+            const description = button.getAttribute('data-description');
 
-    document.getElementById('editItemCID').value = cid;
-    document.getElementById('editCategoryName').value = name;
-    document.getElementById('editDescription').value = description;
-});
+            document.getElementById('editItemCID').value = cid;
+            document.getElementById('editCategoryName').value = name;
+            document.getElementById('editDescription').value = description;
+        });
 
         // Handle SweetAlert2 notifications
         const urlParams = new URLSearchParams(window.location.search);
@@ -277,32 +277,43 @@ editModal.addEventListener('show.bs.modal', event => {
             });
         }
 
-        // Replace confirm dialog with SweetAlert2 for archive action
-       $('form').on('submit', function(e) {
-    if ($(this).find('input[name="action"][value="archive"]').length) {
-        e.preventDefault();
-        const form = this;
-        
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You want to archive this category? This action cannot be undone.",
-            icon: 'warning',
-           showCancelButton: true,
-            reverseButtons: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#ffffff', // keep white bg from SweetAlert defaults
-            confirmButtonText: 'Confirm',
-            cancelButtonText: 'Cancel',
-            customClass: {
-             cancelButton: 'btn-cancel-outline'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
+        // Archive confirmation handler 
+        $(document).on('click', '.btn-danger', function(e) {
+            // Check if this button is within a form with archive action
+            const form = $(this).closest('form');
+            const archiveInput = form.find('input[name="action"][value="archive"]');
+            
+            if (archiveInput.length > 0) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const formElement = form[0];
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You want to archive this category?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    reverseButtons: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, Archive it!',
+                    cancelButtonText: 'Cancel',
+                    customClass: {
+                        cancelButton: 'btn-cancel-outline'
+                    },
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Submit the form directly
+                        formElement.submit();
+                    }
+                });
+                
+                return false;
             }
         });
-    }
-});
     });
 </script>
 </body>

@@ -53,10 +53,10 @@
             border-left: 4px solid #2196f3;
         }
         
-        /* Enhanced read/unread styling */
+        /* Enhanced read/unread styling with yellow theme */
         .list-group-item.unread {
-            background-color: #f8f9ff;
-            border-left: 4px solid #0d6efd;
+            background-color: #fffbf0;
+            border-left: 4px solid #fccc4c;
             font-weight: 500;
         }
         
@@ -66,25 +66,40 @@
             opacity: 0.85;
         }
         
-        /* Better status badges */
-        .status-badge {
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 0.4rem 0.8rem;
-            border-radius: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        /* Facebook-style notification dot */
+        .notification-dot {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 12px;
+            height: 12px;
+            background-color: #fccc4c;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(252, 204, 76, 0.4);
         }
         
-        .status-badge.unread {
-            background-color: #0d6efd;
-            color: white;
-            box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+        /* Hide dot for read notifications */
+        .list-group-item.read .notification-dot {
+            display: none;
         }
         
-        .status-badge.read {
-            background-color: #6c757d;
-            color: white;
+        /* Remove extra spacing and margins */
+        .notification-content {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .notification-content h6 {
+            margin: 0;
+            padding: 0;
+            line-height: 1.2;
+        }
+        
+        .notification-button {
+            margin: 0;
+            padding: 0;
+            line-height: 1;
         }
         
         /* Subtle hover effects */
@@ -102,8 +117,8 @@
         }
         
         .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+            border-color: #fccc4c;
+            box-shadow: 0 0 0 0.2rem rgba(252, 204, 76, 0.25);
         }
         
         /* Pagination styling */
@@ -121,14 +136,15 @@
         }
         
         .pagination .page-link:hover {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-            color: white;
+            background-color: #fccc4c;
+            border-color: #fccc4c;
+            color: black;
         }
         
         .pagination .page-item.active .page-link {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
+            background-color: #fccc4c;
+            border-color: #fccc4c;
+            color: black;
         }
         
         /* Icon improvements */
@@ -138,7 +154,7 @@
         }
         
         .unread .notification-icon {
-            color: #0d6efd;
+            color: #fccc4c;
         }
         
         .read .notification-icon {
@@ -150,6 +166,15 @@
             padding: 1.2rem;
             margin-bottom: 0.5rem;
             border-radius: 0.5rem;
+            position: relative;
+        }
+        
+        /* Adjust delete button positioning to account for notification dot */
+        .notification-actions {
+            position: absolute;
+            top: 50%;
+            right: 35px;
+            transform: translateY(-50%);
         }
     </style>
 </head>
@@ -192,7 +217,12 @@
             <div class="overflow-auto">
                 <ul class="list-group">
                     <c:forEach var="notification" items="${notifications}">
-                        <li class="list-group-item list-group-item-action d-flex justify-content-between position-relative ${notification.isRead ? 'read' : 'unread'} ${notification.assignmentNotification ? 'assign-notification' : ''}">
+                        <li class="list-group-item list-group-item-action d-flex justify-content-between ${notification.isRead ? 'read' : 'unread'} ${notification.assignmentNotification ? 'assign-notification' : ''}">
+                            <!-- Facebook-style notification dot for unread notifications -->
+                            <c:if test="${!notification.isRead}">
+                                <div class="notification-dot"></div>
+                            </c:if>
+                            
                             <form action="notification" method="POST" class="flex-grow-1">
                                 <input type="hidden" name="id" value="${notification.notificationId}"/>
                                 <input type="hidden" name="redirectUrl" value="  
@@ -204,9 +234,9 @@
                                         <c:when test="${notification.type == 'WARNING'}"><%=request.getContextPath()%>/buildingDashboard?locID=${notification.itemLocId}</c:when>
                                     </c:choose>
                                 "/>
-                                <button type="submit" class="btn btn-block text-start p-0 bg-transparent border-0 w-100">
-                                    </button><div class="text-start">
-                                        <h6 class="mb-1 text-start">
+                                <button type="submit" class="btn text-start bg-transparent border-0 w-100 notification-button">
+                                    <div class="notification-content text-start">
+                                        <h6 class="d-inline">
                                             <c:choose>
                                                 <c:when test="${notification.assignmentNotification}">
                                                     <i class="bi bi-person-check-fill notification-icon text-info"></i>
@@ -215,27 +245,25 @@
                                                     <i class="bi bi-bell-fill notification-icon"></i>
                                                 </c:otherwise>
                                             </c:choose>
-                                           </h6><div class="font-light">
-                                              <h6 class="mb-1">
-                                                <c:choose>
-                                                  <c:when test="${notification.groupedMaintenance}">
+                                            <c:choose>
+                                                <c:when test="${notification.groupedMaintenance}">
                                                     Maintenance Required - ${notification.locName}
                                                     <span class="maintenance-count">${notification.maintenanceItemCount}</span>
-                                                  </c:when>
-                                                  <c:otherwise>
+                                                </c:when>
+                                                <c:otherwise>
                                                     ${notification.message}
-                                                  </c:otherwise>
-                                                </c:choose>
-                                              </h6>
-                                              <small class="text-muted text-start d-block">
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </h6>
+                                        <div class="font-light mt-1">
+                                            <small class="text-muted d-block">
                                                 Created At: ${notification.createdAt}
-                                              </small>
-                                              <small class="text-muted text-start d-block">
-                                               Location: ${notification.locName}
-                                              </small>
-                                            </div>
+                                            </small>
+                                            <small class="text-muted d-block">
+                                                Location: ${notification.locName}
+                                            </small>
+                                        </div>
 
-                                        
                                         <!-- Dropdown for grouped maintenance items -->
                                         <c:if test="${notification.groupedMaintenance}">
                                             <div class="maintenance-dropdown mt-2 text-start">
@@ -251,11 +279,9 @@
                                     </div>
                                 </button>
                             </form>
-                            <div class="d-flex flex-column align-items-end">
-                                <span class="status-badge ${notification.isRead ? 'read' : 'unread'} mb-2">
-                                    <i class="bi bi-${notification.isRead ? 'check-circle-fill' : 'circle-fill'} me-1"></i>
-                                    ${notification.isRead ? 'Read' : 'Unread'}
-                                </span>
+                            
+                            <!-- Delete button positioned to avoid overlapping with notification dot -->
+                            <div class="notification-actions">
                                 <button class="btn btn-danger btn-sm" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#deleteModal" 
