@@ -693,33 +693,30 @@ public class mainController extends HttpServlet {
     private boolean isValidPathAndQuery(String path, String queryString) {
         if (path == null) return false;
 
-        // Remove global "harmless" parameters (action=..., status=...) regardless of values
         if (queryString != null) {
-            // Remove action=<anything> and status=<anything> (alphanumeric, underscore, dash)
+            // Remove known harmless parameters
             queryString = queryString
                 .replaceAll("(?i)&?action=[\\w\\-]+", "")
                 .replaceAll("(?i)&?status=[\\w\\-]+", "")
-                .replaceAll("^&+", "")     // remove leading '&'
-                .replaceAll("&{2,}", "&"); // fix accidental '&&'
-            
-            // Clean up empty query string
+                .replaceAll("^&+", "")
+                .replaceAll("&{2,}", "&");
+
             if (queryString.isEmpty()) {
                 queryString = null;
             }
         }
-        
+
         switch (path) {
             case "/buildingDashboard":
-                // Allow no query, or valid locID and optional /manage or /edit
                 if (queryString == null) return true;
 
-                // Validate expected patterns
-                if (queryString.matches("locID=\\d+(/manage)?") || 
-                    queryString.matches("locID=\\d+(/edit)?") || 
-                    queryString.matches("locID=\\d+(/manage\\?floor=\\w+)?")) {
+                // Accept locID plus optional manage/edit, and allow extra parameters
+                if (queryString.matches("locID=\\d+(/manage)?(\\?floor=\\w+)?(&.*)?") ||
+                    queryString.matches("locID=\\d+(/edit)?(&.*)?")) {
                     return true;
                 }
                 return false;
+
             case "/homepage":
             case "/calendar":
             case "/settings":

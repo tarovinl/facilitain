@@ -1,8 +1,9 @@
-  package com.sample;
+package com.sample;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,139 +13,142 @@ import sample.model.PooledConnection;
 
 @WebServlet({"/maintenanceSave"})
 public class maintenanceController extends HttpServlet {
-   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      String action = request.getParameter("action");
-      String redirectParams = "";
-
-      try {
-         Connection con = PooledConnection.getConnection();
-         Throwable var6 = null;
-
-         try {
-            int itemTypeId;
+    
+    // Main dispatcher method
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
+        String action = request.getParameter("action");
+        String redirectParams = "";
+        
+        try {
+            // Determine which operation to perform
             if ("archive".equals(action)) {
-               itemTypeId = Integer.parseInt(request.getParameter("itemMsId"));
-               String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ARCHIVED_FLAG = 2 WHERE ITEM_MS_ID = ?";
-               PreparedStatement ps = con.prepareStatement(updateSql);
-               Throwable var10 = null;
-
-               try {
-                  ps.setInt(1, itemTypeId);
-                  int rowsUpdated = ps.executeUpdate();
-                  if (rowsUpdated > 0) {
-                     redirectParams = "?action=archived";
-                  } else {
-                     redirectParams = "?error=true";
-                  }
-               } catch (Throwable var62) {
-                  var10 = var62;
-                  throw var62;
-               } finally {
-                  if (ps != null) {
-                     if (var10 != null) {
-                        try {
-                           ps.close();
-                        } catch (Throwable var61) {
-                           var10.addSuppressed(var61);
-                        }
-                     } else {
-                        ps.close();
-                     }
-                  }
-
-               }
+                redirectParams = handleArchive(request);
             } else {
-               itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
-               int noOfDays = Integer.parseInt(request.getParameter("noOfDays"));
-               String remarks = request.getParameter("remarks");
-               int noOfDaysWarning = Integer.parseInt(request.getParameter("noOfDaysWarning"));
-               String quarterlySchedule = request.getParameter("quarterlySchedule");
-               String yearlySchedule = request.getParameter("yearlySchedule");
-               String itemMsIdStr = request.getParameter("itemMsId");
-               System.out.println("itemTypeId: " + itemTypeId);
-               System.out.println("noOfDays: " + noOfDays);
-               System.out.println("remarks: " + remarks);
-               System.out.println("noOfDaysWarning: " + noOfDaysWarning);
-               System.out.println("quarterlySchedule: " + quarterlySchedule);
-               System.out.println("yearlySchedule: " + yearlySchedule);
-               System.out.println("itemMsIdStr: " + itemMsIdStr);
-               boolean isEdit = itemMsIdStr != null && !itemMsIdStr.trim().isEmpty();
-               String sql;
-               if (isEdit) {
-                  sql = "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ITEM_TYPE_ID = ?, NO_OF_DAYS = ?, REMARKS = ?, NO_OF_DAYS_WARNING = ?, QUARTERLY_SCHED_NO = ?, YEARLY_SCHED_NO = ? WHERE ITEM_MS_ID = ?";
-               } else {
-                  sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED (ITEM_MS_ID, ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, NO_OF_DAYS_WARNING, QUARTERLY_SCHED_NO, YEARLY_SCHED_NO, ARCHIVED_FLAG, MAIN_TYPE_ID) VALUES (C##FMO_ADM.FMO_ITEM_MS_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, 1, 1)";
-               }
-
-               PreparedStatement ps = con.prepareStatement(sql);
-               Throwable var17 = null;
-
-               try {
-                  ps.setInt(1, itemTypeId);
-                  ps.setInt(2, noOfDays);
-                  ps.setString(3, remarks);
-                  ps.setInt(4, noOfDaysWarning);
-                  if (noOfDays == 90 && quarterlySchedule != null && !quarterlySchedule.isEmpty()) {
-                     ps.setInt(5, Integer.parseInt(quarterlySchedule));
-                     ps.setNull(6, 4);
-                  } else if ((noOfDays == 365 || noOfDays == 180) && yearlySchedule != null && !yearlySchedule.isEmpty()) {
-                     ps.setNull(5, 4);
-                     ps.setInt(6, Integer.parseInt(yearlySchedule));
-                  } else {
-                     ps.setNull(5, 4);
-                     ps.setNull(6, 4);
-                  }
-
-                  if (isEdit) {
-                     ps.setInt(7, Integer.parseInt(itemMsIdStr));
-                  }
-
-                  int result = ps.executeUpdate();
-                  if (result > 0) {
-                     redirectParams = isEdit ? "?action=updated" : "?action=added";
-                  } else {
-                     redirectParams = "?error=true";
-                  }
-               } catch (Throwable var63) {
-                  var17 = var63;
-                  throw var63;
-               } finally {
-                  if (ps != null) {
-                     if (var17 != null) {
-                        try {
-                           ps.close();
-                        } catch (Throwable var60) {
-                           var17.addSuppressed(var60);
-                        }
-                     } else {
-                        ps.close();
-                     }
-                  }
-
-               }
+                // For both add and update operations
+                redirectParams = handleAddOrUpdate(request);
             }
-         } catch (Throwable var66) {
-            var6 = var66;
-            throw var66;
-         } finally {
-            if (con != null) {
-               if (var6 != null) {
-                  try {
-                     con.close();
-                  } catch (Throwable var59) {
-                     var6.addSuppressed(var59);
-                  }
-               } else {
-                  con.close();
-               }
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectParams = "?error=true";
+        }
+        
+        // Redirect back to the maintenance schedule page
+        response.sendRedirect("maintenanceSchedule" + redirectParams);
+    }
+    
+    // Handle archive operation
+    private String handleArchive(HttpServletRequest request) throws SQLException {
+        int itemMsId = Integer.parseInt(request.getParameter("itemMsId"));
+        
+        try (Connection con = PooledConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(
+                 "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ARCHIVED_FLAG = 2 WHERE ITEM_MS_ID = ?")) {
+            
+            ps.setInt(1, itemMsId);
+            int rowsUpdated = ps.executeUpdate();
+            
+            if (rowsUpdated > 0) {
+                return "?action=archived";
+            } else {
+                return "?error=archive_failed";
             }
-
-         }
-      } catch (Exception var68) {
-         var68.printStackTrace();
-         redirectParams = "?error=true";
-      }
-
-      response.sendRedirect("maintenanceSchedule" + redirectParams);
-   }
+        }
+    }
+    
+    // Handle add or update operations
+    private String handleAddOrUpdate(HttpServletRequest request) throws SQLException {
+        // Extract parameters
+        int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
+        int noOfDays = Integer.parseInt(request.getParameter("noOfDays"));
+        String remarks = request.getParameter("remarks");
+        int noOfDaysWarning = Integer.parseInt(request.getParameter("noOfDaysWarning"));
+        String quarterlySchedule = request.getParameter("quarterlySchedule");
+        String yearlySchedule = request.getParameter("yearlySchedule");
+        String itemMsIdStr = request.getParameter("itemMsId");
+        
+        // Log parameters for debugging
+        logParameters(itemTypeId, noOfDays, remarks, noOfDaysWarning, 
+                     quarterlySchedule, yearlySchedule, itemMsIdStr);
+        
+        // Determine if this is an edit operation
+        boolean isEdit = itemMsIdStr != null && !itemMsIdStr.trim().isEmpty();
+        
+        // Choose appropriate SQL based on operation
+        String sql = isEdit ? getUpdateSql() : getInsertSql();
+        
+        try (Connection con = PooledConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            // Set common parameters
+            setCommonParameters(ps, itemTypeId, noOfDays, remarks, noOfDaysWarning, 
+                              quarterlySchedule, yearlySchedule);
+            
+            // Set the ID parameter for update operations
+            if (isEdit) {
+                ps.setInt(7, Integer.parseInt(itemMsIdStr));
+            }
+            
+            int result = ps.executeUpdate();
+            
+            if (result > 0) {
+                return isEdit ? "?action=updated" : "?action=added";
+            } else {
+                return isEdit ? "?error=update_failed" : "?error=add_failed";
+            }
+        }
+    }
+    
+    // Helper method to set common parameters for both add and update operations
+    private void setCommonParameters(PreparedStatement ps, int itemTypeId, int noOfDays, 
+                                   String remarks, int noOfDaysWarning, 
+                                   String quarterlySchedule, String yearlySchedule) 
+                                   throws SQLException {
+        ps.setInt(1, itemTypeId);
+        ps.setInt(2, noOfDays);
+        ps.setString(3, remarks);
+        ps.setInt(4, noOfDaysWarning);
+        
+        // Handle quarterly and yearly schedule parameters
+        if (noOfDays == 90 && quarterlySchedule != null && !quarterlySchedule.isEmpty()) {
+            ps.setInt(5, Integer.parseInt(quarterlySchedule));
+            ps.setNull(6, java.sql.Types.INTEGER);
+        } else if ((noOfDays == 365 || noOfDays == 180) && yearlySchedule != null && !yearlySchedule.isEmpty()) {
+            ps.setNull(5, java.sql.Types.INTEGER);
+            ps.setInt(6, Integer.parseInt(yearlySchedule));
+        } else {
+            ps.setNull(5, java.sql.Types.INTEGER);
+            ps.setNull(6, java.sql.Types.INTEGER);
+        }
+    }
+    
+    // Helper method to get SQL for update operation
+    private String getUpdateSql() {
+        return "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+               "SET ITEM_TYPE_ID = ?, NO_OF_DAYS = ?, REMARKS = ?, " +
+               "NO_OF_DAYS_WARNING = ?, QUARTERLY_SCHED_NO = ?, YEARLY_SCHED_NO = ? " +
+               "WHERE ITEM_MS_ID = ?";
+    }
+    
+    // Helper method to get SQL for insert operation
+    private String getInsertSql() {
+        return "INSERT INTO C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+               "(ITEM_MS_ID, ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, NO_OF_DAYS_WARNING, " +
+               "QUARTERLY_SCHED_NO, YEARLY_SCHED_NO, ARCHIVED_FLAG, MAIN_TYPE_ID) " +
+               "VALUES (C##FMO_ADM.FMO_ITEM_MS_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, 1, 1)";
+    }
+    
+    // Helper method to log parameters for debugging
+    private void logParameters(int itemTypeId, int noOfDays, String remarks, 
+                             int noOfDaysWarning, String quarterlySchedule, 
+                             String yearlySchedule, String itemMsIdStr) {
+        System.out.println("itemTypeId: " + itemTypeId);
+        System.out.println("noOfDays: " + noOfDays);
+        System.out.println("remarks: " + remarks);
+        System.out.println("noOfDaysWarning: " + noOfDaysWarning);
+        System.out.println("quarterlySchedule: " + quarterlySchedule);
+        System.out.println("yearlySchedule: " + yearlySchedule);
+        System.out.println("itemMsIdStr: " + itemMsIdStr);
+    }
 }
