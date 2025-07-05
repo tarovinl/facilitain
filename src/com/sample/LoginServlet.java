@@ -85,7 +85,7 @@ public class LoginServlet extends HttpServlet {
     private String getUserRoleFromDatabase(String email) throws SQLException {
         String role = null;
         try (Connection conn = PooledConnection.getConnection()) {
-            String sql = "SELECT role FROM C##FMO_ADM.FMO_ITEM_DUSERS WHERE email = ?";
+            String sql = "SELECT role FROM FMO_ADM.FMO_ITEM_DUSERS WHERE email = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, email);
                 try (ResultSet rs = stmt.executeQuery()) {

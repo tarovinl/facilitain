@@ -24,7 +24,7 @@ public class historyLogsController extends HttpServlet {
 
         String query = 
             "SELECT LOG_ID, TABLE_NAME, OPERATION_TYPE, OPERATION_TIMESTAMP, ROW_DATA " +
-            "FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS " +
+            "FROM FMO_ADM.FMO_ITEM_HISTORY_LOGS " +
             "ORDER BY OPERATION_TIMESTAMP DESC";
 
         try (Connection conn = PooledConnection.getConnection();
