@@ -118,6 +118,24 @@
         .btn-details {
             white-space: nowrap;
         }
+        
+        /* DataTables custom styling to match your theme */
+        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_filter input {
+            font-family: 'NeueHaasLight', sans-serif !important;
+        }
+        
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            font-family: 'NeueHaasLight', sans-serif !important;
+        }
+        
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_processing {
+            font-family: 'NeueHaasLight', sans-serif !important;
+        }
     </style>
 </head>
 <body>
@@ -126,13 +144,13 @@
         
         <div class="main-content flex-grow-1">
             <h1 class="mb-4" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">History Logs</h1>
-
+            
             <c:if test="${not empty error}">
                 <div class="alert alert-danger" role="alert">
                     <i class="fas fa-exclamation-triangle me-2"></i>${error}
                 </div>
             </c:if>
-
+            
             <div class="table-responsive">
                 <table id="historyTable" class="table table-striped table-hover">
                     <thead class="table-light">
@@ -145,43 +163,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="log" items="${historyLogs}">
-                            <tr data-row-data="<c:out value='${log.rowData}' escapeXml='true'/>">
-                                <td>${log.logId}</td>
-                                <td>${log.tableName}</td>
-                                <td>
-                                    <span class="badge fs-6
-                                    ${log.operationType == 'INSERT' ? 'bg-success' :
-                                      log.operationType == 'UPDATE' ? 'bg-warning text-dark' :
-                                      log.operationType == 'DELETE' ? 'bg-danger' : 'bg-secondary'}">
-                                        <c:choose>
-                                            <c:when test="${log.operationType == 'INSERT'}">Added</c:when>
-                                            <c:when test="${log.operationType == 'UPDATE'}">Edited</c:when>
-                                            <c:when test="${log.operationType == 'DELETE'}">Archived</c:when>
-                                            <c:otherwise>${log.operationType}</c:otherwise>
-                                        </c:choose>
-                                    </span>
-                                </td>
-                                <td>
-                                    <fmt:formatDate value="${log.operationTimestamp}" pattern="yyyy-MM-dd HH:mm:ss" />
-                                </td>
-                                <td class="details-control">
-                                    <button class="btn btn-outline-info btn-sm btn-details" type="button">
-                                        <i class="fas fa-eye me-1"></i>View
-                                    </button>
-                                </td>
-                            </tr>
-                        </c:forEach>
+                        <!-- DataTables will populate this via AJAX -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
+    
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    
     <script>
         function formatDetails(rowData) {
             console.log('Row data received:', rowData);
@@ -244,32 +237,47 @@
             };
             return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
         }
-
+        
         $(document).ready(function() {
-            // Initialize DataTable
+            // Initialize DataTable with server-side processing
             const table = $('#historyTable').DataTable({
-                order: [[3, 'desc']], // Sort by Operation Timestamp (column index 3)
-                pageLength: 12,
-                language: {
-                    search: "Search logs:"
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: 'history',
+                    type: 'GET'
                 },
-                columnDefs: [{
-                    targets: 4, // Details column (column index 4)
-                    orderable: false,
-                    searchable: false
-                }]
+                order: [[3, 'desc']], // Sort by Operation Timestamp
+                pageLength: 25,
+                columns: [
+                    { data: 0, title: 'Log ID' },
+                    { data: 1, title: 'Table Name' },
+                    { data: 2, title: 'Operation Type', orderable: false },
+                    { data: 3, title: 'Operation Timestamp' },
+                    { data: 4, title: 'Details', orderable: false, searchable: false }
+                ],
+                language: {
+                    search: "Search logs:",
+                    processing: "Loading history logs...",
+                    lengthMenu: "Show _MENU_ entries per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                }
             });
 
-            // Add event listener for opening and closing details
+            // Handle details button click
             $('#historyTable tbody').on('click', '.btn-details', function() {
-                const tr = $(this).closest('tr');
-                const row = table.row(tr);
                 const button = $(this);
+                const tr = button.closest('tr');
+                const row = table.row(tr);
                 
                 console.log('Details button clicked');
-                console.log('TR element:', tr);
-                console.log('Row data attribute:', tr.attr('data-row-data'));
-
+                
                 if (row.child.isShown()) {
                     // This row is already open - close it
                     row.child.hide();
@@ -290,7 +298,7 @@
                     });
                     
                     // Open this row
-                    const rowData = tr.attr('data-row-data');
+                    const rowData = button.attr('data-row-data');
                     console.log('Opening row with data:', rowData);
                     
                     const detailsHtml = formatDetails(rowData);
