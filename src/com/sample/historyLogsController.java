@@ -40,11 +40,16 @@ public class historyLogsController extends HttpServlet {
             int length = Integer.parseInt(request.getParameter("length"));
             String searchValue = request.getParameter("search[value]");
             
-            // Get total records count
+            // Get sorting parameters
+            String sortColumnIndex = request.getParameter("order[0][column]");
+            String sortDirection = request.getParameter("order[0][dir]");
+            String sortColumn = getSortColumn(sortColumnIndex);
+            
+       
             int totalRecords = getTotalRecords();
             
-            // Get filtered records
-            List<HistoryLog> historyLogs = getFilteredRecords(start, length, searchValue);
+           
+            List<HistoryLog> historyLogs = getFilteredRecords(start, length, searchValue, sortColumn, sortDirection);
             int filteredRecords = getFilteredRecordsCount(searchValue);
             
             // Build JSON response
@@ -68,6 +73,18 @@ public class historyLogsController extends HttpServlet {
         }
     }
     
+    private String getSortColumn(String columnIndex) {
+        if (columnIndex == null) return "OPERATION_TIMESTAMP";
+        
+        switch (columnIndex) {
+            case "0": return "LOG_ID";
+            case "1": return "TABLE_NAME";
+            case "2": return "OPERATION_TYPE";
+            case "3": return "OPERATION_TIMESTAMP";
+            default: return "OPERATION_TIMESTAMP";
+        }
+    }
+    
     private int getTotalRecords() throws Exception {
         String query = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS";
         try (Connection conn = PooledConnection.getConnection();
@@ -79,8 +96,13 @@ public class historyLogsController extends HttpServlet {
     
     private int getFilteredRecordsCount(String searchValue) throws Exception {
         String query = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS";
+        
         if (searchValue != null && !searchValue.trim().isEmpty()) {
-            query += " WHERE UPPER(TABLE_NAME) LIKE ? OR UPPER(OPERATION_TYPE) LIKE ?";
+            query += " WHERE UPPER(CAST(LOG_ID AS VARCHAR2(50))) LIKE ? " +
+                    "OR UPPER(TABLE_NAME) LIKE ? " +
+                    "OR UPPER(OPERATION_TYPE) LIKE ? " +
+                    "OR UPPER(TO_CHAR(OPERATION_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS')) LIKE ? " +
+                    "OR UPPER(ROW_DATA) LIKE ?";
         }
         
         try (Connection conn = PooledConnection.getConnection();
@@ -88,8 +110,9 @@ public class historyLogsController extends HttpServlet {
             
             if (searchValue != null && !searchValue.trim().isEmpty()) {
                 String searchPattern = "%" + searchValue.toUpperCase() + "%";
-                stmt.setString(1, searchPattern);
-                stmt.setString(2, searchPattern);
+                for (int i = 1; i <= 5; i++) {
+                    stmt.setString(i, searchPattern);
+                }
             }
             
             ResultSet rs = stmt.executeQuery();
@@ -97,7 +120,7 @@ public class historyLogsController extends HttpServlet {
         }
     }
     
-    private List<HistoryLog> getFilteredRecords(int start, int length, String searchValue) throws Exception {
+    private List<HistoryLog> getFilteredRecords(int start, int length, String searchValue, String sortColumn, String sortDirection) throws Exception {
         List<HistoryLog> historyLogs = new ArrayList<>();
         
         String baseQuery = "SELECT LOG_ID, TABLE_NAME, OPERATION_TYPE, OPERATION_TIMESTAMP, ROW_DATA " +
@@ -105,13 +128,24 @@ public class historyLogsController extends HttpServlet {
         
         String whereClause = "";
         if (searchValue != null && !searchValue.trim().isEmpty()) {
-            whereClause = " WHERE UPPER(TABLE_NAME) LIKE ? OR UPPER(OPERATION_TYPE) LIKE ?";
+            whereClause = " WHERE UPPER(CAST(LOG_ID AS VARCHAR2(50))) LIKE ? " +
+                         "OR UPPER(TABLE_NAME) LIKE ? " +
+                         "OR UPPER(OPERATION_TYPE) LIKE ? " +
+                         "OR UPPER(TO_CHAR(OPERATION_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS')) LIKE ? " +
+                         "OR UPPER(ROW_DATA) LIKE ?";
         }
+        
+        // Validate sort direction
+        if (!"asc".equalsIgnoreCase(sortDirection) && !"desc".equalsIgnoreCase(sortDirection)) {
+            sortDirection = "desc";
+        }
+        
+        String orderClause = " ORDER BY " + sortColumn + " " + sortDirection.toUpperCase();
         
         // Oracle pagination with ROWNUM
         String query = "SELECT * FROM (" +
                       "SELECT ROWNUM as rn, t.* FROM (" +
-                      baseQuery + whereClause + " ORDER BY OPERATION_TIMESTAMP DESC" +
+                      baseQuery + whereClause + orderClause +
                       ") t WHERE ROWNUM <= ?" +
                       ") WHERE rn > ?";
         
@@ -121,8 +155,9 @@ public class historyLogsController extends HttpServlet {
             int paramIndex = 1;
             if (searchValue != null && !searchValue.trim().isEmpty()) {
                 String searchPattern = "%" + searchValue.toUpperCase() + "%";
-                stmt.setString(paramIndex++, searchPattern);
-                stmt.setString(paramIndex++, searchPattern);
+                for (int i = 0; i < 5; i++) {
+                    stmt.setString(paramIndex++, searchPattern);
+                }
             }
             
             stmt.setInt(paramIndex++, start + length);
@@ -166,13 +201,23 @@ public class historyLogsController extends HttpServlet {
                     break;
             }
             
+            String rowData = log.getRowData();
+            if (rowData != null) {
+                // Escape quotes and handle special characters for HTML attributes
+                rowData = rowData.replace("'", "&#39;")
+                                .replace("\"", "&quot;")
+                                .replace("\n", "&#10;")
+                                .replace("\r", "&#13;");
+            } else {
+                rowData = "";
+            }
+            
             String[] row = {
                 String.valueOf(log.getLogId()),
                 log.getTableName(),
                 "<span class='badge fs-6 " + badgeClass + "'>" + displayType + "</span>",
                 new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(log.getOperationTimestamp()),
-                "<button class='btn btn-outline-info btn-sm btn-details' data-row-data='" + 
-                (log.getRowData() != null ? log.getRowData().replace("'", "&#39;") : "") + 
+                "<button class='btn btn-outline-info btn-sm btn-details' data-row-data='" + rowData + 
                 "'><i class='fas fa-eye me-1'></i>View</button>"
             };
             data.add(row);

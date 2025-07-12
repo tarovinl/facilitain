@@ -136,6 +136,36 @@
         .dataTables_wrapper .dataTables_processing {
             font-family: 'NeueHaasLight', sans-serif !important;
         }
+        
+        /* Custom search styling */
+        .search-info {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        
+        .search-info i {
+            color: #2196f3;
+            margin-right: 8px;
+        }
+        
+        .dataTables_filter {
+            margin-bottom: 15px;
+        }
+        
+        .dataTables_filter input {
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            padding: 8px 12px;
+            width: 300px !important;
+        }
+        
+        .dataTables_filter input:focus {
+            border-color: #2196f3;
+            box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
+        }
     </style>
 </head>
 <body>
@@ -150,6 +180,7 @@
                     <i class="fas fa-exclamation-triangle me-2"></i>${error}
                 </div>
             </c:if>
+         
             
             <div class="table-responsive">
                 <table id="historyTable" class="table table-striped table-hover">
@@ -239,16 +270,22 @@
         }
         
         $(document).ready(function() {
-            // Initialize DataTable with server-side processing
+            // Initialize DataTable 
             const table = $('#historyTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: 'history',
-                    type: 'GET'
+                    type: 'GET',
+                    error: function(xhr, error, code) {
+                        console.log('DataTables AJAX error:', error);
+                        console.log('Status:', xhr.status);
+                        console.log('Response:', xhr.responseText);
+                    }
                 },
                 order: [[3, 'desc']], // Sort by Operation Timestamp
                 pageLength: 25,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
                 columns: [
                     { data: 0, title: 'Log ID' },
                     { data: 1, title: 'Table Name' },
@@ -257,17 +294,22 @@
                     { data: 4, title: 'Details', orderable: false, searchable: false }
                 ],
                 language: {
-                    search: "Search logs:",
-                    processing: "Loading history logs...",
+                    search: "Search all records:",
+                    processing: "Searching records...",
                     lengthMenu: "Show _MENU_ entries per page",
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoFiltered: "(filtered from _MAX_ total entries)",
                     paginate: {
                         first: "First",
                         last: "Last",
                         next: "Next",
                         previous: "Previous"
-                    }
-                }
+                    },
+                    emptyTable: "No history logs found",
+                    zeroRecords: "No matching records found"
+                },
+                searchDelay: 500, // Add delay to prevent too many requests while typing
+                
             });
 
             // Handle details button click
@@ -311,6 +353,9 @@
                     console.log('Row opened');
                 }
             });
+            
+            // Optional: Add custom search functionality
+            $('#historyTable_filter input').attr('placeholder', 'Search by ID, table name, operation type, timestamp, or row data...');
         });
     </script>
 </body>
