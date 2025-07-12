@@ -309,7 +309,7 @@ $(document).ready(function () {
                 reverseButtons: true,
                 confirmButtonColor: '#dc3545',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, Archive it!',
+                confirmButtonText: 'Confirm',
                 cancelButtonText: 'Cancel',
                 customClass: {
                     cancelButton: 'btn-cancel-outline'
