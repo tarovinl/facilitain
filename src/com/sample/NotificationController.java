@@ -31,6 +31,24 @@ public class NotificationController extends HttpServlet {
         String sortBy = request.getParameter("sortBy");
         String filterBy = request.getParameter("filterBy");
         
+        // Pagination parameters
+        int currentPage = 1;
+        int perPage = 10;
+        
+        try {
+            if (request.getParameter("page") != null) {
+                currentPage = Integer.parseInt(request.getParameter("page"));
+                if (currentPage < 1) currentPage = 1;
+            }
+            if (request.getParameter("perPage") != null) {
+                perPage = Integer.parseInt(request.getParameter("perPage"));
+                if (perPage < 1) perPage = 10;
+            }
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+            perPage = 10;
+        }
+        
         String orderBy = "ORDER BY n.IS_READ ASC, n.CREATED_AT DESC";
 
         if ("date".equals(sortBy)) {
@@ -58,16 +76,50 @@ public class NotificationController extends HttpServlet {
             filterSql = "AND n.IS_READ = 0";
         }
 
-        // Base SQL query with user filtering for ASSIGN notifications
-        String baseSql = "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
-                         "l.NAME AS locName, n.ITEM_LOC_ID, n.ITEM_NAME " +
-                         "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
+        // First, get the total count for pagination
+        String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
                          "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
-                         "WHERE (n.TYPE != 'ASSIGN' OR n.ITEM_NAME = ?) " + filterSql + " " + orderBy;
+                         "WHERE (n.TYPE != 'ASSIGN' OR n.ITEM_NAME = ?) " + filterSql;
+        
+        int totalNotifications = 0;
+        try (Connection conn = PooledConnection.getConnection()) {
+            try (PreparedStatement countStmt = conn.prepareStatement(countSql)) {
+                countStmt.setString(1, sessionUserName != null ? sessionUserName : "");
+                try (ResultSet countRs = countStmt.executeQuery()) {
+                    if (countRs.next()) {
+                        totalNotifications = countRs.getInt(1);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error counting notifications.");
+            return;
+        }
+
+        // Calculate pagination values
+        int totalPages = (int) Math.ceil((double) totalNotifications / perPage);
+        if (currentPage > totalPages && totalPages > 0) {
+            currentPage = totalPages;
+        }
+        
+        int offset = (currentPage - 1) * perPage;
+
+        // Base SQL query with user filtering for ASSIGN notifications and pagination
+        String baseSql = "SELECT * FROM (" +
+                        "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
+                        "l.NAME AS locName, n.ITEM_LOC_ID, n.ITEM_NAME, " +
+                        "ROW_NUMBER() OVER (" + orderBy + ") AS rn " +
+                        "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
+                        "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
+                        "WHERE (n.TYPE != 'ASSIGN' OR n.ITEM_NAME = ?) " + filterSql + 
+                        ") WHERE rn > ? AND rn <= ?";
 
         try (Connection conn = PooledConnection.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(baseSql)) {
                 stmt.setString(1, sessionUserName != null ? sessionUserName : "");
+                stmt.setInt(2, offset);
+                stmt.setInt(3, offset + perPage);
                 
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
@@ -104,9 +156,15 @@ public class NotificationController extends HttpServlet {
             return;
         }
 
+        // Set attributes for JSP
         request.setAttribute("notifications", notifications);
         request.setAttribute("sortBy", sortBy);
         request.setAttribute("filterBy", filterBy);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("totalNotifications", totalNotifications);
+        request.setAttribute("perPage", perPage);
+        
         request.getRequestDispatcher("notification.jsp").forward(request, response);
     }
 
