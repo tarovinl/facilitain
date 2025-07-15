@@ -426,14 +426,16 @@
                         <label for="assignedTo" class="form-label">Assign To <span style="color: red;">*</span></label>
                         <select class="form-select" id="assignedTo" name="assignedTo" required>
                             <option value="" selected disabled>Select User</option>
-                            <c:forEach items="${FMO_USERS}" var="user" >
-                                <c:if test="${sessionScope.email == user.email}">
-                                <option value="${user.userId}">${user.name}</option>
+                            <!-- Show current user first if they're not a Respondent -->
+                            <c:forEach items="${FMO_USERS}" var="user">
+                                <c:if test="${sessionScope.email == user.email && user.role != 'Respondent'}">
+                                    <option value="${user.userId}">${user.name}</option>
                                 </c:if>
                             </c:forEach>
-                            <c:forEach items="${FMO_USERS}" var="user" >
-                                <c:if test="${sessionScope.email != user.email}">
-                                <option value="${user.userId}">${user.name}</option>
+                            <!-- Show other users who are not Respondents -->
+                            <c:forEach items="${FMO_USERS}" var="user">
+                                <c:if test="${sessionScope.email != user.email && user.role != 'Respondent'}">
+                                    <option value="${user.userId}">${user.name}</option>
                                 </c:if>
                             </c:forEach>
                         </select>
@@ -480,21 +482,22 @@
                             </c:forEach>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
-                        <select class="form-select" id="assignedETo" name="assignedETo" required>
-                            <c:forEach items="${FMO_USERS}" var="user" >
-                                <c:if test="${sessionScope.email == user.email}">
-                                <option value="${user.userId}">${user.name}</option>
-                                </c:if>
-                            </c:forEach>
-                            <c:forEach items="${FMO_USERS}" var="user" >
-                                <c:if test="${sessionScope.email != user.email}">
-                                <option value="${user.userId}">${user.name}</option>
-                                </c:if>
-                            </c:forEach>
-                        </select>
-                    </div>
+                     <div class="mb-3">
+                                <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
+                                <select class="form-select" id="assignedETo" name="assignedETo" required>
+                                    <!-- Show current user first if they're not a Respondent -->
+                                    <c:forEach items="${FMO_USERS}" var="user">
+                                        <c:if test="${sessionScope.email == user.email && user.role != 'Respondent'}">
+                                            <option value="${user.userId}">${user.name}</option>
+                                        </c:if>
+                                    </c:forEach>
+                                    <c:forEach items="${FMO_USERS}" var="user">
+                                        <c:if test="${sessionScope.email != user.email && user.role != 'Respondent'}">
+                                            <option value="${user.userId}">${user.name}</option>
+                                        </c:if>
+                                    </c:forEach>
+                                </select>
+                            </div>
                     <div class="mb-3">
                         <label for="" class="form-label">Date of Maintenance <span style="color: red;">*</span></label>
                         <input type="date" name="dateEMaint" id="dateEMaint" class="form-control" required>
