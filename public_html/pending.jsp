@@ -464,7 +464,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                    <input type="text" name="maintID" id="maintID">
+                    <input type="hidden" name="maintID" id="maintID">
                         <div>
                         <label for="equipmentEName" class="form-label">Equipment Name <span style="color: red;">*</span></label>
                         </div>
