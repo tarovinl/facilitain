@@ -65,6 +65,16 @@
                 text-decoration: underline !important;
                 }
                 
+                .responsive-padding-top {
+                                  padding-top: 80px;
+                                }
+                                
+                @media (max-width: 576px) {
+                .responsive-padding-top {
+                padding-top: 70px; /* or whatever smaller value you want */
+                }
+                }
+                
 .btn-cancel-outline {
   color: #8388a4 !important;        /* Text color */
   background-color: white !important; /* White background */
@@ -118,13 +128,14 @@
     </c:forEach>
     
 <body>
+<jsp:include page="navbar.jsp"/>
 <div class="container-fluid">
       <div class="row min-vh-100">
         
           <jsp:include page="sidebar.jsp"/>
        
     
-    <div class="col-md-10">
+    <div class="col-md-10 responsive-padding-top">
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->

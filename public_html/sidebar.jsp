@@ -398,12 +398,7 @@
          class="icon pe-2"
          style="width: 2em; height: 2em; vertical-align: middle;">
 
-    <!-- Badge now properly anchored to the bell icon -->
-    <span id="notificationBadge"
-          class="badge bg-danger position-absolute rounded-pill"
-          style="top: -0.3em; right: -0.1em; font-size: 0.55rem; padding: 0.3em 0.45em;">
-      0
-    </span>
+    
   </span>
 
   Notifications
@@ -452,16 +447,7 @@
     To-Do
 </a>
        <!-- Sidebar container -->
-<a href="<%=request.getContextPath()%>/LogoutController"
-   class="d-flex align-items-center  text-danger"
-   style="text-decoration: none;">
-  
-  <img src="resources/images/icons/logout.svg" alt="Logout"
-       class="icon pe-2"
-       style="width: 2em; height: 2em; vertical-align: middle; filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(4900%) hue-rotate(352deg) brightness(90%) contrast(120%);">
-  
-  Log Out
-</a>
+
 
 
             <!--<hr class="bg-light border-2 border-top border-light"/>
