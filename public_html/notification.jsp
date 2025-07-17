@@ -176,16 +176,26 @@
             right: 35px;
             transform: translateY(-50%);
         }
+        .responsive-padding-top {
+                                  padding-top: 100px;
+                                }
+                                
+                @media (max-width: 576px) {
+                .responsive-padding-top {
+                padding-top: 80px; /* or whatever smaller value you want */
+                }
+                }
     </style>
 </head>
 <body>
+<jsp:include page="navbar.jsp"/>
 <div class="container-fluid">
     <div class="row min-vh-100">
     <c:set var="page" value="notification" scope="request"/>
         <jsp:include page="sidebar.jsp"/>
 
-        <div class="col-md-10 p-4">
-            <h1 class="mb-4" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Notifications</h1>
+        <div class="col-md-10 responsive-padding-top">
+            <h1 class="mb-2" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Notifications</h1>
 
             <!-- Sorting and Filtering controls -->
             <div class="d-flex justify-content-between mb-3 gap-2" style="font-family: NeueHaasLight, sans-serif;">

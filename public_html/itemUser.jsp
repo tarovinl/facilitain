@@ -42,15 +42,25 @@
             .buildingManage:hover {
                 text-decoration: underline !important;
                 }
+                .responsive-padding-top {
+                                              padding-top: 100px;
+                                            }
+                                            
+                            @media (max-width: 576px) {
+                            .responsive-padding-top {
+                            padding-top: 80px; /* or whatever smaller value you want */
+                            }
+                            }
     </style>
 </head>
 <body>
+<jsp:include page="navbar.jsp"/>
 <div class="container-fluid">
     <div class="row vh-100">
     <c:set var="page" value="itemUser" scope="request"/>
             <jsp:include page="sidebar.jsp"></jsp:include>
-        <div class="col-md-10 p-4">
-            <h1 style="font-family: 'NeueHaasMedium', sans-serif;">Manage Users</h1>
+        <div class="col-md-10 responsive-padding-top">
+            <h1 class="mb-2" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Users</h1>
             <table id="itemUserTable" class="table table-striped table-bordered">
                 <thead class="table-dark">
                     <tr>

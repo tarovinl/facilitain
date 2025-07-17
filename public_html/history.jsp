@@ -118,15 +118,25 @@
         .btn-details {
             white-space: nowrap;
         }
+        .responsive-padding-top {
+                                  padding-top: 100px;
+                                }
+                                
+                @media (max-width: 576px) {
+                .responsive-padding-top {
+                padding-top: 80px; /* or whatever smaller value you want */
+                }
+                }
     </style>
 </head>
 <body>
+<jsp:include page="navbar.jsp"/>
     <div class="d-flex">
     <c:set var="page" value="history" scope="request"/>
         <jsp:include page="sidebar.jsp"/>
         
-        <div class="main-content flex-grow-1">
-            <h1 class="mb-4" style="color: black; font-family: 'NeueHaasMedium', sans-serif;">History Logs</h1>
+        <div class="main-content flex-grow-1 responsive-padding-top">
+            <h1 class="mb-2" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">History Logs</h1>
 
             <c:if test="${not empty error}">
                 <div class="alert alert-danger" role="alert">

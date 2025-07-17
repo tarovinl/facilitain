@@ -75,28 +75,38 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             background-color: #5a6268;
             color: white;
         }
+        .responsive-padding-top {
+                                  padding-top: 100px;
+                                }
+                                
+                @media (max-width: 576px) {
+                .responsive-padding-top {
+                padding-top: 80px; /* or whatever smaller value you want */
+                }
+                }
     </style>
 </head>
 <body>
+<jsp:include page="navbar.jsp"/>
 <div class="container-fluid">
     <div class="row min-vh-100">
     <c:set var="page" value="reports" scope="request"/>
         <jsp:include page="sidebar.jsp"/>
 
-        <div class="col-md-10 p-4">
+        <div class="col-md-10 responsive-padding-top">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1 style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Reports</h1>
-                <div class="d-flex gap-2">
+                 <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Reports</h1>
+                
                     
-                    <select id="statusFilter" class="form-select w-auto">
+                    
+                    <button id="generateQRBtn" class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center" style="background-color: #fccc4c;"><img src="resources/images/icons/qr.svg" alt="qr" width="25" height="25"><span class="d-none d-lg-inline ps-2">Download QR</span></button>
+               
+            </div>
+            <select id="statusFilter" class="form-select w-auto mb-2">
                         <option value="">All Status</option>
                         <option value="Resolved">Resolved</option>
                         <option value="Not Resolved">Not Resolved</option>
                     </select>
-                    <button id="generateQRBtn" class="px-3 py-2 rounded-1 hover-outline d-flex align-items-center" style="background-color: #fccc4c;"><img src="resources/images/icons/qr.svg" class="pe-2" alt="qr" width="25" height="25">Download QR</button>
-                </div>
-            </div>
-
             <table id="reportsTable" class="table table-striped table-hover">
                 <thead>
                     <tr>
