@@ -19,9 +19,7 @@
      
     <style>
     @media (max-width: 800px) {
-        .map-header h1, .map-header button {
-            display: none !important; /* Overrides conflicting styles */
-        }
+        
         .map-container, #map {
                  height: 300px !important;
                 display: flex !important;
@@ -73,24 +71,39 @@
                 font-family: 'NeueHaasLight', sans-serif;
                 font-size:15px;
             }
+            .responsive-padding-top {
+              padding-top: 80px;
+            }
             
+            @media (max-width: 576px) {
+              .responsive-padding-top {
+                padding-top: 70px; /* or whatever smaller value you want */
+              }
     </style>
      
     </head>
     <body>
+    <jsp:include page="navbar.jsp"/>
+    <jsp:include page="sidebar.jsp"/>
 <div class="container-fluid">
-    <div class="row min-vh-100">
-        <jsp:include page="sidebar.jsp"/>
-    <div class="col-md-10">
-        <div class="container-fluid mcontainer">
-            <div class="d-flex justify-content-between align-items-center pt-4 pb-4 map-header">
-                <div>
-                     <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
-                </div>
-                <a href="./homepage" class="align-items-center d-flex px-3 py-2 rounded-1 hover-outline text-dark text-decoration-none" style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
-                     <img src="resources/images/icons/grid.svg" alt="default" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25">
-                    Default View
+    <div class="row min-vh-100 ">
+    <div class="col-md-10 mt-4 responsive-padding-top">
+        <div class="container-fluid mcontainer  ">
+            <div class="d-flex justify-content-between align-items-center  map-header mb-4">
+                <div class="col d-flex align-items-center">
+                <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Locations</h1>
+              </div>
+                <a href="./homepage" class="px-3 py-2 rounded-2 hover-outline text-dark text-decoration-none d-flex align-items-center justify-content-center"
+                   style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
+                  <img src="resources/images/icons/grid.svg"
+                       alt="default"
+                       class="icon"
+                       width="25"
+                       height="25"
+                       style="vertical-align: middle;">
+                  <span class="d-none d-lg-inline ps-2">Default View</span>
                 </a>
+
             </div>
             <div class="row mt-2 mb-2 map-container" style="margin: 0; padding: 0;">
                 <div id="map" style="width: 100%; height: 100%; border-radius:5px;"></div>

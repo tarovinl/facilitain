@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +16,183 @@
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./resources/css/sidebar.css">
     <style>
+    /* Sidebar base styles */
+.sidebar {
+    background-color: #FFFFFF;
+    color: white;
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 70px;
+    left: -250px; /* Hide off-screen by default */
+    transition: left 0.3s ease;
+    z-index: 1020;
+    overflow-y: auto;
+   padding:20px;
+    box-sizing: border-box;
+    font-family: NeueHaasLight, sans-serif;
+     border-right: 1px solid #dee2e6;
+}
+.sidebar.active {
+    left: 0; /* Slide in when active */
+}
+/* Sidebar Header Styles */
+.sidebar h2, 
+.sidebar p {
+    text-align: center;
+}
+/* Navigation Links */
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0;
+    text-align: left;
+    padding: 6px 12px; /* Adjust vertical and horizontal padding */
+    line-height: 1.2;  /* Optional: tighter line spacing */
+    font-size: 0.95rem; /* Optional: slightly smaller text */
+}
+
+.sidebar .dropdown-menu {
+    background-color: inherit;
+    border: none;
+    margin-left: 2rem;
+    padding: 0;
+}
+  
+.sidebar a:hover {
+    background-color: #f2f2f2;
+    border-radius: 5px;
+}
+.sidebar a.active {
+    background-color: #f2f2f2;
+    color: black;
+    border-radius: 5px;
+}
+/* Overlay */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1;
+}
+.sidebar-overlay.active {
+    display: block;
+}
+/* Todo List */
+.todo-list {
+    margin-top: 20px;
+}
+.todo-item {
+    background-color: #000000;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.sidebar .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s;
+}
+.sidebar .dropdown-toggle::after {
+    margin-left: auto;
+}
+.sidebar .dropdown-menu {
+    margin-top: 0;
+    border-radius: 0;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 100%;
+}
+.sidebar .dropdown-item {
+    padding: 0.5rem 1.5rem;
+    color: inherit;
+    transition: background-color 0.3s;
+}
+.sidebar .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+.sidebar .dropdown-item.active {
+    background-color: var(--bs-primary);
+}
+
+/* Arrow Toggle Button - Vertically centered */
+.hamburger-menu {
+    position: fixed;
+    top: 20%; /* Center vertically */
+    transform: translateY(-50%); /* Perfect vertical centering */
+    left: 0; /* Position at the very edge */
+    z-index: 1100;
+    background-color: #ffffff;
+    border: none;
+    cursor: pointer;
+    width: 20px; /* Narrower width */
+    height: 50px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+    transition: left 0.3s ease; /* Match sidebar transition */
+    padding: 0;
+}
+
+/* When sidebar is active, move the button */
+.sidebar.active ~ .hamburger-menu {
+    left: 250px; /* Match sidebar width */
+}
+
+.hamburger-menu:hover {
+    background-color: #f2f2f2;
+}
+
+/* SVG Arrow styles */
+.arrow-icon {
+    width: 12px;
+    height: 12px;
+    fill: #000000;
+}
+
+
+/* Responsive Design */
+@media (max-width: 800px) {
+    .sidebar {
+        width: 250px;
+    }
+    .hamburger-menu {
+        display: flex;
+    }
+    .col-md-10 {
+        margin-left: 0;
+        width: 100%;
+    }
+    .sidebar a {
+        text-align: left;
+    }
+}
+
+@media (min-width: 800px) {
+    .sidebar {
+        left: 0; /* Always visible on desktop */
+        width: 250px;
+    }
+    .hamburger-menu {
+        display: none;
+    }
+    .col-md-10 {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+    }
+}
+
     body, h1, h2, h3,h5, th {
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
@@ -40,20 +218,22 @@
             }
             
 .maintenance-container {
-    margin: 10px 0;
+    margin: 0px;
 }
 
 .maintenance-header {
     display: flex;
     align-items: center;
-    padding: 10px 15px;
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
+     padding: 6px 12px; /* Adjust vertical and horizontal padding */
+    line-height: 1.2;  /* Optional: tighter line spacing */
+    font-size: 0.95rem; /* Optional: slightly smaller text */
 }
 
 .maintenance-header:hover {
-    background-color: #444;
+    background-color: #f2f2f2;
     border-radius: 5px;
 }
 
@@ -62,27 +242,51 @@
 }
 
 .maintenance-items {
-    display: none;
-    background-color: #3c3c3c;
-    border-radius: 5px;
-    margin-top: 5px;
+  opacity: 0;
+  transform: translateY(-10px);
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    max-height 0.4s ease;
+    background-color: transparent;
+  background-color: #ffffff;
+
 }
 
+
+
+/* Show dropdown with animation */
+.maintenance-container.open .maintenance-items {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 500px; /* ensure it's large enough for all items */
+  visibility: visible;
+  pointer-events: auto;
+}
+
+
+
 .maintenance-items a {
-    padding: 8px 15px;
-    color: white;
+      color: black;
     text-decoration: none;
     display: block;
-    transition: background-color 0.3s;
+    margin-bottom: 0;
+    text-align: left;
+    padding: 6px 12px; /* Adjust vertical and horizontal padding */
+    line-height: 1.2;  /* Optional: tighter line spacing */
+    font-size: 0.95rem; /* Optional: slightly smaller text */
 }
 
 .maintenance-items a:hover {
-    background-color: #4a4a4a;
+    background-color: #f2f2f2;
 }
 
 .maintenance-items a.active {
-    background-color: #ffca2c;
+    background-color: #ffffff;
     color: black;
+    
 }
 
 /* Class for when menu is open */
@@ -112,6 +316,13 @@
   vertical-align: middle; /* Helps in inline contexts */
 }
 
+.sidebar a.active {
+  background-color: #f2f2f2;
+  color: black;
+  border-radius: 0.375rem;
+  display: block;
+  font-weight: bold;
+}
 
 </style>
 </head>
@@ -123,64 +334,67 @@
 
 <body>
     <div class="sidebar">
+    <!-- This is a comment 
                     <div class="text-center pt-4">
-                <a href="<%=request.getContextPath()%>/homepage" class="p-0">
-                    <img src="resources/images/FACILITAIN_WLOGO.png" 
-                         alt="Facilitain Home Logo" 
-                         style="max-width: 100%; max-height: 100px; margin: 0 auto; display: block;" />
-                </a>
                 
                 
+              
                 <c:choose>
                     <c:when test="${sessionScope.role == 'Admin'}">
-                        <p>Welcome, Admin</p>
+                        <p class="text-dark">Welcome, Admin</p>
                     </c:when>
                     <c:when test="${sessionScope.role == 'Support'}">
-                        <p>Welcome, Support</p>
+                        <p class="text-dark">Welcome, Support</p>
                     </c:when>
                     <c:otherwise>
-                        <p>Welcome</p>
+                        <p class="text-dark">Welcome</p>
                     </c:otherwise>
-                </c:choose>
-            </div>
-                       <div class="ps-2">
-    <a href="homepage" class="${page == 'homepage' ? 'active' : ''}">
-        <img src="resources/images/icons/home.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-        Homepage
-    </a>
-    
+                </c:choose> 
+                
+            </div>-->
+    <div class="ps-0">
+   <a href="homepage" class="sidebar-link ${page == 'homepage' ? 'active' : ''} text-dark">
+    <img src="resources/images/icons/homeb.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+    Home
+</a>
+
+<a href="maintenancePage" class="sidebar-link ${page == 'pending' ? 'active' : ''} text-dark">
+    <img src="resources/images/icons/maintenanceb.svg" alt="maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+    Maintenance
+</a>
+
    
-        <a href="maintenancePage" class="${page == 'pending' ? 'active' : ''}">
-            <img src="resources/images/icons/maintenance.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-            Maintenance
-        </a>
-   
     
-    <!-- Maintenance Management section - Admin only -->
-    <c:if test="${sessionScope.role == 'Admin'}">
-        <div class="maintenance-container">
-            <div class="maintenance-header">
-                <img src="resources/images/icons/construction.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                <span>Maintenance Configuration</span>
-                <i class="fas fa-chevron-down ms-auto"></i>
-            </div>
-            <div class="maintenance-items">
-                <a href="itemType" class="${page == 'itemType' ? 'active' : ''}p-2 ">
-                    <span class=" fs-6">Item Types</span>
-                </a>
-                <a href="itemCategories" class="${page == 'itemCategories' ? 'active' : ''}p-2 ">
-                    <span class="">Item Categories</span>
-                </a>
-                <a href="maintenanceSchedule" class="${page == 'maintenanceSchedule' ? 'active' : ''}p-2">
-                    <span class="">Automated Scheduling</span>
-                </a>
-            </div>
+ <!-- Maintenance Management section - Admin only -->
+<c:if test="${sessionScope.role == 'Admin'}">
+    <div class="maintenance-container ${page == 'itemType' || page == 'itemCategories' || page == 'maintenanceSchedule' ? 'open' : ''}">
+        <div class="maintenance-header text-dark">
+            <img src="resources/images/icons/constructionb.svg" alt="Maintenance" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+            <span>Maintenance Configuration</span>
+            <i class="fas fa-chevron-down ms-auto"></i>
         </div>
-    </c:if>
+        <div class="maintenance-items">
+            <a href="itemType" class=" ${page == 'itemType' ? 'active' : ''}">
+              <img src="resources/images/icons/tune.svg" alt="ItemType" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                <span>Item Types</span>
+            </a>
+            <a href="itemCategories" class=" ${page == 'itemCategories' ? 'active' : ''}">
+              <img src="resources/images/icons/category.svg" alt="ItemCategory" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                <span>Item Categories</span>
+            </a>
+            <a href="maintenanceSchedule" class=" ${page == 'maintenanceSchedule' ? 'active' : ''}">
+              <img src="resources/images/icons/autorenew.svg" alt="Schedule" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+                <span>Automated Scheduling</span>
+            </a>
+        </div>
+    </div>
+</c:if>
+
+
     
-<a href="notification" class="${page == 'notification' ? 'active' : ''}">
+<a href="notification" class="${page == 'notification' ? 'active' : ''} text-dark">
   <span style="position: relative; display: inline-block;">
-    <img src="resources/images/icons/notif.svg" alt="Notifications"
+    <img src="resources/images/icons/notifb.svg" alt="Notifications"
          class="icon pe-2"
          style="width: 2em; height: 2em; vertical-align: middle;">
 
@@ -200,30 +414,30 @@
 
   
     
-    <a href="calendar" class="${page == 'calendar' ? 'active' : ''}">
-        <img src="resources/images/icons/calendar.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+    <a href="calendar" class="${page == 'calendar' ? 'active' : ''} text-dark">
+        <img src="resources/images/icons/calendarb.svg" alt="Calendar" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
         Calendar
     </a>
     
-    <a href="history" class="${page == 'history' ? 'active' : ''}">
-        <img src="resources/images/icons/clock-left.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+    <a href="history" class="${page == 'history' ? 'active' : ''} text-dark">
+        <img src="resources/images/icons/historyb.svg" alt="History" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
         History Logs
     </a>
     
-    <a href="feedback" class="${page == 'feedback' ? 'active' : ''}">
-        <img src="resources/images/icons/feedback.svg" alt="Feedback" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+    <a href="feedback" class="${page == 'feedback' ? 'active' : ''} text-dark">
+        <img src="resources/images/icons/feedbackb.svg" alt="Feedback" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
         Feedback
     </a>
     
-    <a href="reports" class="${page == 'reports' ? 'active' : ''}">
-        <img src="resources/images/icons/reports.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+    <a href="reports" class="${page == 'reports' ? 'active' : ''} text-dark">
+        <img src="resources/images/icons/reportsb.svg" alt="Reports" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
         Reports
     </a>
     
     <!-- Only show Users link for Admin users -->
     <c:if test="${sessionScope.role == 'Admin'}">
-        <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''}">
-            <img src="resources/images/icons/manage-users.svg" alt="User" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+        <a href="itemUser" class="${page == 'itemUser' ? 'active' : ''} text-dark">
+            <img src="resources/images/icons/manage-usersb.svg" alt="User" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
             Users
         </a>
     
@@ -233,20 +447,20 @@
                 <img src="resources/images/map-white.svg" alt="Map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
                 Map View
             </a>-->
-            <a href="#" data-bs-toggle="modal" data-bs-target="#showToDo" class="d-flex align-items-center ${page == 'todo' ? 'active' : ''}">
-    <img src="resources/images/icons/open.svg" alt="To-Do" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#showToDo" class="d-flex align-items-center ${page == 'todo' ? 'active' : ''} text-dark">
+    <img src="resources/images/icons/todob.svg" alt="To-Do" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
     To-Do
 </a>
        <!-- Sidebar container -->
 <a href="<%=request.getContextPath()%>/LogoutController"
-   class="d-flex align-items-center mt-auto px-3 py-2 text-danger"
+   class="d-flex align-items-center  text-danger"
    style="text-decoration: none;">
   
   <img src="resources/images/icons/logout.svg" alt="Logout"
        class="icon pe-2"
        style="width: 2em; height: 2em; vertical-align: middle; filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(4900%) hue-rotate(352deg) brightness(90%) contrast(120%);">
   
-  Logout
+  Log Out
 </a>
 
 
@@ -557,7 +771,7 @@ document.addEventListener('DOMContentLoaded', function() {
     svg.setAttribute("height", "14");
     svg.classList.add("arrow-icon");
     svg.style.fill = "none";
-    svg.style.stroke = "white";
+    svg.style.stroke = "black";
     svg.style.strokeWidth = "2";
     svg.style.strokeLinecap = "round";
     svg.style.strokeLinejoin = "round";

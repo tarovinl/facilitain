@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="page" value="itemType" scope="request" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,53 +43,65 @@
             .buildingManage:hover {
                 text-decoration: underline !important;
                 }
-    a.paginate-button {
-    margin: 0 5px;
-    
-    border: 1px solid black; /* Border color */
-    background-color: #fccc4c;   /* Background color */
-    color: black;            /* Text color */
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: bold;
-    transition: background-color 0.3s, color 0.3s; /* Add a smooth hover effect */
-}
-a.paginate-button:hover {
-    background-color: #ffcc00; /* Blue background on hover */
-    color: black;              /* White text on hover */
-}
-a.paginate-button.active {
-    background-color: black; /* Active button background */
-    color: #fccc4c;              /* Active button text color */
-    border-color: black;     /* Border color for the active button */
-}
-
-.btn-cancel-outline {
-  color: #8388a4 !important;        /* Text color */
-  background-color: white !important; /* White background */
-  border: 2px solid #8388a4 !important; /* Outline */
-  box-shadow: none !important;       /* Remove default shadow */
-}
-
-/* Optional: add hover effect */
-.btn-cancel-outline:hover {
-  background-color: #f0f2f7 !important; /* Light gray bg on hover */
-  border-color: #8388a4 !important;
-  color: #8388a4 !important;
-}
-
+                    a.paginate-button {
+                    margin: 0 5px;
+                    
+                    border: 1px solid black; /* Border color */
+                    background-color: #fccc4c;   /* Background color */
+                    color: black;            /* Text color */
+                    cursor: pointer;
+                    border-radius: 5px;
+                    font-size: 14px;
+                    font-weight: bold;
+                    transition: background-color 0.3s, color 0.3s; /* Add a smooth hover effect */
+                }
+                a.paginate-button:hover {
+                    background-color: #ffcc00; /* Blue background on hover */
+                    color: black;              /* White text on hover */
+                }
+                a.paginate-button.active {
+                    background-color: black; /* Active button background */
+                    color: #fccc4c;              /* Active button text color */
+                    border-color: black;     /* Border color for the active button */
+                }
+                
+                .btn-cancel-outline {
+                  color: #8388a4 !important;        /* Text color */
+                  background-color: white !important; /* White background */
+                  border: 2px solid #8388a4 !important; /* Outline */
+                  box-shadow: none !important;       /* Remove default shadow */
+                }
+                
+                /* Optional: add hover effect */
+                .btn-cancel-outline:hover {
+                  background-color: #f0f2f7 !important; /* Light gray bg on hover */
+                  border-color: #8388a4 !important;
+                  color: #8388a4 !important;
+                }
+                .responsive-padding-top {
+                                  padding-top: 100px;
+                                }
+                                
+                @media (max-width: 576px) {
+                .responsive-padding-top {
+                padding-top: 80px; /* or whatever smaller value you want */
+                }
+                }
     </style>
 </head>
 <body>
+<jsp:include page="navbar.jsp"/>
   <div class="container-fluid">
     <div class="row vh-100">
-            <jsp:include page="sidebar.jsp"></jsp:include>
-        <div class="col-md-10 p-4">
+   <jsp:include page="sidebar.jsp">
+  <jsp:param name="page" value="itemType" />
+</jsp:include>
+        <div class="col-md-10 responsive-padding-top">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="text-dark" style="font-family: 'NeueHaasMedium', sans-serif;">Item Types</h1>
-                <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">
-                    <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25">  Add
+                <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Item Types</h1>
+                <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-2 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">
+                    <img src="resources/images/icons/plus.svg" alt="add"  width="25" height="25">  
+                    <span class="d-none d-lg-inline ps-2">Add</span>
                 </button>
             </div>
 

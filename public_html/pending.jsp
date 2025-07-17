@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,7 +93,15 @@
             .hover-outline:hover img {
                 filter: invert(1);
             }
-            
+             .responsive-padding-top {
+                  padding-top: 100px;
+                }
+                
+                @media (max-width: 576px) {
+                  .responsive-padding-top {
+                    padding-top: 80px; /* or whatever smaller value you want */
+                  }
+                }
 
     </style>
 </head>
@@ -118,28 +127,34 @@
                 </c:forEach>
                 
 <body>
+ <c:set var="page" value="pending" scope="request"/>
+    
+<jsp:include page="navbar.jsp"/>
+<jsp:include page="sidebar.jsp"/>
+
 <div class="container-fluid">
     <div class="row min-vh-100">
-        <jsp:include page="sidebar.jsp"/>
+   
 
-        <div class="col-md-10 p-4">
+        <div class="col-md-10 responsive-padding-top ">
             <div class="container-fluid">
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
-                    <div>
-                        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Maintenance</h1>
-                    </div>
-                    <div class="mt-3 mt-md-0">
+               <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 ">
+                     
+                    <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Maintenance</h1>
+                 
+                    
                         <%--<c:choose>
                             <c:when test="${sessionScope.role == 'Admin' || sessionScope.role == 'Maintenance'}">--%>
-                                <button class="align-items-center d-flex btn btn-md topButtons px-3 py-2 rounded-1 hover-outline text-dark" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal" 
+                                <button class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal" 
                                 style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
-                                    <img src="resources/images/icons/schedule.svg" alt="schedule" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"> Schedule Maintenance
+                                    <img src="resources/images/icons/schedule.svg" alt="schedule"  width="25" height="25"> 
+                                   <span class="d-none d-lg-inline ps-2"> Schedule Maintenance </span>
                                 </button>
                             <%--</c:when>
                             <c:otherwise>
                             </c:otherwise>
                         </c:choose>--%>
-                    </div>
+                   
                 </div>
 
                

@@ -45,29 +45,41 @@
                 }
                 
                  .btn-cancel-outline {
-  color: #8388a4 !important;        /* Text color */
-  background-color: white !important; /* White background */
-  border: 2px solid #8388a4 !important; /* Outline */
-  box-shadow: none !important;       /* Remove default shadow */
-}
-
-/* Optional: add hover effect */
-.btn-cancel-outline:hover {
-  background-color: #f0f2f7 !important; /* Light gray bg on hover */
-  border-color: #8388a4 !important;
-  color: #8388a4 !important;
-}
+              color: #8388a4 !important;        /* Text color */
+              background-color: white !important; /* White background */
+              border: 2px solid #8388a4 !important; /* Outline */
+              box-shadow: none !important;       /* Remove default shadow */
+            }
+            
+            /* Optional: add hover effect */
+            .btn-cancel-outline:hover {
+              background-color: #f0f2f7 !important; /* Light gray bg on hover */
+              border-color: #8388a4 !important;
+              color: #8388a4 !important;
+            }
+            .responsive-padding-top {
+                                  padding-top: 100px;
+                                }
+                                
+                @media (max-width: 576px) {
+                .responsive-padding-top {
+                padding-top: 80px; /* or whatever smaller value you want */
+                }
+                }
     </style>
 </head>
 <body>
+<jsp:include page="navbar.jsp"/>
    <div class="container-fluid">
     <div class="row vh-100">
+    <c:set var="page" value="maintenanceSchedule" scope="request"/>
             <jsp:include page="sidebar.jsp"></jsp:include>
-        <div class="col-md-10 p-4">
+        <div class="col-md-10 responsive-padding-top">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="text-dark" style="font-family: 'NeueHaasMedium', sans-serif;">Automated Scheduling</h1>
-                <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#maintenanceModal">
-                      <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"> Add
+                <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Automated Scheduling</h1>
+                <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-2 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#maintenanceModal">
+                      <img src="resources/images/icons/plus.svg" alt="add"  width="25" height="25"> 
+                      <span class="d-none d-lg-inline ps-2">Add</span>
                 </button>
             </div>
 

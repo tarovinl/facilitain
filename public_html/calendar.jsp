@@ -18,13 +18,21 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <style>
-    body, h1, h2, h3, h4, th {
-    font-family: 'NeueHaasMedium', sans-serif !important;
-}
-h5, h6, input, textarea, td, tr, p, label, select, option {
-    font-family: 'NeueHaasLight', sans-serif !important;
-}
-
+            body, h1, h2, h3, h4, th {
+            font-family: 'NeueHaasMedium', sans-serif !important;
+        }
+        h5, h6, input, textarea, td, tr, p, label, select, option {
+            font-family: 'NeueHaasLight', sans-serif !important;
+        }
+            .responsive-padding-top {
+                                              padding-top: 100px;
+                                            }
+                                            
+                            @media (max-width: 576px) {
+                            .responsive-padding-top {
+                            padding-top: 80px; /* or whatever smaller value you want */
+                            }
+                            }
     </style>
     
     <%@ page import="java.util.HashSet" %>
@@ -299,13 +307,15 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
 
 </head>
 <body>
+<jsp:include page="navbar.jsp"/>
 <div class="container-fluid">
 <div class="row min-vh-100">
+<c:set var="page" value="calendar" scope="request"/>
     <jsp:include page="sidebar.jsp"/>
     
-    <div class="col-md-10 p-4">
+    <div class="col-md-10  responsive-padding-top">
         <div class="">
-            <h1 style="font-family: NeueHaasMedium, sans-serif;">Maintenance Calendar</h1>
+            
         </div>
         <div class="mb-4">
         <div id='calendar'></div>
