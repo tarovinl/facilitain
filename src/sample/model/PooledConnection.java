@@ -22,8 +22,8 @@ public class PooledConnection {
             // local database
             ds = (DataSource) ic.lookup("jdbc/localDBDS");
         } catch (NamingException ne) {
-            System.err.println(ne.getMessage());System.out.println("naur");
+            System.err.println(ne.getMessage());
         }
-        return ds.getConnection();
+        return ds.getConnection(); 
     }
 }

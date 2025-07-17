@@ -20,6 +20,8 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+import java.sql.Types;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -52,6 +54,10 @@ public class updateStatusController extends HttpServlet {
         String oldEquipmentStatus = request.getParameter("equipmentStatus");
         String newEquipmentStatus = request.getParameter("statusNew");
         String updateEquipmentLID = request.getParameter("equipmentLID");
+        
+        // Handle two file uploads
+        Part filePart1 = request.getPart("quotationFile1");
+        Part filePart2 = request.getPart("quotationFile2");
 
         int equipmentIDToUpdate = Integer.parseInt(updateEquipmentID);
         boolean isRepaired = false;
@@ -68,7 +74,10 @@ public class updateStatusController extends HttpServlet {
         if (filePart != null && filePart.getSize() > 0) {
             fileInputStream = filePart.getInputStream();
         }
-
+        
+        // Prepare file data for both files
+        FileData file1Data = extractFileData(filePart1);
+        FileData file2Data = extractFileData(filePart2);
         
 //        System.out.println("equip ID: " + updateEquipmentID);
 //        System.out.println("old equip status: " + oldEquipmentStatus);
@@ -132,21 +141,17 @@ public class updateStatusController extends HttpServlet {
             
             // Insert Quotation Only If File Exists and Required Fields Are Filled
             if ((oldEquipmentStatus.equals("2") && newEquipmentStatus.equals("3")) &&
-                description != null && filePart != null && filePart.getSize() > 0) {
+                description != null && !description.trim().isEmpty()) {
+
                 BigDecimal quotationID = generateQuotationID(conn);
 
-
-                String insertSQL = "INSERT INTO C##FMO_ADM.FMO_ITEM_QUOTATIONS (ITEM_ID, DESCRIPTION, QUOTATION_ID, QUOTATION_IMAGE, DATE_UPLOADED) VALUES (?, ?, ?, ?, ?)";
-                try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
-                    pstmt.setBigDecimal(1, itemID);
-                    pstmt.setString(2, description);
-                    pstmt.setBigDecimal(3, quotationID);
-                    pstmt.setBlob(4, fileInputStream);
-                    pstmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
-                    pstmt.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                // Assuming itemID, file1Data, file2Data are declared/assigned before this block
+                if (insertIntoDatabase(conn, itemID, description, quotationID, file1Data, file2Data)) {
+                    // Success logic if needed
+                } else {
+                    System.out.println("Error inserting data into the database.");
                 }
+
                 action = "modify_status";
             }
             
@@ -204,6 +209,87 @@ public class updateStatusController extends HttpServlet {
         } catch (SQLException e) {
             status = "error";
             e.printStackTrace();
+        }
+    }
+    
+    // Helper class to hold file data
+    private static class FileData {
+        InputStream inputStream;
+        String fileName;
+        String contentType;
+        
+        FileData(InputStream inputStream, String fileName, String contentType) {
+            this.inputStream = inputStream;
+            this.fileName = fileName;
+            this.contentType = contentType;
+        }
+    }
+    
+    // Extract file data from Part
+    private FileData extractFileData(Part filePart) throws IOException {
+        if (filePart != null && filePart.getSize() > 0) {
+            InputStream inputStream = filePart.getInputStream();
+            String fileName = getFileName(filePart);
+            String contentType = filePart.getContentType();
+            return new FileData(inputStream, fileName, contentType);
+        }
+        return new FileData(null, null, null);
+    }
+    
+    // Get original filename from Part
+    private String getFileName(Part part) {
+        String contentDisposition = part.getHeader("content-disposition");
+        if (contentDisposition != null) {
+            for (String content : contentDisposition.split(";")) {
+                if (content.trim().startsWith("filename")) {
+                    return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+                }
+            }
+        }
+        return null;
+    }
+    
+    private boolean insertIntoDatabase(Connection conn, BigDecimal itemID, String description, 
+                                     BigDecimal quotationID, FileData file1Data, FileData file2Data) {
+        String sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_QUOTATIONS " +
+                    "(ITEM_ID, DESCRIPTION, QUOTATION_ID, QUOTATION_FILE1, QUOTATION_FILE2, " +
+                    "FILE1_NAME, FILE2_NAME, FILE1_TYPE, FILE2_TYPE, DATE_UPLOADED) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setBigDecimal(1, itemID);
+            pstmt.setString(2, description);
+            pstmt.setBigDecimal(3, quotationID);
+            
+            // Set file 1 data
+            if (file1Data.inputStream != null) {
+                pstmt.setBlob(4, file1Data.inputStream);
+                pstmt.setString(6, file1Data.fileName);
+                pstmt.setString(8, file1Data.contentType);
+            } else {
+                pstmt.setNull(4, Types.BLOB);
+                pstmt.setNull(6, Types.VARCHAR);
+                pstmt.setNull(8, Types.VARCHAR);
+            }
+            
+            // Set file 2 data
+            if (file2Data.inputStream != null) {
+                pstmt.setBlob(5, file2Data.inputStream);
+                pstmt.setString(7, file2Data.fileName);
+                pstmt.setString(9, file2Data.contentType);
+            } else {
+                pstmt.setNull(5, Types.BLOB);
+                pstmt.setNull(7, Types.VARCHAR);
+                pstmt.setNull(9, Types.VARCHAR);
+            }
+            
+            pstmt.setTimestamp(10, new Timestamp(System.currentTimeMillis()));
+
+            int rowsInserted = pstmt.executeUpdate();
+            return rowsInserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
     

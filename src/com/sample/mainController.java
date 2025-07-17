@@ -294,26 +294,35 @@ public class mainController extends HttpServlet {
             rsDUsers.close();
             
             ResultSet rsQuot = stmntQuotations.executeQuery();
-                       while (rsQuot.next()) {
-                           Quotation quotation = new Quotation();
-                           quotation.setQuotationId(rsQuot.getInt("QUOTATION_ID"));
-                           quotation.setDescription(rsQuot.getString("DESCRIPTION"));
-                           quotation.setDateUploaded(rsQuot.getDate("DATE_UPLOADED"));
-                           quotation.setItemId(rsQuot.getInt("ITEM_ID"));
-                           Blob blob = rsQuot.getBlob("QUOTATION_IMAGE");
-                           quotation.setArchiveFlag(rsQuot.getInt("ARCHIVED_FLAG"));
-
-                           byte[] imageBytes = null;
-
-                           if (blob != null) {
-                               // Convert Blob to byte[]
-                               imageBytes = blob.getBytes(1, (int) blob.length());
-                           }
-                           // Use the setter to store the image as byte[]
-                           quotation.setQuotationImage(imageBytes);
-                           quotations.add(quotation);
-                       }
-                       rsQuot.close();
+                while (rsQuot.next()) {
+                    Quotation quotation = new Quotation();
+                    quotation.setQuotationId(rsQuot.getInt("QUOTATION_ID"));
+                    quotation.setDescription(rsQuot.getString("DESCRIPTION"));
+                    quotation.setDateUploaded(rsQuot.getDate("DATE_UPLOADED"));
+                    quotation.setItemId(rsQuot.getInt("ITEM_ID"));
+                    quotation.setArchiveFlag(rsQuot.getInt("ARCHIVED_FLAG"));
+                    
+                    // Handle File 1
+                    Blob blob1 = rsQuot.getBlob("QUOTATION_FILE1");
+                    if (blob1 != null) {
+                        byte[] file1Bytes = blob1.getBytes(1, (int) blob1.length());
+                        quotation.setQuotationFile1(file1Bytes);
+                    }
+                    quotation.setFile1Name(rsQuot.getString("FILE1_NAME"));
+                    quotation.setFile1Type(rsQuot.getString("FILE1_TYPE"));
+                    
+                    // Handle File 2
+                    Blob blob2 = rsQuot.getBlob("QUOTATION_FILE2");
+                    if (blob2 != null) {
+                        byte[] file2Bytes = blob2.getBytes(1, (int) blob2.length());
+                        quotation.setQuotationFile2(file2Bytes);
+                    }
+                    quotation.setFile2Name(rsQuot.getString("FILE2_NAME"));
+                    quotation.setFile2Type(rsQuot.getString("FILE2_TYPE"));
+                    
+                    quotations.add(quotation);
+                }
+                rsQuot.close();
 
             ResultSet rsRepairs = stmntRepairs.executeQuery();
             while (rsRepairs.next()) {
@@ -521,10 +530,11 @@ public class mainController extends HttpServlet {
 
         String locID = request.getParameter("locID");
         
-        if (!isValidPathAndQuery(path, queryString)) {
+        if (!isValidPathAndQuery(path, queryString, request)) {
             request.getRequestDispatcher("/errorPage.jsp").forward(request, response);
             return;
         }
+
 //        server side redirect when invalid URL test:            
 //        boolean locMatchFound = false;
 //        boolean flrMatchFound = false;
@@ -558,6 +568,8 @@ public class mainController extends HttpServlet {
                     case "/buildingDashboard":
                         if (queryString != null && queryString.contains("/manage")) {
                             String itemHIDParam = request.getParameter("itemHID");
+                            System.out.println("query string: "+queryString);
+                            System.out.println("Equipment History Item ID Param: "+itemHIDParam);
                             if (itemHIDParam != null && !itemHIDParam.isEmpty()) {
                                 int itemHID = Integer.parseInt(itemHIDParam);
                                 List<MaintAssign> historyList = new ArrayList<>();
@@ -681,19 +693,19 @@ public class mainController extends HttpServlet {
         
         
     }
-    private boolean isValidPathAndQuery(String path, String queryString) {
+    private boolean isValidPathAndQuery(String path, String queryString, HttpServletRequest request) {
         if (path == null) return false;
+        boolean isAjax = isAjaxRequest(request);
 
         // Remove global "harmless" parameters (action=..., status=...) regardless of values
-        if (queryString != null) {
-            // Remove action=<anything> and status=<anything> (alphanumeric, underscore, dash)
+        // Only strip harmless global params if NOT an AJAX request
+        if (!isAjax && queryString != null) {
             queryString = queryString
                 .replaceAll("(?i)&?action=[\\w\\-]+", "")
                 .replaceAll("(?i)&?status=[\\w\\-]+", "")
-                .replaceAll("^&+", "")     // remove leading '&'
-                .replaceAll("&{2,}", "&"); // fix accidental '&&'
-            
-            // Clean up empty query string
+                .replaceAll("^&+", "")
+                .replaceAll("&{2,}", "&");
+
             if (queryString.isEmpty()) {
                 queryString = null;
             }
@@ -704,10 +716,22 @@ public class mainController extends HttpServlet {
                 // Allow no query, or valid locID and optional /manage or /edit
                 if (queryString == null) return true;
 
+                // Accept AJAX-friendly malformed pattern: locID=/manage?floor=&itemHID=795
+                if (queryString.matches("locID=/manage\\?floor=(&?itemHID=\\d+)?") ||
+                    queryString.matches("locID=\\d+/manage\\?floor=\\w*&itemHID=\\d+")) {
+                    return true;
+                }
+            
                 // Validate expected patterns
-                if (queryString.matches("locID=\\d+(/manage)?") || 
-                    queryString.matches("locID=\\d+(/edit)?") || 
-                    queryString.matches("locID=\\d+(/manage\\?floor=\\w+)?")) {
+                if (queryString.matches("locID=\\d+(/manage)?") ||
+                    queryString.matches("locID=\\d+(/edit)?") ||
+                    queryString.matches("locID=\\d+(/manage\\?floor=\\w+)?(&itemHID=\\d+)?") ||
+                    queryString.matches("locID=\\d+(/manage\\?itemHID=\\d+)?")) {
+                    return true;
+                }
+                // Add these patterns to handle the itemHID parameter
+                if (queryString.matches("locID=\\d+/manage\\?floor=\\w+") ||
+                    queryString.matches("locID=\\d+/manage\\?floor=\\w+&itemHID=\\d+")) {
                     return true;
                 }
                 return false;
@@ -723,6 +747,12 @@ public class mainController extends HttpServlet {
                 return false;
         }
     }
+    
+    private boolean isAjaxRequest(HttpServletRequest request) {
+        String requestedWith = request.getHeader("X-Requested-With");
+        return requestedWith != null && "XMLHttpRequest".equals(requestedWith);
+    }
+
 
 }
 

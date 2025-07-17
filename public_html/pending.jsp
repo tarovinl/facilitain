@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Maintenance Dashboard</title>
+    <title>Maintenance - Facilitain</title>
     
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
@@ -19,10 +19,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
     <style>
+    
+
+   
         .dataTables_wrapper .dataTables_filter {
             margin-bottom: 15px;
         }
@@ -65,6 +69,31 @@
         #maintenanceTable tbody tr.selected {
             background-color: rgba(0,0,0,0.1);
         }
+          body, h1, h2, h3, h4,h5, h6, th,label,.custom-label {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+ input, textarea, td, tr, p, select, option,id {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+  .hover-outline {
+                transition: all 0.3s ease;
+                border: 1px solid transparent; /* Reserve space for border */
+            }
+
+            .hover-outline:hover {
+                background-color: #1C1C1C !important;
+                color: #f2f2f2 !important;
+                border: 1px solid #f2f2f2 !important;
+            }
+            .hover-outline img {
+                transition: filter 0.3s ease;
+            }
+
+            .hover-outline:hover img {
+                filter: invert(1);
+            }
+            
+
     </style>
 </head>
 
@@ -93,17 +122,18 @@
     <div class="row min-vh-100">
         <jsp:include page="sidebar.jsp"/>
 
-        <div class="col-md-10">
-            <div class="container">
+        <div class="col-md-10 p-4">
+            <div class="container-fluid">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
                     <div>
-                        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Maintenance</h1>
+                        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Maintenance</h1>
                     </div>
                     <div class="mt-3 mt-md-0">
                         <%--<c:choose>
                             <c:when test="${sessionScope.role == 'Admin' || sessionScope.role == 'Maintenance'}">--%>
-                                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal">
-                                    <i class="bi bi-plus-lg"></i> Make a Maintenance
+                                <button class="align-items-center d-flex btn btn-md topButtons px-3 py-2 rounded-1 hover-outline text-dark" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal" 
+                                style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
+                                    <img src="resources/images/icons/schedule.svg" alt="schedule" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"> Schedule Maintenance
                                 </button>
                             <%--</c:when>
                             <c:otherwise>
@@ -112,8 +142,7 @@
                     </div>
                 </div>
 
-                <!-- Maintenance Dashboard Panels -->
-                <!-- Changed class name from maintenance-container to dashboard-maintenance-container -->
+               
                 <div class="row dashboard-maintenance-container">
                     <!-- Maintenance List Panel -->
                     <div class="col-lg-6 mb-4 equal-height">
@@ -122,14 +151,16 @@
                                 <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">List of Equipment</h5>
                             </div>
                             <div class="card-body">
-                                <table id="maintenanceTable" class="table table-hover" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Equipment Name</th>
-                                            <th>Status</th>
-                                            <th>Date Notified</th>
-                                        </tr>
+                                <table id="maintenanceTable" class="table table-striped table-hover" style="width:100%">
+                                    <thead class="table-dark">
+                                     <tr>
+                                    <th>Equipment Name</th>
+                                    <th>Status</th>
+                                    <th>Date Notified</th>
+                                    <th style="display: none;">Equipment Details</th>
+                                    </tr>
                                     </thead>
+
                                     <tbody>
                                         <!-- Static data for demonstration -->
                                         <%--<c:forEach items="${FMO_TYPES_LIST}" var="type" >
@@ -191,6 +222,7 @@
                                             </c:forEach>
                                             </td>
                                             <td>${item.plannedMaintDate}</td>
+                                            <td style="display: none;">${itemCat} ${itemType} ${item.itemBrand} ${itemLoc} ${item.itemFloor}</td>
                                         </tr>
                                         </c:if>
                                     </c:forEach>
@@ -216,24 +248,24 @@
                                 <!-- Static equipment details -->
                                 <div id="equipmentDetails">
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Equipment Type</label>
-                                        <div id="detailEquipment">Fire Extinguisher</div>
+                                        <label class="form-label custom-label" style=" font-family: 'NeueHaasMedium', sans-serif;">Equipment Type</label>
+                                        <div id="detailEquipment" style=" font-family: 'NeueHaasLight', sans-serif;">Fire Extinguisher</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Status</label>
-                                        <div id="detailStatus">In Progress</div>
+                                        <label class="form-label custom-label">Status</label>
+                                        <div id="detailStatus" style=" font-family: 'NeueHaasLight', sans-serif;">In Progress</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Codename</label>
-                                        <div id="detailSerial">09222222</div>
+                                        <label class="form-label custom-label">Codename</label>
+                                        <div id="detailSerial" style=" font-family: 'NeueHaasLight', sans-serif;">09222222</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Brand Name</label>
-                                        <div id="detailBrand">XYZ Fire Safety</div>
+                                        <label class="form-label custom-label">Brand Name</label>
+                                        <div id="detailBrand" style=" font-family: 'NeueHaasLight', sans-serif;">XYZ Fire Safety</div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Location</label>
-                                        <div id="detailLocation">Building A, Floor 1</div>
+                                        <label class="form-label custom-label">Location</label>
+                                        <div id="detailLocation" style=" font-family: 'NeueHaasLight', sans-serif;">Building A, Floor 1</div>
                                     </div>
                                     <div class="d-grid gap-2 mt-4">
                                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateStatusModal"
@@ -253,25 +285,53 @@
                                 <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">Assigned Maintenance</h5>
                             </div>
                             <div class="card-body">
-                                <table id="scheduledMaintTable" class="table table-hover" style="width:100%">
-                                    <thead>
+                                <table id="scheduledMaintTable" class="table table-striped table-hover" style="width:100%">
+                                    <thead class="table-dark">
                                         <tr>
                                             <th>Equipment Name</th>
                                             <th>Maintenance Type</th>
                                             <th>Assigned To</th>
                                             <th>Date of Maintenance</th>
+                                            <th> </th>
                                             <th>Actions</th>
+                                            <th style="display: none;">Equipment Details</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <c:forEach items="${FMO_MAINT_ASSIGN}" var="maintass" >
                                         <c:if test="${maintass.isCompleted == 0}">
+                                        <c:set var="maintName" value="" />
+                                        <c:set var="maintBLID" value="" />
+                                        <c:set var="maintBStat" value="" />
+                                        <c:set var="maintEquipmentDetails" value="" />
                                         <tr>
                                             <td>
                                                 <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
                                                 <c:if test="${item.itemID == maintass.itemID}">
                                                     ${item.itemName}
                                                     <c:set var="maintName" value="${item.itemName}" />
+                                                    <c:set var="maintBLID" value="${item.itemLID}" />
+                                                    <c:set var="maintBStat" value="${item.itemMaintStat}" />
+                                                    
+                                                    <!-- Get equipment details for this item -->
+                                                    <c:forEach items="${FMO_TYPES_LIST}" var="type" >
+                                                    <c:if test="${type.itemTID == item.itemTID}">
+                                                        <c:set var="maintItemType" value="${type.itemType}" />
+                                                        <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
+                                                            <c:if test="${cat.itemCID == type.itemCID}">
+                                                                <c:set var="maintItemCat" value="${cat.itemCat}" />
+                                                            </c:if>
+                                                        </c:forEach>
+                                                    </c:if>
+                                                    </c:forEach>
+                                                    
+                                                    <c:forEach items="${locations}" var="loc" >
+                                                    <c:if test="${loc.itemLocId == item.itemLID}">
+                                                        <c:set var="maintItemLoc" value="${loc.locName}" />
+                                                    </c:if>
+                                                    </c:forEach>
+                                                    
+                                                    <c:set var="maintEquipmentDetails" value="${maintItemCat} ${maintItemType} ${item.itemBrand} ${maintItemLoc} ${item.itemFloor}" />
                                                 </c:if>
                                                 </c:forEach>
                                             </td>
@@ -290,6 +350,20 @@
                                                 </c:forEach>
                                             </td>
                                             <td>${maintass.dateOfMaint}</td>
+                                            <td>
+                                                <c:forEach items="${FMO_USERS}" var="user" >
+                                                <c:if test="${user.userId == maintass.userID}">
+                                                    <c:if test="${sessionScope.email == user.email}">
+                                                        <button type="button" class="btn btn-warning update-bstatus-btn"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#updateStatusModal"
+                                                        data-itembid="${maintass.itemID}"
+                                                        data-itemblid="${maintBLID}"
+                                                        data-itembstatus="${maintBStat}">Update Status</button>
+                                                    </c:if>
+                                                </c:if>
+                                                </c:forEach>
+                                            </td>
                                             <td>
                                               <div class="dropdown">
                                                 <button class="btn btn-link p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -316,6 +390,7 @@
                                                 </ul>
                                               </div>
                                             </td>
+                                            <td style="display: none;">${maintEquipmentDetails}</td>
                                         </tr>
                                         </c:if>
                                         </c:forEach>
@@ -343,7 +418,7 @@
         <form action="addmaintenancecontroller" method="post">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addMaintenanceModalLabel">Add Maintenance Record</h5>
+                    <h5 class="modal-title" id="addMaintenanceModalLabel">Schedule Maintenance</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -370,14 +445,16 @@
                         <label for="assignedTo" class="form-label">Assign To <span style="color: red;">*</span></label>
                         <select class="form-select" id="assignedTo" name="assignedTo" required>
                             <option value="" selected disabled>Select User</option>
-                            <c:forEach items="${FMO_USERS}" var="user" >
-                                <c:if test="${sessionScope.email == user.email}">
-                                <option value="${user.userId}">${user.name}</option>
+                            <!-- Show current user first if they're not a Respondent -->
+                            <c:forEach items="${FMO_USERS}" var="user">
+                                <c:if test="${sessionScope.email == user.email && user.role != 'Respondent'}">
+                                    <option value="${user.userId}">${user.name}</option>
                                 </c:if>
                             </c:forEach>
-                            <c:forEach items="${FMO_USERS}" var="user" >
-                                <c:if test="${sessionScope.email != user.email}">
-                                <option value="${user.userId}">${user.name}</option>
+                            <!-- Show other users who are not Respondents -->
+                            <c:forEach items="${FMO_USERS}" var="user">
+                                <c:if test="${sessionScope.email != user.email && user.role != 'Respondent'}">
+                                    <option value="${user.userId}">${user.name}</option>
                                 </c:if>
                             </c:forEach>
                         </select>
@@ -388,8 +465,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">Add</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
+                    <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
                 </div>
             </div>
         </form>
@@ -406,7 +483,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                    <input type="text" name="maintID" id="maintID">
+                    <input type="hidden" name="maintID" id="maintID">
                         <div>
                         <label for="equipmentEName" class="form-label">Equipment Name <span style="color: red;">*</span></label>
                         </div>
@@ -424,21 +501,22 @@
                             </c:forEach>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
-                        <select class="form-select" id="assignedETo" name="assignedETo" required>
-                            <c:forEach items="${FMO_USERS}" var="user" >
-                                <c:if test="${sessionScope.email == user.email}">
-                                <option value="${user.userId}">${user.name}</option>
-                                </c:if>
-                            </c:forEach>
-                            <c:forEach items="${FMO_USERS}" var="user" >
-                                <c:if test="${sessionScope.email != user.email}">
-                                <option value="${user.userId}">${user.name}</option>
-                                </c:if>
-                            </c:forEach>
-                        </select>
-                    </div>
+                     <div class="mb-3">
+                                <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
+                                <select class="form-select" id="assignedETo" name="assignedETo" required>
+                                    <!-- Show current user first if they're not a Respondent -->
+                                    <c:forEach items="${FMO_USERS}" var="user">
+                                        <c:if test="${sessionScope.email == user.email && user.role != 'Respondent'}">
+                                            <option value="${user.userId}">${user.name}</option>
+                                        </c:if>
+                                    </c:forEach>
+                                    <c:forEach items="${FMO_USERS}" var="user">
+                                        <c:if test="${sessionScope.email != user.email && user.role != 'Respondent'}">
+                                            <option value="${user.userId}">${user.name}</option>
+                                        </c:if>
+                                    </c:forEach>
+                                </select>
+                            </div>
                     <div class="mb-3">
                         <label for="" class="form-label">Date of Maintenance <span style="color: red;">*</span></label>
                         <input type="date" name="dateEMaint" id="dateEMaint" class="form-control" required>
@@ -506,13 +584,40 @@
                             <!--<input type="text" name="locID" value="${locID}">
                             <input type="text" name="floorName" value="${floorName}">-->
                             
-                            <div class="mb-3">
+                            <!--<div class="mb-3">
                                 <label for="quotationFile" class="form-label">Upload File</label>
                                 <input class="form-control" type="file" name="quotationFile" id="quotationFile" accept=".pdf, image/*">
                             </div>
                             <div class="mb-3">
-                                <label for="quotationDescription" class="form-label">Quotation Description</label>
+                                <label for="quotationDescription" class="form-label">Quotation Description <span class="text-danger">*</span></label>
                                 <textarea class="form-control" name="description" id="quotationDescription" rows="3"></textarea>
+                            </div>-->
+                            <div class="mb-3">
+                                <label for="quotationDescription" class="form-label">Quotation Description</label>
+                                <textarea class="form-control" name="description" id="quotationDescription" rows="3" maxlength="255" required></textarea>
+                                <div class="character-counter" id="characterCounter">0 / 255 characters</div>
+                            </div>
+                            
+                            <!-- File Upload Section -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="file-upload-container" id="fileContainer1">
+                                        <label for="quotationFile1" class="form-label">Upload File 1 (Optional)</label>
+                                        <input class="form-control" type="file" name="quotationFile1" id="quotationFile1" 
+                                               accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff">
+                                        <small class="text-muted">Max size: 10MB. Supported: PDF, Images</small>
+                                        <div id="file1Preview" class="mt-2"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="file-upload-container" id="fileContainer2">
+                                        <label for="quotationFile2" class="form-label">Upload File 2 (Optional)</label>
+                                        <input class="form-control" type="file" name="quotationFile2" id="quotationFile2" 
+                                               accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff">
+                                        <small class="text-muted">Max size: 10MB. Supported: PDF, Images</small>
+                                        <div id="file2Preview" class="mt-2"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div id="formInput2">
@@ -547,185 +652,285 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script> 
 
 <script>
-    $(document).ready(function() {
-        // Initialize DataTable
-        var maintenanceTable = $('#maintenanceTable').DataTable({
-            responsive: true,
-            order: [[2, 'desc']], // Sort by Date Notified in descending order
-            language: {
-                search: "Search:",
-                lengthMenu: "Show _MENU_ entries",
-                info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                paginate: {
-                    first: "First",
-                    last: "Last",
-                    next: "Next",
-                    previous: "Previous"
-                }
-            },
-            pageLength: 5, // Show 5 entries per page to match panel height
-            lengthMenu: [5, 10, 25, 50]
-        });
-        
-        var scheduledMaintTable = $('#scheduledMaintTable').DataTable({
-            responsive: true,
-            order: [[2, 'desc']], // Sort by Date Notified in descending order
-            language: {
-                search: "Search:",
-                lengthMenu: "Show _MENU_ entries",
-                info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                paginate: {
-                    first: "First",
-                    last: "Last",
-                    next: "Next",
-                    previous: "Previous"
-                }
-            },
-            pageLength: 5, // Show 5 entries per page to match panel height
-            lengthMenu: [5, 10, 25, 50]
-        });
-
-        // Ensure equal heights of both panels
-        function equalizeCardHeights() {
-            var windowWidth = $(window).width();
-            if (windowWidth >= 992) { // Only on desktop
-                setTimeout(function() {
-                    var leftPanelHeight = $('.equal-height:first-child .card').outerHeight();
-                    $('.equal-height:last-child .card').css('min-height', leftPanelHeight + 'px');
-                }, 100);
-            } else {
-                $('.equal-height:last-child .card').css('min-height', '');
-            }
-        }
-
-        // Run on initial load
-        equalizeCardHeights();
-
-        // Run when window is resized or DataTable page is changed
-        $(window).resize(equalizeCardHeights);
-        maintenanceTable.on('draw', equalizeCardHeights);
-
-        // Handle row clicks to show details
-        $('#maintenanceTable tbody').on('click', 'tr', function() {
-            const equipmentId = $(this).data('id');
-            const equipment = $(this).data('equipment');
-            const status = $(this).data('status');
-            const status2 = $(this).data('status');
-            const status3 = $(this).data('status');
-            const statname = $(this).data('statname');
-            const serial = $(this).data('serial');
-            const brand = $(this).data('brand');
-            const location = $(this).data('location');
-            const locid = $(this).data('locid');
-            
-            const canUpdate = $(this).data('canupdate'); // Get access info
-            
-            // Update the hidden input for the update modal
-            $('#updateEquipmentId').val(equipmentId);
-            $('#updateEquipmentStatus').val(status2);
-            $('#updateEquipmentLID').val(locid);
-            
-            if (canUpdate === true || canUpdate === "true") {
-                $('#updateStatusBtn').show(); // Adjust selector to your button
-            } else {
-                $('#updateStatusBtn').hide();
+$(document).ready(function() {
+    // Custom search function for equipment details
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+           
+            if (settings.nTable.id !== 'maintenanceTable' && settings.nTable.id !== 'scheduledMaintTable') {
+                return true;
             }
             
-            //modal maint status dropdown select initial value
-            const statusDropdown = document.getElementById("status");
-            if (statusDropdown) {
-                Array.from(statusDropdown.options).forEach(option => {
-                    option.selected = (option.value === String(status2));
-                });
+            var searchTerm = settings.oPreviousSearch.sSearch.toLowerCase();
+            if (!searchTerm) {
+                return true;
             }
-            //modal maint disable initial status on new dropdown
-            const statusDropdownNew = document.getElementById("statusNew"); 
-            if (statusDropdownNew) { 
-                Array.from(statusDropdownNew.options).forEach(option => {
-                    option.disabled = false;
-                });
-                Array.from(statusDropdownNew.options).forEach(option => { 
-                    if (option.value && option.value === String(status3)) {
-                        option.disabled = true;
-                    }
-                    //maintenance reqd to operational bad
-                    if (statusDropdown.value === "2" && option.value === "1") {
-                        option.disabled = true;
-                    }
-                });
+            
+            // Get the row element to access data attributes
+            var row = $(settings.nTable).find('tbody tr').eq(dataIndex);
+            
+            // For maintenanceTable, search through data attributes
+            if (settings.nTable.id === 'maintenanceTable') {
+                var equipment = (row.data('equipment') || '').toString().toLowerCase();
+                var brand = (row.data('brand') || '').toString().toLowerCase();
+                var location = (row.data('location') || '').toString().toLowerCase();
+                var serial = (row.data('serial') || '').toString().toLowerCase();
+                var statname = (row.data('statname') || '').toString().toLowerCase();
                 
-                statusDropdownNew.addEventListener("change", updateInputVisibility);
+                // Also search in visible columns
+                var visibleText = data.join(' ').toLowerCase();
+                
+                // Check if search term matches any of the fields
+                if (visibleText.indexOf(searchTerm) !== -1 ||
+                    equipment.indexOf(searchTerm) !== -1 ||
+                    brand.indexOf(searchTerm) !== -1 ||
+                    location.indexOf(searchTerm) !== -1 ||
+                    serial.indexOf(searchTerm) !== -1 ||
+                    statname.indexOf(searchTerm) !== -1) {
+                    return true;
+                }
             }
             
-            function updateInputVisibility() {
-                const oldVal = statusDropdown.value;
-                const newVal = statusDropdownNew.value;
+            // For scheduledMaintTable, search through visible columns and hidden equipment details column
+            if (settings.nTable.id === 'scheduledMaintTable') {
+                var allText = data.join(' ').toLowerCase();
+                if (allText.indexOf(searchTerm) !== -1) {
+                    return true;
+                }
+            }
             
-                const formInput1 = document.getElementById("formInput1"); // 2 or 4 to 3
-                const formInput2 = document.getElementById("formInput2"); // 3 to 1
-                const formInput3 = document.getElementById("formInput3"); // 3 to 4
+            return false;
+        }
+    );
+    
+    // Initialize DataTable for maintenance table
+    var maintenanceTable = $('#maintenanceTable').DataTable({
+        responsive: true,
+        order: [[2, 'desc']], // Sort by Date Notified in descending order
+        language: {
+            search: "Search:",
+            lengthMenu: "Show _MENU_ entries",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            paginate: {
+                first: "First",
+                last: "Last",
+                next: "Next",
+                previous: "Previous"
+            }
+        },
+        pageLength: 5, // Show 5 entries per page to match panel height
+        lengthMenu: [5, 10, 25, 50],
+        columnDefs: [
+            { targets: [3], visible: false, searchable: true } // Hide equipment details column but keep it searchable
+        ]
+    });
+    
+    // Initialize DataTable for scheduled maintenance table
+    var scheduledMaintTable = $('#scheduledMaintTable').DataTable({
+        responsive: true,
+        order: [[3, 'desc']], // Sort by Date of Maintenance in descending order
+        language: {
+            search: "Search:",
+            lengthMenu: "Show _MENU_ entries",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            paginate: {
+                first: "First",
+                last: "Last",
+                next: "Next",
+                previous: "Previous"
+            }
+        },
+        pageLength: 5, // Show 5 entries per page to match panel height
+        lengthMenu: [5, 10, 25, 50],
+        columnDefs: [
+            { targets: [6], visible: false, searchable: true } // Hide equipment details column but keep it searchable
+        ]
+    });
+
+    // Ensure equal heights of both panels
+    function equalizeCardHeights() {
+        var windowWidth = $(window).width();
+        if (windowWidth >= 992) { // Only on desktop
+            // Reset any previous min-height to get natural height
+            $('.equal-height .card').css('min-height', '');
             
-                // Hide all form input divs and clear their inner input values
-                [formInput1, formInput2, formInput3].forEach(div => {
-                    div.style.display = "none";
-                    
-                    // Clear input fields inside the div
-                    const inputs = div.querySelectorAll("input, textarea");
-                    inputs.forEach(input => {
-                        input.value = "";
-                        input.removeAttribute("required");
-                    });
+            setTimeout(function() {
+                var leftPanelHeight = $('.equal-height:first-child .card').outerHeight();
+                var rightPanelHeight = $('.equal-height:last-child .card').outerHeight();
+                
+                // Set both panels to the height of the taller one
+                var maxHeight = Math.max(leftPanelHeight, rightPanelHeight);
+                $('.equal-height .card').css('min-height', maxHeight + 'px');
+            }, 100);
+        } else {
+            $('.equal-height .card').css('min-height', '');
+        }
+    }
+
+    // Function to reset heights before recalculating
+    function resetCardHeights() {
+        $('.equal-height .card').css('min-height', '');
+    }
+
+    // Run on initial load
+    equalizeCardHeights();
+
+    // Run when window is resized
+    $(window).resize(function() {
+        resetCardHeights();
+        equalizeCardHeights();
+    });
+
+    // Run when DataTable is drawn (pagination, search, etc.)
+    maintenanceTable.on('draw', function() {
+        resetCardHeights();
+        equalizeCardHeights();
+    });
+
+    // Run when DataTable page length is changed
+    maintenanceTable.on('length', function() {
+        resetCardHeights();
+        setTimeout(equalizeCardHeights, 200); // Slight delay to ensure DOM updates
+    });
+
+    // Run when scheduled maintenance table is drawn
+    scheduledMaintTable.on('draw', function() {
+        resetCardHeights();
+        equalizeCardHeights();
+    });
+
+    // Run when scheduled maintenance table page length is changed
+    scheduledMaintTable.on('length', function() {
+        resetCardHeights();
+        setTimeout(equalizeCardHeights, 200); // Slight delay to ensure DOM updates
+    });
+
+    // Handle row clicks to show details
+    $('#maintenanceTable tbody').on('click', 'tr', function() {
+        const equipmentId = $(this).data('id');
+        const equipment = $(this).data('equipment');
+        const status = $(this).data('status');
+        const status2 = $(this).data('status');
+        const status3 = $(this).data('status');
+        const statname = $(this).data('statname');
+        const serial = $(this).data('serial');
+        const brand = $(this).data('brand');
+        const location = $(this).data('location');
+        const locid = $(this).data('locid');
+        
+        const canUpdate = $(this).data('canupdate'); // Get access info
+        
+        // Update the hidden input for the update modal
+        $('#updateEquipmentId').val(equipmentId);
+        $('#updateEquipmentStatus').val(status2);
+        $('#updateEquipmentLID').val(locid);
+        
+        if (canUpdate === true || canUpdate === "true") {
+            $('#updateStatusBtn').show(); // Adjust selector to your button
+        } else {
+            $('#updateStatusBtn').hide();
+        }
+        
+        //modal maint status dropdown select initial value
+        const statusDropdown = document.getElementById("status");
+        if (statusDropdown) {
+            Array.from(statusDropdown.options).forEach(option => {
+                option.selected = (option.value === String(status2));
+            });
+        }
+        //modal maint disable initial status on new dropdown
+        const statusDropdownNew = document.getElementById("statusNew"); 
+        if (statusDropdownNew) { 
+            Array.from(statusDropdownNew.options).forEach(option => {
+                option.disabled = false;
+            });
+            Array.from(statusDropdownNew.options).forEach(option => { 
+                if (option.value && option.value === String(status3)) {
+                    option.disabled = true;
+                }
+                //maintenance reqd to operational bad
+                if (statusDropdown.value === "2" && option.value === "1") {
+                    option.disabled = true;
+                }
+            });
+            
+            statusDropdownNew.addEventListener("change", updateInputVisibility);
+        }
+        
+        function updateInputVisibility() {
+            const oldVal = statusDropdown.value;
+            const newVal = statusDropdownNew.value;
+        
+            const formInput1 = document.getElementById("formInput1"); // 2 or 4 to 3
+            const formInput2 = document.getElementById("formInput2"); // 3 to 1
+            const formInput3 = document.getElementById("formInput3"); // 3 to 4
+        
+            // Hide all form input divs and clear their inner input values
+            [formInput1, formInput2, formInput3].forEach(div => {
+                div.style.display = "none";
+                
+                // Clear input fields inside the div
+                const inputs = div.querySelectorAll("input, textarea");
+                inputs.forEach(input => {
+                    input.value = "";
+                    input.removeAttribute("required");
                 });
-            
-                // Show relevant form input div and add back requireds
-                if ((oldVal === "2" || oldVal === "4") && newVal === "3") {
-                    formInput1.style.display = "block";
-            
-                    // Reapply required only to visible inputs
+            });
+        
+            // Show relevant form input div and add back requireds
+            if ((oldVal === "2" || oldVal === "4") && newVal === "3") {
+                formInput1.style.display = "block";
+        
+                // Reapply required only to visible inputs
 //                    const fileInput = document.getElementById("quotationFile");
 //                    const descriptionInput = document.getElementById("quotationDescription");
 //            
 //                    if (fileInput) fileInput.setAttribute("required", "required");
 //                    if (descriptionInput) descriptionInput.setAttribute("required", "required");
-                } else if (oldVal === "3" && newVal === "1") {
-                    formInput2.style.display = "block";
-                    
-                } else if ((oldVal === "2" || oldVal === "3") && newVal === "4") {
-                    formInput3.style.display = "block";
-                    
-                }
+            } else if (oldVal === "3" && newVal === "1") {
+                formInput2.style.display = "block";
+                
+            } else if ((oldVal === "2" || oldVal === "3") && newVal === "4") {
+                formInput3.style.display = "block";
+                
             }
-            
-            //resets new status dropdown to operational every modal open and render disappearing content
-            const modal = document.getElementById("updateStatusModal");
-            if (modal) {
-                modal.addEventListener("show.bs.modal", () => {
-                    // Clear and reset visibility on modal open
-                    statusDropdownNew.value = "1";
-                    updateInputVisibility();
-                    console.log()
-                });
-            }
-       
-            // Update equipment details in the right panel
-            $('#detailEquipment').text(equipment);
-            $('#detailStatus').text(statname);
-            $('#detailSerial').text(serial);
-            $('#detailBrand').text(brand);
-            $('#detailLocation').text(location);
-            
-            // Highlight the selected row
-            if (!$(this).hasClass('selected')) {
-                maintenanceTable.$('tr.selected').removeClass('selected');
-                $(this).addClass('selected');
-            }
-            
-        });
+        }
         
-        // Select the first row by default
-        $('#maintenanceTable tbody tr:first').trigger('click');
-        $('#scheduledMaintTable tbody tr:first').trigger('click');
+        //resets new status dropdown to operational every modal open and render disappearing content
+        const modal = document.getElementById("updateStatusModal");
+        if (modal) {
+            modal.addEventListener("show.bs.modal", () => {
+                // Clear and reset visibility on modal open
+                statusDropdownNew.value = "1";
+                updateInputVisibility();
+                console.log()
+            });
+        }
+   
+        // Update equipment details in the right panel
+        $('#detailEquipment').text(equipment);
+        $('#detailStatus').text(statname);
+        $('#detailSerial').text(serial);
+        $('#detailBrand').text(brand);
+        $('#detailLocation').text(location);
+        
+        // Highlight the selected row
+        if (!$(this).hasClass('selected')) {
+            maintenanceTable.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+        
+        // Recalculate heights after updating details panel content
+        setTimeout(function() {
+            resetCardHeights();
+            equalizeCardHeights();
+        }, 50);
     });
+    
+    // Select the first row by default
+    $('#maintenanceTable tbody tr:first').trigger('click');
+    $('#scheduledMaintTable tbody tr:first').trigger('click');
+});
 </script>
 
 <script>
@@ -851,6 +1056,50 @@ $(document).on('click', '.delete-maintenance-btn', function(e) {
         }
     });
 });
+
+//maint assign table update status button logic (almost the same as logic for equipment details update status)
+$(document).on('click', '.update-bstatus-btn', function () {
+    const itemBId = $(this).data('itembid');
+    const itemBLid = $(this).data('itemblid');
+    const Bstatus = $(this).data('itembstatus');
+
+    $('#updateEquipmentId').val(itemBId);
+    $('#updateEquipmentLID').val(itemBLid);
+    $('#updateEquipmentStatus').val(Bstatus);
+
+    // Set current status dropdown
+    const statusDropdown = document.getElementById("status");
+    if (statusDropdown) {
+        Array.from(statusDropdown.options).forEach(option => {
+            option.selected = (option.value === String(Bstatus));
+        });
+    }
+
+    // Reset new status dropdown visibility and disable logic
+    const statusDropdownNew = document.getElementById("statusNew"); 
+    if (statusDropdownNew) { 
+        Array.from(statusDropdownNew.options).forEach(option => {
+            option.disabled = false;
+        });
+
+        Array.from(statusDropdownNew.options).forEach(option => { 
+            if (option.value && option.value === String(Bstatus)) {
+                option.disabled = true;
+            }
+            if (statusDropdown.value === "2" && option.value === "1") {
+                option.disabled = true;
+            }
+        });
+
+        statusDropdownNew.addEventListener("change", updateInputVisibility);
+
+        // Trigger initial visibility state
+        statusDropdownNew.value = "1";
+        updateInputVisibility();
+    }
+});
+
+
 </script>
 
 <script>
