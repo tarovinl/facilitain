@@ -241,6 +241,7 @@ div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-pagi
     }
   
 }
+
     
     body, h1, h2, h3, h4, th {
     font-family: 'NeueHaasMedium', sans-serif !important;
@@ -305,6 +306,15 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
   color: #8388a4 !important;
 }
 
+                .responsive-padding-top {
+                  padding-top: 70px;
+                }
+                
+                @media (max-width: 576px) {
+                  .responsive-padding-top {
+                    padding-top: 60px; /* or whatever smaller value you want */
+                  }
+                }
 
 </style>
     
@@ -341,12 +351,12 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     <body>
     <jsp:include page="navbar.jsp"/>
     <jsp:include page="sidebar.jsp"/>
-<div class="container-fluid p-4">
+<div class="container-fluid p-4 ">
   <div class="row min-vh-100">
 
     
     
-    <div class="col-md-10">
+    <div class="col-md-10 responsive-padding-top">
             <jsp:include page="quotations.jsp"><jsp:param name="locID" value="${locID}" /></jsp:include>
         <div class="topButtons"> <!-- top buttons -->
             <div>
@@ -358,40 +368,44 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                 </a>
             </div>
         </div>
-        <div class="d-flex justify-content-between align-items-center border-bottom pt-2">
-    <div class="buildingName">
-        <h1 class="display-4" style="font-family: NeueHaasMedium, sans-serif;">${locName}</h1>
-    </div>
-    <div class="floorAndButtons">
+        <div class=" border-bottom pt-2">
+        
+    <div class=" d-flex justify-content-between align-items-center">
+        <h1 class="display-5 display-md-5 display-lg-4" style="font-family: NeueHaasMedium, sans-serif;">${locName}</h1>
+    <div class="mb-2">
         <c:choose>
             <c:when test="${sessionScope.role == 'Admin'}">
-                <div class="d-flex gap-2">
-                    <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-1 hover-outline"
+            <div class="row">
+                <div class="col-12 col-sm-auto d-flex justify-content-end align-items-center gap-2 flex-wrap">
+                    <button class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center"
                             style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
                             onclick="window.location.href='buildingDashboard?locID=${locID}/edit'">
-                        <img src="resources/images/icons/edit.svg" class="pe-2" alt="edit icon" width="25" height="25">
-                        Edit Location
+                        <img src="resources/images/icons/edit.svg"  alt="edit icon" width="25" height="25">
+                         <span class="d-none d-lg-inline ps-2">Edit Location</span>
                     </button>
-                    <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-1 hover-outline"
+                    <button class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center"
                             style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
                             data-toggle="modal" data-target="#addEquipment" type="button"
                             onclick="QOLLocSet(); floorRender(); toggleAirconDiv(); filterTypes();">
-                        <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25">
-                        Add Equipment
+                        <img src="resources/images/icons/plus.svg" alt="add"  width="25" height="25">
+                         <span class="d-none d-lg-inline ps-2">Add Equipment</span>
                     </button>
+                </div>
                 </div>
             </c:when>
         </c:choose>
     </div>
+    </div>
+    
 </div>
 
 <div class=" container-fluid p-0 d-flex border-bottom justify-content-between align-items-center flex-wrap">
     <!-- Left side: Floor name -->
-    <div class="floorName">
-        <h1 class="display-1 mt-2" style="font-family: NeueHaasMedium, sans-serif;color: #212529;">
-            ${floorName == 'all' ? 'All Items' : floorName}
-        </h1>
-    </div>
+    <div class="d-flex align-items-center" style="height: 60px;">
+  <h1 class="display-5 display-md-5 display-lg-4 m-0" style="font-family: NeueHaasMedium, sans-serif; color: #212529;">
+    ${floorName == 'all' ? 'All Items' : floorName}
+  </h1>
+</div>
 
     <!-- Right side: Floor selection links -->
     <div class="d-flex flex-wrap gap-3" style="font-family: NeueHaasLight, sans-serif;">

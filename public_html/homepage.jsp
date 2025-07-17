@@ -121,22 +121,22 @@
                   box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25); /* optional glow */
                   outline: none;
                 }
-body, html {
-  overflow-x: hidden !important;
-}
-#searchInput::placeholder {
-  padding-left: 0rem; /* Optional: fine-tune if needed */
-}
-
-.responsive-padding-top {
-  padding-top: 80px;
-}
-
-@media (max-width: 576px) {
-  .responsive-padding-top {
-    padding-top: 70px; /* or whatever smaller value you want */
-  }
-}
+                body, html {
+                  overflow-x: hidden !important;
+                }
+                #searchInput::placeholder {
+                  padding-left: 0rem; /* Optional: fine-tune if needed */
+                }
+                
+                .responsive-padding-top {
+                  padding-top: 80px;
+                }
+                
+                @media (max-width: 576px) {
+                  .responsive-padding-top {
+                    padding-top: 70px; /* or whatever smaller value you want */
+                  }
+                }
 
     </style>
 </head>
