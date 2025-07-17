@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="page" value="itemType" scope="request" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,7 +84,9 @@ a.paginate-button.active {
 <body>
   <div class="container-fluid">
     <div class="row vh-100">
-            <jsp:include page="sidebar.jsp"></jsp:include>
+   <jsp:include page="sidebar.jsp">
+  <jsp:param name="page" value="itemType" />
+</jsp:include>
         <div class="col-md-10 p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="text-dark" style="font-family: 'NeueHaasMedium', sans-serif;">Item Types</h1>

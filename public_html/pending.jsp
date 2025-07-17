@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,6 +121,7 @@
 <body>
 <div class="container-fluid">
     <div class="row min-vh-100">
+    <c:set var="page" value="pending" scope="request"/>
         <jsp:include page="sidebar.jsp"/>
 
         <div class="col-md-10 p-4">

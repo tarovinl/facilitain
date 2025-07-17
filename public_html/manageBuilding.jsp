@@ -339,9 +339,11 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
 
 
     <body>
+    <jsp:include page="navbar.jsp"/>
+    <jsp:include page="sidebar.jsp"/>
 <div class="container-fluid p-4">
   <div class="row min-vh-100">
-        <jsp:include page="sidebar.jsp"/>
+
     
     
     <div class="col-md-10">

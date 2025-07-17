@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +13,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <style>
-    
+               
+
             .hover-outline {
                 transition: all 0.3s ease;
                 border: 1px solid transparent; /* Reserve space for border */
@@ -93,65 +96,135 @@
                     justify-content: space-between;
                 }
                 .search-container {
-                    margin: 1rem 0;
-                    max-width: 100%;
-                }
+                    max-width: 250px !important; /* or adjust as needed */
+                     height: 2rem; /* reduce height */
+                        font-size: 0.8rem; /* slightly smaller font */
+                        padding-left: 2rem; /* slightly less padding if needed */
+                        padding-right: 0.8rem;
+                  }
+                  
             }
+           .custom-search {
+                  background-color: #f2f2f2 !important;
+                  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+                  height: 2.75rem; /* or adjust as needed */
+                  font-size: 0.9rem;
+                  border-radius: 0.5rem;
+                  padding-left: 2.5rem; /* space for the icon */
+                  padding-right: 1rem;
+                  border: 1px solid #ced4da;
+                }
+                
+                /* When focused */
+                .custom-search:focus {
+                  background-color: #ffffff !important;
+                  box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25); /* optional glow */
+                  outline: none;
+                }
+body, html {
+  overflow-x: hidden !important;
+}
+#searchInput::placeholder {
+  padding-left: 0rem; /* Optional: fine-tune if needed */
+}
+
+.responsive-padding-top {
+  padding-top: 80px;
+}
+
+@media (max-width: 576px) {
+  .responsive-padding-top {
+    padding-top: 70px; /* or whatever smaller value you want */
+  }
+}
+
     </style>
 </head>
 <body>
 <div class="container-fluid">
+ <nav class="navbar bg-white py-3 mb-4 fixed-top border-bottom border-light-subtle" style="z-index: 1040;">
+  <div class="container-fluid">
+  <div class="row align-items-center flex-wrap w-100 gx-2">
+
+
+
+    <!-- Logo -->
+    <div class="col-4 col-md-3 order-md-1 text-start">
+      <a href="<%=request.getContextPath()%>/homepage" class="p-0 d-inline-block">
+        <img src="resources/images/FACILITAIN_WLOGO4.png"
+             alt="Facilitain Home Logo"
+             style="max-width: 100%; max-height: 50px;" />
+      </a>
+    </div>
+
+    <!-- Search Bar (centered on desktop) -->
+   <div class="col-4 col-md-6 order-md-2 d-flex justify-content-center">
+  <div class="search-container rounded-3">
+    <form id="searchForm" action="searchBuildings" method="get">
+      <div class="position-relative">
+        <span class="search-icon"
+              style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); z-index: 2;">
+          <i class="bi bi-search"></i>
+        </span>
+        <input type="text"
+               class="form-control ps-3 search-input custom-search"
+               id="searchInput"
+               name="query"
+               placeholder="Search locations..."
+               aria-label="Search buildings"
+               style="width: 100%;">
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+  </div>
+</div>
+
+
+    </div>
+  </div>
+</nav>
+
     <div class="row min-vh-100">
+    <c:set var="page" value="homepage" scope="request"/>
         <jsp:include page="sidebar.jsp"/>
 
-        <div class="col-md-10">
-            <div class="container-fluid">
-                <!-- Header Section with Search Bar in Middle -->
-                <div class="row header-row align-items-center pt-4 pb-2">
-                    <div class="col-md-3 header-title">
-                        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
-                    </div>
-                    
-                    <!-- Search Bar (Middle) -->
-                    <div class="col-md-6 d-flex justify-content-center">
-                        <div class="search-container">
-                            <form id="searchForm" action="searchBuildings" method="get">
-                                <div class="position-relative">
-                                    <span class="search-icon">
-                                        <i class="bi bi-search"></i>
-                                    </span>
-                                    <input type="text" class="form-control search-input" id="searchInput" name="query" 
-                                        placeholder="Search locations..." aria-label="Search buildings">
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <!-- Action Buttons (Right) -->
-                    <div class="col-md-3 d-flex justify-content-end header-controls gap-2">
-                        <c:choose>
-                            <c:when test="${sessionScope.role == 'Admin'}">
-                                <button class="align-items-center d-flex btn btn-md topButtons px-3 py-2 rounded-1 hover-outline text-dark" 
-                                    style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
-                                    data-bs-toggle="modal" data-bs-target="#addBuildingModal">
-                                    <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"> 
-                                    Add Location
-                                </button>
-                            </c:when>
-                            <c:otherwise>
-                            </c:otherwise>
-                        </c:choose>
-                        <a href="./mapView" 
-                            class="align-items-center d-flex btn btn-md topButtons px-3 py-1 rounded-2 hover-outline text-dark text-decoration-none" 
-                            style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
-                             <img src="resources/images/icons/map.svg" alt="map" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"">
-                            Map View
-                        </a>
-                    </div>
-                </div>
+        <div class="col-md-10 mt-4 responsive-padding-top">
+            <div class="container-fluid location-list">
+                
+                 <!-- 🔻 Action Buttons moved here -->
+    <div class="row align-items-center mb-4">
+  <!-- Left: Locations heading -->
+  <div class="col d-flex align-items-center">
+    <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Locations</h1>
+  </div>
 
+  <!-- Right: Action Buttons -->
+  <div class="col-auto d-flex justify-content-end align-items-center gap-2 flex-wrap">
+    <c:if test="${sessionScope.role == 'Admin'}">
+      <button class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center"
+              style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
+              data-bs-toggle="modal" data-bs-target="#addBuildingModal">
+        <img src="resources/images/icons/plus.svg" alt="add" class="icon" width="25" height="25">
+        <span class="d-none d-lg-inline ps-2">Add Location</span>
+      </button>
+    </c:if>
+
+    <a href="./mapView"
+       class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark text-decoration-none d-flex align-items-center justify-content-center"
+       style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
+      <img src="resources/images/icons/map.svg" alt="map" class="icon" width="25" height="25">
+      <span class="d-none d-lg-inline ps-2">Map View</span>
+    </a>
+  </div>
+</div>
+
+                
                 <!-- Buildings Listing -->
-                <div class="row mt-4" id="buildingsContainer">
+                <div class="row mt-0" id="buildingsContainer">
                     <c:forEach var="location" items="${locations}">
                         <c:if test="${location.locArchive == 1}">
                             <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 building-card">

@@ -80,7 +80,15 @@
             .buildingManage:hover {
                 text-decoration: underline !important;
                 }
-
+            .responsive-padding-top {
+              padding-top: 80px;
+            }
+            
+            @media (max-width: 576px) {
+              .responsive-padding-top {
+                padding-top: 70px; /* or whatever smaller value you want */
+              }
+             
 
 </style>
         <script>
@@ -390,15 +398,12 @@ document.addEventListener('DOMContentLoaded', function() {
         </script>
     </head>
     <body style="background-color: #efefef;">
+    <jsp:include page="navbar.jsp"/>
+    <jsp:include page="sidebar.jsp"/>
 <div class="container-fluid">
       <div class="row min-vh-100">
-        
-          <jsp:include page="sidebar.jsp"/>
-       
-    
-    <div class="col-md-10 ">
-        
-          <div class="topButtons  pb-4">
+    <div class="col-md-10  responsive-padding-top">
+          <div class="topButtons ">
             <div>
              <a href="./homepage" class="buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" 
    style="margin-left: 2px; font-family: NeueHaasLight, sans-serif;">
@@ -427,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
           </div>
           
-<div class="container-fluid d-flex flex-column" style="min-height: 85vh;">
+<div class="container-fluid d-flex flex-column" style="min-height: 80vh;">
   <div class="row flex-grow-1" style="min-height: 40vh;">
     <div class="col-12 col-lg-8 vh-25 align-items-stretch mb-4">
         <div class="buildingBanner rounded-4" style="margin-top: 14px; background-image: 
@@ -461,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="col-12 col-lg-4 vh-25 align-items-stretch mb-4" style="margin-top: 14px;">
       	    <div class="diagram" style="height: 83%;">
               <div class="diagramTitle">
-                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Repairs per Month</h4>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Repairs per Month</h4>
               </div>
               <div style="background: white; height: 240px; border-radius:15px;">
                 <div id="repairNoChart" style="height: 100%; width: 100%; overflow: hidden; border-radius:15px;"></div>
@@ -470,10 +475,10 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
   <div class="row flex-grow-1" style="min-height: 40vh;">
-    <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch">
+    <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch ">
       <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
-                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h4>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Upcoming Activities</h4>
               </div>
               <div class="actContainer" id="upcoming-activities">
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
@@ -482,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <c:if test="${maint.archiveFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
-                            <div class="actItem"
+                            <div class="actItem" style="border-bottom: 2px solid #f2f2f2 !important;"
                                  data-item-name="${item.itemName}" 
                                  data-item-room="${item.itemRoom}" 
                                  data-last-maintenance-date="${item.lastMaintDate}" 
@@ -522,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch">
       <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
-                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h4>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Recent Activities</h4>
               </div>
               <div class="actContainer" id="recent-activities">
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
@@ -567,7 +572,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch" style="border-radius:15px;">
       <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
-                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Pending Maintenance</h4>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Pending Maintenance</h4>
               </div>
               <div style="background: white; height: 200px;border-radius:15px;">
                   <div id="pendingMainChart" style="height: 101%; width: 100%;border-radius:15px; overflow: hidden;"></div>

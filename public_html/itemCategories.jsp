@@ -83,6 +83,7 @@ a.paginate-button.active {
 <body>
 <div class="container-fluid">
     <div class="row vh-100">
+    <c:set var="page" value="itemCategories" scope="request"/>
             <jsp:include page="sidebar.jsp"></jsp:include>
         <div class="col-md-10 p-4">
             <!-- Header Section -->

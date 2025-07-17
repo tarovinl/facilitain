@@ -62,6 +62,7 @@
 <body>
    <div class="container-fluid">
     <div class="row vh-100">
+    <c:set var="page" value="maintenanceSchedule" scope="request"/>
             <jsp:include page="sidebar.jsp"></jsp:include>
         <div class="col-md-10 p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">

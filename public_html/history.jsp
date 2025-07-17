@@ -122,6 +122,7 @@
 </head>
 <body>
     <div class="d-flex">
+    <c:set var="page" value="history" scope="request"/>
         <jsp:include page="sidebar.jsp"/>
         
         <div class="main-content flex-grow-1">

@@ -68,6 +68,7 @@
 <body>
     <div class="container-fluid">
         <div class="row min-vh-100">
+        <c:set var="page" value="feedback" scope="request"/>
             <jsp:include page="sidebar.jsp" />
 
             <div class="col-md-10 p-4">
