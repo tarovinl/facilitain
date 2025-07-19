@@ -44,6 +44,7 @@ import sample.model.ToDo;
 import sample.model.MaintAssign;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.util.TreeSet;
 
@@ -404,11 +405,13 @@ public class mainController extends HttpServlet {
 //            groupedFloors.get(locID).add(floorName);
 //        }
 
-        
+        Map<Integer, String> itemIdToName = new HashMap<>();
+
         Set<String> uniqueRooms = new HashSet<>();
                 List<Item> resultRoomList = new ArrayList<>();
 
                 for (Item item : listItem) {
+                    itemIdToName.put(item.getItemID(), item.getItemName());
                     String uniqueKey = item.getItemLID() + ":" + item.getItemRoom() + ":" + item.getItemFloor();
                     if (!uniqueRooms.contains(uniqueKey)) {
                         uniqueRooms.add(uniqueKey);
@@ -513,6 +516,7 @@ public class mainController extends HttpServlet {
         request.setAttribute("FMO_TO_DO_LIST", listToDo);
         request.setAttribute("FMO_MAINT_ASSIGN", listAssign);
         request.setAttribute("FMO_USERS", listDUsers);
+        request.setAttribute("itemIdToName", itemIdToName);
         
         request.setAttribute("quotations", quotations); // per session
         
@@ -624,6 +628,7 @@ public class mainController extends HttpServlet {
         //                break;
                     case "/calendar":
                         String eventCat = request.getParameter("eventCat");
+                        String eventItID = request.getParameter("eventItID");
                             //System.out.println("controller eventCat " + eventCat);
                                     if (eventCat != null) {
                                         // Process the dynamic locations logic
@@ -660,7 +665,35 @@ public class mainController extends HttpServlet {
                                         response.setCharacterEncoding("UTF-8");
                                         response.getWriter().write(new Gson().toJson(uniqueLocations));
 
-                                    } else {
+                                        } else if (eventItID != null) {
+                                            String locationNameEv = null;
+                                            String itemNameEv = null;
+
+                                            for (Item item : listItem) {
+                                                if (String.valueOf(item.getItemID()).equals(eventItID)) {
+                                                    itemNameEv = item.getItemName(); // Get item name
+                                                    int itemLID = item.getItemLID(); // Get location ID
+
+                                                    for (Location loc : locations) {
+                                                        if (loc.getItemLocId() == itemLID) {
+                                                            locationNameEv = loc.getLocName(); // Get location name
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    break;
+                                                }
+                                            }
+
+                                            // Package itemName and locationName into a JSON object
+                                            JsonObject json = new JsonObject();
+                                            json.addProperty("itemNameEv", itemNameEv);
+                                            json.addProperty("locationNameEv", locationNameEv);
+
+                                            response.setContentType("application/json");
+                                            response.setCharacterEncoding("UTF-8");
+                                            response.getWriter().write(json.toString());
+                                        } else {
                                         // If it's not an AJAX request, forward to the calendar page
                                         request.getRequestDispatcher("/calendar.jsp").forward(request, response);
                                     }
