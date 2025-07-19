@@ -239,7 +239,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 mt-4 mt-md-0">
             <div class="row">
                 <div class="col" id="parentMap">
                     <label for="mapCoord" class="form-label h4" style="font-family: NeueHaasMedium, sans-serif !important;">Pin Location on Map:</label>
@@ -255,7 +255,7 @@
   <div class="col-md-6 col-12 text-center">
     <input type="submit" value="Save Changes" class="btn btn-success w-100" style="font-family: NeueHaasMedium, sans-serif !important;">
   </div> 
-  <div class="col-md-6 col-12 text-center">
+  <div class="col-md-6 col-12 text-center mb-4 mt-md-0">
     <button type="button" class="btn btn-outline-secondary w-100" style="font-family: NeueHaasMedium, sans-serif !important;" onclick="location.reload()">Reset</button>
   </div> 
 </div>
