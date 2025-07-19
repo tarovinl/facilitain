@@ -323,7 +323,7 @@
     <div class="d-flex align-items-center gap-2 mb-2">
       
       <div class="d-flex flex-column text-start">
-          <div class="fw-bold mb-0">Kevin Coraza</div>
+            <div class="fw-bold mb-0">${sessionScope.name}</div>
           <div class="text-muted" style="font-size: 0.85rem; margin-left: 0;">
     <c:choose>
         <c:when test="${sessionScope.role == 'Admin'}">
