@@ -242,8 +242,8 @@
         <div class="col-12 col-md-6">
             <div class="row">
                 <div class="col" id="parentMap">
-                    <label for="mapCoord" class="form-label h4" style="font-family: NeueHaasMedium, sans-serif !important;">Choose your location:</label>
-                    <h6 class="text-secondary fw-normal"  style="font-family: 'NeueHaasLight', sans-serif;">Click on the map to choose the location's area. Click the Reset button to undo.</h6>
+                    <label for="mapCoord" class="form-label h4" style="font-family: NeueHaasMedium, sans-serif !important;">Pin Location on Map:</label>
+                    <h6 class="text-secondary fw-normal"  style="font-family: 'NeueHaasLight', sans-serif;">Select a location by clicking on the map. Press Reset to undo your selection.</h6>
                     <input type="hidden" class="form-control" id="mapCoord" name="mapCoord">
                     <div id="map" style="width: 100%; height: 256px; border-radius:5px;"></div>
                 </div>           
@@ -264,9 +264,9 @@
 
  <div class="tab-pane fade pt-4" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">
+  <h3 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">
     Current Floors
-  </h1>
+  </h3>
   
   <button class="buttonsBuilding d-flex align-items-center btn btn-md px-3 py-2 rounded-2 hover-outline text-dark" 
           style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
