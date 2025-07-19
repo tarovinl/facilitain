@@ -48,31 +48,32 @@
                      text-decoration-color: white;
                 text-underline-offset: 3px; 
                 }
-           #notificationBadge {
-                  top: -0.3em;
-                  right: -0.6em;
-                  position: absolute;
-                  display: inline-flex;
-                  align-items: center;
-                  justify-content: center;
-                
-                  height: 1.6em;
-                  min-width: 1.6em;
-                  padding: 0 0.4em;
-                
-                  font-size: 0.75rem;
-                  font-weight: 700;
-                  color: white;
-                  background-color: red;
-                
-                  border-radius: 50%;
-                  line-height: 1;
-                  text-align: center;
-                  white-space: nowrap;
-                  box-sizing: border-box;
-                }
-
-                
+          #notificationBadge {
+              top: -0.1em;
+              right: -0.6em;
+              position: absolute;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              
+              height: 1.6em;
+              min-width: 1.6em;
+              padding: 0;
+              
+              font-size: 0.75rem;
+              font-weight: 700;
+              color: white;
+              background-color: red;
+              
+              border-radius: 50%;
+              line-height: 1;
+              text-align: center;
+              white-space: nowrap;
+              box-sizing: border-box;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+              padding-top: 0.2em;  
+   }
+ 
                  .circle-hover {
                     width: 45px;
                     height: 45px;
