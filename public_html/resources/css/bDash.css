@@ -103,24 +103,7 @@
   /*outline: 2px solid black;*/
 }
 
-.actItem {
-  background-color: white;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  outline: 2px solid black;
-  font-size: 18px;
-  gap: 16px;
-}
-.actItem2 {
-  background-color: white;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  outline: 2px solid black;
-  font-size: 18px;
-  gap: 16px;
-}
+
 
 @media (max-width: 800px) {
   .buildingActivities {

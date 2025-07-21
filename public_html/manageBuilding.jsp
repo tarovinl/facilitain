@@ -401,11 +401,11 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
 
 <div class=" container-fluid p-0 d-flex border-bottom justify-content-between align-items-center flex-wrap">
     <!-- Left side: Floor name -->
-    <div class="floorName">
-        <h1 class="display-1 mt-2" style="font-family: NeueHaasMedium, sans-serif;color: #212529;">
-            ${floorName == 'all' ? 'All Items' : floorName}
-        </h1>
-    </div>
+    <div class="d-flex align-items-center" style="height: 60px;">
+  <h1 class="display-5 display-md-5 display-lg-4 m-0" style="font-family: NeueHaasMedium, sans-serif; color: #212529;">
+    ${floorName == 'all' ? 'All Items' : floorName}
+  </h1>
+</div>
 
     <!-- Right side: Floor selection links -->
     <div class="d-flex flex-wrap gap-3" style="font-family: NeueHaasLight, sans-serif;">

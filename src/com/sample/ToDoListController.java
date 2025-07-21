@@ -2,7 +2,6 @@ package com.sample;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -11,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
-
 import java.time.format.DateTimeParseException;
 
 import javax.servlet.*;
@@ -31,7 +29,6 @@ public class ToDoListController extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(CONTENT_TYPE);
         
-        
         String userNum = request.getParameter("userNum");
         String fullUrl = request.getParameter("originalUrl");
         if (fullUrl != null) {
@@ -39,99 +36,180 @@ public class ToDoListController extends HttpServlet {
             if (fullUrl.contains("?null")) {
                 fullUrl = fullUrl.replace("?null", "");
             }
-
             // Remove ".jsp" from anywhere in the URL
             fullUrl = fullUrl.replace(".jsp", "");
-
             // Replace "manageBuilding" with "buildingDashboard"
             fullUrl = fullUrl.replace("manageBuilding", "buildingDashboard");
             fullUrl = fullUrl.replace("editLocation", "buildingDashboard");
         }
         
         String tdListID = request.getParameter("tdListId");
-        
         String tdListContent = request.getParameter("tdListContent");
         String tdListStart = request.getParameter("tdListStart");
         String tdListEnd = request.getParameter("tdListEnd");
         String tdListChecked = request.getParameter("tdListChecked");
         String tdListCreationDate = request.getParameter("tdListCreationDate");
-        
         String tdAction = request.getParameter("tdAction");
         
-        System.out.println("-------------------------------" );
-        System.out.println(fullUrl);
-
-//        // Early check for tdListID validity only if tdAction is not null
-//        if (tdAction != null && (tdAction.equals("check") || tdAction.equals("uncheck") || tdAction.equals("delete"))) {
-//            if (tdListID == null || tdListID.isEmpty()) {
-//                throw new ServletException("LIST_ITEM_ID is missing or invalid for the action: " + tdAction);
-//            }
-//        }
+        // Enhanced debugging
+        System.out.println("=== ToDoListController Debug Info ===");
+        System.out.println("userNum: " + userNum);
+        System.out.println("tdListID: " + tdListID);
+        System.out.println("tdListContent: " + tdListContent);
+        System.out.println("tdListStart: " + tdListStart);
+        System.out.println("tdListEnd: " + tdListEnd);
+        System.out.println("tdAction: " + tdAction);
+        System.out.println("fullUrl: " + fullUrl);
         
-//        System.out.println("-------------------------------" );
-//        System.out.println("tdListID: " + tdListID);
-//        System.out.println("tdListContent: " + tdListContent);
-//        System.out.println("tdListStart: " + tdListStart);
-//        System.out.println("tdListEnd: " + tdListEnd);
-//        System.out.println("tdListChecked: " + tdListChecked);
-//        System.out.println("tdListCreationDate: " + tdListCreationDate);
-//        System.out.println("tdAction: " + tdAction);
-        
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME; // For "yyyy-MM-dd'T'HH:mm"
-        
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         Timestamp sqlStartTimestamp = null;
         Timestamp sqlEndTimestamp = null;
         
+        // Validate required parameters
         if (tdAction == null) {
+            // Adding new item - validate required fields
+            if (userNum == null || userNum.trim().isEmpty()) {
+                throw new ServletException("User number is required for adding to-do item");
+            }
+            if (tdListContent == null || tdListContent.trim().isEmpty()) {
+                throw new ServletException("Content is required for adding to-do item");
+            }
+            if (tdListStart == null || tdListStart.trim().isEmpty()) {
+                throw new ServletException("Start date is required for adding to-do item");
+            }
+            if (tdListEnd == null || tdListEnd.trim().isEmpty()) {
+                throw new ServletException("End date is required for adding to-do item");
+            }
+            
             try {
                 LocalDateTime startDateTime = LocalDateTime.parse(tdListStart, formatter);
                 LocalDateTime endDateTime = LocalDateTime.parse(tdListEnd, formatter);
-
                 sqlStartTimestamp = Timestamp.valueOf(startDateTime);
                 sqlEndTimestamp = Timestamp.valueOf(endDateTime);
+                
+                System.out.println("Parsed timestamps:");
+                System.out.println("Start: " + sqlStartTimestamp);
+                System.out.println("End: " + sqlEndTimestamp);
             } catch (DateTimeParseException e) {
-                throw new ServletException("Invalid date format for start or end date.", e);
+                System.err.println("Date parsing error: " + e.getMessage());
+                throw new ServletException("Invalid date format for start or end date: " + e.getMessage(), e);
+            }
+        } else {
+            // For update/delete operations, validate tdListID
+            if (tdListID == null || tdListID.trim().isEmpty()) {
+                throw new ServletException("LIST_ITEM_ID is required for action: " + tdAction);
             }
         }
 
+        Connection conn = null;
+        PreparedStatement stmt = null;
         
-        
-        try (Connection conn = PooledConnection.getConnection()) {
+        try {
+            conn = PooledConnection.getConnection();
+            if (conn == null) {
+                throw new ServletException("Failed to get database connection");
+            }
+            
             String sql;
             
             if ("delete".equals(tdAction)) {
                 sql = "DELETE FROM C##FMO_ADM.FMO_TO_DO_LIST WHERE LIST_ITEM_ID = ?";
-            }else if ("check".equals(tdAction)) {
+                System.out.println("Executing DELETE with ID: " + tdListID);
+            } else if ("check".equals(tdAction)) {
                 sql = "UPDATE C##FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 1 WHERE LIST_ITEM_ID = ?";
-            }else if ("uncheck".equals(tdAction)) {
+                System.out.println("Executing CHECK with ID: " + tdListID);
+            } else if ("uncheck".equals(tdAction)) {
                 sql = "UPDATE C##FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 0 WHERE LIST_ITEM_ID = ?";
-            }else{
+                System.out.println("Executing UNCHECK with ID: " + tdListID);
+            } else {
                 sql = "INSERT INTO C##FMO_ADM.FMO_TO_DO_LIST (EMP_NUMBER, LIST_CONTENT, START_DATE, END_DATE) VALUES (?, ?, ?, ?)";
+                System.out.println("Executing INSERT");
             }
-                
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    if ("delete".equals(tdAction)) {
-                        stmt.setInt(1, Integer.parseInt(tdListID));
-                    }else if ("check".equals(tdAction)) {
-                        stmt.setInt(1, Integer.parseInt(tdListID));
-                    }else if ("uncheck".equals(tdAction)) {
-                        stmt.setInt(1, Integer.parseInt(tdListID));
-                    }else{
-                        stmt.setInt(1, Integer.parseInt(userNum) );
-                        stmt.setString(2, tdListContent);
-                        stmt.setTimestamp(3, sqlStartTimestamp);
-                        stmt.setTimestamp(4, sqlEndTimestamp);
-                    }
-                    
-                    stmt.executeUpdate();
+            
+            System.out.println("SQL: " + sql);
+            
+            stmt = conn.prepareStatement(sql);
+            
+            if ("delete".equals(tdAction) || "check".equals(tdAction) || "uncheck".equals(tdAction)) {
+                try {
+                    int listId = Integer.parseInt(tdListID);
+                    stmt.setInt(1, listId);
+                    System.out.println("Set parameter 1 (LIST_ITEM_ID): " + listId);
+                } catch (NumberFormatException e) {
+                    throw new ServletException("Invalid LIST_ITEM_ID format: " + tdListID, e);
                 }
+            } else {
+                // INSERT operation
+                try {
+                    int empNumber = Integer.parseInt(userNum);
+                    stmt.setInt(1, empNumber);
+                    stmt.setString(2, tdListContent);
+                    stmt.setTimestamp(3, sqlStartTimestamp);
+                    stmt.setTimestamp(4, sqlEndTimestamp);
+                    
+                    System.out.println("Set parameters for INSERT:");
+                    System.out.println("1 (EMP_NUMBER): " + empNumber);
+                    System.out.println("2 (LIST_CONTENT): " + tdListContent);
+                    System.out.println("3 (START_DATE): " + sqlStartTimestamp);
+                    System.out.println("4 (END_DATE): " + sqlEndTimestamp);
+                } catch (NumberFormatException e) {
+                    throw new ServletException("Invalid user number format: " + userNum, e);
+                }
+            }
+            
+            int rowsAffected = stmt.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+            
+            if (rowsAffected == 0) {
+                System.out.println("Warning: No rows were affected by the operation");
+            }
             
             // Redirect to homepage after the action is performed
+            System.out.println("Redirecting to: " + fullUrl);
             response.sendRedirect(fullUrl);
+            
         } catch (SQLException e) {
+            System.err.println("=== SQL Exception Details ===");
+            System.err.println("Error Code: " + e.getErrorCode());
+            System.err.println("SQL State: " + e.getSQLState());
+            System.err.println("Message: " + e.getMessage());
             e.printStackTrace();
-            throw new ServletException("Database error while adding/editing/deleting to do list item.");
+            
+            // More specific error messages based on common Oracle error codes
+            String errorMessage = "Database error while processing to-do list item: ";
+            if (e.getErrorCode() == 1) {
+                errorMessage += "Duplicate entry - this item may already exist.";
+            } else if (e.getErrorCode() == 1400) {
+                errorMessage += "Required field is missing or null.";
+            } else if (e.getErrorCode() == 2291) {
+                errorMessage += "Invalid foreign key - user number may not exist.";
+            } else if (e.getErrorCode() == 12899) {
+                errorMessage += "Data too long for field.";
+            } else {
+                errorMessage += e.getMessage();
+            }
+            
+            throw new ServletException(errorMessage, e);
+        } catch (Exception e) {
+            System.err.println("=== General Exception ===");
+            e.printStackTrace();
+            throw new ServletException("Unexpected error while processing to-do list item: " + e.getMessage(), e);
+        } finally {
+            // Clean up resources
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    System.err.println("Error closing statement: " + e.getMessage());
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    System.err.println("Error closing connection: " + e.getMessage());
+                }
+            }
         }
-        
     }
 }

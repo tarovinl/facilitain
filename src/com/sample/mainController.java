@@ -295,35 +295,35 @@ public class mainController extends HttpServlet {
             rsDUsers.close();
             
             ResultSet rsQuot = stmntQuotations.executeQuery();
-                while (rsQuot.next()) {
-                    Quotation quotation = new Quotation();
-                    quotation.setQuotationId(rsQuot.getInt("QUOTATION_ID"));
-                    quotation.setDescription(rsQuot.getString("DESCRIPTION"));
-                    quotation.setDateUploaded(rsQuot.getDate("DATE_UPLOADED"));
-                    quotation.setItemId(rsQuot.getInt("ITEM_ID"));
-                    quotation.setArchiveFlag(rsQuot.getInt("ARCHIVED_FLAG"));
-                    
-                    // Handle File 1
-                    Blob blob1 = rsQuot.getBlob("QUOTATION_FILE1");
-                    if (blob1 != null) {
-                        byte[] file1Bytes = blob1.getBytes(1, (int) blob1.length());
-                        quotation.setQuotationFile1(file1Bytes);
-                    }
-                    quotation.setFile1Name(rsQuot.getString("FILE1_NAME"));
-                    quotation.setFile1Type(rsQuot.getString("FILE1_TYPE"));
-                    
-                    // Handle File 2
-                    Blob blob2 = rsQuot.getBlob("QUOTATION_FILE2");
-                    if (blob2 != null) {
-                        byte[] file2Bytes = blob2.getBytes(1, (int) blob2.length());
-                        quotation.setQuotationFile2(file2Bytes);
-                    }
-                    quotation.setFile2Name(rsQuot.getString("FILE2_NAME"));
-                    quotation.setFile2Type(rsQuot.getString("FILE2_TYPE"));
-                    
-                    quotations.add(quotation);
+            while (rsQuot.next()) {
+                Quotation quotation = new Quotation();
+                quotation.setQuotationId(rsQuot.getInt("QUOTATION_ID"));
+                quotation.setDescription(rsQuot.getString("DESCRIPTION"));
+                quotation.setDateUploaded(rsQuot.getDate("DATE_UPLOADED"));
+                quotation.setItemId(rsQuot.getInt("ITEM_ID"));
+                quotation.setArchiveFlag(rsQuot.getInt("ARCHIVED_FLAG"));
+                
+                // Handle File 1
+                Blob blob1 = rsQuot.getBlob("QUOTATION_FILE1");
+                if (blob1 != null) {
+                    byte[] file1Bytes = blob1.getBytes(1, (int) blob1.length());
+                    quotation.setQuotationFile1(file1Bytes);
                 }
-                rsQuot.close();
+                quotation.setFile1Name(rsQuot.getString("FILE1_NAME"));
+                quotation.setFile1Type(rsQuot.getString("FILE1_TYPE"));
+                
+                // Handle File 2
+                Blob blob2 = rsQuot.getBlob("QUOTATION_FILE2");
+                if (blob2 != null) {
+                    byte[] file2Bytes = blob2.getBytes(1, (int) blob2.length());
+                    quotation.setQuotationFile2(file2Bytes);
+                }
+                quotation.setFile2Name(rsQuot.getString("FILE2_NAME"));
+                quotation.setFile2Type(rsQuot.getString("FILE2_TYPE"));
+                
+                quotations.add(quotation);
+            }
+            rsQuot.close();
 
             ResultSet rsRepairs = stmntRepairs.executeQuery();
             while (rsRepairs.next()) {
@@ -743,10 +743,9 @@ public class mainController extends HttpServlet {
                 queryString = null;
             }
         }
-        
+
         switch (path) {
             case "/buildingDashboard":
-                // Allow no query, or valid locID and optional /manage or /edit
                 if (queryString == null) return true;
 
                 // Accept AJAX-friendly malformed pattern: locID=/manage?floor=&itemHID=795
@@ -768,6 +767,7 @@ public class mainController extends HttpServlet {
                     return true;
                 }
                 return false;
+
             case "/homepage":
             case "/calendar":
             case "/settings":

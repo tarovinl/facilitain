@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maintenance Calendar</title>
+    <title>Maintenance Calendar - Facilitain</title>
     
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     
@@ -16,7 +16,24 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
-    
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
+    <style>
+            body, h1, h2, h3, h4, th {
+            font-family: 'NeueHaasMedium', sans-serif !important;
+        }
+        h5, h6, input, textarea, td, tr, p, label, select, option {
+            font-family: 'NeueHaasLight', sans-serif !important;
+        }
+            .responsive-padding-top {
+                                              padding-top: 100px;
+                                            }
+                                            
+                            @media (max-width: 576px) {
+                            .responsive-padding-top {
+                            padding-top: 80px; /* or whatever smaller value you want */
+                            }
+                            }
+    </style>
     
     <%@ page import="java.util.HashSet" %>
 <%
@@ -307,29 +324,7 @@
 
     <style>
     /* Apply custom styles for smaller screens */
-    @media (max-width: 768px) {
-        .fc-toolbar {
-            display: flex;
-            flex-direction: column; /* Stack the toolbar items vertically */
-            align-items: center;
-        }
-
-        .fc-toolbar-chunk {
-            display: flex;
-            flex-wrap: wrap; /* Allow wrapping if necessary */
-            justify-content: center;
-            margin-bottom: 0.5rem; /* Add spacing between rows */
-        }
-
-        .fc-toolbar-title {
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem; /* Adjust title size for better readability */
-        }
-
-        .fc-button {
-            margin: 0.2rem; /* Add spacing around buttons */
-        }
-    }
+    
     
     .fc-button.fc-dayGridMonth-button,
     .fc-button.fc-timeGridWeek-button,
@@ -363,13 +358,15 @@
 
 </head>
 <body>
+<jsp:include page="navbar.jsp"/>
 <div class="container-fluid">
 <div class="row min-vh-100">
+<c:set var="page" value="calendar" scope="request"/>
     <jsp:include page="sidebar.jsp"/>
     
-    <div class="col-md-10">
-        <div class="mt-4">
-            <h1>Maintenance Calendar</h1>
+    <div class="col-md-10  responsive-padding-top">
+        <div class="">
+            
         </div>
         <div class="mb-4">
         <div id='calendar'></div>

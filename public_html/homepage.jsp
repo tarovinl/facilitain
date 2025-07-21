@@ -1,17 +1,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Homepage</title>
-  
+    <title>Home - Facilitain</title>
+   <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
     <style>
-    
+               
+
             .hover-outline {
                 transition: all 0.3s ease;
                 border: 1px solid transparent; /* Reserve space for border */
@@ -93,69 +96,316 @@
                     justify-content: space-between;
                 }
                 .search-container {
-                    margin: 1rem 0;
-                    max-width: 100%;
+                    max-width: 250px !important; /* or adjust as needed */
+                     height: 2.5rem; /* reduce height */
+                        font-size: 0.8rem; /* slightly smaller font */
+                        padding-left: 2rem; /* slightly less padding if needed */
+                  }
+                  
+            }
+           .custom-search {
+                  background-color: #f2f2f2 !important;
+                  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+                  height: 2.75rem; /* or adjust as needed */
+                  font-size: 0.9rem;
+                  border-radius: 0.5rem;
+                  padding-left: 2.5rem; /* space for the icon */
+                  padding-right: 1rem;
+                  border: 1px solid #ced4da;
                 }
+                
+                /* When focused */
+                .custom-search:focus {
+                  background-color: #ffffff !important;
+                  box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25); /* optional glow */
+                  outline: none;
+                }
+                body, html {
+                  overflow-x: hidden !important;
+                }
+                #searchInput::placeholder {
+                  padding-left: 0rem; /* Optional: fine-tune if needed */
+                }
+                
+                .responsive-padding-top {
+                  padding-top: 80px;
+                }
+                
+                @media (max-width: 576px) {
+                  .responsive-padding-top {
+                    padding-top: 70px; /* or whatever smaller value you want */
+                  }
+                }
+            
+            #notificationBadge {
+                top: -0.1em;
+              right: -0.6em;
+              position: absolute;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              
+              height: 1.6em;
+              min-width: 1.6em;
+              padding: 0;
+              
+              font-size: 0.75rem;
+              font-weight: 700;
+              color: white;
+              background-color: red;
+              
+              border-radius: 50%;
+              line-height: 1;
+              text-align: center;
+              white-space: nowrap;
+              box-sizing: border-box;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+              padding-top: 0.2em;  
+                }
+
+                
+                 .circle-hover {
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 50%;
+                    display: inline-flex !important;
+                    justify-content: center;
+                    align-items: center;
+                    transition: background-color 0.2s ease-in-out;
+                  }
+                
+                  .circle-hover:hover {
+                    background-color: #dbe4e9 !important;
+                  }
+                
+                  .circle-hover img {
+                    pointer-events: none; /* ensures hover is on the circle, not just the image */
+                  }    
+            /* Responsive adjustments */
+            @media (max-width: 767.98px) {
+                .header-row {
+                    flex-direction: column;
+                    align-items: flex-start !important;
+                }
+                .header-title {
+                    margin-bottom: 1rem;
+                }
+                .header-controls {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+                
+                body, html {
+                  overflow-x: hidden !important;
+                }
+                #searchInput::placeholder {
+                  padding-left: 0rem; /* Optional: fine-tune if needed */
+                }
+                .icon-btn {
+                width: 22px;
+                height: 22px;
+              }
+               .circle-hover {
+                    width: 35px;
+                    height: 35px;
+                   
+                  }
+            }
+                .tooltip {
+          font-family: 'NeueHaasLight', sans-serif !important;
+          font-size: 0.75rem; /* Optional: adjust size if needed */
+        }
+            .custom-dropdown {
+              position: absolute;
+              top: 110%; /* appear below icon */
+              right: 0;
+              background-color: white;
+              min-width: 200px;
+              z-index: 1000;
+              font-family: 'NeueHaasLight', sans-serif !important;
+            }
+            
+            .dropdown-wrapper {
+              position: relative;
+            }
+        #userButton {
+          cursor: pointer;
+        }
+            .logout-btn {
+              transition: color 0.3s ease, background-color 0.3s ease;
+            }
+            
+            .logout-icon {
+              filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(4900%) hue-rotate(352deg) brightness(90%) contrast(120%);
+              transition: filter 0.3s ease;
+            }
+            
+            .logout-btn:hover {
+              color: white; /* Makes text white */
+              background-color: #dc3545; /* Bootstrap danger red background */
+            }
+            
+            .logout-btn:hover .logout-icon {
+              filter: brightness(0) invert(1); /* Makes icon white */
             }
     </style>
 </head>
 <body>
 <div class="container-fluid">
+ <nav class="navbar bg-white py-3 mb-4 fixed-top border-bottom border-light-subtle" style="z-index: 1040;">
+  <div class="container-fluid">
+  <div class="row d-flex justify-content-center align-items-center flex-wrap w-100 gx-2">
+
+
+
+    <!-- Logo -->
+    <div class="col-4 col-md-3 order-md-1 text-start">
+      <a href="<%=request.getContextPath()%>/homepage" class="p-0 d-inline-block">
+        <img src="resources/images/FACILITAIN_WLOGO4.png"
+             alt="Facilitain Home Logo"
+             style="max-width: 100%; max-height: 50px;" />
+      </a>
+    </div>
+
+    <!-- Search Bar (centered on desktop) -->
+   <div class="col-4 col-md-6 order-md-2 d-flex justify-content-center">
+  <div class="search-container rounded-3">
+    <form id="searchForm" action="searchBuildings" method="get">
+      <div class="position-relative">
+        <span class="search-icon"
+              style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); z-index: 2;">
+          <i class="bi bi-search"></i>
+        </span>
+        <input type="text"
+               class="form-control ps-3 search-input custom-search"
+               id="searchInput"
+               name="query"
+               placeholder="Search locations..."
+               aria-label="Search buildings"
+               style="width: 100%;">
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="col-4 col-md-3 ms-auto order-md-3 text-end">
+        <div class="d-flex justify-content-end align-items-center gap-1">
+
+          <!-- Reports Icon -->
+         <a href="reports" 
+           class="circle-hover text-dark position-relative" 
+           data-bs-toggle="tooltip" 
+           data-bs-placement="bottom" 
+           title="Reports">
+          <img src="resources/images/icons/reportsb.svg" class="icon-btn" alt="Reports" width="28" height="28">
+        </a>
+        
+       <a href="notification" 
+           class="circle-hover text-dark position-relative" 
+           data-bs-toggle="tooltip" 
+           data-bs-placement="bottom" 
+           title="Notifications">
+          <img src="resources/images/icons/notifb.svg" class="icon-btn" alt="Notifications" width="28" height="28">
+          <span id="notificationBadge" class="badge position-absolute">3</span>
+        </a>
+
+        
+        <div class="dropdown-wrapper position-relative">
+  <a id="userButton"
+   class="circle-hover text-dark d-flex align-items-center gap-1"
+   data-bs-toggle="tooltip"
+   data-bs-placement="bottom"
+   title="User"
+   style="cursor: pointer;">
+  <img src="resources/images/icons/person.svg" class="icon-btn" alt="User" width="28" height="28">
+</a>
+
+
+  <div id="userDropdown" class="custom-dropdown shadow p-3 rounded" style="display: none;">
+    <div class="d-flex align-items-center gap-2 mb-2">
+      
+      <div class="d-flex flex-column text-start">
+            <div class="fw-bold mb-0">${sessionScope.name}</div>
+          <div class="text-muted" style="font-size: 0.85rem; margin-left: 0;">
+    <c:choose>
+        <c:when test="${sessionScope.role == 'Admin'}">
+            Admin
+        </c:when>
+        <c:when test="${sessionScope.role == 'Support'}">
+            Staff
+        </c:when>
+        <c:otherwise>
+            User
+        </c:otherwise>
+    </c:choose>
+</div>
+        </div>
+
+    </div>
+    <a href="<%=request.getContextPath()%>/LogoutController"
+   class="btn btn-sm btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 logout-btn">
+  <img src="resources/images/icons/logout.svg" alt="Logout" class="logout-icon"
+       style="width: 1.2em; height: 1.2em;">
+  Log Out
+</a>
+
+  </div>
+</div>
+
+
+
+        </div>
+      </div>
+
+  </div>
+</div>
+
+
+    </div>
+  </div>
+</nav>
+
     <div class="row min-vh-100">
+    <c:set var="page" value="homepage" scope="request"/>
         <jsp:include page="sidebar.jsp"/>
 
-        <div class="col-md-10">
-            <div class="container-fluid">
-                <!-- Header Section with Search Bar in Middle -->
-                <div class="row header-row align-items-center pt-4 pb-2">
-                    <div class="col-md-3 header-title">
-                        <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 3rem; line-height: 1.2;">Homepage</h1>
-                    </div>
-                    
-                    <!-- Search Bar (Middle) -->
-                    <div class="col-md-6 d-flex justify-content-center">
-                        <div class="search-container">
-                            <form id="searchForm" action="searchBuildings" method="get">
-                                <div class="position-relative">
-                                    <span class="search-icon">
-                                        <i class="bi bi-search"></i>
-                                    </span>
-                                    <input type="text" class="form-control search-input" id="searchInput" name="query" 
-                                        placeholder="Search buildings..." aria-label="Search buildings">
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <!-- Action Buttons (Right) -->
-                    <div class="col-md-3 d-flex justify-content-end header-controls gap-2">
-                        <c:choose>
-                            <c:when test="${sessionScope.role == 'Admin'}">
-                                <button class="align-items-center d-flex btn btn-md topButtons px-3 py-2 rounded-1 hover-outline text-dark" 
-                                    style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
-                                    data-bs-toggle="modal" data-bs-target="#addBuildingModal">
-                                    <img src="resources/images/icons/plus.svg" alt="add" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> 
-                                    Add
-                                </button>
-                            </c:when>
-                            <c:otherwise>
-                            </c:otherwise>
-                        </c:choose>
-                        <a href="./mapView" 
-                            class="align-items-center d-flex btn btn-md topButtons px-3 py-1 rounded-2 hover-outline text-dark text-decoration-none" 
-                            style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
-                             <img src="resources/images/icons/map.svg" alt="map" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                            Map View
-                        </a>
-                    </div>
-                </div>
+        <div class="col-md-10 mt-4 responsive-padding-top">
+            <div class="container-fluid location-list">
+                
+                 <!-- 🔻 Action Buttons moved here -->
+    <div class="row align-items-center mb-4">
+  <!-- Left: Locations heading -->
+  <div class="col d-flex align-items-center">
+    <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Locations</h1>
+  </div>
 
+  <!-- Right: Action Buttons -->
+  <div class="col-auto d-flex justify-content-end align-items-center gap-2 flex-wrap">
+    <c:if test="${sessionScope.role == 'Admin'}">
+      <button class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center"
+              style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
+              data-bs-toggle="modal" data-bs-target="#addBuildingModal">
+        <img src="resources/images/icons/plus.svg" alt="add" class="icon" width="25" height="25">
+        <span class="d-none d-lg-inline ps-2">Add Location</span>
+      </button>
+    </c:if>
+
+    <a href="./mapView"
+       class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark text-decoration-none d-flex align-items-center justify-content-center"
+       style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
+      <img src="resources/images/icons/map.svg" alt="map" class="icon" width="25" height="25">
+      <span class="d-none d-lg-inline ps-2">Map View</span>
+    </a>
+  </div>
+</div>
+
+                
                 <!-- Buildings Listing -->
-                <div class="row mt-4" id="buildingsContainer">
+                <div class="row mt-0" id="buildingsContainer">
                     <c:forEach var="location" items="${locations}">
                         <c:if test="${location.locArchive == 1}">
                             <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 building-card">
-                                <div class="card mb-4 position-relative shadow-sm hover-shadow hover-underline-title" >
+                                <div class="card mb-4 position-relative shadow-sm hover-shadow hover-underline-title rounded-2" >
                                     <a href="buildingDashboard?locID=${location.itemLocId}" class="text-decoration-none" style="border-radius:20px;">
                                         <div class="card-body rounded-2" style="
                                             background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%),
@@ -184,13 +434,14 @@
                                                                     position: absolute;
                                                                     top: 10px;
                                                                     right: 10px;
-                                                                    background-color: green;
+                                                                   background-color: #28a745;
                                                                     color: white;
                                                                     padding: 4px 8px;
                                                                     border-radius: 5px;
                                                                     font-size: 0.9rem;
                                                                     font-weight: bold;
-                                                                    z-index: 2;">
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                                                                     Optimal
                                                                 </div>
                                                             </c:when>
@@ -199,13 +450,14 @@
                                                                     position: absolute;
                                                                     top: 10px;
                                                                     right: 10px;
-                                                                    background-color: orange;
+                                                                    background-color: #ff9800;
                                                                     color: white;
                                                                     padding: 4px 8px;
                                                                     border-radius: 5px;
                                                                     font-size: 0.9rem;
                                                                     font-weight: bold;
-                                                                    z-index: 2;">
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                                                                     Moderate
                                                                 </div>
                                                             </c:when>
@@ -214,13 +466,14 @@
                                                                     position: absolute;
                                                                     top: 10px;
                                                                     right: 10px;
-                                                                    background-color: red;
+                                                                    background-color: #dc3545;
                                                                     color: white;
                                                                     padding: 4px 8px;
                                                                     border-radius: 5px;
                                                                     font-size: 0.9rem;
                                                                     font-weight: bold;
-                                                                    z-index: 2;">
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                                                                     Danger
                                                                 </div>
                                                             </c:when>
@@ -246,25 +499,25 @@
         <form action="addbuildingcontroller" method="post" enctype="multipart/form-data">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addBuildingModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Add Building</h5>
+                    <h5 class="modal-title" id="addBuildingModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Add Location</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="locName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Building Name</label>
-                        <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter building name" style="font-family: 'NeueHaasLight', sans-serif;" required>
+                        <label for="locName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Name</label>
+                        <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter location name" style="font-family: 'NeueHaasLight', sans-serif;" required>
                     </div>
                     <div class="mb-3">
-                        <label for="locDescription" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Building Description</label>
-                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter building description" style="font-family: 'NeueHaasLight', sans-serif;" required>
+                        <label for="locDescription" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Description</label>
+                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter location description" style="font-family: 'NeueHaasLight', sans-serif;" required>
                     </div>
                     <div class="mb-3">
-                        <label for="buildingImage" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Building Image</label>
+                        <label for="buildingImage" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Image</label>
                         <input type="file" class="form-control" id="buildingImage" name="buildingImage" accept="image/*" style="font-family: 'NeueHaasLight', sans-serif;">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasLight', sans-serif;">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">
                     Cancel
                     </button>
                    <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">
@@ -333,6 +586,31 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<script>
+  // Initialize all tooltips on the page
+  document.addEventListener('DOMContentLoaded', function () {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+      new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const userButton = document.getElementById('userButton');
+    const dropdown = document.getElementById('userDropdown');
 
+    userButton.addEventListener('click', function (e) {
+      e.stopPropagation();
+      dropdown.style.display = dropdown.style.display === 'none' || dropdown.style.display === '' ? 'block' : 'none';
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+  });
+</script>
 </body>
 </html>

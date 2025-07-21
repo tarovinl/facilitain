@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Automated Scheduling</title>
+    <title>Automated Scheduling - Facilitain</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
@@ -45,29 +45,41 @@
                 }
                 
                  .btn-cancel-outline {
-  color: #8388a4 !important;        /* Text color */
-  background-color: white !important; /* White background */
-  border: 2px solid #8388a4 !important; /* Outline */
-  box-shadow: none !important;       /* Remove default shadow */
-}
-
-/* Optional: add hover effect */
-.btn-cancel-outline:hover {
-  background-color: #f0f2f7 !important; /* Light gray bg on hover */
-  border-color: #8388a4 !important;
-  color: #8388a4 !important;
-}
+              color: #8388a4 !important;        /* Text color */
+              background-color: white !important; /* White background */
+              border: 2px solid #8388a4 !important; /* Outline */
+              box-shadow: none !important;       /* Remove default shadow */
+            }
+            
+            /* Optional: add hover effect */
+            .btn-cancel-outline:hover {
+              background-color: #f0f2f7 !important; /* Light gray bg on hover */
+              border-color: #8388a4 !important;
+              color: #8388a4 !important;
+            }
+            .responsive-padding-top {
+                                  padding-top: 100px;
+                                }
+                                
+                @media (max-width: 576px) {
+                .responsive-padding-top {
+                padding-top: 80px; /* or whatever smaller value you want */
+                }
+                }
     </style>
 </head>
 <body>
+<jsp:include page="navbar.jsp"/>
    <div class="container-fluid">
     <div class="row vh-100">
+    <c:set var="page" value="maintenanceSchedule" scope="request"/>
             <jsp:include page="sidebar.jsp"></jsp:include>
-        <div class="col-md-10 p-4">
+        <div class="col-md-10 responsive-padding-top">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="text-dark" style="font-family: 'NeueHaasMedium', sans-serif;">Automated Scheduling</h1>
-                <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#maintenanceModal">
-                     <img src="resources/images/icons/autorenew.svg" alt="schedule" class="icon pe-2" style=" vertical-align: middle;" width="25" height="25"> Manage
+                <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Automated Scheduling</h1>
+                <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-2 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#maintenanceModal">
+                      <img src="resources/images/icons/plus.svg" alt="add"  width="25" height="25"> 
+                      <span class="d-none d-lg-inline ps-2">Add</span>
                 </button>
             </div>
 
@@ -111,8 +123,6 @@
                                         data-itemtypeid="${maintenance.itemTypeId}"
                                         data-noofdays="${maintenance.noOfDays}"
                                         data-remarks="${maintenance.remarks}"
-                                        data-qschedno="${maintenance.quarterlySchedNo}"
-                                        data-yschedno="${maintenance.yearlySchedNo}"
                                         data-warning="${maintenance.noOfDaysWarning}">
                                     Edit
                                 </button>
@@ -134,7 +144,7 @@
                     <div class="modal-content">
                         <form action="maintenanceSave" method="post">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="maintenanceModalLabel">Manage Automated Scheduling</h5>
+                                <h5 class="modal-title" id="maintenanceModalLabel">Add Automated Schedule</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -213,8 +223,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-success">Save Changes</button>
+                                <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-success">Add</button>
                             </div>
                         </form>
                     </div>
@@ -246,32 +256,16 @@
     // Prefill Modal with selected maintenance data
     const maintenanceModal = document.getElementById('maintenanceModal');
     maintenanceModal.addEventListener('show.bs.modal', event => {
-        toggleQuarterlyOptions();
         const button = event.relatedTarget;
         const itemMsId = button.getAttribute('data-itemmsid');
-        
 
         if (itemMsId) {
             // Edit mode
             document.getElementById('itemMsId').value = itemMsId;
             document.getElementById('itemTypeId').value = button.getAttribute('data-itemtypeid');
             document.getElementById('noOfDays').value = button.getAttribute('data-noofdays');
-            const valueNOD = button.getAttribute('data-noofdays');
             document.getElementById('remarks').value = button.getAttribute('data-remarks');
             document.getElementById('noOfDaysWarning').value = button.getAttribute('data-warning');
-            
-            if (valueNOD == 90) {
-                const qschedno = button.getAttribute('data-qschedno');
-                document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => {
-                    radio.checked = radio.value === qschedno;
-                });
-            } else if (valueNOD == 365 || valueNOD == 180) {
-                const yschedno = button.getAttribute('data-yschedno');
-                console.log("yschedno: "+yschedno);
-                document.getElementById('month').value = yschedno;
-            } else {
-                console.log("when the days are varied lmaoooo");
-            }
             toggleQuarterlyOptions(); // Ensure correct options are shown
         } else {
             // Add mode - clear the form
@@ -337,54 +331,65 @@
         });
     }
 
-    // Handle archive confirmation with SweetAlert2
-    $('form').on('submit', function(e) {
-        if ($(this).find('input[name="action"][value="archive"]').length) {
+    // Archive confirmation handler 
+    $(document).on('click', '.btn-danger', function(e) {
+        // Check if this button is within a form with archive action
+        const form = $(this).closest('form');
+        const archiveInput = form.find('input[name="action"][value="archive"]');
+        
+        if (archiveInput.length > 0) {
             e.preventDefault();
-            const form = this;
+            e.stopPropagation();
+            
+            const formElement = form[0];
             
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You want to archive this maintenance schedule?",
+                text: 'You want to archive this maintenance schedule?',
                 icon: 'warning',
                 showCancelButton: true,
-            reverseButtons: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#ffffff', // keep white bg from SweetAlert defaults
-            confirmButtonText: 'Confirm',
-            cancelButtonText: 'Cancel',
-            customClass: {
-             cancelButton: 'btn-cancel-outline'
-            }
+                reverseButtons: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, Archive it!',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    cancelButton: 'btn-cancel-outline'
+                },
+                allowOutsideClick: false,
+                allowEscapeKey: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    // Submit the form directly
+                    formElement.submit();
                 }
             });
+            
+            return false;
         }
     });
 });
 
-    function toggleQuarterlyOptions() {
-        const value = document.getElementById('noOfDays').value;
-        const quarterlyOptionsGroup = document.getElementById('quarterlyOptionsGroup');
-        const annualOptionsGroup = document.getElementById('annualOptionsGroup');
-    
-        if (value == 90) {
-            quarterlyOptionsGroup.style.display = 'block';
-            annualOptionsGroup.style.display = 'none';
-            document.getElementById('month').value = ""; 
-        } else if (value == 365 || value == 180) {
-            annualOptionsGroup.style.display = 'block';
-            quarterlyOptionsGroup.style.display = 'none';
-            document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
-        } else {
-            quarterlyOptionsGroup.style.display = 'none';
-            annualOptionsGroup.style.display = 'none';
-            document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
-            document.getElementById('month').value = "";
-        }
+function toggleQuarterlyOptions() {
+    const value = document.getElementById('noOfDays').value;
+    const quarterlyOptionsGroup = document.getElementById('quarterlyOptionsGroup');
+    const annualOptionsGroup = document.getElementById('annualOptionsGroup');
+
+    if (value == 90) {
+        quarterlyOptionsGroup.style.display = 'block';
+        annualOptionsGroup.style.display = 'none';
+        document.getElementById('month').value = ""; 
+    } else if (value == 365 || value == 180) {
+        annualOptionsGroup.style.display = 'block';
+        quarterlyOptionsGroup.style.display = 'none';
+        document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
+    } else {
+        quarterlyOptionsGroup.style.display = 'none';
+        annualOptionsGroup.style.display = 'none';
+        document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
+        document.getElementById('month').value = "";
     }
+}
     </script>
 </body>
 </html>

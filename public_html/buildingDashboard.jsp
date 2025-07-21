@@ -47,7 +47,15 @@
         <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+        <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
         <style>
+        body, h1, h2, h3, h4,h5, h6, th,label,.custom-label {
+    font-family: 'NeueHaasMedium', sans-serif !important;
+}
+ input, textarea, td, tr, p, select, option,id {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+        
             .hover-outline {
                 transition: all 0.3s ease;
                 border: 1px solid transparent; /* Reserve space for border */
@@ -72,7 +80,15 @@
             .buildingManage:hover {
                 text-decoration: underline !important;
                 }
-
+            .responsive-padding-top {
+              padding-top: 80px;
+            }
+            
+            @media (max-width: 576px) {
+              .responsive-padding-top {
+                padding-top: 70px; /* or whatever smaller value you want */
+              }
+             
 
 </style>
         <script>
@@ -382,44 +398,47 @@ document.addEventListener('DOMContentLoaded', function() {
         </script>
     </head>
     <body style="background-color: #efefef;">
+    <jsp:include page="navbar.jsp"/>
+    <jsp:include page="sidebar.jsp"/>
 <div class="container-fluid">
       <div class="row min-vh-100">
-        
-          <jsp:include page="sidebar.jsp"/>
-       
-    
-    <div class="col-md-10 ">
-        
-          <div class="topButtons  pb-4">
-            <div>
-             <a href="./homepage" class="buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" 
-   style="margin-left: 2px; font-family: NeueHaasLight, sans-serif;">
-    <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
-    Back
-</a>
+    <div class="col-md-10  responsive-padding-top">
+         <div class="row align-items-center d-flex mb-4">
+  <!-- Left: Back Button -->
+  <div class="col d-flex align-items-center">
+    <a href="./homepage"
+       class="buttonsBack d-flex align-items-center text-decoration-none text-dark fs-4"
+       style="font-family: NeueHaasLight, sans-serif;">
+      <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
+      <span class="d-none d-sm-inline ps-2">Back</span>
+    </a>
+  </div>
+
+  <!-- Right: Edit and Generate Buttons -->
+  <div class="col-auto d-flex justify-content-end align-items-center gap-2 flex-wrap">
+    <c:if test="${sessionScope.role == 'Admin'}">
+      <button class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center"
+              style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
+              onclick="window.location.href='buildingDashboard?locID=${locID}/edit'">
+        <img src="resources/images/icons/edit.svg" alt="edit icon" width="25" height="25">
+        <span class="d-none d-lg-inline ps-2">Edit</span>
+      </button>
+    </c:if>
+
+    <button onclick="generateReport()"
+        class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center"
+        style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
+  <img src="resources/images/icons/summarize.svg" alt="generate report icon" width="25" height="25">
+  <span class="d-none d-lg-inline ps-2">Generate Report</span>
+</button>
+
+  </div>
+</div>
 
 
-            </div>
-            <div>
-              <!-- Edit button triggers the modal -->
-                <c:choose>
-                    <c:when test="${sessionScope.role == 'Admin'}">
-                      <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" onclick="window.location.href='buildingDashboard?locID=${locID}/edit'" style="font-family: NeueHaasMedium, sans-serif;"><!--hidden if acc is not admin-->
-                        <img src="resources/images/icons/edit.svg" class="pe-2" alt="edit icon" width="25" height="25">
-                        Edit
-                      </button>
-                    </c:when>
-                    <c:otherwise>
-                    </c:otherwise>
-                </c:choose>
-              
-              <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline" style="font-family: NeueHaasMedium, sans-serif;">
-              <img src="resources/images/icons/summarize.svg" class="pe-2" alt="generate report icon" width="25" height="25">
-              Generate Report</button>
-            </div>
-          </div>
+
           
-<div class="container-fluid d-flex flex-column" style="min-height: 85vh;">
+<div class="container-fluid d-flex flex-column" style="min-height: 80vh;">
   <div class="row flex-grow-1" style="min-height: 40vh;">
     <div class="col-12 col-lg-8 vh-25 align-items-stretch mb-4">
         <div class="buildingBanner rounded-4" style="margin-top: 14px; background-image: 
@@ -438,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <c:if test="${status.first}">
                                 <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" 
                                 class="buildingManage d-flex align-items-center text-decoration-none text-white fs-3" 
-                                style="font-family: NeueHaasMedium, sans-serif;">
+                                style="font-family: NeueHaasLight, sans-serif;">
                                 Manage
                                 <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
                                 </a>
@@ -453,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="col-12 col-lg-4 vh-25 align-items-stretch mb-4" style="margin-top: 14px;">
       	    <div class="diagram" style="height: 83%;">
               <div class="diagramTitle">
-                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Repairs per Month</h4>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Repairs per Month</h4>
               </div>
               <div style="background: white; height: 240px; border-radius:15px;">
                 <div id="repairNoChart" style="height: 100%; width: 100%; overflow: hidden; border-radius:15px;"></div>
@@ -462,10 +481,10 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
   <div class="row flex-grow-1" style="min-height: 40vh;">
-    <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch">
+    <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch ">
       <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
-                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Upcoming Activities</h4>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Upcoming Activities</h4>
               </div>
               <div class="actContainer" id="upcoming-activities">
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
@@ -474,34 +493,42 @@ document.addEventListener('DOMContentLoaded', function() {
                     <c:if test="${maint.archiveFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
-                            <div class="actItem"
+                            <div class="d-flex align-items-center border-bottom p-3" 
+                                 style="border-color: #dee0e1 !important;"
                                  data-item-name="${item.itemName}" 
                                  data-item-room="${item.itemRoom}" 
                                  data-last-maintenance-date="${item.lastMaintDate}" 
                                  data-planned-maintenance-date="${item.plannedMaintDate}" 
                                  data-no-of-days="${maint.noOfDays}" 
                                  data-no-of-days-warning="${maint.noOfDaysWarning}">
-                                <div>
-                                    <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
-                                </div>
-                                <div>
-                                <h4 class="activity-text">
-                                    Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} in <span class="remaining-days">calculating...</span> days.
+                            
+                              <!-- Dot -->
+                              <div class="me-3">
+                                <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
+                              </div>
+                            
+                              <!-- Text -->
+                              <div>
+                                <h4 class="mb-1 fs-5 fw-semibold">
+                                  Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} in 
+                                  <span class="remaining-days">calculating...</span> days.
                                 </h4>
-                                <h6 class="activity-text">
-                                    <c:forEach items="${FMO_TYPES_LIST}" var="type">
+                                <h6 class="mb-0 text-muted">
+                                  <c:forEach items="${FMO_TYPES_LIST}" var="type">
                                     <c:if test="${type.itemTID == item.itemTID}">
-                                            <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
-                                            <c:if test="${type.itemCID == cat.itemCID}">
-                                                ${cat.itemCat}
-                                            </c:if>
-                                            </c:forEach>
-                                         - ${type.itemType}
+                                      <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
+                                        <c:if test="${type.itemCID == cat.itemCID}">
+                                          ${cat.itemCat}
+                                        </c:if>
+                                      </c:forEach>
+                                      - ${type.itemType}
                                     </c:if>
-                                    </c:forEach>
+                                  </c:forEach>
                                 </h6>
-                                </div>
+                              </div>
+                            
                             </div>
+
             
                         </c:if>
                     </c:if>
@@ -514,7 +541,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch">
       <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
-                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Recent Activities</h4>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Recent Activities</h4>
               </div>
               <div class="actContainer" id="recent-activities">
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
@@ -523,18 +550,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     <c:if test="${maint.archiveFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
-                            <div class="actItem"
+                             <div class="d-flex align-items-center border-bottom p-3" 
+                                 style="border-color: #dee0e1 !important;"
                                 data-last-maintenance-date="${item.lastMaintDate}"
                                  data-planned-maintenance-date="${item.plannedMaintDate}">
                                  
-                                <div>
+                                <div class="me-3">
                                     <img src="resources/images/greenDot.png" alt="activity status indicator" width="28" height="28">
                                 </div>
                                 <div>
-                                    <h4 class="activity-text">
+                                    <h4 class="mb-1 fs-5 fw-semibold">
                                         Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
                                     </h4>
-                                    <h6>
+                                    <h6 class="mb-0 text-muted">
                                         <c:forEach items="${FMO_TYPES_LIST}" var="type">
                                         <c:if test="${type.itemTID == item.itemTID}">
                                                 <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
@@ -559,7 +587,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="col-12 col-lg-4 mb-3 vh-25 align-items-stretch" style="border-radius:15px;">
       <div class="diagram" style="height: 80%;">
               <div class="diagramTitle">
-                <h4 style=" font-family: NeueHaasMedium, sans-serif;">Pending Maintenance</h4>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Pending Maintenance</h4>
               </div>
               <div style="background: white; height: 200px;border-radius:15px;">
                   <div id="pendingMainChart" style="height: 101%; width: 100%;border-radius:15px; overflow: hidden;"></div>

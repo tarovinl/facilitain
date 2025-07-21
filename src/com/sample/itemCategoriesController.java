@@ -51,6 +51,8 @@ public class itemCategoriesController extends HttpServlet {
         String categoryName = request.getParameter("categoryName");
         String description = request.getParameter("description");
         String action = request.getParameter("action");
+        String editMode = request.getParameter("editMode");
+        String redirectParams = "";
 
         Integer itemCID = (itemCIDParam != null && !itemCIDParam.isEmpty()) ? Integer.parseInt(itemCIDParam) : null;
 
@@ -61,7 +63,8 @@ public class itemCategoriesController extends HttpServlet {
                     stmt.setInt(1, itemCID);
                     stmt.executeUpdate();
                 }
-            } else if (itemCID != null && existsInDatabase(conn, itemCID)) {
+                redirectParams = "?action=archived";
+            } else if ("true".equals(editMode) && itemCID != null) {  // Check for edit mode
                 String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET NAME = ?, DESCRIPTION = ? WHERE ITEM_CAT_ID = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
                     stmt.setString(1, categoryName);
@@ -69,29 +72,21 @@ public class itemCategoriesController extends HttpServlet {
                     stmt.setInt(3, itemCID);
                     stmt.executeUpdate();
                 }
-            } else {
-                String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_CATEGORIES (NAME, DESCRIPTION) VALUES (?, ?)";
+                redirectParams = "?action=updated";
+            } else if (itemCID == null) {  // This is a new record
+                String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_CATEGORIES (ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (C##FMO_ADM.FMO_ITEM_CAT_ID_SEQ.NEXTVAL, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
                     stmt.setString(1, categoryName);
                     stmt.setString(2, description);
                     stmt.executeUpdate();
                 }
+                redirectParams = "?action=added";
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new ServletException("Database error while processing item categories.", e);
+            redirectParams = "?error=true";
         }
 
-        response.sendRedirect(request.getContextPath() + "/itemCategories");
-    }
-
-    private boolean existsInDatabase(Connection conn, int itemCID) throws SQLException {
-        String checkSql = "SELECT 1 FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE ITEM_CAT_ID = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
-            stmt.setInt(1, itemCID);
-            try (ResultSet rs = stmt.executeQuery()) {
-                return rs.next();
-            }
-        }
+        response.sendRedirect(request.getContextPath() + "/itemCategories" + redirectParams);
     }
 }

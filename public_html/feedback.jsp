@@ -6,13 +6,14 @@
     <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Feedback</title>
+    <title>Feedback - Facilitain</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <style>
@@ -62,19 +63,30 @@
                 background-color: #5a6268;
                 color: white;
             }
+            .responsive-padding-top {
+                  padding-top: 100px;
+                }
+                
+                @media (max-width: 576px) {
+                  .responsive-padding-top {
+                    padding-top: 80px; /* or whatever smaller value you want */
+                  }
+                }
     </style>
 </head>
 <body>
+<jsp:include page="navbar.jsp"/>
     <div class="container-fluid">
         <div class="row min-vh-100">
+        <c:set var="page" value="feedback" scope="request"/>
             <jsp:include page="sidebar.jsp" />
 
-            <div class="col-md-10 p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h1 style="color: black; font-family: 'NeueHaasMedium', sans-serif;">Feedback</h1>
-                    <div class="d-flex align-items-center">
-                        <button class="buttonsBuilding px-3 py-2 rounded-1 hover-outline " style="background-color: #fccc4c;" id="download-chart" ${empty feedbackList ? 'disabled' : ''}>Generate Report</button>
-                        <button id="generateQRBtn" class="qr-button">Generate QR</button>
+            <div class="col-md-10 responsive-padding-top">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                    <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Feedback</h1>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center" style="background-color: #fccc4c;" id="download-chart" ${empty feedbackList ? 'disabled' : ''}> <img src="resources/images/icons/summarize.svg"  alt="generate report icon" width="25" height="25"><span class="d-none d-lg-inline ps-2">Generate Report</span></button>
+                        <button id="generateQRBtn" class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center" style="background-color: #fccc4c;"><img src="resources/images/icons/qr.svg"  alt="qr" width="25" height="25"><span class="d-none d-lg-inline ps-2">Download QR</span></button>
                     </div>
                 </div>
 

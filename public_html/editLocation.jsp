@@ -34,11 +34,12 @@
          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
          <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
             <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+            <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <style>
    body, h1, h2,h3, h4,h5, th,label   {
         font-family: 'NeueHaasMedium', sans-serif !important;
     }
-     h6,input, textarea,td,tr, p, {
+     h6,input, textarea,td,tr, p {
         font-family: 'NeueHaasLight', sans-serif !important;
     }
     
@@ -63,6 +64,53 @@
             .buttonsBack:hover {
                 text-decoration: underline !important;
                 }
+                
+                .responsive-padding-top {
+                                  padding-top: 80px;
+                                }
+                                
+                @media (max-width: 576px) {
+                .responsive-padding-top {
+                padding-top: 70px; /* or whatever smaller value you want */
+                }
+                }
+                th, td {
+              text-align: center;
+              vertical-align: middle;
+            }
+                .btn-cancel-outline {
+                  color: #8388a4 !important;        /* Text color */
+                  background-color: white !important; /* White background */
+                  border: 2px solid #8388a4 !important; /* Outline */
+                  box-shadow: none !important;       /* Remove default shadow */
+                }
+                
+                /* Optional: add hover effect */
+                .btn-cancel-outline:hover {
+                  background-color: #f0f2f7 !important; /* Light gray bg on hover */
+                  border-color: #8388a4 !important;
+                  color: #8388a4 !important;
+                }
+                .nav-tabs .nav-link {
+                color: #6c757d; /* grey for inactive */
+                transition: color 0.2s ease-in-out;
+              }
+            
+              .nav-tabs .nav-link:hover {
+                color: #000000; /* grey on hover */
+              }
+            
+              .nav-tabs .nav-link.active {
+                color: #000000; /* black for active */
+                font-weight: 600;
+              }
+              .topButtons {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 5px;
+                margin-bottom: 20px;
+                padding-left: 16px;
+            }
 </style>
 <script>
     $(document).ready(function () {
@@ -103,19 +151,20 @@
     </c:forEach>
     
 <body>
+<jsp:include page="navbar.jsp"/>
 <div class="container-fluid">
       <div class="row min-vh-100">
         
           <jsp:include page="sidebar.jsp"/>
        
     
-    <div class="col-md-10">
+    <div class="col-md-10 responsive-padding-top">
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
                 
-                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack pt-4 d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" 
-   style="margin-left: 2px; font-family: NeueHaasLight, sans-serif;">
+                <a href="./buildingDashboard?locID=${locID}" class="buttonsBack pt-2 d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" 
+   style="margin-left: 0px; font-family: NeueHaasLight, sans-serif;">
     <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
     Back
 </a>
@@ -123,19 +172,40 @@
         </div>
         <div class="container">
         <div class="editbuildingName">
-            <h1 style="font-family: 'NeueHaasMedium', sans-serif; font-size: 4rem; line-height: 1.2;">Edit Location</h1>
+            <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Edit Location</h1>
         </div>
         <div class="floorAndButtons">
             <div class="locName">
-              <h3 class="fw-bold">${locName}</h3>
+              <h4 class="form-label h1" style="font-family: NeueHaasMedium, sans-serif !important;">${locName}</h4>
             </div>
-            <div>
-                <button class="buttonsBuilding" data-toggle="modal" data-target="#addFloor" type="button" onclick="">Add Floor</button>
-                <!--<button class="buttonsBuilding" data-toggle="modal" data-target="#archiveFloor" type="button" onclick="">Archive Floor</button>-->
-                <button class="buttonsBuilding archive-location-btn" href="#" data-bs-toggle="modal" type="button" onclick="">Archive Location</button>
-            </div>
+            
+            <div class="d-flex flex-column flex-lg-row">
+
+
+    <button class="buttonsBuilding archive-location-btn align-items-center d-flex btn btn-md px-3 py-2 rounded-2 hover-outline text-dark" 
+        style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
+        href="#" data-bs-toggle="modal" type="button" onclick="">
+        <img src="resources/images/icons/archive.svg" alt="add" width="25" height="25">
+       <span class="d-none d-lg-inline ps-2"> Archive Location </span>
+    </button>
+</div>
+
         </div>
 
+         <!-- Tabs Navigation -->
+      <ul class="nav nav-tabs mt-4" id="editTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab">Location Details</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab">Floors</button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="editTabsContent">
+
+        <div class="tab-pane fade show active pt-4" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
         <form action="buildingController" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="locID" value="${locID}"> <!-- Ensure this value is correctly set -->
 
@@ -144,7 +214,7 @@
             <!-- Location Name Section -->
             <div class="row">
                 <div class="col">
-                    <label for="locName" class="form-label fw-bold h4">Location Name</label>
+                    <label for="locName" class="form-label h4" style="font-family: NeueHaasMedium, sans-serif !important;"> Name</label>
                     <input type="text" class="form-control" id="locName" name="locName" value="${locName}" required>
                 </div>
             </div>
@@ -152,7 +222,7 @@
             <!-- Description Section -->
             <div class="row mt-3">
                 <div class="col">
-                    <label for="locDescription" class="form-label fw-bold h4">Description</label>
+                    <label for="locDescription" class="form-label h4" style="font-family: NeueHaasMedium, sans-serif !important;">Description</label>
                     <textarea class="form-control" id="locDescription" name="locDescription" rows="3" maxlength="250">${locDescription}</textarea>
                     <small id="charCount" class="form-text text-muted">0 / 250 characters</small>
                 </div>
@@ -161,19 +231,19 @@
             <!-- Image Upload Section -->
             <div class="row mt-3">
                 <div class="col">
-                    <h4 class="fw-bold mt-3">Change Location Image</h4>
+                    <h4 class="form-label h4" style="font-family: NeueHaasMedium, sans-serif !important;">Card Image</h4>
                     <!-- File Input -->
-                    <div class="mb-3">
+                    <div class="mb-0">
                         <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 mt-4 mt-md-0">
             <div class="row">
                 <div class="col" id="parentMap">
-                    <label for="mapCoord" class="form-label fw-bold h4">Choose your location:</label>
-                    <h6 class="text-secondary fw-normal"  style="font-family: 'NeueHaasLight', sans-serif;">Click on the map to choose the location's area. Click the Reset button to undo.</h6>
+                    <label for="mapCoord" class="form-label h4" style="font-family: NeueHaasMedium, sans-serif !important;">Pin Location on Map:</label>
+                    <h6 class="text-secondary fw-normal"  style="font-family: 'NeueHaasLight', sans-serif;">Select a location by clicking on the map. Press Reset to undo your selection.</h6>
                     <input type="hidden" class="form-control" id="mapCoord" name="mapCoord">
                     <div id="map" style="width: 100%; height: 256px; border-radius:5px;"></div>
                 </div>           
@@ -181,19 +251,35 @@
         </div>
     </div>
     <!-- Save & Reset Buttons Section -->
-    <div class="row mt-2" >
-        <div class="col text-center">
-            <input type="submit" value="Save Changes" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bolder">
-        </div> 
-        <div class="col text-center">
-            <button type="button" class="btn btn-dark text-warning btn-lg mt-4 w-75 fw-bold" onclick="location.reload()">Reset</button>
-        </div> 
-    </div>
+    <div class="row g-3 mt-4">
+  <div class="col-md-6 col-12 text-center">
+    <input type="submit" value="Save Changes" class="btn btn-success w-100" style="font-family: NeueHaasMedium, sans-serif !important;">
+  </div> 
+  <div class="col-md-6 col-12 text-center mb-4 mt-md-0">
+    <button type="button" class="btn btn-outline-secondary w-100" style="font-family: NeueHaasMedium, sans-serif !important;" onclick="location.reload()">Reset</button>
+  </div> 
+</div>
 </form>
+</div>
+
+ <div class="tab-pane fade pt-4" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">
+    Current Floors
+  </h3>
+  
+  <button class="buttonsBuilding d-flex align-items-center btn btn-md px-3 py-2 rounded-2 hover-outline text-dark" 
+          style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;" 
+          data-bs-toggle="modal" data-bs-target="#addFloor" type="button">
+    <img src="resources/images/icons/plus.svg" alt="add"  width="25" height="25">
+     <span class="d-none d-lg-inline ps-2">Add Floor</span>
+  </button>
+</div>
+
 
                 <div class="row mt-4">
-                    <div class="col dropTbl">
-                        <table id="flrTable" class="display" style="width:100%;">
+                    <div class="col dropTbl table-responsive">
+                        <table id="flrTable" class="table table-striped table-bordered display w-100">
                             <thead>
                               <tr>
                                 <th>Edit</th>
@@ -221,7 +307,7 @@
                                                 data-flrdesc="${floors.locDescription}"
                                                 data-target="#editFloor"
                                                 onclick="populateEditModal(this)">
-                                        </th>
+                                        </td>
                                         <td>
                                             <!--data-target="#archiveFloor"-->
                                             <input type="image" 
@@ -235,7 +321,7 @@
                                                 data-aflrid="${floors.itemLocFlrId}"
                                                 data-aflrname="${floors.locFloor}"
                                                 onclick="populateArchFlrModal(this)">
-                                        </th>
+                                        </td>
                                         <td>${floors.itemLocFlrId}</td>
                                         <td>${floors.locFloor}</td>
                                         <td>${floors.locDescription != null ? floors.locDescription : 'N/A'}</td>
@@ -253,6 +339,7 @@
                         </table>
                     </div>
                 </div>
+                
 </div>
                 <!--<div class="row mt-3 mb-4">
                     <div class="col dropTbl mb-4">
@@ -369,7 +456,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="addFloorLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Add Floor</h5>
-          <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="mb-3">
@@ -384,8 +471,8 @@
           <input type="hidden" name="locID" value="${locID}">
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-danger" data-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
-          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save</button>
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
+          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
         </div>
       </div>
     </form>
@@ -558,7 +645,7 @@
     <c:if test="${mapItem.itemLocId == locID}">
     L.marker([${mapItem.latitude}, ${mapItem.longitude}], { icon: customIcon }) //csen
         .addTo(map)
-        .bindPopup('Original Location'); // Static link
+        .bindPopup('<div style="font-family: NeueHaasMedium, sans-serif;">Original Location</div>'); // Static link
     </c:if>
     </c:forEach> 
     setTimeout(function () {
@@ -668,13 +755,17 @@
     
         Swal.fire({
             title: 'Are you sure?',
-            text: "You want to archive this location?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, archive it!',
-            cancelButtonText: 'Cancel'
+        text: "Do you want to archive this location?",
+        icon: 'warning',
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#ffffff',
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        customClass: {
+             cancelButton: 'btn-cancel-outline'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#archiveLocForm').submit();

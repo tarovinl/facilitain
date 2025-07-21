@@ -45,16 +45,31 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("name", name);
                 session.setAttribute("role", role);
 
-                // Determine redirection URL
-                String redirectUrl = "homepage";
-                if ("Respondent".equals(role)) {
-                    if ("reportsClient".equals(loginPage)) {
-                        redirectUrl = "reportsClient";  // for reportClient page
-                    } else {
-                        redirectUrl = "feedbackClient";  // for feedbackClient page
-                    }
-                } else if ("ReportClient".equals(role)) {
+                // Determine redirection URL based on loginPage parameter and role
+                String redirectUrl;
+                
+                if ("feedbackClient".equals(loginPage)) {
+                    redirectUrl = "feedbackClient";
+                } else if ("reportsClient".equals(loginPage)) {
                     redirectUrl = "reportsClient";
+                } else {
+                    // Default behavior for different roles when no specific loginPage is provided
+                    switch (role) {
+                        case "Admin":
+                        case "Support":
+                            redirectUrl = "homepage";
+                            break;
+                        case "Respondent":
+                            // let the filter redirect them to unauthorized.jsp if needed
+                            redirectUrl = "homepage";
+                            break;
+                        case "ReportClient":
+                            redirectUrl = "reportsClient";
+                            break;
+                        default:
+                            redirectUrl = "homepage";
+                            break;
+                    }
                 }
 
                 sendSuccessResponse(response, redirectUrl);

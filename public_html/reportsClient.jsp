@@ -14,7 +14,7 @@
          <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@483&display=swap" rel="stylesheet">
-
+        <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
         <title>Reports</title>
         <style>
             .error-message {
@@ -36,8 +36,6 @@
     
         </style>
        
-       
-      
     </head>
      <body class="d-flex flex-column min-vh-100" style="background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('resources/images/ust-bg.jpg'); 
              background-size: cover; 
@@ -49,7 +47,10 @@
             <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
                 <div class="card">
                     <div class="card-body ">
-                <img src="resources/images/FACILITAIN.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
+                <img src="resources/images/FACILITAIN_WLOGO2.png" 
+     alt="FACILITAIN" 
+     class="img-fluid mb-4 d-block mx-auto" 
+     style="max-height: 5rem;">
                 <h3 class="text-center montserrat-bold">Report a Problem</h3>
 
                 <!-- Form Starts Here -->
@@ -74,9 +75,9 @@
 </div>
 
                      <!-- Location -->
-                    <label for="location" class="mt-2">Location</label>
+                    <label for="location" class="mt-2">Location <span style="color: red;"> *</span></label>
                     <div class="mt-1">
-                        <select name="location" id="location" class="form-control w-100">
+                        <select name="location" id="location" class="form-control w-100" onchange="loadFloors()" required>
                             <option value="">Select a location</option>
                             <c:forEach var="location" items="${locationList}">
                                 <option value="${location.key}">${location.value}</option>
@@ -86,25 +87,29 @@
                     </div>
 
                     <!-- Floor -->
-                    <label for="floor"class="mt-2">Floor</label>
+                    <label for="floor"class="mt-2">Floor <span style="color: red;"> *</span></label>
                     <div class="mt-1">
-                        <input type="text" name="floor" id="floor" class="form-control w-100" placeholder="Enter floor">
+                        <select name="floor" id="floor" class="form-control w-100" onchange="loadRooms()" required disabled>
+                            <option value="">Select a floor</option>
+                        </select>
                         <div id="floorError" class="error-message"></div>
                     </div>
 
              
-                    <label for="room"class="mt-2">Room <span style="color: red;"> *</span></label></label>
+                    <label for="room"class="mt-2">Room <span style="color: red;"> *</span></label>
                     <div class="mt-1">
-                        <input type="text" name="room" id="room" class="form-control w-100" placeholder="Enter room" required>
+                        <select name="room" id="room" class="form-control w-100" required disabled>
+                            <option value="">Select a room</option>
+                        </select>
                         <div id="roomError" class="error-message"></div>
                     </div>
                     
-            <!-- Optional Email for Notification -->
-                <label for="email" class="mt-3">Email Address (Optional)</label>
-                <div class="mt-1">
-                 <input type="email" name="email" id="email" class="form-control w-100" placeholder="Enter your email address here...">
-                <div id="emailError" class="error-message"></div>
-                </div>
+                    <!-- Email field removed since it's now taken from session -->
+                    <% if (session.getAttribute("email") != null) { %>
+                    <div class="alert alert-info mt-3">
+                        <small>Your report will be linked to your email: <strong>${sessionScope.email}</strong></small>
+                    </div>
+                    <% } %>
 
                   <label for="issue" class="d-block mt-3 mb-3">Describe Issue <span style="color: red;"> *</span></label>
             <div class="mt-1">
@@ -117,8 +122,8 @@
         </div>
 
                 
-                    <label for="imageUpload" class=" d-block mt-3 mb-3">Upload an Image <span style="color: red;"> *</span></label></label>
-                    <input type="file" name="imageUpload" id="imageUpload" class="form-control" accept="image/ *" required>
+                    <label for="imageUpload" class=" d-block mt-3 mb-3">Upload an Image <span style="color: red;"> *</span></label>
+                    <input type="file" name="imageUpload" id="imageUpload" class="form-control" accept="image/*" required>
                     <div id="imageUploadError" class="error-message"></div>
 
 
@@ -137,7 +142,7 @@
 
             
                 <div>
-               <button type="button" onclick="window.location.href='menuClient.jsp';" class="btn  p-2 shadow-none focus:outline-none active:outline-none"
+               <button type="button" onclick="window.location.href='agreementReportsClient.jsp';" class="btn  p-2 shadow-none focus:outline-none active:outline-none"
                         style="background-color: transparent; border: none;">
                     <i class="bi bi-arrow-left-short"></i>Back
                 </button>
@@ -165,17 +170,81 @@
             }
         }
         
+        // Function to load floors based on selected location
+        function loadFloors() {
+            const locationId = document.getElementById("location").value;
+            const floorSelect = document.getElementById("floor");
+            const roomSelect = document.getElementById("room");
+            
+            // Reset and disable floor and room dropdowns
+            floorSelect.innerHTML = '<option value="">Select a floor</option>';
+            floorSelect.disabled = true;
+            roomSelect.innerHTML = '<option value="">Select a room</option>';
+            roomSelect.disabled = true;
+            
+            if (locationId) {
+                // Make AJAX call to get floors
+                fetch('reportsClient?action=getFloors&locationId=' + locationId)
+                    .then(response => response.json())
+                    .then(floors => {
+                        floorSelect.innerHTML = '<option value="">Select a floor</option>';
+                        floors.forEach(floor => {
+                            const option = document.createElement('option');
+                            option.value = floor;
+                            option.textContent = floor;
+                            floorSelect.appendChild(option);
+                        });
+                        floorSelect.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error loading floors:', error);
+                        floorSelect.innerHTML = '<option value="">Error loading floors</option>';
+                    });
+            }
+        }
+        
+        // Function to load rooms based on selected location and floor
+        function loadRooms() {
+            const locationId = document.getElementById("location").value;
+            const floorNo = document.getElementById("floor").value;
+            const roomSelect = document.getElementById("room");
+            
+            // Reset room dropdown
+            roomSelect.innerHTML = '<option value="">Select a room</option>';
+            roomSelect.disabled = true;
+            
+            if (locationId && floorNo) {
+                // Make AJAX call to get rooms
+                fetch('reportsClient?action=getRooms&locationId=' + locationId + '&floorNo=' + encodeURIComponent(floorNo))
+                    .then(response => response.json())
+                    .then(rooms => {
+                        roomSelect.innerHTML = '<option value="">Select a room</option>';
+                        rooms.forEach(room => {
+                            const option = document.createElement('option');
+                            option.value = room;
+                            option.textContent = room;
+                            roomSelect.appendChild(option);
+                        });
+                        roomSelect.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error loading rooms:', error);
+                        roomSelect.innerHTML = '<option value="">Error loading rooms</option>';
+                    });
+            }
+        }
         
         function updateCharCount() {
-    const issueField = document.getElementById('issue');
-    const charCountDiv = document.getElementById('charCount');
-    const maxLength = issueField.getAttribute('maxlength');
-    const currentLength = issueField.value.length;
+            const issueField = document.getElementById('issue');
+            const issueCount = document.getElementById('issueCount');
+            const maxLength = issueField.getAttribute('maxlength');
+            const currentLength = issueField.value.length;
 
-    charCountDiv.textContent = `${currentLength}/${maxLength} characters used`;
+            issueCount.textContent = `${currentLength}/${maxLength} characters`;
+        }
 
-}
-
+        // Add event listener to issue textarea for character counting
+        document.getElementById('issue').addEventListener('input', updateCharCount);
 
 
 </script>
@@ -189,43 +258,48 @@
                 //validate image
                 const imageUpload = document.getElementById('imageUpload').files[0];
                 if (!imageUpload) {
-                document.getElementById('imageUploadError').textContent = 'Please upload an image.';
-                valid = false;
+                    document.getElementById('imageUploadError').textContent = 'Please upload an image.';
+                    valid = false;
                 } else if (!imageUpload.type.startsWith('image/')) {
-                 document.getElementById('imageUploadError').textContent = 'Only image files are allowed.';
-                valid = false;
+                    document.getElementById('imageUploadError').textContent = 'Only image files are allowed.';
+                    valid = false;
                 } else if (imageUpload.size > 5 * 1024 * 1024) { // Check file size in bytes
-                document.getElementById('imageUploadError').textContent = 'Image size must be below 5MB.';
-                valid = false;
-}
+                    document.getElementById('imageUploadError').textContent = 'Image size must be below 5MB.';
+                    valid = false;
+                }
+
+                const issueTextarea = document.getElementById('issue');
+                const issueCount = document.getElementById('issueCount');
+                const issueError = document.getElementById('issueError');
+                const currentLength = issueTextarea.value.length;
+
+                // Validate the issue length
+                if (currentLength > 250) {
+                    issueError.textContent = 'Issue description cannot exceed 250 characters.';
+                    valid = false;
+                }
 
                 return valid;
             }
-           // Validate Email (optional)
-        const email = document.getElementById('email').value.trim();
-        if (email && !/\S+@\S+\.\S+/.test(email)) {
-        document.getElementById('emailError').textContent = 'Please enter a valid email address.';
-        valid = false;
-        }
 
         const issueTextarea = document.getElementById('issue');
         const issueCount = document.getElementById('issueCount');
         const issueError = document.getElementById('issueError');
 
-    // Update character count and validate input on input event
-    issueTextarea.addEventListener('input', function() {
-        const currentLength = issueTextarea.value.length;
+        // Update character count and validate input on input event
+        issueTextarea.addEventListener('input', function() {
+            const currentLength = issueTextarea.value.length;
 
-        // Update the character count
-        issueCount.textContent = currentLength + " / 250 characters";
+            // Update the character count
+            issueCount.textContent = currentLength + " / 250 characters";
 
-        // Validate the issue length
-        if (currentLength > 250) {
-            issueError.textContent = 'Issue description cannot exceed 250 characters.';
-        } else {
-            issueError.textContent = ''; // Clear the error message
-        }
-    });
+            // Validate the issue length
+            if (currentLength > 250) {
+                issueError.textContent = 'Issue description cannot exceed 250 characters.';
+            } else {
+                issueError.textContent = ''; // Clear the error message
+            }
+        });
 
         </script>
         <!-- Bootstrap JS -->

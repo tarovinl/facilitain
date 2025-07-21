@@ -18,12 +18,15 @@ public class LogoutFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        HttpSession session = httpRequest.getSession(false); // Get session if it exists
-        String uri = httpRequest.getRequestURI(); // Get the requested URI
+        HttpSession session = httpRequest.getSession(false);
+        String uri = httpRequest.getRequestURI();
 
-        // Allow access to login, logout, and public static resources
+        // Allow access to login, logout, public pages, and static resources without session
         if (uri.contains("login") || uri.contains("logout") || uri.endsWith("index.jsp") ||
-                uri.startsWith(httpRequest.getContextPath() + "/static/")) {
+                uri.endsWith("termsClient.jsp") || uri.endsWith("privacyClient.jsp") ||
+                uri.endsWith("loginFeedbackClient.jsp") || uri.endsWith("loginReportsClient.jsp") ||
+                uri.startsWith(httpRequest.getContextPath() + "/static/") ||
+                uri.startsWith(httpRequest.getContextPath() + "/resources/")) {
             chain.doFilter(request, response);
             return;
         }
@@ -31,6 +34,12 @@ public class LogoutFilter implements Filter {
         // Require session and email for all other pages
         if (session == null || session.getAttribute("email") == null) {
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/index.jsp");
+            return;
+        }
+
+        // Allow unauthorized.jsp for all authenticated users
+        if (uri.endsWith("unauthorized.jsp")) {
+            chain.doFilter(request, response);
             return;
         }
 
@@ -58,16 +67,15 @@ public class LogoutFilter implements Filter {
                 break;
 
             case "Respondent":
-                // Restrict access to specific paths for Respondent role
+                // Allow access only to specific paths for Respondent role
                 boolean isAllowedPage = uri.endsWith("/feedbackClient") || 
                                         uri.endsWith("/reportsClient") || 
                                         uri.endsWith("reportsThanksClient.jsp") || 
-                                        uri.endsWith("termsClient.jsp") || 
                                         uri.endsWith("feedbackThanksClient.jsp");
                 if (isAllowedPage) {
                     chain.doFilter(request, response);
                 } else {
-                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/feedbackClient");
+                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/unauthorized.jsp");
                 }
                 break;
 

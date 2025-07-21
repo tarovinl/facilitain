@@ -1,16 +1,9 @@
 @charset "windows-1252";
-.topButtons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    margin-bottom: 36px;
-    padding-left: 16px;
-}
+
 
 .editbuildingName {
-    padding-left: 16px;
     padding-bottom: 12px;
-    border-bottom: 1px black solid;
+   border-bottom: 1px solid #dee2e6;
 }
 .editbuildingName h1 {
     margin-bottom: 0;
@@ -27,8 +20,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 16px;
-    padding-right: 16px;
     margin-top: 8px;
 }
 .buttonsBuilding {
