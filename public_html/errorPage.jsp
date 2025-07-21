@@ -43,7 +43,9 @@
                 <h1 class="text-danger fw-bold" style="font-size: 8rem;">404</h1>
 
                 <p class="h3 mb-4">Oops! Something went wrong with this section of the system. <br/> We're working to get things back on track. </p>
-                <a href="./homepage" class="btn btn-lg hover-outline" style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">Return to Homepage</a>
+                <button onclick="history.back()" class="btn btn-lg hover-outline" style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
+    Go Back
+</button>
             </div>
         </div>
     </div>
