@@ -44,6 +44,7 @@ import sample.model.ToDo;
 import sample.model.MaintAssign;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.util.TreeSet;
 
@@ -404,11 +405,13 @@ public class mainController extends HttpServlet {
 //            groupedFloors.get(locID).add(floorName);
 //        }
 
-        
+        Map<Integer, String> itemIdToName = new HashMap<>();
+
         Set<String> uniqueRooms = new HashSet<>();
                 List<Item> resultRoomList = new ArrayList<>();
 
                 for (Item item : listItem) {
+                    itemIdToName.put(item.getItemID(), item.getItemName());
                     String uniqueKey = item.getItemLID() + ":" + item.getItemRoom() + ":" + item.getItemFloor();
                     if (!uniqueRooms.contains(uniqueKey)) {
                         uniqueRooms.add(uniqueKey);
@@ -513,6 +516,7 @@ public class mainController extends HttpServlet {
         request.setAttribute("FMO_TO_DO_LIST", listToDo);
         request.setAttribute("FMO_MAINT_ASSIGN", listAssign);
         request.setAttribute("FMO_USERS", listDUsers);
+        request.setAttribute("itemIdToName", itemIdToName);
         
         request.setAttribute("quotations", quotations); // per session
         
@@ -530,10 +534,11 @@ public class mainController extends HttpServlet {
 
         String locID = request.getParameter("locID");
         
-        if (!isValidPathAndQuery(path, queryString)) {
+        if (!isValidPathAndQuery(path, queryString, request)) {
             request.getRequestDispatcher("/errorPage.jsp").forward(request, response);
             return;
         }
+
 //        server side redirect when invalid URL test:            
 //        boolean locMatchFound = false;
 //        boolean flrMatchFound = false;
@@ -567,6 +572,8 @@ public class mainController extends HttpServlet {
                     case "/buildingDashboard":
                         if (queryString != null && queryString.contains("/manage")) {
                             String itemHIDParam = request.getParameter("itemHID");
+                            System.out.println("query string: "+queryString);
+                            System.out.println("Equipment History Item ID Param: "+itemHIDParam);
                             if (itemHIDParam != null && !itemHIDParam.isEmpty()) {
                                 int itemHID = Integer.parseInt(itemHIDParam);
                                 List<MaintAssign> historyList = new ArrayList<>();
@@ -621,6 +628,7 @@ public class mainController extends HttpServlet {
         //                break;
                     case "/calendar":
                         String eventCat = request.getParameter("eventCat");
+                        String eventItID = request.getParameter("eventItID");
                             //System.out.println("controller eventCat " + eventCat);
                                     if (eventCat != null) {
                                         // Process the dynamic locations logic
@@ -657,7 +665,35 @@ public class mainController extends HttpServlet {
                                         response.setCharacterEncoding("UTF-8");
                                         response.getWriter().write(new Gson().toJson(uniqueLocations));
 
-                                    } else {
+                                        } else if (eventItID != null) {
+                                            String locationNameEv = null;
+                                            String itemNameEv = null;
+
+                                            for (Item item : listItem) {
+                                                if (String.valueOf(item.getItemID()).equals(eventItID)) {
+                                                    itemNameEv = item.getItemName(); // Get item name
+                                                    int itemLID = item.getItemLID(); // Get location ID
+
+                                                    for (Location loc : locations) {
+                                                        if (loc.getItemLocId() == itemLID) {
+                                                            locationNameEv = loc.getLocName(); // Get location name
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    break;
+                                                }
+                                            }
+
+                                            // Package itemName and locationName into a JSON object
+                                            JsonObject json = new JsonObject();
+                                            json.addProperty("itemNameEv", itemNameEv);
+                                            json.addProperty("locationNameEv", locationNameEv);
+
+                                            response.setContentType("application/json");
+                                            response.setCharacterEncoding("UTF-8");
+                                            response.getWriter().write(json.toString());
+                                        } else {
                                         // If it's not an AJAX request, forward to the calendar page
                                         request.getRequestDispatcher("/calendar.jsp").forward(request, response);
                                     }
@@ -690,11 +726,13 @@ public class mainController extends HttpServlet {
         
         
     }
-    private boolean isValidPathAndQuery(String path, String queryString) {
+    private boolean isValidPathAndQuery(String path, String queryString, HttpServletRequest request) {
         if (path == null) return false;
+        boolean isAjax = isAjaxRequest(request);
 
-        if (queryString != null) {
-            // Remove known harmless parameters
+        // Remove global "harmless" parameters (action=..., status=...) regardless of values
+        // Only strip harmless global params if NOT an AJAX request
+        if (!isAjax && queryString != null) {
             queryString = queryString
                 .replaceAll("(?i)&?action=[\\w\\-]+", "")
                 .replaceAll("(?i)&?status=[\\w\\-]+", "")
@@ -710,9 +748,22 @@ public class mainController extends HttpServlet {
             case "/buildingDashboard":
                 if (queryString == null) return true;
 
-                // Accept locID plus optional manage/edit, and allow extra parameters
-                if (queryString.matches("locID=\\d+(/manage)?(\\?floor=\\w+)?(&.*)?") ||
-                    queryString.matches("locID=\\d+(/edit)?(&.*)?")) {
+                // Accept AJAX-friendly malformed pattern: locID=/manage?floor=&itemHID=795
+                if (queryString.matches("locID=/manage\\?floor=(&?itemHID=\\d+)?") ||
+                    queryString.matches("locID=\\d+/manage\\?floor=\\w*&itemHID=\\d+")) {
+                    return true;
+                }
+            
+                // Validate expected patterns
+                if (queryString.matches("locID=\\d+(/manage)?") ||
+                    queryString.matches("locID=\\d+(/edit)?") ||
+                    queryString.matches("locID=\\d+(/manage\\?floor=\\w+)?(&itemHID=\\d+)?") ||
+                    queryString.matches("locID=\\d+(/manage\\?itemHID=\\d+)?")) {
+                    return true;
+                }
+                // Add these patterns to handle the itemHID parameter
+                if (queryString.matches("locID=\\d+/manage\\?floor=\\w+") ||
+                    queryString.matches("locID=\\d+/manage\\?floor=\\w+&itemHID=\\d+")) {
                     return true;
                 }
                 return false;
@@ -729,6 +780,12 @@ public class mainController extends HttpServlet {
                 return false;
         }
     }
+    
+    private boolean isAjaxRequest(HttpServletRequest request) {
+        String requestedWith = request.getHeader("X-Requested-With");
+        return requestedWith != null && "XMLHttpRequest".equals(requestedWith);
+    }
+
 
 }
 

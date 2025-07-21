@@ -24,6 +24,6 @@ public class PooledConnection {
         } catch (NamingException ne) {
             System.err.println(ne.getMessage());
         }
-        return ds.getConnection();
+        return ds.getConnection(); 
     }
 }

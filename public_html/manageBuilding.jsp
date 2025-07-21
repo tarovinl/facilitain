@@ -2002,7 +2002,6 @@ const flrN = "<%= floorName %>";
 $(document).ready(function() {
     $(document).on('click', '.history-btn', function() {
         var itemHID = $(this).data('itemhid');
-
         $.ajax({
             url: `buildingDashboard?locID=${LID}/manage?floor=${flrN}`,
             type: 'GET',

@@ -307,6 +307,7 @@
                                             <th>Maintenance Type</th>
                                             <th>Assigned To</th>
                                             <th>Date of Maintenance</th>
+                                            <th> </th>
                                             <th>Actions</th>
                                             <th style="display: none;">Equipment Details</th>
                                         </tr>
@@ -315,6 +316,8 @@
                                         <c:forEach items="${FMO_MAINT_ASSIGN}" var="maintass" >
                                         <c:if test="${maintass.isCompleted == 0}">
                                         <c:set var="maintName" value="" />
+                                        <c:set var="maintBLID" value="" />
+                                        <c:set var="maintBStat" value="" />
                                         <c:set var="maintEquipmentDetails" value="" />
                                         <tr>
                                             <td>
@@ -322,6 +325,8 @@
                                                 <c:if test="${item.itemID == maintass.itemID}">
                                                     ${item.itemName}
                                                     <c:set var="maintName" value="${item.itemName}" />
+                                                    <c:set var="maintBLID" value="${item.itemLID}" />
+                                                    <c:set var="maintBStat" value="${item.itemMaintStat}" />
                                                     
                                                     <!-- Get equipment details for this item -->
                                                     <c:forEach items="${FMO_TYPES_LIST}" var="type" >
@@ -360,6 +365,20 @@
                                                 </c:forEach>
                                             </td>
                                             <td>${maintass.dateOfMaint}</td>
+                                            <td>
+                                                <c:forEach items="${FMO_USERS}" var="user" >
+                                                <c:if test="${user.userId == maintass.userID}">
+                                                    <c:if test="${sessionScope.email == user.email}">
+                                                        <button type="button" class="btn btn-warning update-bstatus-btn"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#updateStatusModal"
+                                                        data-itembid="${maintass.itemID}"
+                                                        data-itemblid="${maintBLID}"
+                                                        data-itembstatus="${maintBStat}">Update Status</button>
+                                                    </c:if>
+                                                </c:if>
+                                                </c:forEach>
+                                            </td>
                                             <td>
                                               <div class="dropdown">
                                                 <button class="btn btn-link p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -580,13 +599,40 @@
                             <!--<input type="text" name="locID" value="${locID}">
                             <input type="text" name="floorName" value="${floorName}">-->
                             
-                            <div class="mb-3">
+                            <!--<div class="mb-3">
                                 <label for="quotationFile" class="form-label">Upload File</label>
                                 <input class="form-control" type="file" name="quotationFile" id="quotationFile" accept=".pdf, image/*">
                             </div>
                             <div class="mb-3">
-                                <label for="quotationDescription" class="form-label">Quotation Description</label>
+                                <label for="quotationDescription" class="form-label">Quotation Description <span class="text-danger">*</span></label>
                                 <textarea class="form-control" name="description" id="quotationDescription" rows="3"></textarea>
+                            </div>-->
+                            <div class="mb-3">
+                                <label for="quotationDescription" class="form-label">Quotation Description</label>
+                                <textarea class="form-control" name="description" id="quotationDescription" rows="3" maxlength="255" required></textarea>
+                                <div class="character-counter" id="characterCounter">0 / 255 characters</div>
+                            </div>
+                            
+                            <!-- File Upload Section -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="file-upload-container" id="fileContainer1">
+                                        <label for="quotationFile1" class="form-label">Upload File 1 (Optional)</label>
+                                        <input class="form-control" type="file" name="quotationFile1" id="quotationFile1" 
+                                               accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff">
+                                        <small class="text-muted">Max size: 10MB. Supported: PDF, Images</small>
+                                        <div id="file1Preview" class="mt-2"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="file-upload-container" id="fileContainer2">
+                                        <label for="quotationFile2" class="form-label">Upload File 2 (Optional)</label>
+                                        <input class="form-control" type="file" name="quotationFile2" id="quotationFile2" 
+                                               accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff">
+                                        <small class="text-muted">Max size: 10MB. Supported: PDF, Images</small>
+                                        <div id="file2Preview" class="mt-2"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div id="formInput2">
@@ -712,7 +758,7 @@ $(document).ready(function() {
         pageLength: 5, // Show 5 entries per page to match panel height
         lengthMenu: [5, 10, 25, 50],
         columnDefs: [
-            { targets: [5], visible: false, searchable: true } // Hide equipment details column but keep it searchable
+            { targets: [6], visible: false, searchable: true } // Hide equipment details column but keep it searchable
         ]
     });
 
@@ -1025,6 +1071,50 @@ $(document).on('click', '.delete-maintenance-btn', function(e) {
         }
     });
 });
+
+//maint assign table update status button logic (almost the same as logic for equipment details update status)
+$(document).on('click', '.update-bstatus-btn', function () {
+    const itemBId = $(this).data('itembid');
+    const itemBLid = $(this).data('itemblid');
+    const Bstatus = $(this).data('itembstatus');
+
+    $('#updateEquipmentId').val(itemBId);
+    $('#updateEquipmentLID').val(itemBLid);
+    $('#updateEquipmentStatus').val(Bstatus);
+
+    // Set current status dropdown
+    const statusDropdown = document.getElementById("status");
+    if (statusDropdown) {
+        Array.from(statusDropdown.options).forEach(option => {
+            option.selected = (option.value === String(Bstatus));
+        });
+    }
+
+    // Reset new status dropdown visibility and disable logic
+    const statusDropdownNew = document.getElementById("statusNew"); 
+    if (statusDropdownNew) { 
+        Array.from(statusDropdownNew.options).forEach(option => {
+            option.disabled = false;
+        });
+
+        Array.from(statusDropdownNew.options).forEach(option => { 
+            if (option.value && option.value === String(Bstatus)) {
+                option.disabled = true;
+            }
+            if (statusDropdown.value === "2" && option.value === "1") {
+                option.disabled = true;
+            }
+        });
+
+        statusDropdownNew.addEventListener("change", updateInputVisibility);
+
+        // Trigger initial visibility state
+        statusDropdownNew.value = "1";
+        updateInputVisibility();
+    }
+});
+
+
 </script>
 
 <script>

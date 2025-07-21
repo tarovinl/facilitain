@@ -201,6 +201,19 @@
                 },
             </c:if>
             </c:forEach>
+            <c:forEach var="massin" items="${FMO_MAINT_ASSIGN}">
+            <c:if test="${massin.userID == empNum && massin.isCompleted == 0}">
+                <c:set var="itemNameE" value="${itemIdToName[massin.itemID]}" />
+                {
+                    title: '${itemNameE} Assigned Maintenance', 
+                    start: '${massin.dateOfMaint}',
+                    end: '${massin.dateOfMaint}',
+                    extendedProps: {
+                        itID: '${massin.itemID}',
+                    }
+                },
+            </c:if>
+            </c:forEach>
             ];
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
@@ -254,6 +267,44 @@
                     },
                         error: function() {
                             Swal.fire("Error", "Failed to fetch locations.", "error");
+                        }
+                    });
+                } else if (title.includes("Assigned Maintenance")){
+                    $.ajax({
+                    type: "GET",
+                    url: "calendar",
+                    data: { eventItID: info.event.extendedProps.itID },
+                    dataType: "json",
+                    success: function(data) {
+                        let itemlocation = "";
+                        const itemNameEv = data.itemNameEv;
+                        const locationNameEv = data.locationNameEv;
+                        
+                        Swal.fire({
+                            title: info.event.title,
+                            icon: 'info',
+                            showConfirmButton: true,
+                            html: `
+                                <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                                    <tr>
+                                        <td style="font-weight: bold; padding: 8px; border-bottom: 1px solid #ddd;">Date:</td>
+                                        <td style="padding: 8px; border-bottom: 1px solid #ddd;">`+info.event.start.toLocaleDateString()+`</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: bold; padding: 8px; border-bottom: 1px solid #ddd;">Location:</td>
+                                        <td style="padding: 8px; border-bottom: 1px solid #ddd;">
+                                            <div style="max-height: 150px; overflow-y: auto; padding: 4px;">
+                                            `+locationNameEv+`
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            `,
+                            confirmButtonText: 'Close'
+                        });
+                    },
+                        error: function() {
+                            Swal.fire("Error", "Failed to fetch location.", "error");
                         }
                     });
                 } else {

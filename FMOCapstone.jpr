@@ -91,6 +91,7 @@
    </hash>
    <hash n="oracle.ide.model.TechnologyScopeConfiguration">
       <list n="technologyScope">
+         <string v="Database"/>
          <string v="HTML"/>
          <string v="JAVASCRIPT"/>
          <string v="JSP"/>
