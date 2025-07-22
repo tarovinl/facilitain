@@ -22,7 +22,7 @@ public class itemCategoriesController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try (Connection conn = PooledConnection.getConnection()) {
-            String query = "SELECT ITEM_CAT_ID, NAME, DESCRIPTION, ARCHIVED_FLAG FROM C##FMO_ADM.FMO_ITEM_CATEGORIES";
+            String query = "SELECT ITEM_CAT_ID, NAME, DESCRIPTION, ARCHIVED_FLAG FROM FMO_ADM.FMO_ITEM_CATEGORIES";
             try (PreparedStatement stmt = conn.prepareStatement(query);
                  ResultSet rs = stmt.executeQuery()) {
 
@@ -58,14 +58,14 @@ public class itemCategoriesController extends HttpServlet {
 
         try (Connection conn = PooledConnection.getConnection()) {
             if ("archive".equals(action) && itemCID != null) {
-                String archiveSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET ARCHIVED_FLAG = 2 WHERE ITEM_CAT_ID = ?";
+                String archiveSql = "UPDATE FMO_ADM.FMO_ITEM_CATEGORIES SET ARCHIVED_FLAG = 2 WHERE ITEM_CAT_ID = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(archiveSql)) {
                     stmt.setInt(1, itemCID);
                     stmt.executeUpdate();
                 }
                 redirectParams = "?action=archived";
             } else if ("true".equals(editMode) && itemCID != null) {  // Check for edit mode
-                String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET NAME = ?, DESCRIPTION = ? WHERE ITEM_CAT_ID = ?";
+                String updateSql = "UPDATE FMO_ADM.FMO_ITEM_CATEGORIES SET NAME = ?, DESCRIPTION = ? WHERE ITEM_CAT_ID = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
                     stmt.setString(1, categoryName);
                     stmt.setString(2, description);
@@ -74,7 +74,7 @@ public class itemCategoriesController extends HttpServlet {
                 }
                 redirectParams = "?action=updated";
             } else if (itemCID == null) {  // This is a new record
-                String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_CATEGORIES (ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (C##FMO_ADM.FMO_ITEM_CAT_ID_SEQ.NEXTVAL, ?, ?)";
+                String insertSql = "INSERT INTO FMO_ADM.FMO_ITEM_CATEGORIES (ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (FMO_ADM.FMO_ITEM_CAT_ID_SEQ.NEXTVAL, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
                     stmt.setString(1, categoryName);
                     stmt.setString(2, description);

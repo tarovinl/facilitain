@@ -110,21 +110,21 @@ public class mainController extends HttpServlet {
         
         try (
              Connection con = PooledConnection.getConnection();
-             PreparedStatement statement = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY NAME");
-             PreparedStatement stmntFloor = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOC_FLOORS ORDER BY ITEM_LOC_ID, CASE WHEN REGEXP_LIKE(NAME, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(NAME, '^[0-9]+')) ELSE 9999 END, NAME");
-             PreparedStatement stmntItems = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEMS ORDER BY LOCATION_ID, CASE WHEN REGEXP_LIKE(FLOOR_NO, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(FLOOR_NO, '^[0-9]+')) ELSE 9999 END, ROOM_NO, ITEM_ID");
-             PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME");
-             PreparedStatement stmntICats = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
-             PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM C##FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME");
-             PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
-             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
-             PreparedStatement stmntMaintType = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES");
-             PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
-             PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
-             PreparedStatement stmntDUsers = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_DUSERS ORDER BY USER_ID");
-             PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
-             PreparedStatement stmntToDo = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_TO_DO_LIST");
-             PreparedStatement stmntMap = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOC_MAP");
+             PreparedStatement statement = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY NAME");
+             PreparedStatement stmntFloor = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_LOC_FLOORS ORDER BY ITEM_LOC_ID, CASE WHEN REGEXP_LIKE(NAME, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(NAME, '^[0-9]+')) ELSE 9999 END, NAME");
+             PreparedStatement stmntItems = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEMS ORDER BY LOCATION_ID, CASE WHEN REGEXP_LIKE(FLOOR_NO, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(FLOOR_NO, '^[0-9]+')) ELSE 9999 END, ROOM_NO, ITEM_ID");
+             PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME");
+             PreparedStatement stmntICats = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME");
+             PreparedStatement stmntIBrands = con.prepareCall("SELECT DISTINCT UPPER(BRAND_NAME) AS BRAND_NAME FROM FMO_ADM.FMO_ITEMS WHERE (TRIM(UPPER(BRAND_NAME)) NOT IN ('MITSUBISHI', 'MITSUBISHI ELECTRIC (IEEI)1', 'MITSUBISHI HEAVY', 'SAFW-WAY', 'SAFE-WSY', 'SAFE-WAY', 'SAFE WAY', 'SAFE-WAAY', 'HITAHI', 'TEST BRAND') OR BRAND_NAME IS NULL) ORDER BY BRAND_NAME");
+             PreparedStatement stmntMaintStat = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID");
+             PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
+             PreparedStatement stmntMaintType = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES");
+             PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
+             PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
+             PreparedStatement stmntDUsers = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_DUSERS ORDER BY USER_ID");
+             PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
+             PreparedStatement stmntToDo = con.prepareCall("SELECT * FROM FMO_ADM.FMO_TO_DO_LIST");
+             PreparedStatement stmntMap = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_LOC_MAP");
              PreparedStatement stmntJobs = con.prepareCall("SELECT a.JOB_NAME, a.JOB_ACTION, a.START_DATE, a.REPEAT_INTERVAL, b.CREATED FROM DBA_SCHEDULER_JOBS a JOIN ALL_OBJECTS b ON a.JOB_NAME = b.OBJECT_NAME WHERE a.JOB_NAME LIKE 'UPDATE_ITEM_JOB_CAT%'");
              ){
 
@@ -581,8 +581,8 @@ public class mainController extends HttpServlet {
                                 try (Connection conn = PooledConnection.getConnection();
                                      PreparedStatement stmt = conn.prepareStatement(
                                          "SELECT ma.ASSIGN_ID, ma.MAIN_TYPE_ID, ma.USER_ID, ma.DATE_OF_MAINTENANCE, u.NAME AS NAME " +
-                                         "FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
-                                         "JOIN C##FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID " +
+                                         "FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
+                                         "JOIN FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID " +
                                          "WHERE ma.ITEM_ID = ? AND ma.IS_COMPLETED = 1")) {
                                     
                                     stmt.setInt(1, itemHID);
