@@ -34,10 +34,10 @@
                 if (isLoggedIn) { 
             %>
                 <!-- Logout Button for logged-in users -->
-                <a href="<%=request.getContextPath()%>/logoutServlet" class="montserrat-regular btn btn-danger d-none d-md-block">
+                <a href="<%=request.getContextPath()%>/LogoutController" class="montserrat-regular btn btn-danger d-none d-md-block">
                      <img src="resources/images/icons/logout.svg" alt="logout" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> Logout
                 </a>
-                <a href="<%=request.getContextPath()%>/logoutServlet" class="montserrat-regular btn btn-danger d-md-none">
+                <a href="<%=request.getContextPath()%>/LogoutController" class="montserrat-regular btn btn-danger d-md-none">
                      <img src="resources/images/icons/logout.svg" alt="logout" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> Logout
                 </a>
             <% } %>
