@@ -88,7 +88,7 @@
               .responsive-padding-top {
                 padding-top: 70px; /* or whatever smaller value you want */
               }
-             
+            }
 
 </style>
         <script>
@@ -298,12 +298,12 @@ function generateReport() {
                 <c:set var="itemCount2" value="0" />
                 <c:forEach var="itemz" items="${FMO_ITEMS_LIST}">
                     <c:if test="${itemz.itemLID == locID2}">
-                        <c:set var="itemCID" value="" />
+                        <c:set var="itemCID2" value="" />
                         <c:forEach var="type" items="${FMO_TYPES_LIST}">
                             <c:if test="${type.itemTID == itemz.itemTID}">
                                 <c:forEach var="cat" items="${FMO_CATEGORIES_LIST}">
                                     <c:if test="${cat.itemCID == type.itemCID}">
-                                        <c:set var="itemCID" value="${cat.itemCID}" />            
+                                        <c:set var="itemCID2" value="${cat.itemCID}" />            
                                     </c:if>
                                 </c:forEach>
                             </c:if>
@@ -318,7 +318,7 @@ function generateReport() {
                     </c:if>
                 </c:forEach>
                 
-                <c:if test="${itemCount > 0}">
+                <c:if test="${itemCount2 > 0}">
                     // Draw color box
                     const colorIndex = ${status.index} % colors.length;
                     doc.setFillColor(
@@ -331,7 +331,7 @@ function generateReport() {
                     // Add category name and count
                     doc.setFontSize(10);
                     doc.setTextColor(0, 0, 0); // Black text
-                    doc.text(`${category.itemCat} (${itemCount})`, legendStartX + 6, legendStartY + 3);
+                    doc.text(`${category.itemCat} (${itemCount2})`, legendStartX + 6, legendStartY + 3);
                     
                     // Move to next line
                     legendStartY += legendItemHeight;
@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <c:if test="${maint.archiveFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
-                            <div class="d-flex align-items-center border-bottom p-3" 
+                            <div class="d-flex align-items-center border-bottom p-3 actItem" 
                                  style="border-color: #dee0e1 !important;"
                                  data-item-name="${item.itemName}" 
                                  data-item-room="${item.itemRoom}" 
@@ -513,7 +513,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                   Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} in 
                                   <span class="remaining-days">calculating...</span> days.
                                 </h4>
-                                <h6 class="mb-0 text-muted">
+                                <h6 class="mb-0 text-muted activity-text">
                                   <c:forEach items="${FMO_TYPES_LIST}" var="type">
                                     <c:if test="${type.itemTID == item.itemTID}">
                                       <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
@@ -550,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <c:if test="${maint.archiveFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
                             <%-- Pass data to HTML elements using data-* attributes --%>
-                             <div class="d-flex align-items-center border-bottom p-3" 
+                             <div class="d-flex align-items-center border-bottom p-3 actItem" 
                                  style="border-color: #dee0e1 !important;"
                                 data-last-maintenance-date="${item.lastMaintDate}"
                                  data-planned-maintenance-date="${item.plannedMaintDate}">
@@ -559,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <img src="resources/images/greenDot.png" alt="activity status indicator" width="28" height="28">
                                 </div>
                                 <div>
-                                    <h4 class="mb-1 fs-5 fw-semibold">
+                                    <h4 class="mb-1 fs-5 fw-semibold activity-text">
                                         Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
                                     </h4>
                                     <h6 class="mb-0 text-muted">
@@ -642,9 +642,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const noOfDays = parseInt(itemDiv.getAttribute('data-no-of-days')) || 0;
         const noOfDaysWarning = parseInt(itemDiv.getAttribute('data-no-of-days-warning')) || 0;
 
-//        console.log('UA Planned Maintenance Date String:', plannedMaintenanceDateStr);
-//        console.log('UA Number of Days:', noOfDays);
-//        console.log('UA Number of Days Warning:', noOfDaysWarning);
+        console.log('UA Planned Maintenance Date String:', plannedMaintenanceDateStr);
+        console.log('UA Last Maintenance Date String:', lastMaintenanceDateStr);
+        console.log('UA Number of Days:', noOfDays);
+        console.log('UA Number of Days Warning:', noOfDaysWarning);
 
 
         if (plannedMaintenanceDateStr) {
@@ -654,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const daysSincePlannedMaintenance = (currentDate - plannedMaintenanceDate) / (1000 * 60 * 60 * 24);
                 const daysRemaining = noOfDays - daysSincePlannedMaintenance;
                 
-//                console.log(daysRemaining);
+                console.log('UA Days Remaining:', daysRemaining);
 
                 if (daysRemaining > 0 && daysRemaining <= noOfDaysWarning) {
                     const remainingDaysElement = itemDiv.querySelector('.remaining-days');
@@ -662,14 +663,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         remainingDaysElement.textContent = Math.floor(daysRemaining);
                     }
                 } else {
-                    itemDiv.style.display = "none";
+                    itemDiv.style.setProperty('display', 'none', 'important'); 
                 }
             } else {
 //                console.error("Invalid lastMaintenanceDate:", plannedMaintenanceDateStr);
-                itemDiv.style.display = "none";
+                itemDiv.style.setProperty('display', 'none', 'important'); 
             }
         } else {
-            itemDiv.style.display = "none";
+            itemDiv.style.setProperty('display', 'none', 'important'); 
         }
     });
 
@@ -683,21 +684,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!isNaN(lastMaintenanceDate)) {
                 const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
-                //console.log('UA daysSinceLastMaintenance:', daysSinceLastMaintenance);
+                console.log('RA daysSinceLastMaintenance:', daysSinceLastMaintenance);
                 if (daysSinceLastMaintenance >= 0 && daysSinceLastMaintenance <= 30) {
                     const remainingDaysElement = itemDiv.querySelector('.remaining-days');
                     if (remainingDaysElement) {
                         remainingDaysElement.textContent = Math.floor(daysSinceLastMaintenance);
                     }
                 } else {
-                    itemDiv.style.display = "none";
+                    itemDiv.style.setProperty('display', 'none', 'important'); 
                 }
             } else {
-                //console.error("Invalid lastMaintenanceDate:", lastMaintenanceDateStr);
-                itemDiv.style.display = "none";
+                console.error("RA Invalid lastMaintenanceDate:", lastMaintenanceDateStr);
+                itemDiv.style.setProperty('display', 'none', 'important'); 
             }
         } else {
-            itemDiv.style.display = "none";
+            itemDiv.style.setProperty('display', 'none', 'important'); 
         }
     });
 });
