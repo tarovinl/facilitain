@@ -121,6 +121,17 @@
             text-align: start;
             line-height: 1.5;
         }
+
+        .privacy-link {
+            cursor: pointer;
+            text-decoration: none;
+            color: #000;
+        }
+        
+        .privacy-link:hover {
+            text-decoration: underline;
+            color: #000;
+        }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100" 
@@ -129,7 +140,6 @@
        background-size: cover; 
        background-position: center; 
        background-repeat: no-repeat;">
-
 
     <div class="container text-center">
         <div class="row">
@@ -163,13 +173,21 @@
                       </div>
                     </div>
                     <hr class="my-3">
-                    <a href="#" class="d-block text-decoration-none text-dark montserrat-regular text-start" style="font-size: 0.80rem;">
-  FACILITAIN values your privacy. View our <strong>Privacy Policy</strong>.
-</a>
-
+                    <a href="#" class="d-block privacy-link montserrat-regular text-start" 
+                       style="font-size: 0.80rem;" 
+                       data-bs-toggle="modal" 
+                       data-bs-target="#privacyModal">
+                        FACILITAIN values your privacy. View our <strong>Privacy Policy</strong>.
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Include Privacy Modal -->
+    <jsp:include page="privacyClient.jsp"/>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
