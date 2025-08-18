@@ -436,182 +436,24 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         <c:if test="${floorName == 'all'}">
         <div class="roomDropsdiv ">
             <div >
-            <table id="allItemsTable" class="display " style="width:100%;  ">
-			<thead>
-                                <tr>
-                                    <!--<th ></th>-->
-                                    <th >ID</th>
-                                    <th >Codename</th>
-                                    <th >Category</th>
-                                    <th >Type</th>
-                                    <th >Brand</th>
-                                    <th >Date Installed</th>
-                                    <th>
-                                        Quotation
-                                    </th>
-                                    <th >Status</th>
-                                    <c:choose>
-                                        <c:when test="${sessionScope.role == 'Admin'}">
-                                            <th >Actions</th>
-                                        </c:when>
-                                        <c:otherwise>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </tr>
-                         </thead>   
-                            <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
-                            <c:if test="${item.itemArchive == 1}">
-                                <c:if test="${item.itemLID == locID}">
-                                <tr>
-                                
-                                <c:forEach items="${FMO_TYPES_LIST}" var="type" >
-                                    <c:if test="${type.itemTID == item.itemTID}">
-                                    <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
-                                        <c:if test="${cat.itemCID == type.itemCID}">
-                                        <!-- Store cat.itemCat and type.itemType in scoped variables -->
-                                            <c:set var="itemEditCat" value="${cat.itemCID}" />
-                                            <c:set var="itemEditType" value="${type.itemTID}" />
-                                        </c:if>
-                                    </c:forEach>
-                                    </c:if>
-                                </c:forEach>
-                                
-                                    <!--<td style="margin-left: 4px; margin-right: 4px; text-align:center;">
-                                        <input type="image" 
-                                        src="resources/images/itemInfo.svg" 
-                                        width="24" 
-                                        height="24"/>
-                                    </td>-->
-                                    <td >${item.itemID}</td>
-                                    <td >${item.itemName}</td>
-                                    <c:forEach items="${FMO_TYPES_LIST}" var="type" >
-                                        <c:if test="${type.itemTID == item.itemTID}">
-                                        <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
-                                            <c:if test="${cat.itemCID == type.itemCID}">
-                                            <td >${cat.itemCat}</td>
-                                            </c:if>
-                                        </c:forEach>
-                                            <td >${type.itemType}</td>
-                                        </c:if>
-                                    </c:forEach>
-                                    <td >${item.itemBrand != null ? item.itemBrand : 'N/A'}</td>
-                                    <td >${item.dateInstalled}</td>
-                                    <!-- Quotation Icon Button in manageBuilding.jsp -->
-                                    <td>
-                                        <form id="quotForm" method="GET" action="quotations.jsp" style="display: none;">
-                                            <input type="hidden" name="displayQuotItemID" id="hiddenItemID">
-                                        </form>
-                                        <input type="image"
-                                            src="resources/images/quotationsIcon.svg"
-                                            id="quotModalButton"
-                                            alt="Open Quotation Modal"
-                                            width="24"
-                                            height="24"
-                                            data-itemid="${item.itemID}"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#quotEquipmentModal"
-                                            onclick="openQuotModal(this)">
-                                    </td>
-                                    <td>
-                                      <form action="itemcontroller" method="POST">
-                                        <c:set var="canUpdate" value="true" />
-                                        <c:set var="hasAssignment" value="false" />
-                                    
-                                        <c:forEach var="assign" items="${FMO_MAINT_ASSIGN}">
-                                            <c:if test="${assign.itemID == item.itemID}">
-                                                <c:set var="hasAssignment" value="true" />
-                                                <c:set var="canUpdate" value="false" /> <!-- override default, assume restricted unless match -->
-                                                <c:forEach var="user" items="${FMO_USERS}">
-                                                    <c:if test="${user.name == sessionScope.name && user.userId == assign.userID}">
-                                                        <c:set var="canUpdate" value="true" />
-                                                    </c:if>
-                                                </c:forEach>
-                                            </c:if>
-                                        </c:forEach>
-                                        <input type="hidden" name="canUpdate" value="${canUpdate}" />
-                                        <input type="hidden" name="hasAssignment" value="${hasAssignment}" />
-                                        <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}"/>
-                                        <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}"/>
-                                        <input type="hidden" name="maintStatID" value="${item.itemID}" />
-                                        <input type="hidden" name="oldMaintStat" value="${item.itemMaintStat}" />
-                                        <input type="hidden" name="itemMaintType" id="itemMaintType" class="form-control" value=""/>
-                                        <select name="statusDropdown" class="statusDropdown">
-                                        <!--onchange="this.form.submit()"-->
-                                            <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
-                                                <option value="${status.itemMaintStat}" 
-                                                <c:if test="${status.itemMaintStat == item.itemMaintStat}">selected</c:if>
-                                                <c:if test="${item.itemMaintStat == 1 && status.itemMaintStat == 3}">disabled</c:if>
-                                                >
-                                                ${status.maintStatName}
-                                                </option>
-                                            </c:forEach>
-                                        </select>
-                                      </form>
-                                    </td>
-                                    <c:choose>
-                                        <c:when test="${sessionScope.role == 'Admin'}">
-                                            <td>
-                                              <div class="dropdown">
-                                                <button class="btn btn-link p-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                  <img src="resources/images/kebabMenu.svg" alt="Actions" width="20" height="20">
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                  <!-- Edit Option -->
-                                                  <a class="dropdown-item"
-                                                     href="#"
-                                                     data-toggle="modal"
-                                                     data-target="#editEquipment"
-                                                     data-itemid="${item.itemID}"
-                                                     data-itemname="${item.itemName}"
-                                                     data-itembrand="${item.itemBrand}"
-                                                     data-dateinst="${item.dateInstalled}"
-                                                     data-itemexpiry="${item.expiration}"
-                                                     data-itemcat="${itemEditCat}"
-                                                     data-itemfloor="${item.itemFloor}"
-                                                     data-itemroom="${item.itemRoom}"
-                                                     data-itemtype="${itemEditType}"
-                                                     data-itemloctext="${item.itemLocText}"
-                                                     data-itemremarks="${item.itemRemarks}"
-                                                     data-itempcc="${item.itemPCC}"
-                                                     data-accu="${item.acACCU}"
-                                                     data-fcu="${item.acFCU}"
-                                                     data-inverter="${item.acINVERTER}"
-                                                     data-itemcapacity="${item.itemCapacity}"
-                                                     data-itemmeasure="${item.itemUnitMeasure}"
-                                                     data-itemev="${item.itemEV}"
-                                                     data-itemeph="${item.itemEPH}"
-                                                     data-itemehz="${item.itemEHZ}"
-                                                     onclick="populateEditModal(this); floorERender(); setFloorSelection(this); toggleEAirconDiv(${itemEditCat});">
-                                                    Edit
-                                                  </a>
-                                                  <!-- History Option -->
-                                                  <a class="dropdown-item history-btn"
-                                                     href="#"
-                                                     data-toggle="modal"
-                                                     data-target="#historyEquipment"
-                                                     data-itemhid="${item.itemID}">
-                                                    History
-                                                  </a>
-                                                  <!-- Archive Option data-target="#archiveEquipment" onclick="populateArchModal(this)"-->
-                                                  <a class="dropdown-item archive-maintenance-btn"
-                                                     href="#"
-                                                     data-toggle="modal"
-                                                     data-itemaid="${item.itemID}"
-                                                     data-itemaname="${item.itemName}">
-                                                    Archive
-                                                  </a>
-                                                </div>
-                                              </div>
-                                            </td>
-                                        </c:when>
-                                        <c:otherwise>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </tr>
-                                </c:if>
-                            </c:if>
-                            </c:forEach>    
-                                
+            <table id="allItemsTable" class="display dataTable" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Codename</th>
+                        <th>Floor</th>
+                        <th>Room</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Brand</th>
+                        <th>Date Installed</th>
+                        <th>Quotation</th>
+                        <th>Status</th>
+                        <c:if test="${sessionScope.role == 'Admin'}">
+                            <th>Actions</th>
+                        </c:if>
+                    </tr>
+                </thead>
             </table>
             </div>
         </div>
@@ -694,184 +536,22 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         <div class="roomDropsdiv">
             <div >
             <table id="itemsTable" class="display dataTable" style="width:100%;">
-			<thead>
-                                <tr>
-                                    <!--<th ></th>-->
-                                    <th >ID</th>
-                                    <th >Codename</th>
-				    <th >Room</th>
-                                    <th >Category</th>
-                                    <th >Type</th>
-                                    <th >Brand</th>
-                                    <th >Date Installed</th>
-                                    <th>
-                                        Quotation
-                                    </th>
-                                    <th >Status</th>
-                                    <c:choose>
-                                        <c:when test="${sessionScope.role == 'Admin'}">
-                                            <th >Actions</th>
-                                        </c:when>
-                                        <c:otherwise>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </tr>
-                         </thead>   
-                            <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
-                            <c:if test="${item.itemArchive == 1}">
-                                <c:if test="${item.itemLID == locID}">
-				<c:if test="${item.itemFloor == floorName}">
-                                <tr>
-                                
-                                <c:forEach items="${FMO_TYPES_LIST}" var="type" >
-                                    <c:if test="${type.itemTID == item.itemTID}">
-                                    <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
-                                        <c:if test="${cat.itemCID == type.itemCID}">
-                                        <!-- Store cat.itemCat and type.itemType in scoped variables -->
-                                            <c:set var="itemEditCat" value="${cat.itemCID}" />
-                                            <c:set var="itemEditType" value="${type.itemTID}" />
-                                        </c:if>
-                                    </c:forEach>
-                                    </c:if>
-                                </c:forEach>
-                                
-                                    <!--<td style="margin-left: 4px; margin-right: 4px; text-align:center;">
-                                        <input type="image" 
-                                        src="resources/images/itemInfo.svg" 
-                                        width="24" 
-                                        height="24"/>
-                                    </td>-->
-                                    <td >${item.itemID}</td>
-                                    <td >${item.itemName}</td>
-				    <td >${item.itemRoom != null ? item.itemRoom : 'N/A'}</td>
-                                    <c:forEach items="${FMO_TYPES_LIST}" var="type" >
-                                        <c:if test="${type.itemTID == item.itemTID}">
-                                        <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat" >
-                                            <c:if test="${cat.itemCID == type.itemCID}">
-                                            <td >${cat.itemCat}</td>
-                                            </c:if>
-                                        </c:forEach>
-                                            <td >${type.itemType}</td>
-                                        </c:if>
-                                    </c:forEach>
-                                    <td >${item.itemBrand != null ? item.itemBrand : 'N/A'}</td>
-                                    <td >${item.dateInstalled}</td>
-                                    <!-- Quotation Icon Button in manageBuilding.jsp -->
-                                    <td>
-                                        <form id="quotForm" method="GET" action="quotations.jsp" style="display: none;">
-                                            <input type="hidden" name="displayQuotItemID" id="hiddenItemID">
-                                        </form>
-                                        <input type="image"
-                                            src="resources/images/quotationsIcon.svg"
-                                            id="quotModalButton"
-                                            alt="Open Quotation Modal"
-                                            width="24"
-                                            height="24"
-                                            data-itemid="${item.itemID}"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#quotEquipmentModal"
-                                            onclick="openQuotModal(this)">
-                                    </td>
-                                    <td >
-                                      <form action="itemcontroller" method="POST">
-                                        <c:set var="canUpdate" value="true" />
-                                        <c:set var="hasAssignment" value="false" />
-                                    
-                                        <c:forEach var="assign" items="${FMO_MAINT_ASSIGN}">
-                                            <c:if test="${assign.itemID == item.itemID}">
-                                                <c:set var="hasAssignment" value="true" />
-                                                <c:set var="canUpdate" value="false" /> <!-- override default, assume restricted unless match -->
-                                                <c:forEach var="user" items="${FMO_USERS}">
-                                                    <c:if test="${user.name == sessionScope.name && user.userId == assign.userID}">
-                                                        <c:set var="canUpdate" value="true" />
-                                                    </c:if>
-                                                </c:forEach>
-                                            </c:if>
-                                        </c:forEach>
-                                        <input type="hidden" name="canUpdate" value="${canUpdate}" />
-                                        <input type="hidden" name="hasAssignment" value="${hasAssignment}" />
-                                        <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}"/>
-                                        <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}"/>
-                                        <input type="hidden" name="itemMaintType" id="itemMaintType" class="form-control" value=""/>
-                                        <input type="hidden" name="maintStatID" value="${item.itemID}" />
-                                        <input type="hidden" name="oldMaintStat" value="${item.itemMaintStat}" />
-                                        <select name="statusDropdown" class="statusDropdown">
-                                            <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
-                                                <option value="${status.itemMaintStat}" 
-                                                <c:if test="${status.itemMaintStat == item.itemMaintStat}">selected</c:if>
-                                                <c:if test="${item.itemMaintStat == 1 && status.itemMaintStat == 3}">disabled</c:if>
-                                                >
-                                                ${status.maintStatName}
-                                                </option>
-                                            </c:forEach>
-                                        </select>
-                                      </form>
-                                    </td>
-                                    <c:choose>
-                                        <c:when test="${sessionScope.role == 'Admin'}">
-                                            <td>
-                                              <div class="dropdown">
-                                                <button class="btn btn-link p-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                  <img src="resources/images/kebabMenu.svg" alt="Actions" width="20" height="20">
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                  <!-- Edit Option -->
-                                                  <a class="dropdown-item"
-                                                     href="#"
-                                                     data-toggle="modal"
-                                                     data-target="#editEquipment"
-                                                     data-itemid="${item.itemID}"
-                                                     data-itemname="${item.itemName}"
-                                                     data-itembrand="${item.itemBrand}"
-                                                     data-dateinst="${item.dateInstalled}"
-                                                     data-itemexpiry="${item.expiration}"
-                                                     data-itemcat="${itemEditCat}"
-                                                     data-itemfloor="${item.itemFloor}"
-                                                     data-itemroom="${item.itemRoom}"
-                                                     data-itemtype="${itemEditType}"
-                                                     data-itemloctext="${item.itemLocText}"
-                                                     data-itemremarks="${item.itemRemarks}"
-                                                     data-itempcc="${item.itemPCC}"
-                                                     data-accu="${item.acACCU}"
-                                                     data-fcu="${item.acFCU}"
-                                                     data-inverter="${item.acINVERTER}"
-                                                     data-itemcapacity="${item.itemCapacity}"
-                                                     data-itemmeasure="${item.itemUnitMeasure}"
-                                                     data-itemev="${item.itemEV}"
-                                                     data-itemeph="${item.itemEPH}"
-                                                     data-itemehz="${item.itemEHZ}"
-                                                     onclick="populateEditModal(this); floorERender(); setFloorSelection(this); toggleEAirconDiv(${itemEditCat});">
-                                                    Edit
-                                                  </a>
-                                                  <!-- History Option -->
-                                                  <a class="dropdown-item history-btn"
-                                                     href="#"
-                                                     data-toggle="modal"
-                                                     data-target="#historyEquipment"
-                                                     data-itemhid="${item.itemID}">
-                                                    History
-                                                  </a>
-                                                  <!-- Archive Option -->
-                                                  <a class="dropdown-item archive-maintenance-btn"
-                                                     href="#"
-                                                     data-toggle="modal"
-                                                     data-itemaid="${item.itemID}"
-                                                     data-itemaname="${item.itemName}">
-                                                    Archive
-                                                  </a>
-                                                </div>
-                                              </div>
-                                            </td>
-                                        </c:when>
-                                        <c:otherwise>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </tr>
-				</c:if>
-                                </c:if>
-                            </c:if>
-                            </c:forEach>    
-                                
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Codename</th>
+                        <th>Room</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Brand</th>
+                        <th>Date Installed</th>
+                        <th>Quotation</th>
+                        <th>Status</th>
+                        <c:if test="${sessionScope.role == 'Admin'}">
+                            <th>Actions</th>
+                        </c:if>
+                    </tr>
+                </thead>
             </table>
             </div>
         </div>    
@@ -1296,36 +976,36 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     // Initialize DataTable for #allItemsTable
-                    let allItemsTable = new DataTable('#allItemsTable', {
-                        paging: true,
-                        searching: true,
-                        ordering: true,
-                        info: true,
-                        stateSave: true,
-                        scrollX: true,
-                        columnDefs: [
-                            { targets: "_all", className: "dt-center" }, // Center-align all columns
-                            { targets: 6, orderable: false },
-                            { targets: 7, orderable: false }, 
-                            { targets: 8, orderable: false } 
-                        ]
-                    });
+//                    let allItemsTable = new DataTable('#allItemsTable', {
+//                        paging: true,
+//                        searching: true,
+//                        ordering: true,
+//                        info: true,
+//                        stateSave: true,
+//                        scrollX: true,
+//                        columnDefs: [
+//                            { targets: "_all", className: "dt-center" }, // Center-align all columns
+//                            { targets: 6, orderable: false },
+//                            { targets: 7, orderable: false }, 
+//                            { targets: 8, orderable: false } 
+//                        ]
+//                    });
     
                     // Initialize DataTable for #itemsTable
-                    let itemsTable = new DataTable('#itemsTable', {
-                        paging: true,
-                        searching: true,
-                        ordering: true,
-                        info: true,
-                        stateSave: true,
-                        scrollX: true,
-                        columnDefs: [
-                            { targets: "_all", className: "dt-center" }, // Center-align all columns
-                            { targets: 7, orderable: false },
-                            { targets: 8, orderable: false },
-                            { targets: 9, orderable: false }
-                        ]
-                    });
+//                    let itemsTable = new DataTable('#itemsTable', {
+//                        paging: true,
+//                        searching: true,
+//                        ordering: true,
+//                        info: true,
+//                        stateSave: true,
+//                        scrollX: true,
+//                        columnDefs: [
+//                            { targets: "_all", className: "dt-center" }, // Center-align all columns
+//                            { targets: 7, orderable: false },
+//                            { targets: 8, orderable: false },
+//                            { targets: 9, orderable: false }
+//                        ]
+//                    });
                 });
             </script>
         </c:when>
@@ -1333,39 +1013,105 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     // Initialize DataTable for #allItemsTable
-                    let allItemsTable = new DataTable('#allItemsTable', {
-                        paging: true,
-                        searching: true,
-                        ordering: true,
-                        info: true,
-                        stateSave: true,
-                        scrollX: true,
-                        columnDefs: [
-                            { targets: "_all", className: "dt-center" }, // Center-align all columns
-                            { targets: 6, orderable: false }, 
-                            { targets: 7, orderable: false } 
-                        ]
-                    });
+//                    let allItemsTable = new DataTable('#allItemsTable', {
+//                        paging: true,
+//                        searching: true,
+//                        ordering: true,
+//                        info: true,
+//                        stateSave: true,
+//                        scrollX: true,
+//                        columnDefs: [
+//                            { targets: "_all", className: "dt-center" }, // Center-align all columns
+//                            { targets: 6, orderable: false }, 
+//                            { targets: 7, orderable: false } 
+//                        ]
+//                    });
     
                     // Initialize DataTable for #itemsTable
-                    let itemsTable = new DataTable('#itemsTable', {
-                        paging: true,
-                        searching: true,
-                        ordering: true,
-                        info: true,
-                        stateSave: true,
-                        scrollX: true,
-                        columnDefs: [
-                            { targets: "_all", className: "dt-center" }, // Center-align all columns
-                            { targets: 7, orderable: false },
-                            { targets: 8, orderable: false }
-                        ]
-                    });
+//                    let itemsTable = new DataTable('#itemsTable', {
+//                        paging: true,
+//                        searching: true,
+//                        ordering: true,
+//                        info: true,
+//                        stateSave: true,
+//                        scrollX: true,
+//                        columnDefs: [
+//                            { targets: "_all", className: "dt-center" }, // Center-align all columns
+//                            { targets: 7, orderable: false },
+//                            { targets: 8, orderable: false }
+//                        ]
+//                    });
                 });
             </script>
         </c:otherwise>
     </c:choose>
-
+<script>
+$(document).ready(function(){
+    $('#itemsTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: 'mainbdatacontroller',
+            type: 'POST',
+            data: function (d) {
+                // Pass locID and floorName from JSP to servlet
+                d.locID = "${locID}";
+                d.floorName = "${floorName}";
+                d.userRole = "${sessionScope.role}";
+                d.userEmail = "${sessionScope.email}";
+                d.sessionName = "${sessionScope.name}";
+            }
+        },
+        columns: [
+            { data: 'itemID' },
+            { data: 'itemName' },
+            { data: 'itemRoom' },
+            { data: 'category' },
+            { data: 'type' },
+            { data: 'itemBrand' },
+            { data: 'dateInstalled' },
+            { data: 'quotation', orderable: false, searchable: false },
+            { data: 'status', orderable: false },
+            // Actions column only if Admin
+            <% if ("Admin".equals(session.getAttribute("role"))) { %>
+            { data: 'actions', orderable: false, searchable: false }
+            <% } %>
+        ]
+    });
+    $('#allItemsTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: 'mainadatacontroller',
+            type: 'POST',
+            data: function (d) {
+                // Pass locID and floorName from JSP to servlet
+                d.locID = "${locID}";
+                d.floorName = "${floorName}";
+                d.userRole = "${sessionScope.role}";
+                d.userEmail = "${sessionScope.email}";
+                d.sessionName = "${sessionScope.name}";
+            }
+        },
+        columns: [
+            { data: 'itemID' },
+            { data: 'itemName' },
+            { data: 'itemFloor' },
+            { data: 'itemRoom' },
+            { data: 'category' },
+            { data: 'type' },
+            { data: 'itemBrand' },
+            { data: 'dateInstalled' },
+            { data: 'quotation', orderable: false, searchable: false },
+            { data: 'status', orderable: false },
+            // Actions column only if Admin
+            <% if ("Admin".equals(session.getAttribute("role"))) { %>
+            { data: 'actions', orderable: false, searchable: false }
+            <% } %>
+        ]
+    });
+});
+</script>
     
     <script>
     const locID1 = "<%= locID %>"; // Embed locID from JSP

@@ -28,10 +28,14 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.annotation.MultipartConfig;
+
+import sample.model.ItemUser;
+import sample.model.MaintAssign;
 
 @WebServlet(name = "itemController", urlPatterns = { "/itemcontroller" })
 public class itemController extends HttpServlet {
@@ -53,10 +57,13 @@ public class itemController extends HttpServlet {
         String action = "";
         String status = "success";
         
+        HttpSession session = request.getSession();
+        String sessionName = (String) session.getAttribute("name");
+        
         String loc = request.getParameter("itemLID");
         String flr = request.getParameter("itemFlr");
-        String canUpdate = request.getParameter("canUpdate");
-        String hasAssignment = request.getParameter("hasAssignment");
+        String canUpdate = "true";
+        String hasAssignment = "false";
             
         String itemName = request.getParameter("itemCode");
         String itemBuilding = request.getParameter("itemBuilding");
@@ -121,6 +128,41 @@ public class itemController extends HttpServlet {
         Date sqlExpire = null;
         Date sqlEditExpire = null;
         
+        ArrayList<MaintAssign> listAssign = new ArrayList<>();
+        ArrayList<ItemUser> listDUsers = new ArrayList<>();
+        
+        try (
+             Connection con = PooledConnection.getConnection();
+             PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
+             PreparedStatement stmntDUsers = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_DUSERS ORDER BY USER_ID");
+        ){
+            ResultSet rsAssign = stmntAssign.executeQuery();
+            while (rsAssign.next()) {
+                MaintAssign mass = new MaintAssign();
+                mass.setAssignID(rsAssign.getInt("ASSIGN_ID"));
+                mass.setItemID(rsAssign.getInt("ITEM_ID"));
+                mass.setUserID(rsAssign.getInt("USER_ID"));
+                mass.setMaintTID(rsAssign.getInt("MAIN_TYPE_ID"));
+                mass.setDateOfMaint(rsAssign.getDate("DATE_OF_MAINTENANCE"));
+                mass.setIsCompleted(rsAssign.getInt("IS_COMPLETED"));
+                listAssign.add(mass);
+            }
+            rsAssign.close();
+            
+            ResultSet rsDUsers = stmntDUsers.executeQuery();
+            while (rsDUsers.next()) {
+                ItemUser itemUser = new ItemUser();
+                itemUser.setUserId(rsDUsers.getInt("USER_ID"));
+                itemUser.setName(rsDUsers.getString("NAME"));
+                itemUser.setEmail(rsDUsers.getString("EMAIL"));
+                itemUser.setRole(rsDUsers.getString("ROLE"));
+                listDUsers.add(itemUser);
+            }
+            rsDUsers.close();
+        } catch (SQLException error) {
+            error.printStackTrace();
+        }
+        
         try {
             if (itemEID != null && !itemEID.isEmpty()) {
                 java.util.Date parsedEDate = dateFormat.parse(itemEditDateInst);
@@ -129,7 +171,22 @@ public class itemController extends HttpServlet {
                 java.util.Date parsedEditExpireDate = dateFormat.parse(itemEditExpiry);
                 sqlEditExpire = new Date(parsedEditExpireDate.getTime());
             } else if(maintStatID != null && !maintStatID.isEmpty()){
-                
+                for (MaintAssign assign : listAssign) {
+                    if (assign.getItemID() == Integer.parseInt(maintStatID)) {  
+                        hasAssignment = "true";
+                        canUpdate = "false"; // assume restricted unless matching user found
+
+                        for (ItemUser user : listDUsers) {
+                            if (user.getName().equals(sessionName) &&
+                                user.getUserId() == assign.getUserID()) {
+                                canUpdate = "true";
+                                break; // no need to check more users
+                            }
+                        }
+
+                        break; // no need to check more assignments for this item
+                    }
+                }
             } else if(itemAID != null && !itemAID.isEmpty()){
                     
             } else {
@@ -143,7 +200,7 @@ public class itemController extends HttpServlet {
             e.printStackTrace();
         }
         
-        
+
 //        System.out.println(itemName);
 //        System.out.println(itemBuilding);
 //        System.out.println(itemCat);
