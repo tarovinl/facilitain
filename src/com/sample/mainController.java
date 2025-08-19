@@ -753,7 +753,7 @@ public class mainController extends HttpServlet {
                     queryString.matches("locID=\\d+/manage\\?floor=\\w*&itemHID=\\d+")) {
                     return true;
                 }
-            
+
                 // Validate expected patterns
                 if (queryString.matches("locID=\\d+(/manage)?") ||
                     queryString.matches("locID=\\d+(/edit)?") ||
@@ -761,11 +761,19 @@ public class mainController extends HttpServlet {
                     queryString.matches("locID=\\d+(/manage\\?itemHID=\\d+)?")) {
                     return true;
                 }
-                // Add these patterns to handle the itemHID parameter
+
+                // Additional patterns for redirects with action & status (including empty action)
+                if (queryString.matches("locID=\\d+/manage\\?floor=\\w+&action=[^&]*&status=[\\w_]+") ||
+                    queryString.matches("locID=\\d+/manage\\?floor=\\w+&status=[\\w_]+")) {
+                    return true;
+                }
+
+                // Already allowed ones with floor only
                 if (queryString.matches("locID=\\d+/manage\\?floor=\\w+") ||
                     queryString.matches("locID=\\d+/manage\\?floor=\\w+&itemHID=\\d+")) {
                     return true;
                 }
+
                 return false;
 
             case "/homepage":
