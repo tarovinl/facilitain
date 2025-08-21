@@ -117,13 +117,15 @@ public class quotationdisplaycontroller extends HttpServlet {
                     }
                     htmlContent.append("</td>");
                     
-                    // Add the "Archive" button inside a form
+                    // Add the "Archive" button inside a form with yellow background
                     htmlContent.append("<td>");
                     htmlContent.append("<form method='post' id='archiveForm").append(quotation.getQuotationId()).append("' action='quotationdisplaycontroller'>");
                     htmlContent.append("<input type='hidden' name='quotationId' value='").append(quotation.getQuotationId()).append("' />");
-                    htmlContent.append("<button type='button' class='btn btn-danger archive-btn' data-quotation-id='")
+                    htmlContent.append("<button type='button' style='background-color: #ffc107;' class='buttonsBuilding px-3 py-2 rounded-1 hover-outline d-flex align-items-center archive-btn' data-quotation-id='")
                         .append(quotation.getQuotationId()).append("' onclick='confirmArchive(")
-                        .append(quotation.getQuotationId()).append(")'>Archive</button>");
+                        .append(quotation.getQuotationId()).append(")'>");
+                    htmlContent.append("<img src='resources/images/icons/archive.svg' class='pe-2' alt='archive icon' width='20' height='20'>");
+                    htmlContent.append("Archive</button>");
                     htmlContent.append("</form></td>");
                     htmlContent.append("</tr>");
                 }
