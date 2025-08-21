@@ -76,6 +76,14 @@
         .form-control.invalid {
             border-color: #dc3545;
         }
+
+        .buttonsBuilding {
+            font-family: 'NeueHaasMedium', sans-serif !important;
+            border: none;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
