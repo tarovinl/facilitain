@@ -636,6 +636,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentDate = new Date('<%= currentDate %>');
     console.log('Current Date:', currentDate);
 
+    // UPCOMING ACTIVITIES
     document.querySelectorAll('#upcoming-activities .actItem').forEach(function (itemDiv) {
         const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
         const plannedMaintenanceDateStr = itemDiv.getAttribute('data-planned-maintenance-date');
@@ -646,7 +647,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('UA Last Maintenance Date String:', lastMaintenanceDateStr);
         console.log('UA Number of Days:', noOfDays);
         console.log('UA Number of Days Warning:', noOfDaysWarning);
-
 
         if (plannedMaintenanceDateStr) {
             const plannedMaintenanceDate = new Date(plannedMaintenanceDateStr);
@@ -666,7 +666,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     itemDiv.style.setProperty('display', 'none', 'important'); 
                 }
             } else {
-//                console.error("Invalid lastMaintenanceDate:", plannedMaintenanceDateStr);
                 itemDiv.style.setProperty('display', 'none', 'important'); 
             }
         } else {
@@ -674,10 +673,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // RECENT ACTIVITIES
     document.querySelectorAll('#recent-activities .actItem').forEach(function (itemDiv) {
         const plannedMaintenanceDateStr = itemDiv.getAttribute('data-planned-maintenance-date');
         const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
-//        console.log('RA Last Maintenance Date String:', lastMaintenanceDateStr);
         
         if (lastMaintenanceDateStr) {
             const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
@@ -701,9 +700,28 @@ document.addEventListener('DOMContentLoaded', function () {
             itemDiv.style.setProperty('display', 'none', 'important'); 
         }
     });
-});
 
+    // FALLBACK MESSAGE IF NO ITEMS VISIBLE
+    function addNoDataMessage(containerId) {
+        const container = document.getElementById(containerId);
+        const visibleItems = container.querySelectorAll('.actItem:not([style*="display: none"])');
+        if (visibleItems.length === 0) {
+            const noDataDiv = document.createElement('div');
+            noDataDiv.className = 'd-flex justify-content-center align-items-center text-muted';
+            noDataDiv.style.minHeight = "100%";  // takes full container height
+            noDataDiv.textContent = 'No data to show';
+            
+            // clear out anything left just in case
+            container.innerHTML = '';
+            container.appendChild(noDataDiv);
+        }
+    }
+
+    addNoDataMessage('upcoming-activities');
+    addNoDataMessage('recent-activities');
+});
 </script>
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

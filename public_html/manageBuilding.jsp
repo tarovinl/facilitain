@@ -439,6 +439,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             <table id="allItemsTable" class="display dataTable" style="width:100%;">
                 <thead>
                     <tr>
+                        <th> </th>
                         <th>ID</th>
                         <th>Codename</th>
                         <th>Floor</th>
@@ -538,6 +539,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             <table id="itemsTable" class="display dataTable" style="width:100%;">
                 <thead>
                     <tr>
+                        <th> </th>
                         <th>ID</th>
                         <th>Codename</th>
                         <th>Room</th>
@@ -579,7 +581,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                     <input type="text" name="itemCode" id="" class="form-control" maxlength="20" required>
                                 </div>
                                 <div class="col">
-                                    <label for="" class="form-label">Building <span style="color: red;">*</span></label>
+                                    <label for="" class="form-label">Location <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemBuilding" onchange="floorRender()">
                                         <c:forEach items="${locations}" var="loc" >
                                             <option value="${loc.itemLocId}" selected>${loc.locName}</option>
@@ -745,10 +747,10 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                             <div class="row mt-1">
                                 <div class="col">
                                     <label for="" class="form-label">Codename <span style="color: red;">*</span></label>
-                                    <input type="text" name="itemEditCode" id="" class="form-control" maxlength="20" required>
+                                    <input type="text" name="itemEditCode" id="itemEditCode" class="form-control" maxlength="20" required>
                                 </div>
                                 <div class="col">
-                                    <label for="" class="form-label">Building <span style="color: red;">*</span></label>
+                                    <label for="" class="form-label">Location <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemEditLoc" onchange="floorERender()">
                                         <c:forEach items="${locations}" var="loc" >
                                             <option value="${loc.itemLocId}" selected>${loc.locName}</option>
@@ -894,6 +896,150 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         </div>
     </div>
     <!--end of edit equipment modal-->
+    
+    <!--info equipment modal-->
+    <div class="modal fade" id="infoEquipment" tabindex="-1" role="dialog" aria-labelledby="equipmentInfo" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="font-family: 'NeueHaasMedium', sans-serif;">Equipment Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <h6 class="mb-3 border-bottom pb-2">Basic Information</h6>
+                        <div class="row mt-1">
+                            <div class="col">
+                                <label class="form-label fw-bold">Equipment ID</label>
+                                <h5 id="itemInfoID" class="text-dark"></h5>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">Equipment Codename</label>
+                                <h5 id="itemInfoCode" class="text-dark"></h5>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">Location</label>
+                                <h5 name="itemInfoLoc" id="itemInfoLoc" class="text-dark"></h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="mb-3 border-bottom pb-2">Category & Type</h6>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <label class="form-label fw-bold">Category</label>
+                                <h5 name="itemInfoCat" id="itemInfoCat" class="text-dark"></h5>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">Type</label>
+                                <h5 name="itemInfoType" id="itemInfoType" class="text-dark"></h5>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">Brand</label>
+                                <h5 name="itemInfoBrand" id="itemInfoBrand" class="text-dark"></h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2 onlyInfoAir mb-4">
+                        <div class="col-12">
+                            <h6 class="mb-3 border-bottom pb-2">Air Conditioner Type</h6>
+                            <div class="d-flex justify-content-start gap-3">
+                                <div class="form-check-display">
+                                    <label class="form-label fw-bold">ACCU:</label>
+                                    <h5 name="itemInfoACCU" id="itemInfoACCU" class="text-dark d-inline ms-2"></h5>
+                                </div>
+                                <div class="form-check-display">
+                                    <label class="form-label fw-bold">FCU:</label>
+                                    <h5 name="itemInfoFCU" id="itemInfoFCU" class="text-dark d-inline ms-2"></h5>
+                                </div>
+                                <div class="form-check-display">
+                                    <label class="form-label fw-bold">INVERTER:</label>
+                                    <h5 name="itemInfoACINVERTER" id="itemInfoACINVERTER" class="text-dark d-inline ms-2"></h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="mb-3 border-bottom pb-2">Capacity & Specifications</h6>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <label class="form-label fw-bold">Capacity</label>
+                                <h5 name="itemInfoCapacity" id="itemInfoCapacity" class="text-dark"></h5>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">Unit of Measure</label>
+                                <h5 name="itemInfoUnitMeasure" id="itemInfoUnitMeasure" class="text-dark"></h5>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">PC Code</label>
+                                <h5 name="itemInfoPCC" id="itemInfoPCC" class="text-dark"></h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="mb-3 border-bottom pb-2">Electrical Specifications</h6>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <label class="form-label fw-bold">Electrical V</label>
+                                <h5 name="itemInfoElecV" id="itemInfoElecV" class="text-dark"></h5>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">Electrical PH</label>
+                                <h5 name="itemInfoElecPH" id="itemInfoElecPH" class="text-dark"></h5>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">Electrical HZ</label>
+                                <h5 name="itemInfoElecHZ" id="itemInfoElecHZ" class="text-dark"></h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="mb-3 border-bottom pb-2">Location Details</h6>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <label class="form-label fw-bold">Floor</label>
+                                <h5 name="itemInfoFloor" id="itemInfoFloor" class="text-dark"></h5>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">Room</label>
+                                <h5 name="itemInfoRoom" id="itemInfoRoom" class="text-dark"></h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="mb-3 border-bottom pb-2">Installation & Dates</h6>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <label class="form-label fw-bold">Date Installed</label>
+                                <h5 name="itemInfoInstalled" id="itemInfoInstalled" class="text-dark"></h5>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">Expiration Date</label>
+                                <h5 name="itemInfoExpiration" id="itemInfoExpiration" class="text-dark"></h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="mb-3 border-bottom pb-2">Additional Information</h6>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <label class="form-label fw-bold">Location Text</label>
+                                <h5 name="itemInfoLocText" id="itemInfoLocText" class="text-dark"></h5>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">Remarks</label>
+                                <h5 name="itemInfoRemarks" id="itemInfoRemarks" class="text-dark"></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     
     <!--equipment maintenance history modal-->
     <div class="modal fade" tabindex="-1" id="historyEquipment">
@@ -1063,6 +1209,7 @@ $(document).ready(function(){
             }
         },
         columns: [
+            { data: 'itemInfo', orderable: false, searchable: false },
             { data: 'itemID' },
             { data: 'itemName' },
             { data: 'itemRoom' },
@@ -1094,6 +1241,7 @@ $(document).ready(function(){
             }
         },
         columns: [
+            { data: 'itemInfo', orderable: false, searchable: false },
             { data: 'itemID' },
             { data: 'itemName' },
             { data: 'itemFloor' },
@@ -1510,18 +1658,48 @@ const inputER = document.querySelector("#itemEditRoom");
         document.querySelector('input[name="itemEditID"]').value = itemID;
 
         document.querySelector('input[name="itemEditCode"]').value = itemName;
+
         document.querySelector('input[name="itemEditBrand"]').value = itemBrand;
         document.querySelector('input[name="itemEditInstalled"]').value = itemDateInst;
         document.querySelector('input[name="itemEditExpiration"]').value = itemExpiry;
         document.querySelector('textarea[name="editLocText"]').value = itemLocText;
         document.querySelector('textarea[name="editRemarks"]').value = itemRemarks;
         
-        document.querySelector('input[name="itemEditPCC"]').value = itemPCCode;
-        document.querySelector('input[name="itemECapacity"]').value = itemCapacity;
-        document.querySelector('input[name="itemEUnitMeasure"]').value = itemMeasure;
-        document.querySelector('input[name="itemEditElecV"]').value = itemEV;
-        document.querySelector('input[name="itemEditElecPH"]').value = itemEPH;
-        document.querySelector('input[name="itemEditElecHZ"]').value = itemEHZ;
+        if (itemPCCode && itemPCCode !== "0") {
+            document.querySelector('input[name="itemEditPCC"]').value = itemPCCode;
+        } else {
+            document.querySelector('input[name="itemEditPCC"]').value = "";
+        }
+        // Capacity (number)
+        if (itemCapacity && itemCapacity !== "0") {
+            document.querySelector('input[name="itemECapacity"]').value = itemCapacity;
+        } else {
+            document.querySelector('input[name="itemECapacity"]').value = "";
+        }
+        // Unit Measure (string)
+        if (itemMeasure && itemMeasure.trim() !== "" && itemMeasure !== "null") {
+            document.querySelector('input[name="itemEUnitMeasure"]').value = itemMeasure;
+        } else {
+            document.querySelector('input[name="itemEUnitMeasure"]').value = "";
+        }
+        // Electric Voltage (number)
+        if (itemEV && itemEV !== "0") {
+            document.querySelector('input[name="itemEditElecV"]').value = itemEV;
+        } else {
+            document.querySelector('input[name="itemEditElecV"]').value = "";
+        }
+        // Electric Phase (number)
+        if (itemEPH && itemEPH !== "0") {
+            document.querySelector('input[name="itemEditElecPH"]').value = itemEPH;
+        } else {
+            document.querySelector('input[name="itemEditElecPH"]').value = "";
+        }
+        // Electric Frequency (number)
+        if (itemEHZ && itemEHZ !== "0") {
+            document.querySelector('input[name="itemEditElecHZ"]').value = itemEHZ;
+        } else {
+            document.querySelector('input[name="itemEditElecHZ"]').value = "";
+        }
         
         var selectCat = document.querySelector('select[name="itemEditCat"]');
         if (selectCat) {
@@ -1571,6 +1749,72 @@ const inputER = document.querySelector("#itemEditRoom");
         }
             
     }
+    
+        function populateInfoModal(button) {
+        var itemName = button.getAttribute('data-iteminame');
+        var itemLName = button.getAttribute('data-itemilname');
+        var itemID = button.getAttribute('data-itemiid');
+        var itemLID = parseInt(${locID});
+        var itemBrand = button.getAttribute('data-itemibrand');
+        var itemFloor = button.getAttribute('data-itemifloor');
+        var itemRoom = button.getAttribute('data-itemiroom');
+        var itemDateInst = button.getAttribute('data-dateiinst');
+        var itemExpiry = button.getAttribute('data-itemiexpiry');
+        var itemCat = button.getAttribute('data-itemicat');
+        var itemType = button.getAttribute('data-itemitype');
+        var itemLocText = button.getAttribute('data-itemiloctext');
+        var itemRemarks = button.getAttribute('data-itemiremarks');
+        
+        var itemPCCode = button.getAttribute('data-itemipcc');
+        var itemACaccu = button.getAttribute('data-iaccu');
+        var itemACfcu = button.getAttribute('data-ifcu');
+        var itemACinverter = button.getAttribute('data-iinverter');
+        var itemCapacity = button.getAttribute('data-itemicapacity');
+        var itemMeasure = button.getAttribute('data-itemimeasure');
+        var itemEV = button.getAttribute('data-itemiev');
+        var itemEPH = button.getAttribute('data-itemieph');
+        var itemEHZ = button.getAttribute('data-itemiehz');
+        
+        console.log("itemPCCode:", itemPCCode);
+        console.log("itemACaccu:", itemACaccu);
+        console.log("itemACfcu:", itemACfcu);
+        console.log("itemACinverter:", itemACinverter);
+        console.log("itemCapacity:", itemCapacity);
+        console.log("itemMeasure:", itemMeasure);
+        console.log("itemEV:", itemEV);
+        console.log("itemEPH:", itemEPH);
+        console.log("itemEHZ:", itemEHZ);
+        console.log("Expiration Date:", itemExpiry);
+        console.log("Room:", itemRoom);
+        console.log("Remarks:", itemRemarks);
+        
+        document.getElementById('itemInfoCode').textContent = itemName;
+        document.getElementById('itemInfoID').textContent = itemID;
+        document.getElementById('itemInfoLoc').textContent = itemLName;
+        document.getElementById('itemInfoBrand').textContent = itemBrand;
+        document.getElementById('itemInfoFloor').textContent = itemFloor;
+        document.getElementById('itemInfoRoom').textContent = itemRoom;
+        document.getElementById('itemInfoInstalled').textContent = itemDateInst;
+        document.getElementById('itemInfoExpiration').textContent = itemExpiry && itemExpiry !== "null" && itemExpiry.trim()
+        !== "" ? itemExpiry : "N/A";
+        document.getElementById('itemInfoCat').textContent = itemCat;
+        document.getElementById('itemInfoType').textContent = itemType;
+        document.getElementById('itemInfoLocText').textContent = itemLocText && itemLocText.trim() !== "" ? itemLocText : "N/A";
+        document.getElementById('itemInfoRemarks').textContent = itemRemarks && itemRemarks.trim() !== "" ? itemRemarks : "N/A";
+        
+        document.getElementById('itemInfoPCC').textContent = itemPCCode && itemPCCode !== "0" ? itemPCCode : "N/A";
+        document.getElementById('itemInfoCapacity').textContent = itemCapacity && itemCapacity !== "0" ? itemCapacity : "N/A";
+        document.getElementById('itemInfoUnitMeasure').textContent = itemMeasure && itemMeasure.trim() !== "null" && itemMeasure.trim()
+        !== "" ? itemMeasure : "N/A";
+        document.getElementById('itemInfoElecV').textContent = itemEV && itemEV !== "0" ? itemEV : "N/A";
+        document.getElementById('itemInfoElecPH').textContent = itemEPH && itemEPH !== "0" ? itemEPH : "N/A";
+        document.getElementById('itemInfoElecHZ').textContent = itemEHZ && itemEHZ !== "0" ? itemEHZ : "N/A";
+        
+        document.getElementById('itemInfoACCU').textContent = itemACaccu;
+        document.getElementById('itemInfoFCU').textContent = itemACfcu;
+        document.getElementById('itemInfoACINVERTER').textContent = itemACinverter;
+        
+        }
     
     function setFloorSelection(button) {
     var itemRoom = button.getAttribute('data-itemroom');

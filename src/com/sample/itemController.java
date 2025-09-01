@@ -172,7 +172,7 @@ public class itemController extends HttpServlet {
                 sqlEditExpire = new Date(parsedEditExpireDate.getTime());
             } else if(maintStatID != null && !maintStatID.isEmpty()){
                 for (MaintAssign assign : listAssign) {
-                    if (assign.getItemID() == Integer.parseInt(maintStatID)) {  
+                    if (assign.getItemID() == Integer.parseInt(maintStatID) && assign.getIsCompleted() == 0) {
                         hasAssignment = "true";
                         canUpdate = "false"; // assume restricted unless matching user found
 
@@ -215,8 +215,10 @@ public class itemController extends HttpServlet {
 //        System.out.println(remarks);
         
 //        System.out.println(sqlDate);
-        
+        System.out.println("has assignment?: "+hasAssignment);
+        System.out.println("can update?: "+canUpdate);
         if ("false".equals(canUpdate)) {
+            action = "modify_status";
             status = "error_assign";
             response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
             return; // Prevent further execution
@@ -224,10 +226,12 @@ public class itemController extends HttpServlet {
         
         if ("2".equals(oldMaintStat) && "3".equals(maintStatus)) {
             if ("true".equals(hasAssignment)) {
+                action = "modify_status";
                 status = "error_2to3";
                 response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
                 return;
             } else{
+                action = "modify_status";
                 status = "error_assign";
                 response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
                 return;
@@ -235,6 +239,7 @@ public class itemController extends HttpServlet {
         }
         if ("2".equals(oldMaintStat) && "1".equals(maintStatus)) {
             if ("true".equals(hasAssignment)) {
+                action = "modify_status";
                 status = "error";
                 response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
                 return;
