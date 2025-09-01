@@ -98,10 +98,12 @@ public class mainADataController extends HttpServlet {
                  .append("i.remarks, ")
                  .append("i.pc_code, ")
                  .append("i.planned_maintenance_date, ")
-                 .append("i.last_maintenance_date ")
+                 .append("i.last_maintenance_date, ")
+                 .append("l.name AS location_name ")
                  .append("FROM C##FMO_ADM.FMO_ITEMS i ")
                  .append("JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id ")
                  .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id ")
+                 .append("JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON l.item_loc_id = i.location_id ")
                  .append("WHERE i.item_stat_id = 1 ")
                  .append("AND i.location_id = ? ");
 
@@ -130,6 +132,7 @@ public class mainADataController extends HttpServlet {
                     Map<String, Object> row = new HashMap<>();
                     int itemId = rs.getInt("item_id");
                     String itemName = rs.getString("item_name");
+                    String locName = rs.getString("location_name");
                     String locText = rs.getString("location_text");
                     int quantity = rs.getInt("quantity");
                     String itemFloor = rs.getString("floor_no");
@@ -163,7 +166,36 @@ public class mainADataController extends HttpServlet {
                     System.out.println("Date Installed: " + dateInstalled);
                     System.out.println("Status ID: " + statusId);
                     System.out.println("----------------------------");
-
+                    
+                    row.put("itemInfo", buildInfoModal(
+                                                itemId,
+                                                statusId,
+                                                locID,
+                                                floorName,
+                                                itemName,
+                                                locText,
+                                                quantity,
+                                                itemFloor,
+                                                itemRoom,
+                                                capacity,
+                                                category,
+                                                catID,
+                                                type,
+                                                typeID,
+                                                itemBrand,
+                                                dateInstalled,
+                                                dateExpiry,
+                                                remarks,
+                                                pcCode,
+                                                acFCU,
+                                                acACCU,
+                                                acInv,
+                                                uoMeasure,
+                                                elecV,
+                                                elecPH,
+                                                elecHZ,
+                                                locName
+                                               ));
                     row.put("itemID", itemId);
                     row.put("itemName", itemName);
                     row.put("itemFloor", itemFloor);
@@ -299,11 +331,21 @@ public class mainADataController extends HttpServlet {
                 int statusId = rs.getInt("status_id");
                 String statusName = rs.getString("status_name");
         
-                sb.append("<option value='").append(statusId).append("'")
-                  .append(selectedStatus == statusId ? " selected" : "")
-                  .append(">")
-                  .append(statusName)
-                  .append("</option>");
+                sb.append("<option value='").append(statusId).append("'");
+
+                    // mark selected
+                    if (selectedStatus == statusId) {
+                        sb.append(" selected");
+                    }
+
+                    // disable option 3 if selected status is 1
+                    if (selectedStatus == 1 && statusId == 3) {
+                        sb.append(" disabled");
+                    }
+
+                    sb.append(">")
+                      .append(statusName)
+                      .append("</option>");
             }
         
             sb.append("</select></form>");
@@ -389,5 +431,66 @@ public class mainADataController extends HttpServlet {
                "</div>" +
              "</div>";
 
+        }
+        
+        private String buildInfoModal(
+            int itemId,
+            int selectedStatus,
+            String locID,
+            String floorName,
+            String itemName,
+            String locText,
+            int quantity,
+            String itemFloor,
+            String itemRoom,
+            int capacity,
+            String category,
+            int catID,
+            String type,
+            int typeID,
+            String itemBrand,
+            Date dateInstalled,
+            Date dateExpiry,
+            String remarks,
+            int pcCode,
+            int acFCU,
+            int acACCU,
+            int acInv,
+            String uoMeasure,
+            int elecV,
+            int elecPH,
+            int elecHZ,
+            String locName
+        ) {
+            return "<input type='image' " +
+                                            "src='resources/images/itemInfo.svg' " +
+                                            "id='infoModalButton' " +
+                                            "alt='Open Info Modal' " +
+                                            "width='24' height='24' " +
+                                            "data-itemiid='" + itemId + "' " +
+                                            "data-iteminame='" + itemName + "' " +
+                                            "data-itemilname='" + locName + "' " +
+                                            "data-itemibrand='" + itemBrand + "' " +
+                                            "data-dateiinst='" + dateInstalled + "' " +
+                                            "data-itemiexpiry='" + dateExpiry + "' " +
+                                            "data-itemicat='" + category + "' " +
+                                            "data-itemifloor='" + itemFloor + "' " +
+                                            "data-itemiroom='" + itemRoom + "' " +
+                                            "data-itemitype='" + type + "' " +
+                                            "data-itemiloctext='" + locText + "' " +
+                                            "data-itemiremarks='" + remarks + "' " +
+                                            "data-itemipcc='" + pcCode + "' " +
+                                            "data-iaccu='" + acACCU + "' " +
+                                            "data-ifcu='" + acFCU + "' " +
+                                            "data-iinverter='" + acInv + "' " +
+                                            "data-itemicapacity='" + capacity + "' " +
+                                            "data-itemimeasure='" + uoMeasure + "' " +
+                                            "data-itemiev='" + elecV + "' " +
+                                            "data-itemieph='" + elecPH + "' " +
+                                            "data-itemiehz='" + elecHZ + "' " +
+                                            "data-bs-toggle='modal' " +
+                                            "data-bs-target='#infoEquipment' " +
+                                            "onclick='populateInfoModal(this)'> ";
+        
         }
 }
