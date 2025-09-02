@@ -86,7 +86,7 @@ public class historyLogsController extends HttpServlet {
     }
     
     private int getTotalRecords() throws Exception {
-        String query = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS";
+        String query = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_HISTORY_LOGS";
         try (Connection conn = PooledConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             ResultSet rs = stmt.executeQuery();
@@ -95,7 +95,7 @@ public class historyLogsController extends HttpServlet {
     }
     
     private int getFilteredRecordsCount(String searchValue) throws Exception {
-        String query = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS";
+        String query = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_HISTORY_LOGS";
         
         if (searchValue != null && !searchValue.trim().isEmpty()) {
             query += " WHERE UPPER(CAST(LOG_ID AS VARCHAR2(50))) LIKE ? " +
@@ -124,7 +124,7 @@ public class historyLogsController extends HttpServlet {
         List<HistoryLog> historyLogs = new ArrayList<>();
         
         String baseQuery = "SELECT LOG_ID, TABLE_NAME, OPERATION_TYPE, OPERATION_TIMESTAMP, ROW_DATA " +
-                          "FROM C##FMO_ADM.FMO_ITEM_HISTORY_LOGS";
+                          "FROM FMO_ADM.FMO_ITEM_HISTORY_LOGS";
         
         String whereClause = "";
         if (searchValue != null && !searchValue.trim().isEmpty()) {
