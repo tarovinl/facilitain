@@ -13,7 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-   body, h1, h2, h3, h4, th,h5 {
+        body, h1, h2, h3, h4, th,h5 {
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
  h6, input, textarea, td, tr, p, label, select, option {
@@ -77,7 +77,7 @@
         <div class="col-md-10 responsive-padding-top">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Automated Scheduling</h1>
-                <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-2 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#maintenanceModal">
+                <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-2 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal">
                       <img src="resources/images/icons/plus.svg" alt="add"  width="25" height="25"> 
                       <span class="d-none d-lg-inline ps-2">Add</span>
                 </button>
@@ -116,14 +116,17 @@
                                 <td>${maintenance.remarks}</td>
                                 <td>${maintenance.noOfDaysWarning}</td>
                                 <td>
+                                <!-- Updated edit button to include quarterly and yearly schedule data -->
                                 <button class="btn btn-primary btn-sm" 
                                         data-bs-toggle="modal" 
-                                        data-bs-target="#maintenanceModal"
+                                        data-bs-target="#editMaintenanceModal"
                                         data-itemmsid="${maintenance.itemMsId}"
                                         data-itemtypeid="${maintenance.itemTypeId}"
                                         data-noofdays="${maintenance.noOfDays}"
                                         data-remarks="${maintenance.remarks}"
-                                        data-warning="${maintenance.noOfDaysWarning}">
+                                        data-warning="${maintenance.noOfDaysWarning}"
+                                        data-quarterly="${maintenance.quarterlySchedNo != null ? maintenance.quarterlySchedNo : ''}"
+                                        data-yearly="${maintenance.yearlySchedNo != null ? maintenance.yearlySchedNo : ''}">
                                     Edit
                                 </button>
                                     <form action="maintenanceSave" method="POST" class="d-inline" >
@@ -138,22 +141,21 @@
                 </tbody>
             </table>
 
-            <!-- Maintenance Modal -->
-            <div class="modal fade" id="maintenanceModal" tabindex="-1" aria-labelledby="maintenanceModalLabel" aria-hidden="true">
+            <!-- Renamed original modal to Add Modal -->
+            <!-- Add Maintenance Modal -->
+            <div class="modal fade" id="addMaintenanceModal" tabindex="-1" aria-labelledby="addMaintenanceModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <form action="maintenanceSave" method="post">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="maintenanceModalLabel">Add Automated Schedule</h5>
+                                <h5 class="modal-title" id="addMaintenanceModalLabel">Add Automated Schedule</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <input type="hidden" id="itemMsId" name="itemMsId">
-                                
                                 <!-- Item Type Dropdown -->
                                 <div class="mb-3">
-                                    <label for="itemTypeId" class="form-label">Item Type</label>
-                                    <select class="form-select" id="itemTypeId" name="itemTypeId" required>
+                                    <label for="addItemTypeId" class="form-label">Item Type</label>
+                                    <select class="form-select" id="addItemTypeId" name="itemTypeId" required>
                                         <option value="" disabled selected>Select Item Type</option>
                                         <c:forEach var="typez" items="${FMO_TYPES_LIST}">
                                             <option value="${typez.itemTID}">${typez.itemType}</option>
@@ -163,37 +165,32 @@
 
                                 <!-- Number of Days -->
                                 <div class="mb-3">
-                                    <label for="noOfDays" class="form-label">Number of Days</label>
+                                    <label for="addNoOfDays" class="form-label">Number of Days</label>
                                     <input 
                                         type="number" 
                                         class="form-control" 
-                                        id="noOfDays" 
+                                        id="addNoOfDays" 
                                         name="noOfDays" 
                                         required 
-                                        oninput="toggleQuarterlyOptions()">
+                                        oninput="toggleAddQuarterlyOptions()">
                                 </div>
 
                                 <!-- Quarterly Options -->
-                                <div id="quarterlyOptionsGroup" class="mb-3" style="display: none;">
-                                    <label class="form-label">Quarterly Schedule</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="quarterly1" name="quarterlySchedule" value="1">
-                                        <label class="form-check-label" for="quarterly1">January, April, July, October</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="quarterly2" name="quarterlySchedule" value="2">
-                                        <label class="form-check-label" for="quarterly2">February, May, August, November</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="quarterly3" name="quarterlySchedule" value="3">
-                                        <label class="form-check-label" for="quarterly3">March, June, September, December</label>
-                                    </div>
+                                <div id="addQuarterlyOptionsGroup" class="mb-3" style="display: none;">
+                                    <!-- Converting quarterly radio buttons to dropdown -->
+                                    <label for="addQuarterlySchedule" class="form-label">Quarterly Schedule</label>
+                                    <select id="addQuarterlySchedule" name="quarterlySchedule" class="form-select">
+                                        <option value="" disabled selected>-- Select Quarterly Schedule --</option>
+                                        <option value="1">January, April, July, October</option>
+                                        <option value="2">February, May, August, November</option>
+                                        <option value="3">March, June, September, December</option>
+                                    </select>
                                 </div>
 
                                 <!-- Yearly Options -->
-                                <div id="annualOptionsGroup" class="mb-3" style="display: none;">
-                                    <label for="month" class="form-label">Month Schedule</label>
-                                    <select id="month" name="yearlySchedule" class="form-select">
+                                <div id="addAnnualOptionsGroup" class="mb-3" style="display: none;">
+                                    <label for="addMonth" class="form-label">Month Schedule</label>
+                                    <select id="addMonth" name="yearlySchedule" class="form-select">
                                         <option value="" disabled selected>-- Select Month --</option>
                                         <option value="1">January</option>
                                         <option value="2">February</option>
@@ -212,19 +209,108 @@
 
                                 <!-- Remarks -->
                                 <div class="mb-3">
-                                    <label for="remarks" class="form-label">Remarks</label>
-                                    <input type="text" class="form-control" id="remarks" name="remarks">
+                                    <label for="addRemarks" class="form-label">Remarks</label>
+                                    <input type="text" class="form-control" id="addRemarks" name="remarks">
                                 </div>
 
                                 <!-- Number of Days Warning -->
                                 <div class="mb-3">
-                                    <label for="noOfDaysWarning" class="form-label">Warning Days</label>
-                                    <input type="number" class="form-control" id="noOfDaysWarning" name="noOfDaysWarning" required>
+                                    <label for="addNoOfDaysWarning" class="form-label">Warning Days</label>
+                                    <input type="number" class="form-control" id="addNoOfDaysWarning" name="noOfDaysWarning" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-success">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Added separate Edit Modal with proper persistence -->
+            <!-- Edit Maintenance Modal -->
+            <div class="modal fade" id="editMaintenanceModal" tabindex="-1" aria-labelledby="editMaintenanceModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="maintenanceSave" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editMaintenanceModalLabel">Edit Automated Schedule</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="editItemMsId" name="itemMsId">
+                                
+                                <!-- Item Type Dropdown -->
+                                <div class="mb-3">
+                                    <label for="editItemTypeId" class="form-label">Item Type</label>
+                                    <select class="form-select" id="editItemTypeId" name="itemTypeId" required>
+                                        <option value="" disabled>Select Item Type</option>
+                                        <c:forEach var="typez" items="${FMO_TYPES_LIST}">
+                                            <option value="${typez.itemTID}">${typez.itemType}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+
+                                <!-- Number of Days -->
+                                <div class="mb-3">
+                                    <label for="editNoOfDays" class="form-label">Number of Days</label>
+                                    <input 
+                                        type="number" 
+                                        class="form-control" 
+                                        id="editNoOfDays" 
+                                        name="noOfDays" 
+                                        required 
+                                        oninput="toggleEditQuarterlyOptions()">
+                                </div>
+
+                                <!-- Quarterly Options -->
+                                <div id="editQuarterlyOptionsGroup" class="mb-3" style="display: none;">
+                                    <!-- Converting quarterly radio buttons to dropdown -->
+                                    <label for="editQuarterlySchedule" class="form-label">Quarterly Schedule</label>
+                                    <select id="editQuarterlySchedule" name="quarterlySchedule" class="form-select">
+                                        <option value="" disabled>-- Select Quarterly Schedule --</option>
+                                        <option value="1">January, April, July, October</option>
+                                        <option value="2">February, May, August, November</option>
+                                        <option value="3">March, June, September, December</option>
+                                    </select>
+                                </div>
+
+                                <!-- Yearly Options -->
+                                <div id="editAnnualOptionsGroup" class="mb-3" style="display: none;">
+                                    <label for="editMonth" class="form-label">Month Schedule</label>
+                                    <select id="editMonth" name="yearlySchedule" class="form-select">
+                                        <option value="" disabled selected>-- Select Month --</option>
+                                        <option value="1">January</option>
+                                        <option value="2">February</option>
+                                        <option value="3">March</option>
+                                        <option value="4">April</option>
+                                        <option value="5">May</option>
+                                        <option value="6">June</option>
+                                        <option value="7">July</option>
+                                        <option value="8">August</option>
+                                        <option value="9">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </div>
+
+                                <!-- Remarks -->
+                                <div class="mb-3">
+                                    <label for="editRemarks" class="form-label">Remarks</label>
+                                    <input type="text" class="form-control" id="editRemarks" name="remarks">
+                                </div>
+
+                                <!-- Number of Days Warning -->
+                                <div class="mb-3">
+                                    <label for="editNoOfDaysWarning" class="form-label">Warning Days</label>
+                                    <input type="number" class="form-control" id="editNoOfDaysWarning" name="noOfDaysWarning" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-success">Update</button>
                             </div>
                         </form>
                     </div>
@@ -253,30 +339,51 @@
         }
     });
 
-    // Prefill Modal with selected maintenance data
-    const maintenanceModal = document.getElementById('maintenanceModal');
-    maintenanceModal.addEventListener('show.bs.modal', event => {
-        const button = event.relatedTarget;
-        const itemMsId = button.getAttribute('data-itemmsid');
+    // Handle Add Modal
+    const addMaintenanceModal = document.getElementById('addMaintenanceModal');
+    addMaintenanceModal.addEventListener('show.bs.modal', event => {
+        // Clear the add form
+        document.getElementById('addItemTypeId').value = '';
+        document.getElementById('addNoOfDays').value = '';
+        document.getElementById('addRemarks').value = '';
+        document.getElementById('addNoOfDaysWarning').value = '';
+        document.getElementById('addQuarterlySchedule').value = '';
+        document.getElementById('addMonth').value = '';
+        document.getElementById('addQuarterlyOptionsGroup').style.display = 'none';
+        document.getElementById('addAnnualOptionsGroup').style.display = 'none';
+    });
 
-        if (itemMsId) {
-            // Edit mode
-            document.getElementById('itemMsId').value = itemMsId;
-            document.getElementById('itemTypeId').value = button.getAttribute('data-itemtypeid');
-            document.getElementById('noOfDays').value = button.getAttribute('data-noofdays');
-            document.getElementById('remarks').value = button.getAttribute('data-remarks');
-            document.getElementById('noOfDaysWarning').value = button.getAttribute('data-warning');
-            toggleQuarterlyOptions(); // Ensure correct options are shown
-        } else {
-            // Add mode - clear the form
-            document.getElementById('itemMsId').value = '';
-            document.getElementById('itemTypeId').value = '';
-            document.getElementById('noOfDays').value = '';
-            document.getElementById('remarks').value = '';
-            document.getElementById('noOfDaysWarning').value = '';
+    // Handle Edit Modal with proper persistence
+    const editMaintenanceModal = document.getElementById('editMaintenanceModal');
+    editMaintenanceModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        
+        // Populate form fields
+        document.getElementById('editItemMsId').value = button.getAttribute('data-itemmsid');
+        document.getElementById('editItemTypeId').value = button.getAttribute('data-itemtypeid');
+        document.getElementById('editNoOfDays').value = button.getAttribute('data-noofdays');
+        document.getElementById('editRemarks').value = button.getAttribute('data-remarks');
+        document.getElementById('editNoOfDaysWarning').value = button.getAttribute('data-warning');
+        
+        // Get schedule values
+        const quarterlyValue = button.getAttribute('data-quarterly');
+        const yearlyValue = button.getAttribute('data-yearly');
+        
+        // Show appropriate options based on number of days
+        toggleEditQuarterlyOptions();
+        
+        if (quarterlyValue && quarterlyValue !== '') {
+            document.getElementById('editQuarterlySchedule').value = quarterlyValue;
+        }
+        
+        // Set yearly schedule if exists
+        if (yearlyValue && yearlyValue !== '') {
+            document.getElementById('editMonth').value = yearlyValue;
         }
     });
 
+    // ... existing SweetAlert2 and archive confirmation code ...
+    
     // Handle SweetAlert2 notifications
     const urlParams = new URLSearchParams(window.location.search);
     const action = urlParams.get('action');
@@ -370,24 +477,45 @@
     });
 });
 
-function toggleQuarterlyOptions() {
-    const value = document.getElementById('noOfDays').value;
-    const quarterlyOptionsGroup = document.getElementById('quarterlyOptionsGroup');
-    const annualOptionsGroup = document.getElementById('annualOptionsGroup');
+function toggleAddQuarterlyOptions() {
+    const value = document.getElementById('addNoOfDays').value;
+    const quarterlyOptionsGroup = document.getElementById('addQuarterlyOptionsGroup');
+    const annualOptionsGroup = document.getElementById('addAnnualOptionsGroup');
 
     if (value == 90) {
         quarterlyOptionsGroup.style.display = 'block';
         annualOptionsGroup.style.display = 'none';
-        document.getElementById('month').value = ""; 
+        document.getElementById('addMonth').value = ""; 
     } else if (value == 365 || value == 180) {
         annualOptionsGroup.style.display = 'block';
         quarterlyOptionsGroup.style.display = 'none';
-        document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
+        document.getElementById('addQuarterlySchedule').value = '';
     } else {
         quarterlyOptionsGroup.style.display = 'none';
         annualOptionsGroup.style.display = 'none';
-        document.querySelectorAll('[name="quarterlySchedule"]').forEach(radio => radio.checked = false);
-        document.getElementById('month').value = "";
+        document.getElementById('addQuarterlySchedule').value = '';
+        document.getElementById('addMonth').value = "";
+    }
+}
+
+function toggleEditQuarterlyOptions() {
+    const value = document.getElementById('editNoOfDays').value;
+    const quarterlyOptionsGroup = document.getElementById('editQuarterlyOptionsGroup');
+    const annualOptionsGroup = document.getElementById('editAnnualOptionsGroup');
+
+    if (value == 90) {
+        quarterlyOptionsGroup.style.display = 'block';
+        annualOptionsGroup.style.display = 'none';
+        document.getElementById('editMonth').value = ""; 
+    } else if (value == 365 || value == 180) {
+        annualOptionsGroup.style.display = 'block';
+        quarterlyOptionsGroup.style.display = 'none';
+        document.getElementById('editQuarterlySchedule').value = '';
+    } else {
+        quarterlyOptionsGroup.style.display = 'none';
+        annualOptionsGroup.style.display = 'none';
+        document.getElementById('editQuarterlySchedule').value = '';
+        document.getElementById('editMonth').value = "";
     }
 }
     </script>
