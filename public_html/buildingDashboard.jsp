@@ -489,6 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
               <div class="actContainer" id="upcoming-activities">
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
                 <c:if test="${item.itemLID == locID}">
+                <c:if test="${item.itemArchive == 1}">
                     <c:forEach items="${maintenanceList}" var="maint">
                     <c:if test="${maint.archiveFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
@@ -534,6 +535,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </c:if>
                     </c:forEach>
                 </c:if>
+                </c:if>
                 </c:forEach>
               </div>
             </div>
@@ -546,6 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
               <div class="actContainer" id="recent-activities">
                 <c:forEach items="${FMO_ITEMS_LIST}" var="item">
                 <c:if test="${item.itemLID == locID}">
+                <c:if test="${item.itemArchive == 1}">
                     <c:forEach items="${maintenanceList}" var="maint">
                     <c:if test="${maint.archiveFlag == 1}">
                         <c:if test="${item.itemTID == maint.itemTypeId}">
@@ -579,6 +582,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </c:if>
                     </c:if>    
                     </c:forEach>
+                </c:if>
                 </c:if>
                 </c:forEach>
               </div>
@@ -653,7 +657,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!isNaN(plannedMaintenanceDate)) {
                 const daysSincePlannedMaintenance = (currentDate - plannedMaintenanceDate) / (1000 * 60 * 60 * 24);
-                const daysRemaining = noOfDays - daysSincePlannedMaintenance;
+                const daysRemaining = (plannedMaintenanceDate - currentDate) / (1000 * 60 * 60 * 24);
                 
                 console.log('UA Days Remaining:', daysRemaining);
 
