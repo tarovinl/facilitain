@@ -409,6 +409,7 @@
             </div>
         </div>
     </div>
+  </div>
 </div>
 
 <!-- edit floor modal -->
@@ -590,23 +591,31 @@
 <!-- end of archive location modal -->
 
             <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Initialize DataTable for #allItemsTable
-                    let flrTable = new DataTable('#flrTable', {
-                        paging: true,
-                        searching: true,
-                        ordering: true,
-                        info: true,
-                        stateSave: true,
-                        scrollX: true,
-                        columnDefs: [
-                            { targets: "_all", className: "dt-center" }, // Center-align all columns
-                            { targets: 0, orderable: false }, 
-                            { targets: 1, orderable: false }, 
-                            { targets: 4, orderable: false } 
-                        ]
+                document.addEventListener("DOMContentLoaded", function () {
+                    let flrTable; // Keep reference so we don't re-init multiple times
+                
+                    // Listen for tab show event
+                    document.querySelector('button[data-bs-target="#tab2"]').addEventListener("shown.bs.tab", function () {
+                        if (!flrTable) { 
+                            flrTable = new DataTable("#flrTable", {
+                                paging: true,
+                                searching: true,
+                                ordering: true,
+                                info: true,
+                                stateSave: true,
+                                scrollX: true,
+                                columnDefs: [
+                                    { targets: "_all", className: "dt-center" },
+                                    { targets: 0, orderable: false },
+                                    { targets: 1, orderable: false },
+                                    { targets: 4, orderable: false }
+                                ]
+                            });
+                        } else {
+                            // If already initialized, just fix sizing
+                            flrTable.columns.adjust().draw();
+                        }
                     });
-    
                 });
             </script>
 <script>
