@@ -158,6 +158,7 @@ public class mainADataController extends HttpServlet {
                     int elecHZ = rs.getInt("electrical_hz");
                     
                     System.out.println("Item ID: " + itemId);
+                    System.out.println("Location ID: " + locID);
                     System.out.println("Item Name: " + itemName);
                     System.out.println("Item Room: " + itemRoom);
                     System.out.println("Category: " + category);
