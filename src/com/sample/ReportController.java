@@ -27,9 +27,9 @@ public class ReportController extends HttpServlet {
         String retrieveReportsQuery = "SELECT R.REPORT_ID, COALESCE(T.NAME, R.EQUIPMENT_TYPE) AS EQUIPMENT_TYPE, " +
             "L.NAME AS LOC_NAME, R.REPORT_FLOOR, R.REPORT_ROOM, R.REPORT_ISSUE, R.REPORT_PICTURE, " +
             "R.REC_INST_DT, R.REC_INST_BY, R.STATUS, R.REPORT_CODE, R.ARCHIVED_FLAG " +
-            "FROM C##FMO_ADM.FMO_ITEM_REPORTS R " +
-            "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS L ON R.ITEM_LOC_ID = L.ITEM_LOC_ID " +
-            "LEFT JOIN C##FMO_ADM.FMO_ITEM_TYPES T ON UPPER(TRIM(R.EQUIPMENT_TYPE)) = UPPER(TRIM(T.NAME)) " +
+            "FROM FMO_ADM.FMO_ITEM_REPORTS R " +
+            "JOIN FMO_ADM.FMO_ITEM_LOCATIONS L ON R.ITEM_LOC_ID = L.ITEM_LOC_ID " +
+            "LEFT JOIN FMO_ADM.FMO_ITEM_TYPES T ON UPPER(TRIM(R.EQUIPMENT_TYPE)) = UPPER(TRIM(T.NAME)) " +
             "WHERE R.ARCHIVED_FLAG = 1 " +
             "ORDER BY R.REC_INST_DT DESC";
         
@@ -123,7 +123,7 @@ public class ReportController extends HttpServlet {
         String reportId = request.getParameter("reportId");
         if (reportId != null) {
             try (Connection connection = PooledConnection.getConnection()) {
-                String archiveReportQuery = "UPDATE C##FMO_ADM.FMO_ITEM_REPORTS SET ARCHIVED_FLAG = 2 WHERE REPORT_ID = ?";
+                String archiveReportQuery = "UPDATE FMO_ADM.FMO_ITEM_REPORTS SET ARCHIVED_FLAG = 2 WHERE REPORT_ID = ?";
                 try (PreparedStatement stmt = connection.prepareStatement(archiveReportQuery)) {
                     stmt.setInt(1, Integer.parseInt(reportId));
                     int rowsUpdated = stmt.executeUpdate();

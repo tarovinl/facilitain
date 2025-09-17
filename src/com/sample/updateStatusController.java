@@ -98,7 +98,7 @@ public class updateStatusController extends HttpServlet {
 
         try (
              Connection con = PooledConnection.getConnection();
-             PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
+             PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
              ){
             ResultSet rsAssign = stmntAssign.executeQuery();
             while (rsAssign.next()) {
@@ -130,7 +130,7 @@ public class updateStatusController extends HttpServlet {
         try (Connection conn = PooledConnection.getConnection()) {
             String sql;
             
-            sql = "UPDATE C##FMO_ADM.FMO_ITEMS SET MAINTENANCE_STATUS = ? WHERE ITEM_ID = ?";
+            sql = "UPDATE FMO_ADM.FMO_ITEMS SET MAINTENANCE_STATUS = ? WHERE ITEM_ID = ?";
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, Integer.parseInt(newEquipmentStatus));
@@ -157,7 +157,7 @@ public class updateStatusController extends HttpServlet {
             
             //in maintenance to operational turn maint_assign entry is_completed to 1
             if (oldEquipmentStatus.equals("3") && newEquipmentStatus.equals("1")) {
-                String assSQL = "UPDATE C##FMO_ADM.FMO_MAINTENANCE_ASSIGN SET IS_COMPLETED = 1 WHERE ITEM_ID = ?";
+                String assSQL = "UPDATE FMO_ADM.FMO_MAINTENANCE_ASSIGN SET IS_COMPLETED = 1 WHERE ITEM_ID = ?";
                 try (PreparedStatement astmt = conn.prepareStatement(assSQL)) {
                     astmt.setInt(1, Integer.parseInt(updateEquipmentID));
                     astmt.executeUpdate();
@@ -170,7 +170,7 @@ public class updateStatusController extends HttpServlet {
                                         String currentYear = String.valueOf(java.time.LocalDate.now().getYear());
                     
                                         // Check if an entry for the current month and year exists
-                                        String selectRepairsSql = "SELECT NUM_OF_REPAIRS FROM C##FMO_ADM.FMO_ITEM_REPAIRS WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
+                                        String selectRepairsSql = "SELECT NUM_OF_REPAIRS FROM FMO_ADM.FMO_ITEM_REPAIRS WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
                                         try (PreparedStatement selectStmt = conn.prepareStatement(selectRepairsSql)) {
                                             selectStmt.setInt(1, Integer.parseInt(currentMonth));
                                             selectStmt.setInt(2, Integer.parseInt(currentYear));
@@ -179,7 +179,7 @@ public class updateStatusController extends HttpServlet {
                                                 if (rs.next()) {
                                                     // Update NUM_OF_REPAIRS if entry exists
                                                     int repairCount = rs.getInt("NUM_OF_REPAIRS");
-                                                    String updateRepairsSql = "UPDATE C##FMO_ADM.FMO_ITEM_REPAIRS SET NUM_OF_REPAIRS = ? WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
+                                                    String updateRepairsSql = "UPDATE FMO_ADM.FMO_ITEM_REPAIRS SET NUM_OF_REPAIRS = ? WHERE REPAIR_MONTH = ? AND REPAIR_YEAR = ? AND ITEM_LOC_ID = ?";
                                                     try (PreparedStatement updateStmt = conn.prepareStatement(updateRepairsSql)) {
                                                         updateStmt.setInt(1, repairCount + 1);
                                                         updateStmt.setInt(2, Integer.parseInt(currentMonth));
@@ -189,7 +189,7 @@ public class updateStatusController extends HttpServlet {
                                                     }
                                                 } else {
                                                     // Insert a new row if no entry exists
-                                                    String insertRepairsSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_REPAIRS (REPAIR_MONTH, REPAIR_YEAR, NUM_OF_REPAIRS, ITEM_LOC_ID) VALUES (?, ?, ?, ?)";
+                                                    String insertRepairsSql = "INSERT INTO FMO_ADM.FMO_ITEM_REPAIRS (REPAIR_MONTH, REPAIR_YEAR, NUM_OF_REPAIRS, ITEM_LOC_ID) VALUES (?, ?, ?, ?)";
                                                     try (PreparedStatement insertStmt = conn.prepareStatement(insertRepairsSql)) {
                                                         insertStmt.setInt(1, Integer.parseInt(currentMonth));
                                                         insertStmt.setInt(2, Integer.parseInt(currentYear));
@@ -251,7 +251,7 @@ public class updateStatusController extends HttpServlet {
     
     private boolean insertIntoDatabase(Connection conn, BigDecimal itemID, String description, 
                                      BigDecimal quotationID, FileData file1Data, FileData file2Data) {
-        String sql = "INSERT INTO C##FMO_ADM.FMO_ITEM_QUOTATIONS " +
+        String sql = "INSERT INTO FMO_ADM.FMO_ITEM_QUOTATIONS " +
                     "(ITEM_ID, DESCRIPTION, QUOTATION_ID, QUOTATION_FILE1, QUOTATION_FILE2, " +
                     "FILE1_NAME, FILE2_NAME, FILE1_TYPE, FILE2_TYPE, DATE_UPLOADED) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -295,7 +295,7 @@ public class updateStatusController extends HttpServlet {
     
     private BigDecimal generateQuotationID(Connection conn) {
         BigDecimal newID = BigDecimal.ONE;
-        String query = "SELECT MAX(QUOTATION_ID) FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS";
+        String query = "SELECT MAX(QUOTATION_ID) FROM FMO_ADM.FMO_ITEM_QUOTATIONS";
         try (PreparedStatement pstmt = conn.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
             if (rs.next()) {

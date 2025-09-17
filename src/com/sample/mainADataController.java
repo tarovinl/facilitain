@@ -59,7 +59,7 @@ public class mainADataController extends HttpServlet {
 
         try (Connection conn = PooledConnection.getConnection()) {
             // Count total
-            String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS WHERE item_stat_id = 1 AND location_id = ?";
+            String countSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEMS WHERE item_stat_id = 1 AND location_id = ?";
             try (PreparedStatement ps = conn.prepareStatement(countSql)) {
                 ps.setString(1, locID);
                 ResultSet rs = ps.executeQuery();
@@ -100,10 +100,10 @@ public class mainADataController extends HttpServlet {
                  .append("i.planned_maintenance_date, ")
                  .append("i.last_maintenance_date, ")
                  .append("l.name AS location_name ")
-                 .append("FROM C##FMO_ADM.FMO_ITEMS i ")
-                 .append("JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id ")
-                 .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id ")
-                 .append("JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON l.item_loc_id = i.location_id ")
+                 .append("FROM FMO_ADM.FMO_ITEMS i ")
+                 .append("JOIN FMO_ADM.FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id ")
+                 .append("JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id ")
+                 .append("JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON l.item_loc_id = i.location_id ")
                  .append("WHERE i.item_stat_id = 1 ")
                  .append("AND i.location_id = ? ");
 
@@ -304,7 +304,7 @@ public class mainADataController extends HttpServlet {
         String floorName
         ) {
         StringBuilder sb = new StringBuilder();
-        String sql = "SELECT status_id, status_name FROM C##FMO_ADM.fmo_item_maintenance_status ORDER BY status_id";
+        String sql = "SELECT status_id, status_name FROM FMO_ADM.fmo_item_maintenance_status ORDER BY status_id";
         
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
