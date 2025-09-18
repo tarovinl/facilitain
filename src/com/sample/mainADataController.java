@@ -99,7 +99,12 @@ public class mainADataController extends HttpServlet {
                  .append("i.pc_code, ")
                  .append("i.planned_maintenance_date, ")
                  .append("i.last_maintenance_date, ")
-                 .append("l.name AS location_name ")
+                 .append("l.name AS location_name, ")
+                 .append("TRIM( ")
+                 .append("CASE WHEN i.ac_fcu = 1 THEN 'FCU ' ELSE '' END || ")
+                 .append("CASE WHEN i.ac_accu = 1 THEN 'ACCU ' ELSE '' END || ")
+                 .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
+                 .append(") AS ac_typez ")
                  .append("FROM C##FMO_ADM.FMO_ITEMS i ")
                  .append("JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id ")
                  .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id ")
@@ -107,9 +112,24 @@ public class mainADataController extends HttpServlet {
                  .append("WHERE i.item_stat_id = 1 ")
                  .append("AND i.location_id = ? ");
 
-            if (searchValue != null && !searchValue.isEmpty()) {
-                query.append("AND (LOWER(i.name) LIKE ? OR LOWER(c.name) LIKE ? OR LOWER(t.name) LIKE ?)");
-            }
+                if (searchValue != null && !searchValue.isEmpty()) {
+                    query.append("AND (")
+                         .append("LOWER(i.name) LIKE ? OR ")
+                         .append("LOWER(c.name) LIKE ? OR ")
+                         .append("LOWER(t.name) LIKE ? OR ")
+                         .append("LOWER(i.brand_name) LIKE ? OR ")
+                         .append("LOWER(NVL(i.room_no, 'N/A')) LIKE ? OR ")
+                         .append("CAST(i.item_id AS VARCHAR(20)) LIKE ? OR ")
+                         .append("LOWER(")
+                         .append("TRIM( ")
+                         .append("CASE WHEN i.ac_fcu = 1 THEN 'FCU ' ELSE '' END || ")
+                         .append("CASE WHEN i.ac_accu = 1 THEN 'ACCU ' ELSE '' END || ")
+                         .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
+                         .append(")")
+                         .append(") LIKE ? ")
+                         .append(")");
+                }
+
         //                System.out.println("Query: " + query);
             // Pagination (Oracle)
             String paginatedQuery = "SELECT * FROM (SELECT a.*, ROWNUM rnum FROM (" +
@@ -118,11 +138,16 @@ public class mainADataController extends HttpServlet {
             try (PreparedStatement ps = conn.prepareStatement(paginatedQuery)) {
                 int paramIndex = 1;
                 ps.setString(paramIndex++, locID);
-                if (searchValue != null && !searchValue.isEmpty()) {
-                    ps.setString(paramIndex++, "%" + searchValue.toLowerCase() + "%");
-                    ps.setString(paramIndex++, "%" + searchValue.toLowerCase() + "%");
-                    ps.setString(paramIndex++, "%" + searchValue.toLowerCase() + "%");
-                }
+                    if (searchValue != null && !searchValue.isEmpty()) {
+                        String sv = "%" + searchValue.toLowerCase() + "%";
+                        ps.setString(paramIndex++, sv); // i.name
+                        ps.setString(paramIndex++, sv); // c.name
+                        ps.setString(paramIndex++, sv); // t.name
+                        ps.setString(paramIndex++, sv); // brand_name
+                        ps.setString(paramIndex++, sv); // room_no
+                        ps.setString(paramIndex++, sv); // item_id (casted)
+                        ps.setString(paramIndex++, sv); // ac_typez
+                    }
                 ps.setInt(paramIndex++, start + length);
                 ps.setInt(paramIndex, start);
         //                                System.out.println("Start: " + start);
@@ -156,6 +181,9 @@ public class mainADataController extends HttpServlet {
                     int elecV = rs.getInt("electrical_v");
                     int elecPH = rs.getInt("electrical_ph");
                     int elecHZ = rs.getInt("electrical_hz");
+                    
+                    String acTypez = rs.getString("ac_typez");
+                    acTypez = (acTypez == null) ? "" : acTypez;
                     
                     System.out.println("Item ID: " + itemId);
                     System.out.println("Location ID: " + locID);
@@ -207,21 +235,22 @@ public class mainADataController extends HttpServlet {
                     row.put("dateInstalled", dateInstalled != null ? dateInstalled.toString() : "N/A");
 
                     // Quotation button
-                    String quotationHtml = "<form id='quotForm' method='GET' action='quotations.jsp' style='display: none;'>" +
-                                                "<input type='hidden' name='displayQuotItemID' id='hiddenItemID'>" +
-                                            "</form>" +
-                                            "<input type='image' " +
-                                                "src='resources/images/quotationsIcon.svg' " +
-                                                "id='quotModalButton' " +
-                                                "alt='Open Quotation Modal' " +
-                                                "width='24' " +
-                                                "height='24' " +
-                                                "data-itemid='" + itemId + "' " +
-                                                "data-bs-toggle='modal' " +
-                                                "data-bs-target='#quotEquipmentModal' " +
-                                                "onclick='openQuotModal(this)'>";
-                    row.put("quotation", quotationHtml);
-
+//                    String quotationHtml = "<form id='quotForm' method='GET' action='quotations.jsp' style='display: none;'>" +
+//                                                "<input type='hidden' name='displayQuotItemID' id='hiddenItemID'>" +
+//                                            "</form>" +
+//                                            "<input type='image' " +
+//                                                "src='resources/images/quotationsIcon.svg' " +
+//                                                "id='quotModalButton' " +
+//                                                "alt='Open Quotation Modal' " +
+//                                                "width='24' " +
+//                                                "height='24' " +
+//                                                "data-itemid='" + itemId + "' " +
+//                                                "data-bs-toggle='modal' " +
+//                                                "data-bs-target='#quotEquipmentModal' " +
+//                                                "onclick='openQuotModal(this)'>";
+//                    row.put("quotation", quotationHtml);
+                    row.put("capacity", capacity);
+                    
                     // Status dropdown
                     row.put("status", buildStatusDropdown(
                         conn,
@@ -230,7 +259,6 @@ public class mainADataController extends HttpServlet {
                         locID,
                         itemFloor
                     ));
-
 
                     // Actions dropdown (only for admin)
                     if ("Admin".equals(userRole)) {
@@ -263,23 +291,57 @@ public class mainADataController extends HttpServlet {
                                                 elecHZ
                                                ));
                     }
-
+                    
                     data.add(row);
                 }
             }
 
             // Filtered count
-            String countFilteredSql = "SELECT COUNT(*) FROM FMO_ITEMS i " +
-                    "JOIN FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id " +
-                    "JOIN FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id " +
-                    "WHERE i.item_stat_id = 1 AND i.location_id = ?";
-            try (PreparedStatement ps = conn.prepareStatement(countFilteredSql)) {
-                ps.setString(1, locID);
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    recordsFiltered = rs.getInt(1);
+            // Count filtered
+            if (searchValue != null && !searchValue.isEmpty()) {
+                StringBuilder countFilteredSql = new StringBuilder();
+                countFilteredSql.append("SELECT COUNT(*) ")
+                                .append("FROM C##FMO_ADM.FMO_ITEMS i ")
+                                .append("JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id ")
+                                .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id ")
+                                .append("JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON l.item_loc_id = i.location_id ")
+                                .append("WHERE i.item_stat_id = 1 ")
+                                .append("AND i.location_id = ? ")
+                                .append("AND (")
+                                .append("LOWER(i.name) LIKE ? OR ")
+                                .append("LOWER(c.name) LIKE ? OR ")
+                                .append("LOWER(t.name) LIKE ? OR ")
+                                .append("LOWER(i.brand_name) LIKE ? OR ")
+                                .append("LOWER(NVL(i.room_no, 'N/A')) LIKE ? OR ")
+                                .append("CAST(i.item_id AS VARCHAR(20)) LIKE ? OR ")
+                                .append("LOWER(TRIM( ")
+                                .append("CASE WHEN i.ac_fcu = 1 THEN 'FCU ' ELSE '' END || ")
+                                .append("CASE WHEN i.ac_accu = 1 THEN 'ACCU ' ELSE '' END || ")
+                                .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
+                                .append(")) LIKE ? ")
+                                .append(")");
+
+                try (PreparedStatement ps = conn.prepareStatement(countFilteredSql.toString())) {
+                    int idx = 1;
+                    ps.setString(idx++, locID);
+                    String sv = "%" + searchValue.toLowerCase() + "%";
+                    ps.setString(idx++, sv); // i.name
+                    ps.setString(idx++, sv); // c.name
+                    ps.setString(idx++, sv); // t.name
+                    ps.setString(idx++, sv); // brand_name
+                    ps.setString(idx++, sv); // room_no
+                    ps.setString(idx++, sv); // item_id
+                    ps.setString(idx++, sv); // ac_typez
+
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        recordsFiltered = rs.getInt(1);
+                    }
                 }
+            } else {
+                recordsFiltered = recordsTotal; // no search, both are same
             }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -386,6 +448,17 @@ public class mainADataController extends HttpServlet {
         int elecPH,
         int elecHZ
         ) {
+            String quotationHtml = "<form id='quotForm' method='GET' action='quotations.jsp' style='display: none;'>" +
+                                       "<input type='hidden' name='displayQuotItemID' id='hiddenItemID'>" +
+                                   "</form>" +
+                                   "<a class='dropdown-item' href='#' " +
+                                       "data-bs-toggle='modal' " +
+                                       "data-bs-target='#quotEquipmentModal' " +
+                                       "data-itemid='" + itemId + "' " +
+                                       "onclick='openQuotModal(this)'>" +
+                                       "Quotations" +
+                                   "</a>";
+        
         return "<div class='dropdown'>" +
                "<button class='btn btn-link p-0' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
                "<img src='resources/images/kebabMenu.svg' alt='Actions' width='20' height='20'>" +
@@ -417,6 +490,7 @@ public class mainADataController extends HttpServlet {
                      "onclick='populateEditModal(this); floorERender(); setFloorSelection(this); toggleEAirconDiv(" + catID + ");'>" +
                      "Edit" +
                  "</a>" +
+                 quotationHtml +
                  "<a class='dropdown-item history-btn' href='#' " +
                      "data-toggle='modal' " +
                      "data-target='#historyEquipment' " +
