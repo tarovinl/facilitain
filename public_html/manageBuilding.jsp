@@ -448,7 +448,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                         <th>Type</th>
                         <th>Brand</th>
                         <th>Date Installed</th>
-                        <th>Quotation</th>
+                        <th>Capacity</th>
                         <th>Status</th>
                         <c:if test="${sessionScope.role == 'Admin'}">
                             <th>Actions</th>
@@ -547,7 +547,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                         <th>Type</th>
                         <th>Brand</th>
                         <th>Date Installed</th>
-                        <th>Quotation</th>
+                        <th>Capacity</th>
                         <th>Status</th>
                         <c:if test="${sessionScope.role == 'Admin'}">
                             <th>Actions</th>
@@ -1217,12 +1217,14 @@ $(document).ready(function(){
             { data: 'type' },
             { data: 'itemBrand' },
             { data: 'dateInstalled' },
-            { data: 'quotation', orderable: false, searchable: false },
+//            { data: 'quotation', orderable: false, searchable: false },
+            { data: 'capacity' },
             { data: 'status', orderable: false },
             // Actions column only if Admin
             <% if ("Admin".equals(session.getAttribute("role"))) { %>
             { data: 'actions', orderable: false, searchable: false }
             <% } %>
+            
         ]
     });
     $('#allItemsTable').DataTable({
@@ -1250,7 +1252,7 @@ $(document).ready(function(){
             { data: 'type' },
             { data: 'itemBrand' },
             { data: 'dateInstalled' },
-            { data: 'quotation', orderable: false, searchable: false },
+            { data: 'capacity' },
             { data: 'status', orderable: false },
             // Actions column only if Admin
             <% if ("Admin".equals(session.getAttribute("role"))) { %>

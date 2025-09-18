@@ -769,8 +769,8 @@ public class mainController extends HttpServlet {
                 }
 
                 // Already allowed ones with floor only
-                if (queryString.matches("locID=\\d+/manage\\?floor=\\w+") ||
-                    queryString.matches("locID=\\d+/manage\\?floor=\\w+&itemHID=\\d+")) {
+                if (queryString.matches("locID=\\d+/manage\\?floor=[\\w%]+") ||
+                    queryString.matches("locID=\\d+/manage\\?floor=[\\w%]+&itemHID=\\d+")) {
                     return true;
                 }
 
