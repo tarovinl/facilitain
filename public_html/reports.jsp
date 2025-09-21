@@ -96,11 +96,121 @@
             color: #8388a4 !important;
         }
 
+        /* Chart container styling  */
         .chart-container {
             height: 400px;
         }
 
-        /* Added mobile responsive styles for DataTables */
+        
+        .table-container {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            padding-bottom: 2.5rem;
+            margin-top: 1rem;
+        }
+
+        .table-responsive {
+            border: none;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+        }
+
+        #reportsTable {
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        #reportsTable thead th {
+            padding: 1rem 1.25rem;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #reportsTable tbody td {
+            padding: 1.25rem 1.25rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        #reportsTable tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        #reportsTable tbody tr:hover {
+            background-color: #f8f9fa;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Enhanced filter section - inside table container */
+        .filters-section {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+
+        .filter-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #495057;
+            display: block;
+        }
+
+        .form-select, .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: #86b7fe;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        /* DataTables customization */
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 1.5rem;
+        }
+
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 1.5rem;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5rem 1rem;
+            margin: 0 2px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #0d6efd;
+            color: white !important;
+            border-color: #0d6efd;
+        }
+
+        /*  mobile responsive styles for DataTables */
         @media (max-width: 768px) {
             .dataTables_wrapper .dataTables_length,
             .dataTables_wrapper .dataTables_filter {
@@ -118,7 +228,7 @@
                 border: none;
             }
             
-            /* Improve button spacing on mobile */
+            
             .btn-group-mobile {
                 display: flex;
                 flex-direction: column;
@@ -128,6 +238,18 @@
             .btn-group-mobile .btn {
                 font-size: 0.75rem;
                 padding: 0.25rem 0.5rem;
+            }
+
+            .filters-section {
+                padding: 1rem;
+            }
+
+            .filter-row {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                margin-bottom: 1rem;
             }
         }
 
@@ -154,6 +276,11 @@
             .action-buttons .btn {
                 font-size: 0.7rem;
                 padding: 0.2rem 0.4rem;
+            }
+
+            #reportsTable thead th,
+            #reportsTable tbody td {
+                padding: 0.75rem 0.5rem;
             }
         }
 
@@ -195,6 +322,28 @@
         
         table.dataTable.dtr-inline.collapsed > tbody > tr.child ul.dtr-details li:last-child {
             border-bottom: none;
+        }
+
+        /* Sort indicator enhancement */
+        .sort-btn {
+            background: none;
+            border: 1px solid #dee2e6;
+            padding: 0.25rem 0.75rem;
+            margin: 0 0.1rem;
+            border-radius: 4px;
+            color: #6c757d;
+            transition: all 0.2s ease;
+        }
+
+        .sort-btn:hover {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+
+        .sort-btn.active {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
         }
 
     </style>
@@ -242,66 +391,120 @@
                 </div>
             </div>
 
-            <select id="statusFilter" class="form-select w-auto mb-2">
-                        <option value="">All Status</option>
-                        <option value="Resolved">Resolved</option>
-                        <option value="Not Resolved">Not Resolved</option>
-                    </select>
+            
+            <div class="table-container">
+                <!-- Enhanced Filters Section -->
+                <div class="filters-section">
+                    <h6 class="mb-3">Filters & Sorting</h6>
+                    <div class="row filter-row">
+                        <div class="col-md-3 filter-group">
+                            <label class="filter-label">Status</label>
+                            <select id="statusFilter" class="form-select">
+                                <option value="">All Status</option>
+                                <option value="Resolved">Resolved</option>
+                                <option value="Not Resolved">Not Resolved</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 filter-group">
+                            <label class="filter-label">Similar Reports</label>
+                            <select id="similarFilter" class="form-select">
+                                <option value="">All Reports</option>
+                                <option value="similar">Similar Reports Only</option>
+                                <option value="unique">Unique Reports Only</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 filter-group">
+                            <label class="filter-label">Equipment Type</label>
+                            <select id="equipmentFilter" class="form-select">
+                                <option value="">All Equipment</option>
+                                <c:forEach var="report" items="${reportsList}">
+                                    <option value="${report.repEquipment}">${report.repEquipment}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-md-3 filter-group">
+                            <label class="filter-label">Date Sorting</label>
+                            <div class="d-flex gap-1">
+                                <button type="button" class="sort-btn flex-fill" id="sortDateAsc">
+                                    Oldest
+                                </button>
+                                <button type="button" class="sort-btn flex-fill active" id="sortDateDesc">
+                                    Newest
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="clearFilters">
+                                Clear All Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Wrapped table in responsive container -->
-            <div class="table-responsive">
-                <table id="reportsTable" class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Equipment Type</th>
-                            <th>Location</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="report" items="${reportsList}">
-                            <tr class="report-row"
-                                 data-repfloor="${report.repfloor}"
-                                data-reproom="${report.reproom}"
-                                data-repissue="${report.repissue}"
-                                data-report-id="${report.reportId}">
-                                <td>${report.reportId}</td>
-                                <td>
-                                    ${report.repEquipment}
-                                    <c:if test="${hasSimilarReports[report.reportId] && report.status == 0}">
-                                        <span class="similar-report-indicator" title="Similar unresolved reports exist">
-                                            <i class="similar-report-icon">⚠</i>Similar
-                                        </span>
-                                    </c:if>
-                                </td>
-                                <td>${report.locName}</td>
-                                <td><fmt:formatDate value="${report.recInstDt}" pattern="yyyy-MM-dd"/></td>
-                                <td>
-                                    <span class="badge ${report.status == 1 ? 'bg-success' : 'bg-danger'}">
-                                        ${report.status == 1 ? 'Resolved' : 'Not Resolved'}
-                                    </span>
-                                </td>
-                                <td>
-                                    <!-- Improved mobile action buttons layout -->
-                                    <div class="action-buttons">
-                                        <button class="btn btn-info btn-sm toggle-details" data-bs-toggle="modal" data-bs-target="#detailsModal">Details</button>
-                                        <form action="emailresolve" method="post" style="display:inline;">
-                                            <input type="hidden" name="reportId" value="${report.reportId}">
-                                            <button type="submit" class="btn btn-sm btn-success">Resolve</button>
-                                        </form>
-                                        <form action="reports" method="post" style="display:inline;" class="archive-form">
-                                            <input type="hidden" name="reportId" value="${report.reportId}">
-                                            <button type="submit" class="btn btn-sm btn-danger archive-btn">Archive</button>
-                                        </form>
-                                    </div>
-                                </td>
+                <div class="table-responsive">
+                    <table id="reportsTable" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Equipment Type</th>
+                                <th>Location</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="report" items="${reportsList}">
+                                <tr class="report-row"
+                                     data-repfloor="${report.repfloor}"
+                                    data-reproom="${report.reproom}"
+                                    data-repissue="${report.repissue}"
+                                    data-report-id="${report.reportId}"
+                                    data-equipment="${report.repEquipment}"
+                                    data-has-similar="${hasSimilarReports[report.reportId] && report.status == 0 ? 'true' : 'false'}">
+                                    <td><strong>#${report.reportId}</strong></td>
+                                    <td>
+                                        ${report.repEquipment}
+                                        <c:if test="${hasSimilarReports[report.reportId] && report.status == 0}">
+                                            <span class="similar-report-indicator" title="Similar unresolved reports exist">
+                                                <i class="similar-report-icon">⚠</i>Similar
+                                            </span>
+                                        </c:if>
+                                    </td>
+                                    <td>${report.locName}</td>
+                                    <td><fmt:formatDate value="${report.recInstDt}" pattern="MMM dd, yyyy"/></td>
+                                    <td>
+                                        <span class="badge ${report.status == 1 ? 'bg-success' : 'bg-danger'} px-3 py-2">
+                                            ${report.status == 1 ? 'Resolved' : 'Not Resolved'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <!-- Improved mobile action buttons layout -->
+                                        <div class="action-buttons">
+                                            <button class="btn btn-info btn-sm toggle-details" data-bs-toggle="modal" data-bs-target="#detailsModal">
+                                                Details
+                                            </button>
+                                            <form action="emailresolve" method="post" style="display:inline;">
+                                                <input type="hidden" name="reportId" value="${report.reportId}">
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    Resolve
+                                                </button>
+                                            </form>
+                                            <form action="reports" method="post" style="display:inline;" class="archive-form">
+                                                <input type="hidden" name="reportId" value="${report.reportId}">
+                                                <button type="submit" class="btn btn-sm btn-danger archive-btn">
+                                                    Archive
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -437,7 +640,7 @@ function createNoDataCanvas(container) {
 
 $(document).ready(function() {
     const table = $('#reportsTable').DataTable({
-        order: [[3, 'desc']], // Sort by date
+        order: [[3, 'desc']], // Sort by date (newest first)
         pageLength: 10,
         responsive: {
             details: {
@@ -501,6 +704,96 @@ $(document).ready(function() {
             table.page.len(10).draw();
         }
     });
+
+    // Custom filter functions
+    function applyFilters() {
+        table.draw();
+    }
+
+    // Status filter
+    $('#statusFilter').on('change', function() {
+        const selectedStatus = $(this).val();
+        table.column(4).search(selectedStatus).draw();
+    });
+
+    // Similar reports filter
+    $('#similarFilter').on('change', function() {
+        const filterValue = $(this).val();
+        
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            if (!filterValue) return true;
+            
+            const row = table.row(dataIndex).node();
+            const hasSimilar = $(row).data('has-similar') === 'true';
+            
+            if (filterValue === 'similar') {
+                return hasSimilar;
+            } else if (filterValue === 'unique') {
+                return !hasSimilar;
+            }
+            return true;
+        });
+        
+        table.draw();
+        $.fn.dataTable.ext.search.pop();
+    });
+
+    // Equipment filter
+    $('#equipmentFilter').on('change', function() {
+        const selectedEquipment = $(this).val();
+        table.column(1).search(selectedEquipment).draw();
+    });
+
+    // Date sorting buttons
+    $('#sortDateAsc').on('click', function() {
+        $('.sort-btn').removeClass('active');
+        $(this).addClass('active');
+        table.order([3, 'asc']).draw();
+    });
+
+    $('#sortDateDesc').on('click', function() {
+        $('.sort-btn').removeClass('active');
+        $(this).addClass('active');
+        table.order([3, 'desc']).draw();
+    });
+
+    // Clear all filters
+    $('#clearFilters').on('click', function() {
+        // Reset all select filters
+        $('#statusFilter, #similarFilter, #equipmentFilter').val('');
+        
+        // Reset sorting to default (newest first)
+        $('.sort-btn').removeClass('active');
+        $('#sortDateDesc').addClass('active');
+        
+        // Clear DataTable searches and reset order
+        table.search('').columns().search('').order([3, 'desc']).draw();
+        
+        // Clear any custom search functions
+        $.fn.dataTable.ext.search = [];
+    });
+
+    // Populate equipment filter with unique values
+    function populateEquipmentFilter() {
+        const equipmentTypes = new Set();
+        table.rows().every(function() {
+            const row = this.node();
+            const equipment = $(row).data('equipment');
+            if (equipment) {
+                equipmentTypes.add(equipment);
+            }
+        });
+        
+        const select = $('#equipmentFilter');
+        select.find('option:not(:first)').remove();
+        
+        Array.from(equipmentTypes).sort().forEach(equipment => {
+            select.append(new Option(equipment, equipment));
+        });
+    }
+
+    // Initialize equipment filter
+    populateEquipmentFilter();
 
     // Generate Report functionality
     $('#generate-report').on('click', function() {
@@ -653,20 +946,6 @@ $(document).ready(function() {
         openModal(tr);
     });
 
-    // Custom status filter
-    $('#statusFilter').on('change', function() {
-        const selectedStatus = $(this).val();
-        
-        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-            if (!selectedStatus) return true;
-            const status = $(table.row(dataIndex).node()).find('td:eq(4)').text().trim();
-            return status === selectedStatus;
-        });
-        
-        table.draw();
-        $.fn.dataTable.ext.search.pop();
-    });
-
     // Handle row details on page change and search
     table.on('page.dt search.dt', function() {
         $('#detailsModal').modal('hide');
@@ -682,7 +961,7 @@ $(document).ready(function() {
         
         Swal.fire({
             title: 'Are you sure?',
-            text: `You want to archive report?`,
+            text: `You want to archive report #${reportId}?`,
             icon: 'warning',
             showCancelButton: true,
             reverseButtons: true,
@@ -758,6 +1037,18 @@ $(document).ready(function() {
             drawEquipmentChart();
         }
     });
+
+    // Initialize tooltips for similar report indicators
+    $('[title]').each(function() {
+        $(this).attr('data-bs-toggle', 'tooltip');
+    });
+    
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    }
 });
 </script>
 </body>
