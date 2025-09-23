@@ -384,7 +384,7 @@
             </a>
             <a href="maintenanceSchedule" class=" ${page == 'maintenanceSchedule' ? 'active' : ''}">
               <img src="resources/images/icons/autorenew.svg" alt="Schedule" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                <span>Automated Scheduling</span>
+                <span>Maintenance Schedule</span>
             </a>
         </div>
     </div>

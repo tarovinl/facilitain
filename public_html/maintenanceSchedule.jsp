@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Automated Scheduling - Facilitain</title>
+    <title>Maintenance Schedule - Facilitain</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
@@ -76,7 +76,7 @@
             <jsp:include page="sidebar.jsp"></jsp:include>
         <div class="col-md-10 responsive-padding-top">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Automated Scheduling</h1>
+                <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Maintenance Schedule</h1>
                 <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-2 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal">
                       <img src="resources/images/icons/plus.svg" alt="add"  width="25" height="25"> 
                       <span class="d-none d-lg-inline ps-2">Add</span>
