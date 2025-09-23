@@ -58,6 +58,7 @@
             background-color: #fffbf0;
             border-left: 4px solid #fccc4c;
             font-weight: 500;
+            border: 1px solid #fccc4c;
         }
         
         .list-group-item.read {
@@ -66,25 +67,9 @@
             opacity: 0.85;
         }
         
-        /* Facebook-style notification dot */
-        .notification-dot {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 12px;
-            height: 12px;
-            background-color: #fccc4c;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(252, 204, 76, 0.4);
-        }
+       
         
-        /* Hide dot for read notifications */
-        .list-group-item.read .notification-dot {
-            display: none;
-        }
-        
-        /* Remove extra spacing and margins */
+      
         .notification-content {
             margin: 0;
             padding: 0;
@@ -102,7 +87,7 @@
             line-height: 1;
         }
         
-        /* Subtle hover effects */
+        /*  hover effects */
         .list-group-item:hover {
             transform: translateY(-1px);
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -169,22 +154,49 @@
             position: relative;
         }
         
-        /* Adjust delete button positioning to account for notification dot */
+      
         .notification-actions {
             position: absolute;
-            top: 50%;
-            right: 35px;
-            transform: translateY(-50%);
+            top: 10px;
+            right: 10px;
         }
+        
+        .delete-btn {
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            font-size: 0.75rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            opacity: 0.8;
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c82333;
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        .delete-btn:active {
+            transform: scale(0.95);
+        }
+        
         .responsive-padding-top {
-                                  padding-top: 100px;
-                                }
+            padding-top: 100px;
+        }
                                 
-                @media (max-width: 576px) {
-                .responsive-padding-top {
-                padding-top: 80px; /* or whatever smaller value you want */
-                }
-                }
+        @media (max-width: 576px) {
+            .responsive-padding-top {
+                padding-top: 80px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -229,10 +241,6 @@
                 <ul class="list-group">
                     <c:forEach var="notification" items="${notifications}">
                         <li class="list-group-item list-group-item-action d-flex justify-content-between ${notification.isRead ? 'read' : 'unread'} ${notification.assignmentNotification ? 'assign-notification' : ''}">
-                            <!-- Facebook-style notification dot for unread notifications -->
-                            <c:if test="${!notification.isRead}">
-                                <div class="notification-dot"></div>
-                            </c:if>
                             
                             <form action="notification" method="POST" class="flex-grow-1">
                                 <input type="hidden" name="id" value="${notification.notificationId}"/>
@@ -291,13 +299,14 @@
                                 </button>
                             </form>
                             
-                            <!-- Delete button positioned to avoid overlapping with notification dot -->
+                            <!-- X badge delete button -->
                             <div class="notification-actions">
-                                <button class="btn btn-danger btn-sm" 
+                                <button class="delete-btn btn" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#deleteModal" 
-                                        data-id="${notification.notificationId}">
-                                    <i class="bi bi-trash me-1"></i>Delete
+                                        data-id="${notification.notificationId}"
+                                        title="Delete notification">
+                                    ×
                                 </button>
                             </div>
                         </li>
