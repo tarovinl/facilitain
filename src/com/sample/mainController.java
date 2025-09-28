@@ -215,6 +215,7 @@ public class mainController extends HttpServlet {
                 types.setItemTID(rsType.getInt("ITEM_TYPE_ID"));
                 types.setItemCID(rsType.getInt("ITEM_CAT_ID"));
                 types.setItemType(rsType.getString("NAME"));
+                types.setItemArchive(rsType.getInt("ARCHIVED_FLAG"));
                 listTypes.add(types);
 
             }
