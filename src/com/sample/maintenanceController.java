@@ -44,7 +44,7 @@ public class maintenanceController extends HttpServlet {
         
         try (Connection con = PooledConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(
-                 "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ARCHIVED_FLAG = 2 WHERE ITEM_MS_ID = ?")) {
+                 "UPDATE FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED SET ARCHIVED_FLAG = 2 WHERE ITEM_MS_ID = ?")) {
             
             ps.setInt(1, itemMsId);
             int rowsUpdated = ps.executeUpdate();
@@ -125,7 +125,7 @@ public class maintenanceController extends HttpServlet {
     
     // Helper method to get SQL for update operation
     private String getUpdateSql() {
-        return "UPDATE C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+        return "UPDATE FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
                "SET ITEM_TYPE_ID = ?, NO_OF_DAYS = ?, REMARKS = ?, " +
                "NO_OF_DAYS_WARNING = ?, QUARTERLY_SCHED_NO = ?, YEARLY_SCHED_NO = ? " +
                "WHERE ITEM_MS_ID = ?";
@@ -133,10 +133,10 @@ public class maintenanceController extends HttpServlet {
     
     // Helper method to get SQL for insert operation
     private String getInsertSql() {
-        return "INSERT INTO C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+        return "INSERT INTO FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
                "(ITEM_MS_ID, ITEM_TYPE_ID, NO_OF_DAYS, REMARKS, NO_OF_DAYS_WARNING, " +
                "QUARTERLY_SCHED_NO, YEARLY_SCHED_NO, ARCHIVED_FLAG, MAIN_TYPE_ID) " +
-               "VALUES (C##FMO_ADM.FMO_ITEM_MS_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, 1, 1)";
+               "VALUES (FMO_ADM.FMO_ITEM_MAINT_SCHED_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, 1, 1)";
     }
     
     // Helper method to log parameters for debugging
