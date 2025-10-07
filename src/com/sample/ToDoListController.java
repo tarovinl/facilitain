@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.format.DateTimeParseException;
+import java.sql.ResultSet;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
@@ -25,6 +26,50 @@ public class ToDoListController extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
     }
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json; charset=UTF-8");
+        String empNum = request.getParameter("empNum");
+
+        if (empNum == null || empNum.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("{\"error\":\"Missing empNum parameter\"}");
+            return;
+        }
+
+        try (Connection conn = PooledConnection.getConnection()) {
+            String sql = "SELECT LIST_ITEM_ID, LIST_CONTENT, START_DATE, END_DATE, IS_CHECKED " +
+                         "FROM C##FMO_ADM.FMO_TO_DO_LIST WHERE EMP_NUMBER = ? ORDER BY CREATION_DATE DESC";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, Integer.parseInt(empNum));
+            ResultSet rs = stmt.executeQuery();
+
+            StringBuilder json = new StringBuilder("[");
+            boolean first = true;
+
+            while (rs.next()) {
+                if (!first) json.append(",");
+                first = false;
+
+                json.append("{")
+                    .append("\"id\":").append(rs.getInt("LIST_ITEM_ID")).append(",")
+                    .append("\"content\":\"").append(rs.getString("LIST_CONTENT").replace("\"", "\\\"")).append("\",")
+                    .append("\"startDate\":\"").append(rs.getTimestamp("START_DATE")).append("\",")
+                    .append("\"endDate\":\"").append(rs.getTimestamp("END_DATE")).append("\",")
+                    .append("\"isChecked\":").append(rs.getInt("IS_CHECKED"))
+                    .append("}");
+            }
+
+            json.append("]");
+            response.getWriter().write(json.toString());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\":\"Database error\"}");
+        }
+    }
+
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(CONTENT_TYPE);

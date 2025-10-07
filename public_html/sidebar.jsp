@@ -261,7 +261,7 @@
 .maintenance-container.open .maintenance-items {
   opacity: 1;
   transform: translateY(0);
-  max-height: 500px; /* ensure it's large enough for all items */
+  max-height: 500px; /* ensure its large enough for all items */
   visibility: visible;
   pointer-events: auto;
 }
@@ -326,11 +326,7 @@
 
 </style>
 </head>
-<c:forEach items="${FMO_USERS}" var="user" >
-                <c:if test="${sessionScope.email == user.email}">
-                    <c:set var="empNum" value="${user.userId}" />
-                </c:if>
-            </c:forEach>
+        <c:set var="empNum" value="${sessionScope.userID}" />
 
 <body>
     <div class="sidebar">
@@ -355,7 +351,7 @@
     <div class="ps-0">
    <a href="homepage" class="sidebar-link ${page == 'homepage' ? 'active' : ''} text-dark">
     <img src="resources/images/icons/homeb.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-    Home
+    Home ${empNum}
 </a>
 
 <a href="maintenancePage" class="sidebar-link ${page == 'pending' ? 'active' : ''} text-dark">
@@ -470,10 +466,10 @@
         
     </div>
 
-<!--to do list item modal-->
+<!--add to do list item modal-->
 <div class="modal fade" id="addToDo" tabindex="-1" aria-labelledby="addToDo" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="todolistcontroller" method="post">
+        <form id="addToDoForm">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addToDoListLabel">Add To-Do List Item</h5>
@@ -507,7 +503,7 @@
 </div>
 
 
-<!--all to do list items modal-->
+<!--to do list items modal-->
 <div class="modal fade" id="showToDo" tabindex="-1" aria-labelledby="showToDo" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -533,68 +529,8 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <c:forEach var="todos" items="${FMO_TO_DO_LIST}">
-                            <c:if test="${todos.empNumber == empNum}">
-                                <c:if test="${todos.isChecked == 0}">
-                                <form action="todolistcontroller" method="post">
-                                    <tr>
-                                        <td>${todos.listContent}</td>
-                                        <td>${todos.startDate}</td>
-                                        <td>${todos.endDate}</td>
-                                        <td>
-                                            <input type="hidden" name="originalUrl" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />
-                                            <input type="hidden" name="tdListId" value="${todos.listItemId}" />
-                                            <input type="hidden" name="tdListContent" value="${todos.listContent}" />
-                                            <input type="hidden" name="tdListStart" value="${todos.startDate}" />
-                                            <input type="hidden" name="tdListEnd" value="${todos.endDate}" />
-                                            <input type="hidden" name="tdListChecked" value="${todos.isChecked}" />
-                                            <input type="hidden" name="tdListCreationDate" value="${todos.creationDate}" />
-                                            <button type="submit" name="tdAction" value="check" style="background: none; border: none; padding: 0;">
-                                                <img src="resources/images/icons/square-check.svg" alt="Check" style="width: 24px; height: 24px;" />
-                                            </button>                                
-                                        </td>
-                                        <td>
-                                            <button type="submit" name="tdAction" value="delete" style="background: none; border: none; padding: 0;">
-                                                <img src="resources/images/icons/trash-can.svg" alt="Delete" style="width: 24px; height: 24px;" />
-                                            </button>  
-                                        </td>
-                                    </tr>
-                                </form>
-                                </c:if>
-                            </c:if>
-                            </c:forEach>
-                            <c:forEach var="todos1" items="${FMO_TO_DO_LIST}">
-                            <c:if test="${todos1.empNumber == empNum}">
-                                <c:if test="${todos1.isChecked == 1}">
-                                <form action="todolistcontroller" method="post">
-                                    <tr>
-                                        <td><s>${todos1.listContent}</s></td>
-                                        <td><s>${todos1.startDate}</s></td>
-                                        <td><s>${todos1.endDate}</s></td>
-                                        <td>
-                                            <input type="hidden" name="originalUrl" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />
-                                            <input type="hidden" name="tdListId" value="${todos1.listItemId}" />
-                                            <input type="hidden" name="tdListContent" value="${todos1.listContent}" />
-                                            <input type="hidden" name="tdListStart" value="${todos1.startDate}" />
-                                            <input type="hidden" name="tdListEnd" value="${todos1.endDate}" />
-                                            <input type="hidden" name="tdListChecked" value="${todos1.isChecked}" />
-                                            <input type="hidden" name="tdListCreationDate" value="${todos1.creationDate}" />
-                                            <button type="submit" name="tdAction" value="uncheck" style="background: none; border: none; padding: 0;">
-                                                <img src="resources/images/icons/eks-square.svg" alt="Uncheck" style="width: 24px; height: 24px;" />
-                                            </button>  
-                                        </td>
-                                        <td>
-                                            <button type="submit" name="tdAction" value="delete" style="background: none; border: none; padding: 0;">
-                                                <img src="resources/images/icons/trash-can.svg" alt="Delete" style="width: 24px; height: 24px;" />
-                                            </button>  
-                                        </td>
-                                    </tr>
-                                </form>
-                                </c:if>
-                            </c:if>
-                            </c:forEach>
-                        
+                        <tbody id="tdTableBody">
+                            <!-- To-do list items will be dynamically loaded here -->
                         </tbody>
                     </table>
                 </div>
@@ -603,20 +539,112 @@
     </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var empNum = '${empNum}'; // dynamically injected from session/JSP
+    loadToDoList(empNum);
+});
+
+function loadToDoList(empNum) {
+    fetch('todolistcontroller?empNum=' + empNum)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            var tbody = document.getElementById('tdTableBody');
+            tbody.innerHTML = '';
+
+            if (data.error) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">' + data.error + '</td></tr>';
+                return;
+            }
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">No to-do items found</td></tr>';
+                return;
+            }
+
+            data.forEach(function(todo) {
+                var row = document.createElement('tr');
+                var checked = todo.isChecked === 1;
+                
+                var taskCell = checked ? '<s>' + todo.content + '</s>' : todo.content;
+                var startCell = checked ? '<s>' + todo.startDate + '</s>' : todo.startDate;
+                var endCell = checked ? '<s>' + todo.endDate + '</s>' : todo.endDate;
+                var checkIcon = checked ? 'eks-square' : 'square-check';
+
+                row.innerHTML = 
+                    '<td>' + taskCell + '</td>' +
+                    '<td>' + startCell + '</td>' +
+                    '<td>' + endCell + '</td>' +
+                    '<td>' +
+                        '<button class="btn btn-sm" onclick="toggleCheck(' + todo.id + ', ' + checked + ')">' +
+                            '<img src="resources/images/icons/' + checkIcon + '.svg" width="24" height="24">' +
+                        '</button>' +
+                    '</td>' +
+                    '<td>' +
+                        '<button class="btn btn-sm" onclick="deleteTodo(' + todo.id + ')">' +
+                            '<img src="resources/images/icons/trash-can.svg" width="24" height="24">' +
+                        '</button>' +
+                    '</td>';
+                    
+                tbody.appendChild(row);
+            });
+        })
+        .catch(function(err) {
+            console.error("Failed to load To-Do list:", err);
+            document.getElementById('tdTableBody').innerHTML =
+                '<tr><td colspan="5" class="text-center text-danger">Error loading list</td></tr>';
+        });
+}
+</script>
 
 <script>
-//        document.addEventListener('DOMContentLoaded', function() {
-//            let tdTable = new DataTable('#tdTable', {
-//                paging: true,
-//                ordering: true,
-//                scrollX: true,
-//                columnDefs: [
-//                    { targets: "_all", className: "dt-center" }, // Center-align all columns
-//                    { targets: 3, orderable: false },
-//                    { targets: 4, orderable: false }
-//                ]
-//            });
-//        });
+function toggleCheck(id, isChecked) {
+    var formData = new FormData();
+    formData.append('tdListId', id);
+    formData.append('tdAction', isChecked ? 'uncheck' : 'check');
+
+    fetch('todolistcontroller', { method: 'POST', body: formData })
+        .then(function() {
+            var empNum = '${empNum}';
+            loadToDoList(empNum);
+        });
+}
+
+function deleteTodo(id) {
+    if (!confirm('Are you sure you want to delete this to-do item?')) return;
+
+    var formData = new FormData();
+    formData.append('tdListId', id);
+    formData.append('tdAction', 'delete');
+
+    fetch('todolistcontroller', { method: 'POST', body: formData })
+        .then(function() {
+            var empNum = '${empNum}';
+            loadToDoList(empNum);
+        });
+}
+</script>
+
+<script>
+document.getElementById('addToDoForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!validateStartDate() || !validateEndDate()) return;
+
+    var formData = new FormData(this);
+    fetch('todolistcontroller', { method: 'POST', body: formData })
+        .then(function() {
+            var modal = bootstrap.Modal.getInstance(document.getElementById('addToDo'));
+            modal.hide();
+            var empNum = '${empNum}';
+            loadToDoList(empNum);
+        })
+        .catch(function(err) { 
+            console.error('Add to-do failed:', err); 
+        });
+});
+</script>
+
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     const maintenanceHeader = document.querySelector('.maintenance-header');
     const maintenanceContainer = document.querySelector('.maintenance-container');
