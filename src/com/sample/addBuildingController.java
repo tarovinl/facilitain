@@ -16,7 +16,7 @@ import javax.servlet.http.*;
 import sample.model.PooledConnection;
 
 @WebServlet(name = "addBuildingController", urlPatterns = { "/addbuildingcontroller" })
-// <CHANGE> Updated maxFileSize to 5MB
+
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2, // 2MB
     maxFileSize = 1024 * 1024 * 10, // 
@@ -52,7 +52,7 @@ public class addBuildingController extends HttpServlet {
             System.out.println("No file received for buildingImage.");
         }
 
-        // <CHANGE> Enhanced validation with character limits
+       
         // Check if locName and locDescription are null or empty
         if (locName == null || locDescription == null || locName.trim().isEmpty() || locDescription.trim().isEmpty()) {
             String errorMsg = URLEncoder.encode("Location name and description are required fields.", "UTF-8");
@@ -113,7 +113,7 @@ public class addBuildingController extends HttpServlet {
                 int affectedRows = stmt.executeUpdate();
                 if (affectedRows > 0) {
                     System.out.println("Building added successfully with ITEM_LOC_ID: " + newItemLocId);
-                    // <CHANGE> Set session attribute for success message
+                 
                     HttpSession session = request.getSession();
                     session.setAttribute("addLocationSuccess", true);
                 } else {
@@ -130,7 +130,7 @@ public class addBuildingController extends HttpServlet {
             return;
         }
     
-        // <CHANGE> Redirect with success parameter
+        //  Redirect with success parameter
         response.sendRedirect(request.getContextPath() + "/homepage?action=added");
     }
 
