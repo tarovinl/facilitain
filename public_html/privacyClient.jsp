@@ -101,6 +101,11 @@
             background-color: #292927 !important;
             color: #fbbe15 !important;
         }
+        
+        .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.3) !important; 
+}
+
     </style>
 </head>
 <body>

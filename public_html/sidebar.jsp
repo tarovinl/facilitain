@@ -351,7 +351,7 @@
     <div class="ps-0">
    <a href="homepage" class="sidebar-link ${page == 'homepage' ? 'active' : ''} text-dark">
     <img src="resources/images/icons/homeb.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-    Home ${empNum}
+    Home 
 </a>
 
 <a href="maintenancePage" class="sidebar-link ${page == 'pending' ? 'active' : ''} text-dark">

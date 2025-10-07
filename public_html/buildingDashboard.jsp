@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <%@ page contentType="text/html;charset=windows-1252"%>
 <%@ page import="java.util.ArrayList" %>
@@ -142,11 +141,14 @@
         ]);
        
         // Set chart options
-        var options = {chartArea: { 
-            left: 20, // Adjust margins to center the pie
-            width: '80%',  // Width of the pie chart area
-            height: '80%'  // Height of the pie chart area
-        }};
+        var options = {
+            chartArea: { 
+                left: 20,
+                width: '80%',
+                height: '80%'
+            },
+            legend: 'none'
+        }; 
         // Instantiate and draw the chart.
         var chart = new google.visualization.PieChart(document.getElementById('pendingMainChart'));
         chart.draw(data, options);
@@ -319,14 +321,14 @@ function generateReport() {
                 </c:forEach>
                 
                 <c:if test="${itemCount2 > 0}">
-                    // Draw color box
                     const colorIndex = ${status.index} % colors.length;
                     doc.setFillColor(
                         colors[colorIndex].r,
                         colors[colorIndex].g,
                         colors[colorIndex].b
                     );
-                    doc.rect(legendStartX, legendStartY, 4, 4, 'F');
+                    // Draw circle: x, y, radius, style
+                    doc.circle(legendStartX + 2, legendStartY + 2, 2, 'F');
                     
                     // Add category name and count
                     doc.setFontSize(10);
@@ -337,7 +339,6 @@ function generateReport() {
                     legendStartY += legendItemHeight;
                 </c:if>
             </c:forEach>
-            
             
             const tableStartY = contentStartY + 120;
             doc.setFontSize(14);
@@ -434,8 +435,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   </div>
 </div>
-
-
 
           
 <div class="container-fluid d-flex flex-column" style="min-height: 80vh;">
@@ -726,8 +725,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>

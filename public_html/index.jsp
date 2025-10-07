@@ -173,12 +173,15 @@
                       </div>
                     </div>
                     <hr class="my-3">
-                    <a href="#" class="d-block privacy-link montserrat-regular text-start" 
-                       style="font-size: 0.80rem;" 
-                       data-bs-toggle="modal" 
-                       data-bs-target="#privacyModal">
-                        FACILITAIN values your privacy. View our <strong>Privacy Policy</strong>.
-                    </a>
+                        <p class="montserrat-regular text-start mb-0" style="font-size: 0.80rem; color: Black;">
+                          FACILITAIN values your privacy. View our 
+                          <a href="#" 
+                             class="privacy-link" 
+                             data-bs-toggle="modal" 
+                             data-bs-target="#privacyModal">
+                             <strong>Privacy Policy</strong>
+                          </a>.
+                        </p>
                 </div>
             </div>
         </div>
