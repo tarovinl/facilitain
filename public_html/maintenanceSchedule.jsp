@@ -365,59 +365,96 @@ $(document).ready(function() {
         });
     }
 
-    // Handle SweetAlert2 notifications
-    const urlParams = new URLSearchParams(window.location.search);
-    const action = urlParams.get('action');
-    const error = urlParams.get('error');
-
-    if (action || error) {
-        let alertConfig = {
-            confirmButtonText: 'OK',
-            allowOutsideClick: false
-        };
-
-        if (error) {
-            alertConfig = {
-                ...alertConfig,
-                title: 'Error!',
-                text: 'An error occurred while processing your request.',
-                icon: 'error'
+    
+   
+        // Handle SweetAlert2 notifications
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action');
+        const error = urlParams.get('error');
+        
+        if (action || error) {
+            let alertConfig = {
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
             };
-        } else {
-            switch(action) {
-                case 'archived':
-                    alertConfig = {
-                        ...alertConfig,
-                        title: 'Archived!',
-                        text: 'The maintenance schedule has been successfully archived.',
-                        icon: 'success'
-                    };
-                    break;
-                case 'updated':
-                    alertConfig = {
-                        ...alertConfig,
-                        title: 'Updated!',
-                        text: 'The maintenance schedule has been successfully updated.',
-                        icon: 'success'
-                    };
-                    break;
-                case 'added':
-                    alertConfig = {
-                        ...alertConfig,
-                        title: 'Added!',
-                        text: 'The new maintenance schedule has been successfully added.',
-                        icon: 'success'
-                    };
-                    break;
+        
+            if (error) {
+                switch(error) {
+                    case 'duplicate':
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Duplicate Entry!',
+                            html: 'An active maintenance schedule already exists for this item type.<br><br>Please archive the existing schedule first or choose a different item type.',
+                            icon: 'error'
+                        };
+                        break;
+                    case 'archive_failed':
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Archive Failed!',
+                            text: 'Unable to archive the maintenance schedule. Please try again.',
+                            icon: 'error'
+                        };
+                        break;
+                    case 'update_failed':
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Update Failed!',
+                            text: 'Unable to update the maintenance schedule. Please try again.',
+                            icon: 'error'
+                        };
+                        break;
+                    case 'add_failed':
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Add Failed!',
+                            text: 'Unable to add the maintenance schedule. Please try again.',
+                            icon: 'error'
+                        };
+                        break;
+                    default:
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Error!',
+                            text: 'An error occurred while processing your request.',
+                            icon: 'error'
+                        };
+                }
+            } else {
+                switch(action) {
+                    case 'archived':
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Archived!',
+                            text: 'The maintenance schedule has been successfully archived.',
+                            icon: 'success'
+                        };
+                        break;
+                    case 'updated':
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Updated!',
+                            text: 'The maintenance schedule has been successfully updated.',
+                            icon: 'success'
+                        };
+                        break;
+                    case 'added':
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Added!',
+                            text: 'The new maintenance schedule has been successfully added.',
+                            icon: 'success'
+                        };
+                        break;
+                }
             }
+        
+            Swal.fire(alertConfig).then(() => {
+                // Remove the parameters from the URL without refreshing
+                const newUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+            });
         }
-
-        Swal.fire(alertConfig).then(() => {
-            // Remove the parameters from the URL without refreshing
-            const newUrl = window.location.pathname;
-            window.history.replaceState({}, document.title, newUrl);
-        });
-    }
 
     // Archive confirmation handler 
     $(document).on('click', '.btn-danger', function(e) {

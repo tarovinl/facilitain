@@ -29,6 +29,16 @@ public class maintenanceController extends HttpServlet {
                 // For both add and update operations
                 redirectParams = handleAddOrUpdate(request);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            
+            // Check for unique constraint violation
+            
+            if (e.getErrorCode() == 1 || e.getMessage().contains("FMO_ITEM_MS_ACTIVE_UK")) {
+                redirectParams = "?error=duplicate";
+            } else {
+                redirectParams = "?error=true";
+            }
         } catch (Exception e) {
             e.printStackTrace();
             redirectParams = "?error=true";
