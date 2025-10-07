@@ -171,7 +171,7 @@
                     <c:forEach var="cat" items="${FMO_CATEGORIES_LIST}">
                     <c:if test="${cat.itemCID == jobNumberInt}">            
                     recurringEvents.push({
-                        title: 'Biannual Maintenance for '+'${cat.itemCat}',
+                        title: 'Scheduled Maintenance for '+'${cat.itemCat}',
                         start: currentDate.toISOString().split('T')[0],
                         allDay: true
                     });
@@ -194,7 +194,7 @@
             <c:forEach var="todos" items="${FMO_TO_DO_LIST}">
             <c:if test="${todos.empNumber == empNum}">
                 {
-                    title: '${todos.listContent}', 
+                    title: '${fn:replace(todos.listContent, "'", "\\'")}', 
                     start: '${todos.startDate}',
                     end: '${todos.endDate}',
                     <!--display: 'background'-->
