@@ -85,7 +85,7 @@ public class LoginServlet extends HttpServlet {
     private UserInfo getUserInfoFromDatabase(String email) throws SQLException {
         UserInfo userInfo = null;
         try (Connection conn = PooledConnection.getConnection()) {
-            String sql = "SELECT user_id, role FROM C##FMO_ADM.FMO_ITEM_DUSERS WHERE email = ?";
+            String sql = "SELECT user_id, role FROM FMO_ADM.FMO_ITEM_DUSERS WHERE email = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, email);
                 try (ResultSet rs = stmt.executeQuery()) {

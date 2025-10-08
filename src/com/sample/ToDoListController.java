@@ -40,7 +40,7 @@ public class ToDoListController extends HttpServlet {
 
         try (Connection conn = PooledConnection.getConnection()) {
             String sql = "SELECT LIST_ITEM_ID, LIST_CONTENT, START_DATE, END_DATE, IS_CHECKED " +
-                         "FROM C##FMO_ADM.FMO_TO_DO_LIST WHERE EMP_NUMBER = ? ORDER BY CREATION_DATE DESC";
+                         "FROM FMO_ADM.FMO_TO_DO_LIST WHERE EMP_NUMBER = ? ORDER BY CREATION_DATE DESC";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, Integer.parseInt(empNum));
             ResultSet rs = stmt.executeQuery();
