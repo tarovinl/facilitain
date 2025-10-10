@@ -219,29 +219,29 @@
     const MAX_DESCRIPTION_LENGTH = 255;
     
     // Character counter functionality
-    function setupCharacterCounter() {
-        const textarea = document.getElementById('quotationDescription');
-        const counter = document.getElementById('characterCounter');
+   function setupCharacterCounter() {
+    var textarea = document.getElementById('quotationDescription');
+    var counter = document.getElementById('characterCounter');
+    
+    textarea.addEventListener('input', function() {
+        var currentLength = textarea.value.length;
+        var remaining = MAX_DESCRIPTION_LENGTH - currentLength;
         
-        textarea.addEventListener('input', function() {
-            const currentLength = textarea.value.length;
-            const remaining = MAX_DESCRIPTION_LENGTH - currentLength;
-            
-            // Update counter text
-            counter.textContent = `${currentLength} / ${MAX_DESCRIPTION_LENGTH} characters`;
-            
-            // Update counter styling based on character count
-            counter.classList.remove('warning', 'danger');
-            textarea.classList.remove('invalid');
-            
-            if (currentLength > MAX_DESCRIPTION_LENGTH) {
-                counter.classList.add('danger');
-                textarea.classList.add('invalid');
-            } else if (currentLength > MAX_DESCRIPTION_LENGTH * 0.8) {
-                counter.classList.add('warning');
-            }
-        });
-    }
+        // Update counter text using string concatenation instead of template literals
+        counter.textContent = currentLength + ' / ' + MAX_DESCRIPTION_LENGTH + ' characters';
+        
+        // Update counter styling based on character count
+        counter.classList.remove('warning', 'danger');
+        textarea.classList.remove('invalid');
+        
+        if (currentLength > MAX_DESCRIPTION_LENGTH) {
+            counter.classList.add('danger');
+            textarea.classList.add('invalid');
+        } else if (currentLength > MAX_DESCRIPTION_LENGTH * 0.8) {
+            counter.classList.add('warning');
+        }
+    });
+}
     
     // File preview and validation
     function setupFileInput(inputId, previewId) {

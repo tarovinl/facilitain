@@ -200,22 +200,24 @@ function generateReport() {
     
   
     doc.setFillColor(51, 51, 51);
-    doc.rect(0, 0, 210, 20, 'F');
+    doc.rect(0, 0, 210, 25, 'F');
     
    
     const logoImg = new Image();
     logoImg.src = 'resources/images/USTLogo.png';
     logoImg.onload = function() {
         // Left-aligned logo (15mm from left, 50mm width)
-        doc.addImage(logoImg, 'PNG', 15, 2, 50, 15);
+        doc.addImage(logoImg, 'PNG', 15, 5, 65, 13);
         
         // Main content starts below header
-        const contentStartY = 25;
+        const contentStartY = 30;
         
         // Building name (centered)
         doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
         doc.setTextColor(0, 0, 0);
         doc.text(`${locName}`, 105, contentStartY + 10, {align: 'center'});
+        doc.setFont('helvetica', 'normal');
         
         // Add "Pending Maintenance" label above pie chart
         doc.setFontSize(14);
@@ -296,6 +298,7 @@ function generateReport() {
             ];
             
             // Get the pie chart data to create the legend
+            let colorCounter = 0;
             <c:forEach var="category" items="${FMO_CATEGORIES_LIST}" varStatus="status">
                 <c:set var="itemCount2" value="0" />
                 <c:forEach var="itemz" items="${FMO_ITEMS_LIST}">
@@ -310,7 +313,7 @@ function generateReport() {
                                 </c:forEach>
                             </c:if>
                         </c:forEach>
-                        <c:if test="${category.itemCID == itemCID}">
+                        <c:if test="${category.itemCID == itemCID2}">
                             <c:if test="${itemz.itemArchive == 1}">
                                 <c:if test="${itemz.itemMaintStat == 2}">
                                     <c:set var="itemCount2" value="${itemCount2 + 1}" />
@@ -321,7 +324,7 @@ function generateReport() {
                 </c:forEach>
                 
                 <c:if test="${itemCount2 > 0}">
-                    const colorIndex = ${status.index} % colors.length;
+                    const colorIndex = colorCounter % colors.length;
                     doc.setFillColor(
                         colors[colorIndex].r,
                         colors[colorIndex].g,
@@ -337,6 +340,7 @@ function generateReport() {
                     
                     // Move to next line
                     legendStartY += legendItemHeight;
+                    colorCounter++;
                 </c:if>
             </c:forEach>
             
