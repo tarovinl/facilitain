@@ -40,7 +40,7 @@ public class ToDoListController extends HttpServlet {
 
         try (Connection conn = PooledConnection.getConnection()) {
             String sql = "SELECT LIST_ITEM_ID, LIST_CONTENT, START_DATE, END_DATE, IS_CHECKED " +
-                         "FROM C##FMO_ADM.FMO_TO_DO_LIST WHERE EMP_NUMBER = ? ORDER BY CREATION_DATE DESC";
+                         "FROM FMO_ADM.FMO_TO_DO_LIST WHERE EMP_NUMBER = ? ORDER BY CREATION_DATE DESC";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, Integer.parseInt(empNum));
             ResultSet rs = stmt.executeQuery();
@@ -158,16 +158,16 @@ public class ToDoListController extends HttpServlet {
             String sql;
             
             if ("delete".equals(tdAction)) {
-                sql = "DELETE FROM C##FMO_ADM.FMO_TO_DO_LIST WHERE LIST_ITEM_ID = ?";
+                sql = "DELETE FROM FMO_ADM.FMO_TO_DO_LIST WHERE LIST_ITEM_ID = ?";
                 System.out.println("Executing DELETE with ID: " + tdListID);
             } else if ("check".equals(tdAction)) {
-                sql = "UPDATE C##FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 1 WHERE LIST_ITEM_ID = ?";
+                sql = "UPDATE FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 1 WHERE LIST_ITEM_ID = ?";
                 System.out.println("Executing CHECK with ID: " + tdListID);
             } else if ("uncheck".equals(tdAction)) {
-                sql = "UPDATE C##FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 0 WHERE LIST_ITEM_ID = ?";
+                sql = "UPDATE FMO_ADM.FMO_TO_DO_LIST SET IS_CHECKED = 0 WHERE LIST_ITEM_ID = ?";
                 System.out.println("Executing UNCHECK with ID: " + tdListID);
             } else {
-                sql = "INSERT INTO C##FMO_ADM.FMO_TO_DO_LIST (EMP_NUMBER, LIST_CONTENT, START_DATE, END_DATE) VALUES (?, ?, ?, ?)";
+                sql = "INSERT INTO FMO_ADM.FMO_TO_DO_LIST (EMP_NUMBER, LIST_CONTENT, START_DATE, END_DATE) VALUES (?, ?, ?, ?)";
                 System.out.println("Executing INSERT");
             }
             

@@ -85,7 +85,7 @@ public class addBuildingController extends HttpServlet {
 
             // Get the highest ITEM_LOC_ID and increment it
             int newItemLocId = 1; // Default to 1 if there are no entries in the table
-            String getMaxIdSql = "SELECT MAX(ITEM_LOC_ID) AS maxId FROM C##FMO_ADM.FMO_ITEM_LOCATIONS";
+            String getMaxIdSql = "SELECT MAX(ITEM_LOC_ID) AS maxId FROM FMO_ADM.FMO_ITEM_LOCATIONS";
             try (PreparedStatement getMaxIdStmt = conn.prepareStatement(getMaxIdSql);
                  ResultSet rs = getMaxIdStmt.executeQuery()) {
                 if (rs.next() && rs.getInt("maxId") > 0) {
@@ -94,7 +94,7 @@ public class addBuildingController extends HttpServlet {
             }
 
             // Insert new building
-            String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_LOCATIONS (ITEM_LOC_ID, NAME, DESCRIPTION, ARCHIVED_FLAG, IMAGE) VALUES (?, ?, ?, ?, ?)";
+            String insertSql = "INSERT INTO FMO_ADM.FMO_ITEM_LOCATIONS (ITEM_LOC_ID, NAME, DESCRIPTION, ARCHIVED_FLAG, IMAGE) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
                 stmt.setInt(1, newItemLocId); // Set the new ITEM_LOC_ID
                 stmt.setString(2, locName.trim());
