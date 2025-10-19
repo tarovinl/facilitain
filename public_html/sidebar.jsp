@@ -351,7 +351,7 @@
     <div class="ps-0">
    <a href="homepage" class="sidebar-link ${page == 'homepage' ? 'active' : ''} text-dark">
     <img src="resources/images/icons/homeb.svg" alt="Home" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-    Home
+    Home 
 </a>
 
 <a href="maintenancePage" class="sidebar-link ${page == 'pending' ? 'active' : ''} text-dark">
@@ -380,7 +380,7 @@
             </a>
             <a href="maintenanceSchedule" class=" ${page == 'maintenanceSchedule' ? 'active' : ''}">
               <img src="resources/images/icons/autorenew.svg" alt="Schedule" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;">
-                <span>Automated Scheduling</span>
+                <span>Maintenance Schedule</span>
             </a>
         </div>
     </div>

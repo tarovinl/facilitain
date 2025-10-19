@@ -15,6 +15,21 @@
         <!-- Optional: Add a custom title -->
         <title>Terms and Conditions</title>
         <style>
+                body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .content-wrapper {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            flex-shrink: 0;
+            margin-top: auto;
+        }
         .montserrat-regular {
          font-family: "Montserrat", sans-serif;
          font-weight: 400;
@@ -30,7 +45,7 @@
     </head>
     <body class="d-flex flex-column min-vh-100" >
      <jsp:include page="headerClient.jsp"/>
-        <!-- Bootstrap Container Example -->
+         <div class="content-wrapper">
         <div class="w-100 h-100  bg-white d-flex flex-column  p-5">
         
        
@@ -56,17 +71,18 @@ We reserve the right to modify these Terms at any time. Any changes will be effe
             • Provide accurate, current, and complete information as prompted by the website’s registration forms.<br/>
             • Maintain the confidentiality of your account credentials and restrict access to your account.
           </p>
-            <!-- Example Bootstrap Button -->
+            
              <div class="mt-5">
-                <button type="button" onclick="window.location.href='menuClient.jsp';" class="btn w-100 py-3 fs-5" 
-                                style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
-        onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
-        onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
-                    <i class="bi bi-arrow-left-short"></i>Back
-                </button>
+                <button type="button" onclick="window.history.back();" class="btn w-100 py-3 fs-5" 
+    style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
+    onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
+    onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
+    <i class="bi bi-arrow-left-short"></i>Back
+</button>
             </div>
     
             
+        </div>
         </div>
 
         <!-- Bootstrap JS, Popper.js, and jQuery -->

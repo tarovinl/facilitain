@@ -114,20 +114,33 @@
 </style>
 <script>
     $(document).ready(function () {
-        const maxChars = 250;
-        const $textarea = $('#locDescription');
-        const $charCount = $('#charCount');
+        var maxChars = 250;
+        var $textarea = $('#locDescription');
+        var $charCount = $('#charCount');
 
-        // Initialize the count
-        $charCount.text(`${$textarea.val().length} / ${maxChars} characters`);
+        // Function to update character count
+        function updateCharCount() {
+            var currentLength = $textarea.val().length;
+            $charCount.text(currentLength + ' / ' + maxChars + ' characters');
+        }
 
+        // Initialize the count when tab1 is shown
+        $('button[data-bs-target="#tab1"]').on('shown.bs.tab', function () {
+            updateCharCount();
+        });
+
+        // Also initialize on page load if tab1 is active
+        if ($('#tab1').hasClass('show active')) {
+            updateCharCount();
+        }
+
+        // Update count on input
         $textarea.on('input', function () {
-            let text = $(this).val();
+            var text = $(this).val();
             if (text.length > maxChars) {
                 $(this).val(text.substring(0, maxChars));
-                text = $(this).val(); // Update the value after trim
             }
-            $charCount.text(`${text.length} / ${maxChars} characters`);
+            updateCharCount();
         });
     });
 </script>
