@@ -480,15 +480,15 @@
                                             ${report.status == 1 ? 'Resolved' : 'Not Resolved'}
                                         </span>
                                     </td>
-                                    <td>
-                                        <!-- Improved mobile action buttons layout -->
+                                   <td>
                                         <div class="action-buttons">
                                             <button class="btn btn-info btn-sm toggle-details" data-bs-toggle="modal" data-bs-target="#detailsModal">
                                                 Details
                                             </button>
-                                            <form action="emailresolve" method="post" style="display:inline;">
+                                            
+                                            <form action="emailresolve" method="post" style="display:inline;" class="resolve-form">
                                                 <input type="hidden" name="reportId" value="${report.reportId}">
-                                                <button type="submit" class="btn btn-sm btn-success">
+                                                <button type="button" class="btn btn-sm btn-success resolve-btn">
                                                     Resolve
                                                 </button>
                                             </form>
@@ -710,11 +710,27 @@ $(document).ready(function() {
         table.draw();
     }
 
-    // Status filter
+    // Status filter -  Fixed to properly match status text in badges
     $('#statusFilter').on('change', function() {
         const selectedStatus = $(this).val();
-        table.column(4).search(selectedStatus).draw();
+        
+        if (!selectedStatus) {
+            // Show all rows
+            table.column(4).search('').draw();
+        } else {
+            // Use custom search to match badge text
+            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                const row = table.row(dataIndex).node();
+                const statusBadge = $(row).find('td:eq(4) .badge').text().trim();
+                
+                if (!selectedStatus) return true;
+                return statusBadge === selectedStatus;
+            });
+            table.draw();
+            $.fn.dataTable.ext.search.pop();
+        }
     });
+
 
     // Similar reports filter
     $('#similarFilter').on('change', function() {
@@ -950,7 +966,39 @@ $(document).ready(function() {
     table.on('page.dt search.dt', function() {
         $('#detailsModal').modal('hide');
     });
-
+    
+    
+        //Resolve confirmation
+         $(document).on('click', '.resolve-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const form = $(this).closest('.resolve-form')[0];
+        const reportId = $(this).closest('form').find('input[name="reportId"]').val();
+        
+        Swal.fire({
+            title: 'Resolve Report?',
+            text: `Are you sure you want to mark this report as resolved?`,
+            icon: 'question',
+            showCancelButton: true,
+            reverseButtons: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                cancelButton: 'btn-cancel-outline'
+            },
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+        
+        return false;
+    });
     // Archive confirmation handler
     $(document).on('click', '.archive-btn', function(e) {
         e.preventDefault();
