@@ -515,7 +515,7 @@
                     <div class="mb-3">
                         <label for="locDescription" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Description</label>
                         <!-- <CHANGE> Added maxlength and character counter -->
-                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter location description" style="font-family: 'NeueHaasLight', sans-serif;" maxlength="250" required>
+                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter location description" style="font-family: 'NeueHaasLight', sans-serif;" maxlength="250" >
                         <small class="text-muted" style="font-family: 'NeueHaasLight', sans-serif;">
                             <span id="descCharCount">0</span>/250 characters
                         </small>
