@@ -504,12 +504,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
+                   <div class="mb-3">
                         <label for="locName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Name</label>
-                        
                         <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter location name" style="font-family: 'NeueHaasLight', sans-serif;" maxlength="250" required>
                         <small class="text-muted" style="font-family: 'NeueHaasLight', sans-serif;">
-                            <span id="nameCharCount">0</span>/250 characters
+                            Only letters, numbers, spaces, and periods allowed. <span id="nameCharCount">0</span>/250 characters
                         </small>
                     </div>
                     <div class="mb-3">
@@ -586,15 +585,50 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
+
 document.addEventListener('DOMContentLoaded', function() {
     const addBuildingForm = document.getElementById('addBuildingForm');
     const buildingImageInput = document.getElementById('buildingImage');
+    const locNameInput = document.getElementById('locName');
+    
+    // Real-time validation for location name - prevent special characters except period
+    locNameInput.addEventListener('input', function(e) {
+        // Allow only letters, numbers, spaces, and periods
+        const validPattern = /^[a-zA-Z0-9\s.]*$/;
+        
+        if (!validPattern.test(this.value)) {
+            // Remove invalid characters
+            this.value = this.value.replace(/[^a-zA-Z0-9\s.]/g, '');
+        }
+        
+        // Update character count
+        document.getElementById('nameCharCount').textContent = this.value.length;
+    });
+    
+    // Update character count for description
+    const locDescInput = document.getElementById('locDescription');
+    locDescInput.addEventListener('input', function() {
+        document.getElementById('descCharCount').textContent = this.value.length;
+    });
     
     // Form submission validation
     addBuildingForm.addEventListener('submit', function(e) {
         const locName = document.getElementById('locName').value.trim();
         const locDescription = document.getElementById('locDescription').value.trim();
         const imageFile = buildingImageInput.files[0];
+        
+        // Validate location name for special characters (except period)
+        const validPattern = /^[a-zA-Z0-9\s.]+$/;
+        if (!validPattern.test(locName)) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Invalid Characters',
+                text: 'Location name can only contain letters, numbers, spaces, and periods.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
         
         // Validate name length
         if (locName.length > 250) {
