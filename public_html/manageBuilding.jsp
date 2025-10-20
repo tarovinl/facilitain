@@ -461,7 +461,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         </c:if>
         
        <!-- confirm status change-->
-        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <!--<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="confirmModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="centered-div bg-white">
@@ -499,7 +499,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
         <!--<div class="modal fade" id="quotConfirmModal" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="quotConfirmModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -1269,32 +1269,83 @@ $(document).ready(function(){
     document.addEventListener("DOMContentLoaded", function () {
         let selectedDropdown = null;
         let previousValue = null;
-        let backdropDismissed = true;
-        
     
-        // Get both tables
         const allItemsTable = document.getElementById("allItemsTable");
         const itemsTable = document.getElementById("itemsTable");
     
-        // Function to handle dropdown changes
         function handleDropdownChange(event) {
             const target = event.target;
             if (target && target.classList.contains("statusDropdown")) {
-                backdropDismissed = true;
                 selectedDropdown = target;
                 previousValue = target.getAttribute("data-prev-value") || target.value;
-    
                 const newValue = target.value;
     
                 if (previousValue === "3" && newValue === "1") {
-                    new bootstrap.Modal(document.getElementById("specialConfirmModal")).show();
+                    showSpecialConfirm();
                 } else {
-                    new bootstrap.Modal(document.getElementById("confirmModal")).show();
+                    showRegularConfirm();
                 }
             }
         }
     
-        // Attach to both tables if they exist
+        function showRegularConfirm() {
+            Swal.fire({
+                title: 'Confirm Status Change',
+                text: 'Are you sure you want to change the status?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#ffffff',
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+                customClass: {
+                 cancelButton: 'btn-cancel-outline'
+                }
+            }).then((result) => {
+                if (result.isConfirmed && selectedDropdown) {
+                    const form = selectedDropdown.closest("form");
+                    const itemMaintTypeInput = form.querySelector("input[name='itemMaintType']");
+                    if (itemMaintTypeInput) {
+                        itemMaintTypeInput.disabled = true;
+                    }
+                    form.submit();
+                } else {
+                    location.reload();
+                }
+            });
+        }
+    
+        function showSpecialConfirm() {
+            Swal.fire({
+                title: 'Reset to Operational?',
+                text: 'Are you sure you want to reset the status back to "Operational"?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#ffffff',
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+                customClass: {
+                 cancelButton: 'btn-cancel-outline'
+                }
+            }).then((result) => {
+                if (result.isConfirmed && selectedDropdown) {
+                    const form = selectedDropdown.closest("form");
+                    const itemMaintTypeInput = form.querySelector("input[name='itemMaintType']");
+                    const modalItemMaintTypeValue = "3";
+                    if (itemMaintTypeInput) {
+                        itemMaintTypeInput.value = modalItemMaintTypeValue;
+                        itemMaintTypeInput.disabled = false;
+                    }
+                    form.submit();
+                } else {
+                    location.reload();
+                }
+            });
+        }
+    
         if (allItemsTable) {
             allItemsTable.addEventListener("change", handleDropdownChange);
         }
@@ -1302,53 +1353,11 @@ $(document).ready(function(){
             itemsTable.addEventListener("change", handleDropdownChange);
         }
     
-        // Initialize original dropdown values
         document.querySelectorAll(".statusDropdown").forEach(dropdown => {
             dropdown.setAttribute("data-prev-value", dropdown.value);
         });
-    
-        // Special modal confirm
-        document.getElementById("specialConfirmBtn").addEventListener("click", function () {
-            if (selectedDropdown) {
-                const form = selectedDropdown.closest("form");
-                const itemMaintTypeInput = form.querySelector("input[name='itemMaintType']");
-                const modalItemMaintTypeValue = document.getElementById("modalItemMaintType").value;    
-                if (itemMaintTypeInput) {
-                    itemMaintTypeInput.value = modalItemMaintTypeValue;
-                    itemMaintTypeInput.disabled = false;
-                }
-                setTimeout(() => {
-                    form.submit();
-                }, 200);
-            }
-            bootstrap.Modal.getInstance(document.getElementById("specialConfirmModal")).hide();
-        });
-    
-        // Regular modal confirm
-        document.getElementById("confirmBtn").addEventListener("click", function () {
-            if (selectedDropdown) {
-                const form = selectedDropdown.closest("form");
-                const itemMaintTypeInput = form.querySelector("input[name='itemMaintType']");
-                if (itemMaintTypeInput) {
-                    itemMaintTypeInput.disabled = true;
-                }
-                setTimeout(() => {
-                    form.submit();
-                }, 200);
-            }
-            bootstrap.Modal.getInstance(document.getElementById("confirmModal")).hide();
-        });
-    
-        // Optional reload on backdrop dismiss
-        $("#confirmModal, #specialConfirmModal").on("hide.bs.modal", function () {
-            if (backdropDismissed) {
-                setTimeout(() => {
-                    location.reload();
-                }, 150);
-            }
-        });
-        
     });
+
 
 
     
