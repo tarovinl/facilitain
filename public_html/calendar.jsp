@@ -173,7 +173,8 @@
                     recurringEvents.push({
                         title: 'Scheduled Maintenance for '+'${cat.itemCat}',
                         start: currentDate.toISOString().split('T')[0],
-                        allDay: true
+                        allDay: true,
+                        color: 'green'
                     });
                     </c:if>
                     </c:forEach>      
@@ -198,6 +199,7 @@
                     start: '${todos.startDate}',
                     end: '${todos.endDate}',
                     <!--display: 'background'-->
+                    color: 'purple'
                 },
             </c:if>
             </c:forEach>
@@ -253,7 +255,7 @@
                                         <td style="padding: 8px; border-bottom: 1px solid #ddd;">`+info.event.start.toLocaleDateString()+`</td>
                                     </tr>
                                     <tr>
-                                        <td style="font-weight: bold; padding: 8px; border-bottom: 1px solid #ddd;">Location/s:</td>
+                                        <td style="font-weight: bold; padding: 8px; border-bottom: 1px solid #ddd;">Location:</td>
                                         <td style="padding: 8px; border-bottom: 1px solid #ddd;">
                                             <div style="max-height: 150px; overflow-y: auto; padding: 4px;">
                                             `+locationList+`
