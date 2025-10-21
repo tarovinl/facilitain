@@ -123,14 +123,20 @@ public class addBuildingController extends HttpServlet {
                     return;
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            String errorMsg = URLEncoder.encode("Database error: " + e.getMessage(), "UTF-8");
-            response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
-            return;
-        }
+            } catch (SQLException e) {
+                String errorMsg;
+                // unique constraint violation
+                if (e.getErrorCode() == 1) { 
+                    errorMsg = URLEncoder.encode("A location with the same name already exists. Please choose a different name.", "UTF-8");
+                } else {
+                    errorMsg = URLEncoder.encode("Database error: " + e.getMessage(), "UTF-8");
+                }
+                // Redirect with error query parameters
+                response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
+                return;
+            }
     
-        // <CHANGE> Redirect with success parameter
+       
         response.sendRedirect(request.getContextPath() + "/homepage?action=added");
     }
 

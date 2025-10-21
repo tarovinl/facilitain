@@ -679,13 +679,14 @@ document.addEventListener('DOMContentLoaded', function() {
             allowOutsideClick: false
         };
 
-        if (error) {
-            alertConfig = {
-                ...alertConfig,
-                title: 'Error!',
-                text: errorMsg || 'An error occurred while adding the location.',
-                icon: 'error'
-            };
+       if (error) {
+    alertConfig = {
+        ...alertConfig,
+        title: 'Error!',
+        text: errorMsg || 'An error occurred while adding the location.',
+        icon: 'error'
+    };
+}
         } else if (action === 'added') {
             alertConfig = {
                 ...alertConfig,
