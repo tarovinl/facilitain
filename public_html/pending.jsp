@@ -102,7 +102,69 @@
                     padding-top: 80px; /* or whatever smaller value you want */
                   }
                 }
+                
 
+#loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(1px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    font-family: 'NeueHaasMedium', sans-serif;
+}
+
+.loading-content {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(252, 204, 76, 0.2);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #fccc4c;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 0;
+    font-family: 'NeueHaasMedium', sans-serif;
+}
+
+@media (max-width: 576px) {
+    .loading-content {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .loading-text {
+        font-size: 1rem;
+    }
+    
+    .loading-spinner {
+        width: 35px;
+        height: 35px;
+    }
+}
     </style>
 </head>
 
@@ -127,11 +189,20 @@
                 </c:forEach>
                 
 <body>
+
+<div id="loadingScreen">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Fetching data</p>
+    </div>
+</div>
+
  <c:set var="page" value="pending" scope="request"/>
     
 <jsp:include page="navbar.jsp"/>
 <jsp:include page="sidebar.jsp"/>
 
+<div class="main-content">
 <div class="container-fluid">
     <div class="row min-vh-100">
    
@@ -427,6 +498,7 @@
     </div>
 </div>
 
+
 <!-- Add Maintenance Modal -->
 <div class="modal fade" id="addMaintenanceModal" tabindex="-1" aria-labelledby="addMaintenanceModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -668,6 +740,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script> 
 
 <script>
+
+function hideLoadingScreen() {
+    $('#loadingScreen').fadeOut(300);
+}
+
+// Hide loading screen when page is fully loaded
+$(window).on('load', function() {
+    setTimeout(hideLoadingScreen, 200);
+});
+
+// Fallback timeout
+setTimeout(function() {
+    if ($('#loadingScreen').is(':visible')) {
+        hideLoadingScreen();
+    }
+}, 8000);
+
 $(document).ready(function() {
     // Custom search function for equipment details
     $.fn.dataTable.ext.search.push(

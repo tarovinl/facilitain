@@ -12,6 +12,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
                
 
@@ -267,7 +268,7 @@
       </a>
     </div>
 
-    <!-- Search Bar (centered on desktop) -->
+    <!-- Search Bar  -->
    <div class="col-4 col-md-6 order-md-2 d-flex justify-content-center">
   <div class="search-container rounded-3">
     <form id="searchForm" action="searchBuildings" method="get">
@@ -496,24 +497,34 @@
 <!-- Add Modal with Images -->
 <div class="modal fade" id="addBuildingModal" tabindex="-1" aria-labelledby="addBuildingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="addbuildingcontroller" method="post" enctype="multipart/form-data">
+       <form id="addBuildingForm" action="addbuildingcontroller" method="post" enctype="multipart/form-data">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addBuildingModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Add Location</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
+                   <div class="mb-3">
                         <label for="locName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Name</label>
-                        <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter location name" style="font-family: 'NeueHaasLight', sans-serif;" required>
+                        <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter location name" style="font-family: 'NeueHaasLight', sans-serif;" maxlength="250" required>
+                        <small class="text-muted" style="font-family: 'NeueHaasLight', sans-serif;">
+                            Only letters, numbers, spaces, and periods allowed. <span id="nameCharCount">0</span>/250 characters
+                        </small>
                     </div>
                     <div class="mb-3">
                         <label for="locDescription" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Description</label>
-                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter location description" style="font-family: 'NeueHaasLight', sans-serif;" required>
+                        <!-- <CHANGE> Added maxlength and character counter -->
+                        <input type="text" class="form-control" id="locDescription" name="locDescription" placeholder="Enter location description" style="font-family: 'NeueHaasLight', sans-serif;" maxlength="250" >
+                        <small class="text-muted" style="font-family: 'NeueHaasLight', sans-serif;">
+                            <span id="descCharCount">0</span>/250 characters
+                        </small>
                     </div>
                     <div class="mb-3">
                         <label for="buildingImage" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Image</label>
                         <input type="file" class="form-control" id="buildingImage" name="buildingImage" accept="image/*" style="font-family: 'NeueHaasLight', sans-serif;">
+                        <small class="text-muted" style="font-family: 'NeueHaasLight', sans-serif;">
+                            Maximum file size: 10MB
+                        </small>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -553,6 +564,147 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const locNameInput = document.getElementById('locName');
+    const locDescInput = document.getElementById('locDescription');
+    const nameCharCount = document.getElementById('nameCharCount');
+    const descCharCount = document.getElementById('descCharCount');
+    
+    // Update character count for name
+    locNameInput.addEventListener('input', function() {
+        nameCharCount.textContent = this.value.length;
+    });
+    
+    // Update character count for description
+    locDescInput.addEventListener('input', function() {
+        descCharCount.textContent = this.value.length;
+    });
+});
+</script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const addBuildingForm = document.getElementById('addBuildingForm');
+    const buildingImageInput = document.getElementById('buildingImage');
+    const locNameInput = document.getElementById('locName');
+    
+    // Real-time validation for location name - prevent special characters except period
+    locNameInput.addEventListener('input', function(e) {
+        // Allow only letters, numbers, spaces, and periods
+        const validPattern = /^[a-zA-Z0-9\s.]*$/;
+        
+        if (!validPattern.test(this.value)) {
+            // Remove invalid characters
+            this.value = this.value.replace(/[^a-zA-Z0-9\s.]/g, '');
+        }
+        
+        // Update character count
+        document.getElementById('nameCharCount').textContent = this.value.length;
+    });
+    
+    // Update character count for description
+    const locDescInput = document.getElementById('locDescription');
+    locDescInput.addEventListener('input', function() {
+        document.getElementById('descCharCount').textContent = this.value.length;
+    });
+    
+    // Form submission validation
+    addBuildingForm.addEventListener('submit', function(e) {
+        const locName = document.getElementById('locName').value.trim();
+        const locDescription = document.getElementById('locDescription').value.trim();
+        const imageFile = buildingImageInput.files[0];
+        
+        // Validate location name for special characters (except period)
+        const validPattern = /^[a-zA-Z0-9\s.]+$/;
+        if (!validPattern.test(locName)) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Invalid Characters',
+                text: 'Location name can only contain letters, numbers, spaces, and periods.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+        
+        // Validate name length
+        if (locName.length > 250) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Validation Error',
+                text: 'Location name must not exceed 250 characters.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+        
+        // Validate description length
+        if (locDescription.length > 250) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Validation Error',
+                text: 'Location description must not exceed 250 characters.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+        
+        // Validate file size (5MB = 5 * 1024 * 1024 bytes)
+        if (imageFile && imageFile.size > 5 * 1024 * 1024) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'File Too Large',
+                text: 'Image file size must not exceed 5MB. Please choose a smaller file.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+    });
+    
+    // Handle SweetAlert2 notifications for success/error messages
+    const urlParams = new URLSearchParams(window.location.search);
+    const action = urlParams.get('action');
+    const error = urlParams.get('error');
+    const errorMsg = urlParams.get('errorMsg');
+
+    if (action || error) {
+        let alertConfig = {
+            confirmButtonText: 'OK',
+            allowOutsideClick: false
+        };
+
+       if (error) {
+    alertConfig = {
+        ...alertConfig,
+        title: 'Error!',
+        text: errorMsg || 'An error occurred while adding the location.',
+        icon: 'error'
+    };
+}
+        } else if (action === 'added') {
+            alertConfig = {
+                ...alertConfig,
+                title: 'Success!',
+                text: 'The new location has been successfully added.',
+                icon: 'success'
+            };
+        }
+
+        Swal.fire(alertConfig).then(() => {
+            // Remove the parameters from the URL without refreshing
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        });
+    }
+});
+</script>
+
 
 <!-- Client-side search functionality -->
 <script>

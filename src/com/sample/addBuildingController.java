@@ -2,6 +2,7 @@ package com.sample;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,9 +16,10 @@ import javax.servlet.http.*;
 import sample.model.PooledConnection;
 
 @WebServlet(name = "addBuildingController", urlPatterns = { "/addbuildingcontroller" })
+// <CHANGE> Updated maxFileSize to 5MB
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-    maxFileSize = 1024 * 1024 * 10, // 10MB
+    maxFileSize = 1024 * 1024 * 10, // 
     maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 public class addBuildingController extends HttpServlet {
@@ -50,10 +52,31 @@ public class addBuildingController extends HttpServlet {
             System.out.println("No file received for buildingImage.");
         }
 
-        // Check if locName and locDescription are null
+        // <CHANGE> Enhanced validation with character limits
+        // Check if locName and locDescription are null or empty
         if (locName == null || locDescription == null || locName.trim().isEmpty() || locDescription.trim().isEmpty()) {
-            request.setAttribute("errorMessage", "Building Name and Description are required fields.");
-            request.getRequestDispatcher("/homepage.jsp").forward(request, response);
+            String errorMsg = URLEncoder.encode("Location name and description are required fields.", "UTF-8");
+            response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
+            return;
+        }
+        
+        // Validate character limits (250 characters)
+        if (locName.trim().length() > 250) {
+            String errorMsg = URLEncoder.encode("Location name must not exceed 250 characters.", "UTF-8");
+            response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
+            return;
+        }
+        
+        if (locDescription.trim().length() > 250) {
+            String errorMsg = URLEncoder.encode("Location description must not exceed 250 characters.", "UTF-8");
+            response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
+            return;
+        }
+        
+        // Validate file size (5MB = 5 * 1024 * 1024 bytes)
+        if (filePart != null && filePart.getSize() > 10 * 1024 * 1024) {
+            String errorMsg = URLEncoder.encode("Image file size must not exceed 10MB.", "UTF-8");
+            response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
             return;
         }
 
@@ -74,9 +97,9 @@ public class addBuildingController extends HttpServlet {
             String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_LOCATIONS (ITEM_LOC_ID, NAME, DESCRIPTION, ARCHIVED_FLAG, IMAGE) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
                 stmt.setInt(1, newItemLocId); // Set the new ITEM_LOC_ID
-                stmt.setString(2, locName);
-                stmt.setString(3, locDescription);
-                stmt.setInt(4, 1); // Assuming 1 means active (not archived)
+                stmt.setString(2, locName.trim());
+                stmt.setString(3, locDescription.trim());
+                stmt.setInt(4, 1); //
 
                 System.out.println("Executing SQL query: " + stmt);
                 // Handle file upload if there's an image provided
@@ -90,19 +113,31 @@ public class addBuildingController extends HttpServlet {
                 int affectedRows = stmt.executeUpdate();
                 if (affectedRows > 0) {
                     System.out.println("Building added successfully with ITEM_LOC_ID: " + newItemLocId);
+                    // <CHANGE> Set session attribute for success message
+                    HttpSession session = request.getSession();
+                    session.setAttribute("addLocationSuccess", true);
                 } else {
                     System.out.println("No rows affected, insertion might have failed.");
+                    String errorMsg = URLEncoder.encode("Failed to add location. Please try again.", "UTF-8");
+                    response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
+                    return;
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "Error adding building: " + e.getMessage());
-            request.getRequestDispatcher("/homepage.jsp").forward(request, response);
-            return;
-        }
+            } catch (SQLException e) {
+                String errorMsg;
+                // unique constraint violation
+                if (e.getErrorCode() == 1) { 
+                    errorMsg = URLEncoder.encode("A location with the same name already exists. Please choose a different name.", "UTF-8");
+                } else {
+                    errorMsg = URLEncoder.encode("Database error: " + e.getMessage(), "UTF-8");
+                }
+                // Redirect with error query parameters
+                response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
+                return;
+            }
     
-        // Redirect to the homepage after successful addition
-        response.sendRedirect(request.getContextPath() + "/homepage");
+       
+        response.sendRedirect(request.getContextPath() + "/homepage?action=added");
     }
 
     @Override

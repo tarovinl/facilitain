@@ -33,6 +33,72 @@
          font-weight: 600;
          font-style: normal;
                             }
+
+        /* Image preview styles */
+        .image-preview-container {
+            position: relative;
+            display: none;
+            margin-top: 10px;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .remove-image-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .remove-image-btn:hover {
+            background-color: #c82333;
+        }
+        
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-upload-label {
+            display: block;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-label:hover {
+            background-color: #e9ecef;
+            border-color: #adb5bd;
+        }
+        
+        .file-upload-label.has-file {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
     
         </style>
        
@@ -122,8 +188,26 @@
         </div>
 
                 
-                    <label for="imageUpload" class=" d-block mt-3 mb-3">Upload an Image <span style="color: red;"> *</span></label>
-                    <input type="file" name="imageUpload" id="imageUpload" class="form-control" accept="image/*" required>
+                    <label for="imageUpload" class="d-block mt-3 mb-2">Upload an Image <span style="color: red;"> *</span></label>
+                    
+                    <!-- File Upload with Custom Styling -->
+                    <div class="file-upload-wrapper">
+                        <input type="file" name="imageUpload" id="imageUpload" class="form-control" accept="image/*" required style="display: none;" onchange="handleImageSelect(event)">
+                        <label for="imageUpload" class="file-upload-label" id="fileUploadLabel">
+                            <i class="bi bi-cloud-upload"></i>
+                            <div class="mt-1">Click to select an image</div>
+                            <small class="text-muted">Supports JPG, PNG, GIF (Max 5MB)</small>
+                        </label>
+                    </div>
+                    
+                    <!-- Image Preview Container -->
+                    <div class="image-preview-container" id="imagePreviewContainer">
+                        <img id="imagePreview" class="image-preview" alt="Image Preview">
+                        <button type="button" class="remove-image-btn" onclick="removeImage()" title="Remove image">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                    
                     <div id="imageUploadError" class="error-message"></div>
 
 
@@ -246,6 +330,74 @@
         // Add event listener to issue textarea for character counting
         document.getElementById('issue').addEventListener('input', updateCharCount);
 
+        // Image preview functions
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const preview = document.getElementById('imagePreview');
+            const label = document.getElementById('fileUploadLabel');
+            const errorDiv = document.getElementById('imageUploadError');
+            
+            // Clear any previous error messages
+            errorDiv.textContent = '';
+            
+            if (file) {
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    errorDiv.textContent = 'Only image files are allowed.';
+                    resetImageUpload();
+                    return;
+                }
+                
+                // Validate file size (5MB = 5 * 1024 * 1024 bytes)
+                if (file.size > 5 * 1024 * 1024) {
+                    errorDiv.textContent = 'Image size must be below 5MB.';
+                    resetImageUpload();
+                    return;
+                }
+                
+                // Create image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    
+                    // Update label appearance
+                    label.classList.add('has-file');
+                    label.innerHTML = `
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <div class="mt-1">Image selected: ${file.name}</div>
+                        <small class="text-success">Click to change image</small>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                resetImageUpload();
+            }
+        }
+        
+        function removeImage() {
+            document.getElementById('imageUpload').value = '';
+            resetImageUpload();
+        }
+        
+        function resetImageUpload() {
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const preview = document.getElementById('imagePreview');
+            const label = document.getElementById('fileUploadLabel');
+            
+            // Hide preview
+            previewContainer.style.display = 'none';
+            preview.src = '';
+            
+            // Reset label
+            label.classList.remove('has-file');
+            label.innerHTML = `
+                <i class="bi bi-cloud-upload"></i>
+                <div class="mt-1">Click to select an image</div>
+                <small class="text-muted">Supports JPG, PNG, GIF (Max 5MB)</small>
+            `;
+        }
 
 </script>
             <script>
