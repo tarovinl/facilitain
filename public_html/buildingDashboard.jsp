@@ -368,7 +368,7 @@ function generateReport() {
                                 </c:if>
                             </c:if>
                         </c:forEach>
-                        ['${month}', '${repairCount}'],
+                        ['${month}', '${repairCount2}'],
                     </c:forEach>
                 ],
                 theme: 'grid',
