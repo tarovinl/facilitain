@@ -368,7 +368,7 @@ function generateReport() {
                                 </c:if>
                             </c:if>
                         </c:forEach>
-                        ['${month}', '${repairCount}'],
+                        ['${month}', '${repairCount2}'],
                     </c:forEach>
                 ],
                 theme: 'grid',
@@ -709,14 +709,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // FALLBACK MESSAGE IF NO ITEMS VISIBLE
-    function addNoDataMessage(containerId) {
+    function addNoDataMessage(containerId, message) {
         const container = document.getElementById(containerId);
         const visibleItems = container.querySelectorAll('.actItem:not([style*="display: none"])');
         if (visibleItems.length === 0) {
             const noDataDiv = document.createElement('div');
             noDataDiv.className = 'd-flex justify-content-center align-items-center text-muted';
             noDataDiv.style.minHeight = "100%";  // takes full container height
-            noDataDiv.textContent = 'No data to show';
+            
+            noDataDiv.textContent = message;
             
             // clear out anything left just in case
             container.innerHTML = '';
@@ -724,8 +725,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    addNoDataMessage('upcoming-activities');
-    addNoDataMessage('recent-activities');
+    addNoDataMessage('upcoming-activities', 'No upcoming activities');
+    addNoDataMessage('recent-activities', 'No recent activities');
 });
 </script>
 

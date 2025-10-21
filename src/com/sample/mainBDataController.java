@@ -120,7 +120,8 @@ public class mainBDataController extends HttpServlet {
                              .append("CASE WHEN i.ac_accu = 1 THEN 'ACCU ' ELSE '' END || ")
                              .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
                              .append(")")
-                             .append(") LIKE ? ")
+                             .append(") LIKE ? OR ")
+                             .append("TO_CHAR(i.date_installed, 'YYYY-MM-DD') LIKE ? ")
                              .append(")");
                     }
 
@@ -142,6 +143,7 @@ public class mainBDataController extends HttpServlet {
                             ps.setString(paramIndex++, sv); // room_no
                             ps.setString(paramIndex++, sv); // item_id (casted)
                             ps.setString(paramIndex++, sv); // ac_typez
+                            ps.setString(paramIndex++, sv); // date_installed
                         }
                     ps.setInt(paramIndex++, start + length);
                     ps.setInt(paramIndex, start);
@@ -310,7 +312,8 @@ public class mainBDataController extends HttpServlet {
                                     .append("CASE WHEN i.ac_fcu = 1 THEN 'FCU ' ELSE '' END || ")
                                     .append("CASE WHEN i.ac_accu = 1 THEN 'ACCU ' ELSE '' END || ")
                                     .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
-                                    .append(")) LIKE ? ")
+                                    .append(")) LIKE ? OR ")
+                                    .append("TO_CHAR(i.date_installed, 'YYYY-MM-DD') LIKE ? ")
                                     .append(")");
 
                     try (PreparedStatement ps = conn.prepareStatement(countFilteredSql.toString())) {
@@ -325,6 +328,7 @@ public class mainBDataController extends HttpServlet {
                         ps.setString(idx++, sv); // room_no
                         ps.setString(idx++, sv); // item_id
                         ps.setString(idx++, sv); // ac_typez
+                        ps.setString(idx++, sv); // date_installed
 
                         ResultSet rs = ps.executeQuery();
                         if (rs.next()) {

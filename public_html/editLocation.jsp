@@ -229,6 +229,7 @@
                 <div class="col">
                     <label for="locName" class="form-label h4" style="font-family: NeueHaasMedium, sans-serif !important;"> Name</label>
                     <input type="text" class="form-control" id="locName" name="locName" value="${locName}" required>
+                    <small class="text-muted">Only letters, numbers, spaces, and periods allowed.</small>
                 </div>
             </div>
     
@@ -439,6 +440,7 @@
                                 <div class="col">
                                     <label for="flrName" class="fw-bold">Floor Name <span style="color: red;">*</span></label>
                                     <input type="text" name="editFlrName" id="editFlrName" class="form-control mt-3" maxlength="15" required>
+                                    <small class="text-muted">Only letters, numbers, spaces, and periods allowed.</small>
                                 </div>
                             </div>
                             <input type="hidden" name="editFlrLocID" id="editFlrLocID" class="form-control" value="${locID}">
@@ -476,6 +478,7 @@
           <div class="mb-3">
             <label for="addFlrName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Floor Name <span style="color: red;">*</span></label>
             <input type="text" name="addFlrName" id="addFlrName" class="form-control" maxlength="15" style="font-family: 'NeueHaasLight', sans-serif;" required>
+            <small class="text-muted">Only letters, numbers, spaces, and periods allowed.</small>
           </div>
           <div class="mb-3">
             <label for="addFlrDesc" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Floor Description</label>
@@ -813,6 +816,106 @@
             }
         });
     });
+    
+    
+    document.addEventListener('DOMContentLoaded', function() {
+    // Pattern that allows only letters, numbers, spaces, and periods
+    const validPattern = /^[a-zA-Z0-9\s.]*$/;
+    
+  
+    const locNameInput = document.getElementById('locName');
+    
+    if (locNameInput) {
+        // Real-time validation - prevent special characters as user types
+        locNameInput.addEventListener('input', function(e) {
+            if (!validPattern.test(this.value)) {
+                // Remove invalid characters
+                this.value = this.value.replace(/[^a-zA-Z0-9\s.]/g, '');
+            }
+        });
+        
+        // Form submission validation for location details
+        const locationForm = locNameInput.closest('form');
+        if (locationForm) {
+            locationForm.addEventListener('submit', function(e) {
+                const locName = locNameInput.value.trim();
+                
+                if (!validPattern.test(locName)) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Invalid Characters',
+                        text: 'Location name can only contain letters, numbers, spaces, and periods.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+            });
+        }
+    }
+    
+   
+    const addFlrNameInput = document.getElementById('addFlrName');
+    
+    if (addFlrNameInput) {
+        // Real-time validation
+        addFlrNameInput.addEventListener('input', function(e) {
+            if (!validPattern.test(this.value)) {
+                this.value = this.value.replace(/[^a-zA-Z0-9\s.]/g, '');
+            }
+        });
+        
+        // Form submission validation
+        const addFloorForm = addFlrNameInput.closest('form');
+        if (addFloorForm) {
+            addFloorForm.addEventListener('submit', function(e) {
+                const floorName = addFlrNameInput.value.trim();
+                
+                if (!validPattern.test(floorName)) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Invalid Characters',
+                        text: 'Floor name can only contain letters, numbers, spaces, and periods.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+            });
+        }
+    }
+    
+
+    const editFlrNameInput = document.getElementById('editFlrName');
+    
+    if (editFlrNameInput) {
+        // Real-time validation
+        editFlrNameInput.addEventListener('input', function(e) {
+            if (!validPattern.test(this.value)) {
+                this.value = this.value.replace(/[^a-zA-Z0-9\s.]/g, '');
+            }
+        });
+        
+        // Form submission validation
+        const editFloorForm = editFlrNameInput.closest('form');
+        if (editFloorForm) {
+            editFloorForm.addEventListener('submit', function(e) {
+                const floorName = editFlrNameInput.value.trim();
+                
+                if (!validPattern.test(floorName)) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Invalid Characters',
+                        text: 'Floor name can only contain letters, numbers, spaces, and periods.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+            });
+        }
+    }
+});
 </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>

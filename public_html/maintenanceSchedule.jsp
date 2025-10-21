@@ -59,6 +59,45 @@
                 padding-top: 80px;
             }
         }
+        
+        .remarks-cell {
+            max-width: 250px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .remarks-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+               .remarks-btn {
+            border: none;
+            background-color: transparent;
+            color: #6c757d;
+            padding: 0;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;  
+        }
+        
+        .remarks-btn:hover {
+            color: #495057;  
+            transform: scale(1.1); 
+        }
+        
+        .remarks-btn:active {
+            transform: scale(0.95);  
+        }
+        @media (max-width: 768px) {
+            .remarks-cell {
+                max-width: 150px;
+            }
+            .remarks-text {
+                max-width: 100px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -106,7 +145,22 @@
                                     </c:forEach>
                                 </td>
                                 <td>${maintenance.noOfDays}</td>
-                                <td>${maintenance.remarks}</td>
+                                   <td>
+                                    <div class="remarks-cell">
+                                        <span class="remarks-text" title="${maintenance.remarks}">${maintenance.remarks}</span>
+                                        <c:if test="${not empty maintenance.remarks}">
+                                            <button class="btn btn-sm remarks-btn" 
+                                                type="button" 
+                                                data-bs-toggle="popover" 
+                                                data-bs-placement="left"
+                                                data-bs-trigger="click"
+                                                data-bs-content="${maintenance.remarks}"
+                                                title="Full Remark">
+                                            ...
+                                            </button>
+                                        </c:if>
+                                    </div>
+                                </td>
                                 <td>${maintenance.noOfDaysWarning}</td>
                                 <td>
                                     <button class="btn btn-primary btn-sm" 
@@ -499,6 +553,39 @@ function toggleEditQuarterlyOptions() {
         document.getElementById('editMonth').value = "";
     }
 }
+
+ const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl, {
+            trigger: 'click',
+            html: true,
+            customClass: 'remarks-popover'
+        });
+    });
+    // Close popover when clicking outside
+    document.addEventListener('click', function(event) {
+        popoverTriggerList.forEach(function(trigger) {
+            if (!trigger.contains(event.target) && !document.querySelector('.popover')?.contains(event.target)) {
+                bootstrap.Popover.getInstance(trigger)?.hide();
+            }
+        });
+    });
+    
+    // Show ellipsis button only if text is truncated
+document.addEventListener('DOMContentLoaded', function() {
+    const remarksTexts = document.querySelectorAll('.remarks-text');
+    remarksTexts.forEach(function(textEl) {
+        const button = textEl.nextElementSibling;
+        if (button && button.classList.contains('remarks-btn')) {
+            // Check if text is truncated
+            if (textEl.scrollWidth > textEl.clientWidth) {
+                button.style.display = 'inline-block';
+            } else {
+                button.style.display = 'none';
+            }
+        }
+    });
+});
 </script>
 </body>
 </html>

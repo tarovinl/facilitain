@@ -469,7 +469,7 @@
 <!--add to do list item modal-->
 <div class="modal fade" id="addToDo" tabindex="-1" aria-labelledby="addToDo" aria-hidden="true">
     <div class="modal-dialog">
-        <form id="addToDoForm">
+        <form action="todolistcontroller" method="post">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addToDoListLabel">Add To-Do List Item</h5>
@@ -489,8 +489,8 @@
                         <input type="datetime-local" name="tdListEnd" id="tdListEnd" class="form-control" onchange="validateEndDate()" required>
                     </div>
                     <div id="validationMessage" class="text-danger"></div>
-                    <input type="hidden" name="originalUrl" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />
-                    <input type="hidden" name="userNum" value="${empNum}" />
+                    <input type="hidden" name="originalUrl" class="form-control" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />
+                    <input type="hidden" name="userNum" class="form-control" value="${empNum}" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
@@ -569,21 +569,40 @@ function loadToDoList(empNum) {
                 var taskCell = checked ? '<s>' + todo.content + '</s>' : todo.content;
                 var startCell = checked ? '<s>' + todo.startDate + '</s>' : todo.startDate;
                 var endCell = checked ? '<s>' + todo.endDate + '</s>' : todo.endDate;
+                var checkVal = checked ? 'uncheck' : 'check';
                 var checkIcon = checked ? 'eks-square' : 'square-check';
 
-                row.innerHTML = 
+                row.innerHTML = '' +
                     '<td>' + taskCell + '</td>' +
                     '<td>' + startCell + '</td>' +
                     '<td>' + endCell + '</td>' +
                     '<td>' +
-                        '<button class="btn btn-sm" onclick="toggleCheck(' + todo.id + ', ' + checked + ')">' +
-                            '<img src="resources/images/icons/' + checkIcon + '.svg" width="24" height="24">' +
-                        '</button>' +
+                        '<form action="todolistcontroller" method="post">' +
+                            '<input type="hidden" name="originalUrl" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />' +
+                            '<input type="hidden" name="tdListId" value="' + todo.id + '" />' +
+                            '<input type="hidden" name="tdListContent" value="' + todo.content + '" />' +
+                            '<input type="hidden" name="tdListStart" value="' + todo.startDate + '" />' +
+                            '<input type="hidden" name="tdListEnd" value="' + todo.endDate + '" />' +
+                            '<input type="hidden" name="tdListChecked" value="' + todo.isChecked + '" />' +
+                            '<input type="hidden" name="tdListCreationDate" value="' + todo.creationDate + '" />' +
+                            '<button type="submit" name="tdAction" value="' + checkVal + '" style="background: none; border: none; padding: 0;">' +
+                                '<img src="resources/images/icons/' + checkIcon + '.svg" width="24" height="24">' +
+                            '</button>' +
+                        '</form>' +
                     '</td>' +
                     '<td>' +
-                        '<button class="btn btn-sm" onclick="deleteTodo(' + todo.id + ')">' +
-                            '<img src="resources/images/icons/trash-can.svg" width="24" height="24">' +
-                        '</button>' +
+                        '<form action="todolistcontroller" method="post">' +
+                            '<input type="hidden" name="originalUrl" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />' +
+                            '<input type="hidden" name="tdListId" value="' + todo.id + '" />' +
+                            '<input type="hidden" name="tdListContent" value="' + todo.content + '" />' +
+                            '<input type="hidden" name="tdListStart" value="' + todo.startDate + '" />' +
+                            '<input type="hidden" name="tdListEnd" value="' + todo.endDate + '" />' +
+                            '<input type="hidden" name="tdListChecked" value="' + todo.isChecked + '" />' +
+                            '<input type="hidden" name="tdListCreationDate" value="' + todo.creationDate + '" />' +
+                            '<button type="submit" name="tdAction" value="delete" style="background: none; border: none; padding: 0;">' +
+                                '<img src="resources/images/icons/trash-can.svg" width="24" height="24">' +
+                            '</button>' +
+                        '</form>' +
                     '</td>';
                     
                 tbody.appendChild(row);
@@ -597,6 +616,7 @@ function loadToDoList(empNum) {
 }
 </script>
 
+<!-- bad eggs
 <script>
 function toggleCheck(id, isChecked) {
     var formData = new FormData();
@@ -642,7 +662,7 @@ document.getElementById('addToDoForm').addEventListener('submit', function(e) {
             console.error('Add to-do failed:', err); 
         });
 });
-</script>
+</script>-->
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

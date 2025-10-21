@@ -76,7 +76,7 @@
                             <td>${user.userId}</td>
                             <td>${user.name}</td>
                             <td>${user.email}</td>
-                            <td>
+                            <td data-search="${user.role}">
                                 <form action="itemUser" method="post" class="role-form">
                                     <input type="hidden" name="userId" value="${user.userId}">
                                     <select name="role" class="form-select form-select-sm" onchange="this.form.submit()">
@@ -99,7 +99,20 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#itemUserTable').DataTable();
+        $('#itemUserTable').DataTable({
+            columnDefs: [{
+                targets: 3,
+                orderDataType: 'dom-select',
+                searchable: true
+            }]
+        });
+
+        // Custom sorting for select elements
+        $.fn.dataTable.ext.order['dom-select'] = function (settings, col) {
+            return this.api().column(col, {order: 'index'}).nodes().map(function (td) {
+                return $('select', td).val();
+            });
+        };
 
         // Show SweetAlert2 alert if success parameter is present
         const urlParams = new URLSearchParams(window.location.search);
