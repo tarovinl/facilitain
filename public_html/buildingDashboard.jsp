@@ -324,7 +324,8 @@ function generateReport() {
                 </c:forEach>
                 
                 <c:if test="${itemCount2 > 0}">
-                    const colorIndex = colorCounter % colors.length;
+                    // Draw color box
+                    let colorIndex = ${status.index} % colors.length;
                     doc.setFillColor(
                         colors[colorIndex].r,
                         colors[colorIndex].g,

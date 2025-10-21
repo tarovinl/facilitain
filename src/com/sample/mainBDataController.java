@@ -254,7 +254,7 @@ public class mainBDataController extends HttpServlet {
                         ));
 
                         // Actions dropdown (only for admin)
-                        if ("Admin".equals(userRole)) {
+                        //if ("Admin".equals(userRole)) {
                             row.put("actions", buildActionsDropdown(
                                                     itemId,
                                                     statusId,
@@ -281,9 +281,10 @@ public class mainBDataController extends HttpServlet {
                                                     uoMeasure,
                                                     elecV,
                                                     elecPH,
-                                                    elecHZ
+                                                    elecHZ,
+                                                    userRole
                                                    ));
-                        }
+                        //}
                         
                         data.add(row);
                     }
@@ -442,7 +443,8 @@ public class mainBDataController extends HttpServlet {
             String uoMeasure,
             int elecV,
             int elecPH,
-            int elecHZ
+            int elecHZ,
+            String userRole
         ) {
             String quotationHtml = "<form id='quotForm' method='GET' action='quotations.jsp' style='display: none;'>" +
                                        "<input type='hidden' name='displayQuotItemID' id='hiddenItemID'>" +
@@ -454,38 +456,53 @@ public class mainBDataController extends HttpServlet {
                                        "onclick='openQuotModal(this)'>" +
                                        "Quotations" +
                                    "</a>";
+            String archiveHtml = "";
+                if ("Admin".equalsIgnoreCase(userRole)) {
+                    archiveHtml =
+                        "<a class='dropdown-item archive-maintenance-btn' href='#' " +
+                            "data-toggle='modal' " +
+                            "data-itemaid='" + itemId + "' " +
+                            "data-itemaname='" + itemName + "'>" +
+                            "Archive" +
+                        "</a>";
+                }
+            String editHtml = "";
+                if ("Admin".equalsIgnoreCase(userRole)) {
+                    editHtml =
+                    "<a class='dropdown-item' href='#' " +
+                        "data-toggle='modal' " +
+                        "data-target='#editEquipment' " +
+                        "data-itemid='" + itemId + "' " +
+                        "data-itemname='" + itemName + "' " +
+                        "data-itembrand='" + itemBrand + "' " +
+                        "data-dateinst='" + dateInstalled + "' " +
+                        "data-itemexpiry='" + dateExpiry + "' " +
+                        "data-itemcat='" + catID + "' " +
+                        "data-itemfloor='" + itemFloor + "' " +
+                        "data-itemroom='" + itemRoom + "' " +
+                        "data-itemtype='" + typeID + "' " +
+                        "data-itemloctext='" + locText + "' " +
+                        "data-itemremarks='" + remarks + "' " +
+                        "data-itempcc='" + pcCode + "' " +
+                        "data-accu='" + acACCU + "' " +
+                        "data-fcu='" + acFCU + "' " +
+                        "data-inverter='" + acInv + "' " +
+                        "data-itemcapacity='" + capacity + "' " +
+                        "data-itemmeasure='" + uoMeasure + "' " +
+                        "data-itemev='" + elecV + "' " +
+                        "data-itemeph='" + elecPH + "' " +
+                        "data-itemehz='" + elecHZ + "' " +
+                        "onclick='populateEditModal(this); floorERender(); setFloorSelection(this); toggleEAirconDiv(" + catID + ");'>" +
+                        "Edit" +
+                    "</a>";
+                }
             
             return "<div class='dropdown'>" +
                    "<button class='btn btn-link p-0' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
                    "<img src='resources/images/kebabMenu.svg' alt='Actions' width='20' height='20'>" +
                    "</button>" +
                    "<div class='dropdown-menu'>" +
-                     "<a class='dropdown-item' href='#' " +
-                         "data-toggle='modal' " +
-                         "data-target='#editEquipment' " +
-                         "data-itemid='" + itemId + "' " +
-                         "data-itemname='" + itemName + "' " +
-                         "data-itembrand='" + itemBrand + "' " +
-                         "data-dateinst='" + dateInstalled + "' " +
-                         "data-itemexpiry='" + dateExpiry + "' " +
-                         "data-itemcat='" + catID + "' " +
-                         "data-itemfloor='" + itemFloor + "' " +
-                         "data-itemroom='" + itemRoom + "' " +
-                         "data-itemtype='" + typeID + "' " +
-                         "data-itemloctext='" + locText + "' " +
-                         "data-itemremarks='" + remarks + "' " +
-                         "data-itempcc='" + pcCode + "' " +
-                         "data-accu='" + acACCU + "' " +
-                         "data-fcu='" + acFCU + "' " +
-                         "data-inverter='" + acInv + "' " +
-                         "data-itemcapacity='" + capacity + "' " +
-                         "data-itemmeasure='" + uoMeasure + "' " +
-                         "data-itemev='" + elecV + "' " +
-                         "data-itemeph='" + elecPH + "' " +
-                         "data-itemehz='" + elecHZ + "' " +
-                         "onclick='populateEditModal(this); floorERender(); setFloorSelection(this); toggleEAirconDiv(" + catID + ");'>" +
-                         "Edit" +
-                     "</a>" +
+                     editHtml +
                      quotationHtml +
                      "<a class='dropdown-item history-btn' href='#' " +
                          "data-toggle='modal' " +
@@ -493,12 +510,7 @@ public class mainBDataController extends HttpServlet {
                          "data-itemhid='" + itemId + "'>" +
                          "History" +
                      "</a>" +
-                     "<a class='dropdown-item archive-maintenance-btn' href='#' " +
-                         "data-toggle='modal' " +
-                         "data-itemaid='" + itemId + "' " +
-                         "data-itemaname='" + itemName + "'>" +
-                         "Archive" +
-                     "</a>" +
+                     archiveHtml +
                    "</div>" +
                  "</div>";
 

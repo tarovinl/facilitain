@@ -450,9 +450,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                         <th>Date Installed</th>
                         <th>Capacity</th>
                         <th>Status</th>
-                        <c:if test="${sessionScope.role == 'Admin'}">
                             <th>Actions</th>
-                        </c:if>
                     </tr>
                 </thead>
             </table>
@@ -549,9 +547,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                         <th>Date Installed</th>
                         <th>Capacity</th>
                         <th>Status</th>
-                        <c:if test="${sessionScope.role == 'Admin'}">
                             <th>Actions</th>
-                        </c:if>
                     </tr>
                 </thead>
             </table>
@@ -1221,9 +1217,7 @@ $(document).ready(function(){
             { data: 'capacity' },
             { data: 'status', orderable: false },
             // Actions column only if Admin
-            <% if ("Admin".equals(session.getAttribute("role"))) { %>
             { data: 'actions', orderable: false, searchable: false }
-            <% } %>
             
         ]
     });
@@ -1255,9 +1249,7 @@ $(document).ready(function(){
             { data: 'capacity' },
             { data: 'status', orderable: false },
             // Actions column only if Admin
-            <% if ("Admin".equals(session.getAttribute("role"))) { %>
             { data: 'actions', orderable: false, searchable: false }
-            <% } %>
         ]
     });
 });
