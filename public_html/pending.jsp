@@ -255,9 +255,9 @@
                                             <td >${type.itemType}</td>
                                         </c:if>
                                     </c:forEach>--%>
-                                    <c:forEach items="${FMO_ITEMS_LIST}" var="item" >
+                                    <%--<c:forEach items="${FMO_ITEMS_LIST}" var="item" >
                                         <c:if test="${item.itemMaintStat != 1}">
-                                           <!--loop to get cat and type-->
+                                           --%><!--loop to get cat and type--><%--
                                             <c:forEach items="${FMO_TYPES_LIST}" var="type" >
                                             <c:if test="${type.itemTID == item.itemTID}">
                                                 <c:set var="itemType" value="${type.itemType}" />
@@ -269,13 +269,13 @@
                                             </c:if>
                                             </c:forEach>
                                             
-                                            <!--loop to get loc name-->
+                                            --%><!--loop to get loc name--><%--
                                             <c:forEach items="${locations}" var="loc" >
                                             <c:if test="${loc.itemLocId == item.itemLID}">
                                                 <c:set var="itemLoc" value="${loc.locName}" />
                                             </c:if>
                                             </c:forEach>
-                                            <!--loop to get stat name-->
+                                            --%><!--loop to get stat name--><%--
                                             <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
                                                 <c:if test="${status.itemMaintStat == item.itemMaintStat}">
                                                     <c:set var="statName" value="${status.maintStatName}" />
@@ -311,7 +311,7 @@
                                             <td style="display: none;">${itemCat} ${itemType} ${item.itemBrand} ${itemLoc} ${item.itemFloor}</td>
                                         </tr>
                                         </c:if>
-                                    </c:forEach>
+                                    </c:forEach>--%>
                                             <!--static table data:-->
                                         <!--<tr data-id="1" data-equipment="Fire Extinguisher" data-status="In Progress" data-serial="09222222" data-brand="XYZ Fire Safety" data-location="Building A, Floor 1">
                                             <td>Fire Extinguisher</td>
@@ -384,7 +384,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach items="${FMO_MAINT_ASSIGN}" var="maintass" >
+                                        <%--<c:forEach items="${FMO_MAINT_ASSIGN}" var="maintass" >
                                         <c:if test="${maintass.isCompleted == 0}">
                                         <c:set var="maintName" value="" />
                                         <c:set var="maintBLID" value="" />
@@ -399,7 +399,7 @@
                                                     <c:set var="maintBLID" value="${item.itemLID}" />
                                                     <c:set var="maintBStat" value="${item.itemMaintStat}" />
                                                     
-                                                    <!-- Get equipment details for this item -->
+                                                    --%><!-- Get equipment details for this item --><%--
                                                     <c:forEach items="${FMO_TYPES_LIST}" var="type" >
                                                     <c:if test="${type.itemTID == item.itemTID}">
                                                         <c:set var="maintItemType" value="${type.itemType}" />
@@ -456,7 +456,7 @@
                                                   <img src="resources/images/kebabMenu.svg" alt="Actions" width="20" height="20">
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                  <!-- Edit Option -->
+                                                  --%><!-- Edit Option --><%--
                                                   <li>
                                                     <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editMaintenanceModal"
                                                     data-mainteid="${maintass.assignID}"
@@ -468,7 +468,7 @@
                                                     onclick="populateEditMaintenance(this)"
                                                     >Edit</a>
                                                   </li>
-                                                  <!-- Delete Option -->
+                                                  --%><!-- Delete Option --><%--
                                                   <li>
                                                     <a class="dropdown-item delete-maintenance-btn" href="#" data-bs-toggle="modal"
                                                     data-maintdid="${maintass.assignID}">Delete</a>
@@ -479,7 +479,7 @@
                                             <td style="display: none;">${maintEquipmentDetails}</td>
                                         </tr>
                                         </c:if>
-                                        </c:forEach>
+                                        </c:forEach>--%>
                                         <!--<tr data-id="3" data-equipment="Elevator Motor" data-status="Needs Maintenance" data-serial="ELV-33321" 
                                             data-brand="LiftTech" data-location="Building C, Floor 1">
                                             <td>Elevator Motor</td>
@@ -758,61 +758,34 @@ setTimeout(function() {
 }, 8000);
 
 $(document).ready(function() {
-    // Custom search function for equipment details
-    $.fn.dataTable.ext.search.push(
-        function(settings, data, dataIndex) {
-           
-            if (settings.nTable.id !== 'maintenanceTable' && settings.nTable.id !== 'scheduledMaintTable') {
-                return true;
-            }
-            
-            var searchTerm = settings.oPreviousSearch.sSearch.toLowerCase();
-            if (!searchTerm) {
-                return true;
-            }
-            
-            // Get the row element to access data attributes
-            var row = $(settings.nTable).find('tbody tr').eq(dataIndex);
-            
-            // For maintenanceTable, search through data attributes
-            if (settings.nTable.id === 'maintenanceTable') {
-                var equipment = (row.data('equipment') || '').toString().toLowerCase();
-                var brand = (row.data('brand') || '').toString().toLowerCase();
-                var location = (row.data('location') || '').toString().toLowerCase();
-                var serial = (row.data('serial') || '').toString().toLowerCase();
-                var statname = (row.data('statname') || '').toString().toLowerCase();
-                
-                // Also search in visible columns
-                var visibleText = data.join(' ').toLowerCase();
-                
-                // Check if search term matches any of the fields
-                if (visibleText.indexOf(searchTerm) !== -1 ||
-                    equipment.indexOf(searchTerm) !== -1 ||
-                    brand.indexOf(searchTerm) !== -1 ||
-                    location.indexOf(searchTerm) !== -1 ||
-                    serial.indexOf(searchTerm) !== -1 ||
-                    statname.indexOf(searchTerm) !== -1) {
-                    return true;
-                }
-            }
-            
-            // For scheduledMaintTable, search through visible columns and hidden equipment details column
-            if (settings.nTable.id === 'scheduledMaintTable') {
-                var allText = data.join(' ').toLowerCase();
-                if (allText.indexOf(searchTerm) !== -1) {
-                    return true;
-                }
-            }
-            
-            return false;
-        }
-    );
-    
-    // Initialize DataTable for maintenance table
+    // Initialize DataTable for maintenance table with server-side processing
     var maintenanceTable = $('#maintenanceTable').DataTable({
+        processing: true,
+        serverSide: true,
         responsive: true,
+        ajax: {
+            url: 'maintenancePage',
+            type: 'GET',
+            data: function(d) {
+                d.ajax = 'equipmentTable';
+            },
+            error: function(xhr, error, thrown) {
+                console.error('Equipment DataTables error:', error, thrown);
+                console.error('Response:', xhr.responseText);
+                hideLoadingScreen();
+            }
+        },
+        columns: [
+            { data: 'itemName' },
+            { data: 'status' },
+            { data: 'plannedDate' },
+            { data: 'equipment', visible: false, searchable: true }
+        ],
         order: [[2, 'desc']], // Sort by Date Notified in descending order
+        pageLength: 5, // Show 5 entries per page to match panel height
+        lengthMenu: [5, 10, 25, 50],
         language: {
+            processing: "Loading data...",
             search: "Search:",
             lengthMenu: "Show _MENU_ entries",
             info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -823,18 +796,82 @@ $(document).ready(function() {
                 previous: "Previous"
             }
         },
-        pageLength: 5, // Show 5 entries per page to match panel height
-        lengthMenu: [5, 10, 25, 50],
-        columnDefs: [
-            { targets: [3], visible: false, searchable: true } // Hide equipment details column but keep it searchable
-        ]
+        drawCallback: function() {
+            // Hide loading screen after first draw
+            hideLoadingScreen();
+            // Reattach click handlers after each draw
+            attachMaintenanceRowClickHandlers();
+            // Recalculate heights
+            resetCardHeights();
+            equalizeCardHeights();
+        }
     });
     
-    // Initialize DataTable for scheduled maintenance table
+    // Initialize DataTable for scheduled maintenance table with server-side processing
     var scheduledMaintTable = $('#scheduledMaintTable').DataTable({
+        processing: true,
+        serverSide: true,
         responsive: true,
+        ajax: {
+            url: 'maintenancePage',
+            type: 'GET',
+            data: function(d) {
+                d.ajax = 'scheduledTable';
+            },
+            error: function(xhr, error, thrown) {
+                console.error('Scheduled DataTables error:', error, thrown);
+                console.error('Response:', xhr.responseText);
+            }
+        },
+        columns: [
+            { data: 'itemName' },
+            { data: 'maintTypeName' },
+            { data: 'userName' },
+            { data: 'dateOfMaint' },
+            { 
+                data: null,
+                orderable: false,
+                render: function(data, type, row) {
+                    if (row.isCurrentUser) {
+                        return '<button type="button" class="btn btn-warning update-bstatus-btn" ' +
+                               'data-bs-toggle="modal" data-bs-target="#updateStatusModal" ' +
+                               'data-itembid="' + row.itemID + '" ' +
+                               'data-itemblid="' + row.locId + '" ' +
+                               'data-itembstatus="' + row.maintStatus + '">Update Status</button>';
+                    }
+                    return '';
+                }
+            },
+            {
+                data: null,
+                orderable: false,
+                render: function(data, type, row) {
+                    return '<div class="dropdown">' +
+                           '<button class="btn btn-link p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+                           '<img src="resources/images/kebabMenu.svg" alt="Actions" width="20" height="20">' +
+                           '</button>' +
+                           '<ul class="dropdown-menu">' +
+                           '<li><a class="dropdown-item" href="#" data-bs-toggle="modal" ' +
+                           'data-bs-target="#editMaintenanceModal" ' +
+                           'data-mainteid="' + row.assignID + '" ' +
+                           'data-maintename="' + row.itemName + '" ' +
+                           'data-itemeid="' + row.itemID + '" ' +
+                           'data-usereid="' + row.userID + '" ' +
+                           'data-mainttypeeid="' + row.maintTypeID + '" ' +
+                           'data-datemaint="' + row.dateOfMaint + '" ' +
+                           'onclick="populateEditMaintenance(this)">Edit</a></li>' +
+                           '<li><a class="dropdown-item delete-maintenance-btn" href="#" ' +
+                           'data-maintdid="' + row.assignID + '">Delete</a></li>' +
+                           '</ul></div>';
+                }
+            },
+            { data: 'equipment', visible: false, searchable: true }
+        ],
         order: [[3, 'desc']], // Sort by Date of Maintenance in descending order
+        pageLength: 5, // Show 5 entries per page to match panel height
+        lengthMenu: [5, 10, 25, 50],
         language: {
+            processing: "Loading data...",
             search: "Search:",
             lengthMenu: "Show _MENU_ entries",
             info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -845,11 +882,10 @@ $(document).ready(function() {
                 previous: "Previous"
             }
         },
-        pageLength: 5, // Show 5 entries per page to match panel height
-        lengthMenu: [5, 10, 25, 50],
-        columnDefs: [
-            { targets: [6], visible: false, searchable: true } // Hide equipment details column but keep it searchable
-        ]
+        drawCallback: function() {
+            resetCardHeights();
+            equalizeCardHeights();
+        }
     });
 
     // Ensure equal heights of both panels
@@ -886,22 +922,10 @@ $(document).ready(function() {
         equalizeCardHeights();
     });
 
-    // Run when DataTable is drawn (pagination, search, etc.)
-    maintenanceTable.on('draw', function() {
-        resetCardHeights();
-        equalizeCardHeights();
-    });
-
     // Run when DataTable page length is changed
     maintenanceTable.on('length', function() {
         resetCardHeights();
         setTimeout(equalizeCardHeights, 200); // Slight delay to ensure DOM updates
-    });
-
-    // Run when scheduled maintenance table is drawn
-    scheduledMaintTable.on('draw', function() {
-        resetCardHeights();
-        equalizeCardHeights();
     });
 
     // Run when scheduled maintenance table page length is changed
@@ -910,131 +934,142 @@ $(document).ready(function() {
         setTimeout(equalizeCardHeights, 200); // Slight delay to ensure DOM updates
     });
 
-    // Handle row clicks to show details
-    $('#maintenanceTable tbody').on('click', 'tr', function() {
-        const equipmentId = $(this).data('id');
-        const equipment = $(this).data('equipment');
-        const status = $(this).data('status');
-        const status2 = $(this).data('status');
-        const status3 = $(this).data('status');
-        const statname = $(this).data('statname');
-        const serial = $(this).data('serial');
-        const brand = $(this).data('brand');
-        const location = $(this).data('location');
-        const locid = $(this).data('locid');
-        
-        const canUpdate = $(this).data('canupdate'); // Get access info
-        
-        // Update the hidden input for the update modal
-        $('#updateEquipmentId').val(equipmentId);
-        $('#updateEquipmentStatus').val(status2);
-        $('#updateEquipmentLID').val(locid);
-        
-        if (canUpdate === true || canUpdate === "true") {
-            $('#updateStatusBtn').show(); // Adjust selector to your button
-        } else {
-            $('#updateStatusBtn').hide();
-        }
-        
-        //modal maint status dropdown select initial value
-        const statusDropdown = document.getElementById("status");
-        if (statusDropdown) {
-            Array.from(statusDropdown.options).forEach(option => {
-                option.selected = (option.value === String(status2));
-            });
-        }
-        //modal maint disable initial status on new dropdown
-        const statusDropdownNew = document.getElementById("statusNew"); 
-        if (statusDropdownNew) { 
-            Array.from(statusDropdownNew.options).forEach(option => {
-                option.disabled = false;
-            });
-            Array.from(statusDropdownNew.options).forEach(option => { 
-                if (option.value && option.value === String(status3)) {
-                    option.disabled = true;
-                }
-                //maintenance reqd to operational bad
-                if (statusDropdown.value === "2" && option.value === "1") {
-                    option.disabled = true;
-                }
-            });
+    // Function to attach click handlers to maintenance table rows
+    function attachMaintenanceRowClickHandlers() {
+        $('#maintenanceTable tbody').off('click', 'tr').on('click', 'tr', function() {
+            var data = maintenanceTable.row(this).data();
+            if (!data) return;
+
+            const equipmentId = data.itemID;
+            const equipment = data.equipment;
+            const status = data.statusId;
+            const status2 = data.statusId;
+            const status3 = data.statusId;
+            const statname = data.status;
+            const serial = data.itemName;
+            const brand = data.brand;
+            const location = data.location;
+            const locid = data.locId;
             
-            statusDropdownNew.addEventListener("change", updateInputVisibility);
-        }
-        
-        function updateInputVisibility() {
-            const oldVal = statusDropdown.value;
-            const newVal = statusDropdownNew.value;
-        
-            const formInput1 = document.getElementById("formInput1"); // 2 or 4 to 3
-            const formInput2 = document.getElementById("formInput2"); // 3 to 1
-            const formInput3 = document.getElementById("formInput3"); // 3 to 4
-        
-            // Hide all form input divs and clear their inner input values
-            [formInput1, formInput2, formInput3].forEach(div => {
-                div.style.display = "none";
-                
-                // Clear input fields inside the div
-                const inputs = div.querySelectorAll("input, textarea");
-                inputs.forEach(input => {
-                    input.value = "";
-                    input.removeAttribute("required");
+            const canUpdate = data.canUpdate; // Get access info
+            
+            // Update the hidden input for the update modal
+            $('#updateEquipmentId').val(equipmentId);
+            $('#updateEquipmentStatus').val(status2);
+            $('#updateEquipmentLID').val(locid);
+            
+            if (canUpdate === true || canUpdate === "true") {
+                $('#updateStatusBtn').show(); // Adjust selector to your button
+            } else {
+                $('#updateStatusBtn').hide();
+            }
+            
+            //modal maint status dropdown select initial value
+            const statusDropdown = document.getElementById("status");
+            if (statusDropdown) {
+                Array.from(statusDropdown.options).forEach(option => {
+                    option.selected = (option.value === String(status2));
                 });
-            });
-        
-            // Show relevant form input div and add back requireds
-            if ((oldVal === "2" || oldVal === "4") && newVal === "3") {
-                formInput1.style.display = "block";
-        
-                // Reapply required only to visible inputs
+            }
+            //modal maint disable initial status on new dropdown
+            const statusDropdownNew = document.getElementById("statusNew"); 
+            if (statusDropdownNew) { 
+                Array.from(statusDropdownNew.options).forEach(option => {
+                    option.disabled = false;
+                });
+                Array.from(statusDropdownNew.options).forEach(option => { 
+                    if (option.value && option.value === String(status3)) {
+                        option.disabled = true;
+                    }
+                    //maintenance reqd to operational bad
+                    if (statusDropdown.value === "2" && option.value === "1") {
+                        option.disabled = true;
+                    }
+                });
+                
+                statusDropdownNew.addEventListener("change", updateInputVisibility);
+            }
+            
+            function updateInputVisibility() {
+                const oldVal = statusDropdown.value;
+                const newVal = statusDropdownNew.value;
+            
+                const formInput1 = document.getElementById("formInput1"); // 2 or 4 to 3
+                const formInput2 = document.getElementById("formInput2"); // 3 to 1
+                const formInput3 = document.getElementById("formInput3"); // 3 to 4
+            
+                // Hide all form input divs and clear their inner input values
+                [formInput1, formInput2, formInput3].forEach(div => {
+                    div.style.display = "none";
+                    
+                    // Clear input fields inside the div
+                    const inputs = div.querySelectorAll("input, textarea");
+                    inputs.forEach(input => {
+                        input.value = "";
+                        input.removeAttribute("required");
+                    });
+                });
+            
+                // Show relevant form input div and add back requireds
+                if ((oldVal === "2" || oldVal === "4") && newVal === "3") {
+                    formInput1.style.display = "block";
+            
+                    // Reapply required only to visible inputs
 //                    const fileInput = document.getElementById("quotationFile");
 //                    const descriptionInput = document.getElementById("quotationDescription");
 //            
 //                    if (fileInput) fileInput.setAttribute("required", "required");
 //                    if (descriptionInput) descriptionInput.setAttribute("required", "required");
-            } else if (oldVal === "3" && newVal === "1") {
-                formInput2.style.display = "block";
-                
-            } else if ((oldVal === "2" || oldVal === "3") && newVal === "4") {
-                formInput3.style.display = "block";
-                
+                } else if (oldVal === "3" && newVal === "1") {
+                    formInput2.style.display = "block";
+                    
+                } else if ((oldVal === "2" || oldVal === "3") && newVal === "4") {
+                    formInput3.style.display = "block";
+                    
+                }
             }
-        }
-        
-        //resets new status dropdown to operational every modal open and render disappearing content
-        const modal = document.getElementById("updateStatusModal");
-        if (modal) {
-            modal.addEventListener("show.bs.modal", () => {
-                // Clear and reset visibility on modal open
-                statusDropdownNew.value = "1";
-                updateInputVisibility();
-                console.log()
-            });
-        }
-   
-        // Update equipment details in the right panel
-        $('#detailEquipment').text(equipment);
-        $('#detailStatus').text(statname);
-        $('#detailSerial').text(serial);
-        $('#detailBrand').text(brand);
-        $('#detailLocation').text(location);
-        
-        // Highlight the selected row
-        if (!$(this).hasClass('selected')) {
-            maintenanceTable.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-        }
-        
-        // Recalculate heights after updating details panel content
-        setTimeout(function() {
-            resetCardHeights();
-            equalizeCardHeights();
-        }, 50);
-    });
+            
+            //resets new status dropdown to operational every modal open and render disappearing content
+            const modal = document.getElementById("updateStatusModal");
+            if (modal) {
+                modal.addEventListener("show.bs.modal", () => {
+                    // Clear and reset visibility on modal open
+                    statusDropdownNew.value = "1";
+                    updateInputVisibility();
+                    console.log()
+                });
+            }
+       
+            // Update equipment details in the right panel
+            $('#detailEquipment').text(equipment);
+            $('#detailStatus').text(statname);
+            $('#detailSerial').text(serial);
+            $('#detailBrand').text(brand);
+            $('#detailLocation').text(location);
+            
+            // Highlight the selected row
+            if (!$(this).hasClass('selected')) {
+                maintenanceTable.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+            
+            // Recalculate heights after updating details panel content
+            setTimeout(function() {
+                resetCardHeights();
+                equalizeCardHeights();
+            }, 50);
+        });
+    }
+
+    // Initial attachment of click handlers
+    attachMaintenanceRowClickHandlers();
     
-    // Select the first row by default
-    $('#maintenanceTable tbody tr:first').trigger('click');
-    $('#scheduledMaintTable tbody tr:first').trigger('click');
+    // Select the first row by default after initial data load
+    maintenanceTable.on('draw.dt', function() {
+        if (maintenanceTable.data().count() > 0) {
+            $('#maintenanceTable tbody tr:first').trigger('click');
+        }
+    });
 });
 </script>
 
@@ -1209,7 +1244,7 @@ $(document).on('click', '.update-bstatus-btn', function () {
 
 <script>
     window.onload = function() {
-        var today = new Date().toISOString().split("T")[0];
+        var today = new Date().toISOString().split("T")[0");
         document.getElementById("dateMaint").min = today;
         document.getElementById("dateEMaint").min = today;
     };
