@@ -27,7 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 /**
- * MaintenanceController - Handles ONLY data fetching for maintenance page
+ *  Handles ONLY data fetching for maintenance page
  * All POST operations (add, edit, delete, update) remain in their existing controllers:
  */
 @WebServlet(name = "maintAssController", urlPatterns = {"/maintenancePage"})
@@ -228,12 +228,12 @@ public class maintAssController extends HttpServlet {
             // Build main query with pagination
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM (")
-               .append("  SELECT i.ITEM_ID, i.NAME, i.BRAND_NAME, i.FLOOR_NO, i.LOCATION_ID, i.MAINTENANCE_STATUS, i.PLANNED_MAINTENANCE_DATE, ")
+            .append("  SELECT i.ITEM_ID, i.NAME, i.BRAND_NAME, i.FLOOR_NO, i.LOCATION_ID, i.MAINTENANCE_STATUS, i.PLANNED_MAINTENANCE_DATE, ")
                .append("    t.NAME AS TYPE_NAME, t.ITEM_CAT_ID, ")
                .append("    c.NAME AS CAT_NAME, ")
                .append("    l.NAME AS LOC_NAME, ")
                .append("    s.STATUS_NAME, ")
-               .append("    ROW_NUMBER() OVER (ORDER BY i.PLANNED_MAINTENANCE_DATE DESC) AS rn ")
+               .append("    ROW_NUMBER() OVER (ORDER BY i.PLANNED_MAINTENANCE_DATE DESC NULLS LAST, i.ITEM_ID ASC) AS rn ")
                .append("  FROM C##FMO_ADM.FMO_ITEMS i ")
                .append("  JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
                .append("  JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
@@ -385,14 +385,14 @@ public class maintAssController extends HttpServlet {
             // Main query with pagination
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM (")
-               .append("  SELECT ma.ASSIGN_ID, ma.ITEM_ID, ma.USER_ID, ma.MAIN_TYPE_ID, ma.DATE_OF_MAINTENANCE, ")
+            .append("  SELECT ma.ASSIGN_ID, ma.ITEM_ID, ma.USER_ID, ma.MAIN_TYPE_ID, ma.DATE_OF_MAINTENANCE, ")
                .append("    i.NAME AS ITEM_NAME, i.BRAND_NAME, i.FLOOR_NO, i.LOCATION_ID, i.MAINTENANCE_STATUS, ")
                .append("    t.NAME AS TYPE_NAME, t.ITEM_CAT_ID, ")
                .append("    c.NAME AS CAT_NAME, ")
                .append("    l.NAME AS LOC_NAME, ")
                .append("    mt.NAME AS MAINT_TYPE_NAME, ")
                .append("    u.NAME AS USER_NAME, u.EMAIL AS USER_EMAIL, ")
-               .append("    ROW_NUMBER() OVER (ORDER BY ma.DATE_OF_MAINTENANCE DESC) AS rn ")
+               .append("    ROW_NUMBER() OVER (ORDER BY ma.DATE_OF_MAINTENANCE DESC NULLS LAST, ma.ASSIGN_ID ASC) AS rn ")
                .append("  FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma ")
                .append("  JOIN C##FMO_ADM.FMO_ITEMS i ON ma.ITEM_ID = i.ITEM_ID ")
                .append("  JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")

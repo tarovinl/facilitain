@@ -511,12 +511,11 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <div>
-                        <label for="equipmentName" class="form-label">Equipment Name <span style="color: red;">*</span></label>
+                            <label for="equipmentName" class="form-label">Equipment Name <span style="color: red;">*</span></label>
                         </div>
                         <div class="w-100">
-                        <input class="form-control awesomplete w-100" id="equipmentName" data-list="${equipmentListString}" 
-                               name="equipmentName" maxlength="24" required style="width: 100%;" onchange="updateEquipmentId()" >
-                        <!--<input type="text" id="equipmentMaintId" name="equipmentMaintId">-->
+                            <input class="form-control w-100" id="equipmentName" 
+                                   name="equipmentName" maxlength="24" required style="width: 100%;">
                         </div>
                     </div>
                     <div class="mb-3">
@@ -570,16 +569,15 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                    <input type="hidden" name="maintID" id="maintID">
+                        <input type="hidden" name="maintID" id="maintID">
                         <div>
-                        <label for="equipmentEName" class="form-label">Equipment Name <span style="color: red;">*</span></label>
+                            <label for="equipmentEName" class="form-label">Equipment Name <span style="color: red;">*</span></label>
                         </div>
                         <div class="w-100">
-                        <input class="form-control awesomplete w-100" id="equipmentEName" data-list="${equipmentListString}" 
-                               name="equipmentEName" maxlength="24" required style="width: 100%;" onchange="updateEquipmentId()" >
-                        <!--<input type="text" id="equipmentMaintId" name="equipmentMaintId">-->
+                            <input class="form-control w-100" id="equipmentEName" 
+                                   name="equipmentEName" maxlength="24" required style="width: 100%;">
                         </div>
-                    </div>
+                </div>
                     <div class="mb-3">
                         <label for="maintenanceEType" class="form-label">Maintenance Type <span style="color: red;">*</span></label>
                         <select class="form-select" id="maintenanceEType" name="maintenanceEType" required>
@@ -1071,6 +1069,8 @@ $(document).ready(function() {
         }
     });
 });
+
+
 </script>
 
 <script>
@@ -1239,6 +1239,36 @@ $(document).on('click', '.update-bstatus-btn', function () {
     }
 });
 
+$(document).ready(function() {
+    // Get the equipment list from JSP
+    var equipmentList = "${equipmentListString}";
+    
+    // Split the comma-separated string into an array
+    var equipmentArray = equipmentList ? equipmentList.split(', ').map(function(item) {
+        return item.trim();
+    }) : [];
+    
+    // Initialize Awesomplete on the equipment name input
+    var input = document.getElementById('equipmentName');
+    if (input && equipmentArray.length > 0) {
+        var awesomplete = new Awesomplete(input, {
+            list: equipmentArray,
+            minChars: 1,
+            maxItems: 10,
+            autoFirst: true
+        });
+    }
+});
+
+var inputEdit = document.getElementById('equipmentEName');
+if (inputEdit && equipmentArray.length > 0) {
+    var awesompleteEdit = new Awesomplete(inputEdit, {
+        list: equipmentArray,
+        minChars: 1,
+        maxItems: 10,
+        autoFirst: true
+    });
+}
 
 </script>
 
@@ -1249,6 +1279,9 @@ $(document).on('click', '.update-bstatus-btn', function () {
         document.getElementById("dateEMaint").min = today;
     };
 </script>
+
+
+
 
 
 </body>
