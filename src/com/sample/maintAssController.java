@@ -29,9 +29,6 @@ import com.google.gson.JsonObject;
 /**
  * MaintenanceController - Handles ONLY data fetching for maintenance page
  * All POST operations (add, edit, delete, update) remain in their existing controllers:
- * - addmaintenancecontroller
- * - editmaintenancecontroller  
- * - updatestatuscontroller
  */
 @WebServlet(name = "maintAssController", urlPatterns = {"/maintenancePage"})
 public class maintAssController extends HttpServlet {
@@ -437,6 +434,9 @@ public class maintAssController extends HttpServlet {
                         String userEmail = rs.getString("USER_EMAIL");
                         boolean isCurrentUser = currentUserEmail != null && currentUserEmail.equals(userEmail);
                         
+                        String catName = rs.getString("CAT_NAME");
+                        String typeName = rs.getString("TYPE_NAME");
+                        
                         row.put("assignID", rs.getInt("ASSIGN_ID"));
                         row.put("itemID", rs.getInt("ITEM_ID"));
                         row.put("itemName", rs.getString("ITEM_NAME"));
@@ -449,6 +449,8 @@ public class maintAssController extends HttpServlet {
                         row.put("dateOfMaint", rs.getString("DATE_OF_MAINTENANCE"));
                         row.put("locId", rs.getInt("LOCATION_ID"));
                         row.put("maintStatus", rs.getInt("MAINTENANCE_STATUS"));
+                        
+                        row.put("equipment", catName + " - " + typeName);
 
                         data.add(row);
                     }
