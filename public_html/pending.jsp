@@ -165,6 +165,10 @@
         height: 35px;
     }
 }
+
+.modal-backdrop {
+    background-color: rgba(128, 128, 128, 0.3) !important; 
+}
     </style>
 </head>
 
@@ -1238,38 +1242,61 @@ $(document).on('click', '.update-bstatus-btn', function () {
         updateInputVisibility();
     }
 });
-
 $(document).ready(function() {
-    // Get the equipment list from JSP
-    var equipmentList = "${equipmentListString}";
+    var equipmentArray = [];
     
-    // Split the comma-separated string into an array
-    var equipmentArray = equipmentList ? equipmentList.split(', ').map(function(item) {
-        return item.trim();
-    }) : [];
+    // Function to initialize Awesomplete
+    function initializeAwesomplete(inputId, equipmentList) {
+        var input = document.getElementById(inputId);
+        if (input && equipmentList.length > 0) {
+            new Awesomplete(input, {
+                list: equipmentList,
+                minChars: 1,
+                maxItems: 10,
+                autoFirst: true,
+                filter: function(text, input) {
+                    return Awesomplete.FILTER_CONTAINS(text, input);
+                }
+            });
+        }
+    }
     
-    // Initialize Awesomplete on the equipment name input
-    var input = document.getElementById('equipmentName');
-    if (input && equipmentArray.length > 0) {
-        var awesomplete = new Awesomplete(input, {
-            list: equipmentArray,
-            minChars: 1,
-            maxItems: 10,
-            autoFirst: true
+    // Fetch equipment list via AJAX
+    function loadEquipmentList() {
+        $.ajax({
+            url: 'maintenancePage',
+            type: 'GET',
+            data: { ajax: 'equipmentList' },
+            dataType: 'json',
+            success: function(response) {
+                if (response && response.equipmentList) {
+                    equipmentArray = response.equipmentList;
+                    
+                    // Initialize Awesomplete for both modals
+                    initializeAwesomplete('equipmentName', equipmentArray);
+                    initializeAwesomplete('equipmentEName', equipmentArray);
+                    
+                    console.log('Equipment list loaded:', equipmentArray.length, 'items'); // Debug
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Failed to load equipment list:', error);
+            }
         });
     }
-});
-
-var inputEdit = document.getElementById('equipmentEName');
-if (inputEdit && equipmentArray.length > 0) {
-    var awesompleteEdit = new Awesomplete(inputEdit, {
-        list: equipmentArray,
-        minChars: 1,
-        maxItems: 10,
-        autoFirst: true
+    
+    // Load equipment list on page load
+    loadEquipmentList();
+    
+    // Optionally, refresh the list when modals are opened
+    $('#addMaintenanceModal').on('show.bs.modal', function() {
+        loadEquipmentList();
     });
-}
-
+    
+    $('#editMaintenanceModal').on('show.bs.modal', function() {
+        loadEquipmentList();
+    });
+});
 </script>
 
 <script>

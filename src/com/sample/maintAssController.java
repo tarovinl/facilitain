@@ -53,16 +53,61 @@ public class maintAssController extends HttpServlet {
         String ajaxAction = request.getParameter("ajax");
         
         // Handle AJAX requests for DataTables server-side processing
-        if ("equipmentTable".equals(ajaxAction)) {
-            handleEquipmentTableAjax(request, response);
-            return;
-        } else if ("scheduledTable".equals(ajaxAction)) {
-            handleScheduledTableAjax(request, response);
+            if ("equipmentTable".equals(ajaxAction)) {
+                   handleEquipmentTableAjax(request, response);
+                   return;
+               } else if ("scheduledTable".equals(ajaxAction)) {
+                   handleScheduledTableAjax(request, response);
+                   return;
+               } else if ("equipmentList".equals(ajaxAction)) {  
+                   handleEquipmentListAjax(request, response);   
+                   return;                                       
+               }                                                 
+
+               // Load initial page data (minimal - just dropdowns and constants)
+               loadInitialPageData(request, response);
+            }
+
+    /**
+     * Handles AJAX request for equipment list (for autocomplete)
+     */
+    private void handleEquipmentListAjax(HttpServletRequest request, HttpServletResponse response) 
+            throws IOException {
+        
+        List<String> equipmentList = new ArrayList<>();
+        
+        try (Connection con = PooledConnection.getConnection()) {
+            String sql = "SELECT i.NAME FROM C##FMO_ADM.FMO_ITEMS i " +
+                        "WHERE i.MAINTENANCE_STATUS != 1 " +
+                        "AND NOT EXISTS (" +
+                        "  SELECT 1 FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
+                        "  WHERE ma.ITEM_ID = i.ITEM_ID AND ma.IS_COMPLETED = 0" +
+                        ") ORDER BY i.NAME";
+            
+            try (PreparedStatement stmt = con.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    equipmentList.add(rs.getString("NAME"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Return error response
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"error\": \"Database error\", \"equipmentList\": []}");
             return;
         }
-
-        // Load initial page data (minimal - just dropdowns and constants)
-        loadInitialPageData(request, response);
+        
+        // Build JSON response using Gson
+        Gson gson = new Gson();
+        JsonObject jsonResponse = new JsonObject();
+        jsonResponse.add("equipmentList", gson.toJsonTree(equipmentList));
+        
+        // Set response headers BEFORE writing content
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(gson.toJson(jsonResponse));
     }
 
     /**
