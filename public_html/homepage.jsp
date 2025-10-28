@@ -505,7 +505,9 @@
                 </div>
                 <div class="modal-body">
                    <div class="mb-3">
-                        <label for="locName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Location Name</label>
+                        <label for="locName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">
+    Location Name <span class="text-danger">*</span>
+</label>
                         <input type="text" class="form-control" id="locName" name="locName" placeholder="Enter location name" style="font-family: 'NeueHaasLight', sans-serif;" maxlength="250" required>
                         <small class="text-muted" style="font-family: 'NeueHaasLight', sans-serif;">
                             Only letters, numbers, spaces, and periods allowed. <span id="nameCharCount">0</span>/250 characters
