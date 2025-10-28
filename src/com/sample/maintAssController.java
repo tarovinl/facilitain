@@ -77,10 +77,10 @@ public class maintAssController extends HttpServlet {
         List<String> equipmentList = new ArrayList<>();
         
         try (Connection con = PooledConnection.getConnection()) {
-            String sql = "SELECT i.NAME FROM C##FMO_ADM.FMO_ITEMS i " +
+            String sql = "SELECT i.NAME FROM FMO_ADM.FMO_ITEMS i " +
                         "WHERE i.MAINTENANCE_STATUS != 1 " +
                         "AND NOT EXISTS (" +
-                        "  SELECT 1 FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
+                        "  SELECT 1 FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
                         "  WHERE ma.ITEM_ID = i.ITEM_ID AND ma.IS_COMPLETED = 0" +
                         ") ORDER BY i.NAME";
             
@@ -128,7 +128,7 @@ public class maintAssController extends HttpServlet {
         try (Connection con = PooledConnection.getConnection()) {
             
             // Load locations (for dropdowns and location info)
-            String locSql = "SELECT ITEM_LOC_ID, NAME FROM C##FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY UPPER(NAME)";
+            String locSql = "SELECT ITEM_LOC_ID, NAME FROM FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY UPPER(NAME)";
             try (PreparedStatement stmt = con.prepareStatement(locSql);
                  ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -140,7 +140,7 @@ public class maintAssController extends HttpServlet {
             }
 
             // Load item types (for category/type mapping)
-            String typesSql = "SELECT ITEM_TYPE_ID, ITEM_CAT_ID, NAME FROM C##FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME";
+            String typesSql = "SELECT ITEM_TYPE_ID, ITEM_CAT_ID, NAME FROM FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME";
             try (PreparedStatement stmt = con.prepareStatement(typesSql);
                  ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -153,7 +153,7 @@ public class maintAssController extends HttpServlet {
             }
 
             // Load categories (for display)
-            String catsSql = "SELECT ITEM_CAT_ID, NAME FROM C##FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME";
+            String catsSql = "SELECT ITEM_CAT_ID, NAME FROM FMO_ADM.FMO_ITEM_CATEGORIES ORDER BY NAME";
             try (PreparedStatement stmt = con.prepareStatement(catsSql);
                  ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -165,7 +165,7 @@ public class maintAssController extends HttpServlet {
             }
 
             // Load maintenance statuses (for status dropdown)
-            String statsSql = "SELECT STATUS_ID, STATUS_NAME FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID";
+            String statsSql = "SELECT STATUS_ID, STATUS_NAME FROM FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS ORDER BY STATUS_ID";
             try (PreparedStatement stmt = con.prepareStatement(statsSql);
                  ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -177,7 +177,7 @@ public class maintAssController extends HttpServlet {
             }
 
             // Load maintenance types (for maintenance type dropdown)
-            String maintTypesSql = "SELECT MAIN_TYPE_ID, NAME FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES";
+            String maintTypesSql = "SELECT MAIN_TYPE_ID, NAME FROM FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES";
             try (PreparedStatement stmt = con.prepareStatement(maintTypesSql);
                  ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -189,7 +189,7 @@ public class maintAssController extends HttpServlet {
             }
 
             // Load users (for assign dropdown - non-Respondents only)
-            String usersSql = "SELECT USER_ID, NAME, EMAIL, ROLE FROM C##FMO_ADM.FMO_ITEM_DUSERS WHERE ROLE != 'Respondent' ORDER BY USER_ID";
+            String usersSql = "SELECT USER_ID, NAME, EMAIL, ROLE FROM FMO_ADM.FMO_ITEM_DUSERS WHERE ROLE != 'Respondent' ORDER BY USER_ID";
             try (PreparedStatement stmt = con.prepareStatement(usersSql);
                  ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -204,10 +204,10 @@ public class maintAssController extends HttpServlet {
 
             // Build equipment list string for autocomplete (only unassigned items)
             StringBuilder equipBuilder = new StringBuilder();
-            String equipSql = "SELECT i.NAME FROM C##FMO_ADM.FMO_ITEMS i " +
+            String equipSql = "SELECT i.NAME FROM FMO_ADM.FMO_ITEMS i " +
                             "WHERE i.MAINTENANCE_STATUS != 1 " +
                             "AND NOT EXISTS (" +
-                            "  SELECT 1 FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
+                            "  SELECT 1 FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
                             "  WHERE ma.ITEM_ID = i.ITEM_ID AND ma.IS_COMPLETED = 0" +
                             ") ORDER BY i.NAME";
             try (PreparedStatement stmt = con.prepareStatement(equipSql);
@@ -262,7 +262,7 @@ public class maintAssController extends HttpServlet {
         try (Connection con = PooledConnection.getConnection()) {
             
             // Count total records (not operational)
-            String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS WHERE MAINTENANCE_STATUS != 1";
+            String countSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEMS WHERE MAINTENANCE_STATUS != 1";
             try (PreparedStatement stmt = con.prepareStatement(countSql);
                  ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -279,11 +279,11 @@ public class maintAssController extends HttpServlet {
                .append("    l.NAME AS LOC_NAME, ")
                .append("    s.STATUS_NAME, ")
                .append("    ROW_NUMBER() OVER (ORDER BY i.PLANNED_MAINTENANCE_DATE DESC NULLS LAST, i.ITEM_ID ASC) AS rn ")
-               .append("  FROM C##FMO_ADM.FMO_ITEMS i ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
+               .append("  FROM FMO_ADM.FMO_ITEMS i ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
                .append("  WHERE i.MAINTENANCE_STATUS != 1");
 
             // Add search filter if provided
@@ -353,11 +353,11 @@ public class maintAssController extends HttpServlet {
             // Count filtered records if search was applied
             if (searchValue != null && !searchValue.isEmpty()) {
                 StringBuilder countFilteredSql = new StringBuilder();
-                countFilteredSql.append("SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS i ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
+                countFilteredSql.append("SELECT COUNT(*) FROM FMO_ADM.FMO_ITEMS i ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
                                .append("WHERE i.MAINTENANCE_STATUS != 1 AND (")
                                .append("  UPPER(i.NAME) LIKE ? OR ")
                                .append("  UPPER(t.NAME) LIKE ? OR ")
@@ -419,7 +419,7 @@ public class maintAssController extends HttpServlet {
         try (Connection con = PooledConnection.getConnection()) {
             
             // Count total incomplete assignments
-            String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN WHERE IS_COMPLETED = 0";
+            String countSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN WHERE IS_COMPLETED = 0";
             try (PreparedStatement stmt = con.prepareStatement(countSql);
                  ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -438,13 +438,13 @@ public class maintAssController extends HttpServlet {
                .append("    mt.NAME AS MAINT_TYPE_NAME, ")
                .append("    u.NAME AS USER_NAME, u.EMAIL AS USER_EMAIL, ")
                .append("    ROW_NUMBER() OVER (ORDER BY ma.DATE_OF_MAINTENANCE DESC NULLS LAST, ma.ASSIGN_ID ASC) AS rn ")
-               .append("  FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEMS i ON ma.ITEM_ID = i.ITEM_ID ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES mt ON ma.MAIN_TYPE_ID = mt.MAIN_TYPE_ID ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID ")
+               .append("  FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ma ")
+               .append("  JOIN FMO_ADM.FMO_ITEMS i ON ma.ITEM_ID = i.ITEM_ID ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES mt ON ma.MAIN_TYPE_ID = mt.MAIN_TYPE_ID ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID ")
                .append("  WHERE ma.IS_COMPLETED = 0");
 
             if (searchValue != null && !searchValue.isEmpty()) {
@@ -505,12 +505,12 @@ public class maintAssController extends HttpServlet {
             // Count filtered records
             if (searchValue != null && !searchValue.isEmpty()) {
                 StringBuilder countFilteredSql = new StringBuilder();
-                countFilteredSql.append("SELECT COUNT(*) FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEMS i ON ma.ITEM_ID = i.ITEM_ID ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES mt ON ma.MAIN_TYPE_ID = mt.MAIN_TYPE_ID ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID ")
+                countFilteredSql.append("SELECT COUNT(*) FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ma ")
+                               .append("JOIN FMO_ADM.FMO_ITEMS i ON ma.ITEM_ID = i.ITEM_ID ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES mt ON ma.MAIN_TYPE_ID = mt.MAIN_TYPE_ID ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID ")
                                .append("WHERE ma.IS_COMPLETED = 0 AND (")
                                .append("  UPPER(i.NAME) LIKE ? OR ")
                                .append("  UPPER(t.NAME) LIKE ? OR ")
@@ -554,8 +554,8 @@ public class maintAssController extends HttpServlet {
      */
     private boolean checkUserCanUpdate(Connection con, int itemId, String userEmail, String userName) 
             throws SQLException {
-        String sql = "SELECT 1 FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
-                    "JOIN C##FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID " +
+        String sql = "SELECT 1 FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
+                    "JOIN FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID " +
                     "WHERE ma.ITEM_ID = ? AND ma.IS_COMPLETED = 0 " +
                     "AND u.EMAIL = ? AND u.NAME = ?";
         
