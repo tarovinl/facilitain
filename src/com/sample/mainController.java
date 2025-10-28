@@ -52,7 +52,7 @@ import sample.model.ItemUser;
 import sample.model.LocationStatus;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
-                                                     "/calendar", "/settings", "/maintenanceSchedule", "/mapView", "/maintenancePage"})
+                                                     "/calendar", "/settings", "/maintenanceSchedule", "/mapView"})
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
@@ -717,9 +717,6 @@ public class mainController extends HttpServlet {
                     case "/mapView":
                         request.getRequestDispatcher("/mapView.jsp").forward(request, response);
                         break;
-                    case "/maintenancePage":
-                        request.getRequestDispatcher("/pending.jsp").forward(request, response);
-                        break;
                     default:
                         request.getRequestDispatcher("/errorPage.jsp").forward(request, response);
                         break;
@@ -782,7 +779,7 @@ public class mainController extends HttpServlet {
             case "/settings":
             case "/mapView":
             case "/maintenanceSchedule":
-            case "/maintenancePage":
+           
                 return true;
 
             default:
