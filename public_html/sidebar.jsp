@@ -570,7 +570,7 @@ function loadToDoList(empNum) {
                 var startCell = checked ? '<s>' + todo.startDate + '</s>' : todo.startDate;
                 var endCell = checked ? '<s>' + todo.endDate + '</s>' : todo.endDate;
                 var checkVal = checked ? 'uncheck' : 'check';
-                var checkIcon = checked ? 'eks-square' : 'square-check';
+                var checkIcon = checked ? 'square-check' : 'empty-box';
 
                 row.innerHTML = '' +
                     '<td>' + taskCell + '</td>' +
@@ -618,18 +618,6 @@ function loadToDoList(empNum) {
 
 <!-- bad eggs
 <script>
-function toggleCheck(id, isChecked) {
-    var formData = new FormData();
-    formData.append('tdListId', id);
-    formData.append('tdAction', isChecked ? 'uncheck' : 'check');
-
-    fetch('todolistcontroller', { method: 'POST', body: formData })
-        .then(function() {
-            var empNum = '${empNum}';
-            loadToDoList(empNum);
-        });
-}
-
 function deleteTodo(id) {
     if (!confirm('Are you sure you want to delete this to-do item?')) return;
 
