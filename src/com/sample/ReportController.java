@@ -85,9 +85,34 @@ public class ReportController extends HttpServlet {
             }
         }
         
-        // Set the reports list and similar reports map as request attributes
+        // Prepare data for charts
+        Map<String, Integer> locationReports = new HashMap<>();
+        Map<String, Integer> equipmentReports = new HashMap<>();
+        
+        // Count reports by location and equipment
+        for (Report report : reportsList) {
+            // Count by location
+            String location = report.getLocName();
+            locationReports.put(location, locationReports.getOrDefault(location, 0) + 1);
+            
+            // Count by equipment type
+            String equipment = report.getRepEquipment();
+            equipmentReports.put(equipment, equipmentReports.getOrDefault(equipment, 0) + 1);
+        }
+        
+        // Convert maps to lists for JSP
+        List<Map.Entry<String, Integer>> locationData = new ArrayList<>(locationReports.entrySet());
+        List<Map.Entry<String, Integer>> equipmentData = new ArrayList<>(equipmentReports.entrySet());
+        
+        // Sort by count (descending) for better visualization
+        locationData.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+        equipmentData.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+        
+        // Set the reports list, similar reports map, and chart data as request attributes
         request.setAttribute("reportsList", reportsList);
         request.setAttribute("hasSimilarReports", hasSimilarReports);
+        request.setAttribute("locationReports", locationData);
+        request.setAttribute("equipmentReports", equipmentData);
         
         request.getRequestDispatcher("/reports.jsp").forward(request, response);
     }
@@ -104,11 +129,15 @@ public class ReportController extends HttpServlet {
                     int rowsUpdated = stmt.executeUpdate();
                     if (rowsUpdated > 0) {
                         System.out.println("Successfully archived report ID: " + reportId);
+                        response.sendRedirect("reports?action=archived");
+                        return;
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Error archiving report ID " + reportId + ": " + e.getMessage());
+                response.sendRedirect("reports?error=true");
+                return;
             }
         }
         response.sendRedirect("reports");

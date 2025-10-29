@@ -7,7 +7,10 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class LogoutFilter implements Filter {
-
+    
+    // Session timeout in minutes (bare minimum security)
+    private static final int SESSION_TIMEOUT_MINUTES = 10;
+    
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         // Initialization if necessary
@@ -20,6 +23,9 @@ public class LogoutFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = httpRequest.getSession(false);
         String uri = httpRequest.getRequestURI();
+
+        //  prevents page caching)
+        addSecurityHeaders(httpResponse);
 
         // Allow access to login, logout, public pages, and static resources without session
         if (uri.contains("login") || uri.contains("logout") || uri.endsWith("index.jsp") ||
@@ -43,7 +49,7 @@ public class LogoutFilter implements Filter {
             return;
         }
 
-        // Check the user's role
+        // Check the user's role 
         String role = (String) session.getAttribute("role");
         if (role == null) {
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/index.jsp");
@@ -55,7 +61,6 @@ public class LogoutFilter implements Filter {
                 // Admin has access to all pages
                 chain.doFilter(request, response);
                 break;
-
             case "Support":
                 // Restrict access to specific paths for Support role
                 if (uri.endsWith("/settings") || uri.endsWith("/itemCategories") ||
@@ -65,24 +70,30 @@ public class LogoutFilter implements Filter {
                     chain.doFilter(request, response);
                 }
                 break;
-
             case "Respondent":
                 // Allow access only to specific paths for Respondent role
-                boolean isAllowedPage = uri.endsWith("/feedbackClient") || 
-                                        uri.endsWith("/reportsClient") || 
-                                        uri.endsWith("reportsThanksClient.jsp") || 
-                                        uri.endsWith("feedbackThanksClient.jsp");
+                boolean isAllowedPage = uri.endsWith("/feedbackClient") ||
+                                         uri.endsWith("/reportsClient") ||
+                                         uri.endsWith("reportsThanksClient.jsp") ||
+                                         uri.endsWith("feedbackThanksClient.jsp");
                 if (isAllowedPage) {
                     chain.doFilter(request, response);
                 } else {
                     httpResponse.sendRedirect(httpRequest.getContextPath() + "/unauthorized.jsp");
                 }
                 break;
-
             default:
                 // Unknown role, redirect to login
                 httpResponse.sendRedirect(httpRequest.getContextPath() + "/index.jsp");
         }
+    }
+
+    
+    private void addSecurityHeaders(HttpServletResponse response) {
+        // Prevent page caching - this stops back button from showing cached pages
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
     }
 
     @Override

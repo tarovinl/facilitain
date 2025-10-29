@@ -52,7 +52,7 @@ import sample.model.ItemUser;
 import sample.model.LocationStatus;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
-                                                     "/calendar", "/settings", "/maintenanceSchedule", "/mapView", "/maintenancePage"})
+                                                     "/calendar", "/settings", "/maintenanceSchedule", "/mapView"})
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
@@ -110,7 +110,7 @@ public class mainController extends HttpServlet {
         
         try (
              Connection con = PooledConnection.getConnection();
-             PreparedStatement statement = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY NAME");
+             PreparedStatement statement = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY UPPER(NAME)");
              PreparedStatement stmntFloor = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOC_FLOORS ORDER BY ITEM_LOC_ID, CASE WHEN REGEXP_LIKE(NAME, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(NAME, '^[0-9]+')) ELSE 9999 END, NAME");
              PreparedStatement stmntItems = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEMS ORDER BY LOCATION_ID, CASE WHEN REGEXP_LIKE(FLOOR_NO, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(FLOOR_NO, '^[0-9]+')) ELSE 9999 END, ROOM_NO, ITEM_ID");
              PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME");
@@ -215,6 +215,7 @@ public class mainController extends HttpServlet {
                 types.setItemTID(rsType.getInt("ITEM_TYPE_ID"));
                 types.setItemCID(rsType.getInt("ITEM_CAT_ID"));
                 types.setItemType(rsType.getString("NAME"));
+                types.setItemArchive(rsType.getInt("ARCHIVED_FLAG"));
                 listTypes.add(types);
 
             }
@@ -716,9 +717,6 @@ public class mainController extends HttpServlet {
                     case "/mapView":
                         request.getRequestDispatcher("/mapView.jsp").forward(request, response);
                         break;
-                    case "/maintenancePage":
-                        request.getRequestDispatcher("/pending.jsp").forward(request, response);
-                        break;
                     default:
                         request.getRequestDispatcher("/errorPage.jsp").forward(request, response);
                         break;
@@ -781,7 +779,7 @@ public class mainController extends HttpServlet {
             case "/settings":
             case "/mapView":
             case "/maintenanceSchedule":
-            case "/maintenancePage":
+           
                 return true;
 
             default:

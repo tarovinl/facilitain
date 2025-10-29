@@ -95,19 +95,20 @@ public class emailResolve extends HttpServlet {
                 int rowsUpdated = updateStmt.executeUpdate();
 
                 if (rowsUpdated > 0) {
-                    PrintWriter out = response.getWriter();
-                    out.println("Report status updated successfully to RESOLVED.");
-                    out.println("REPORT_CODE: " + reportCode);
-                    
-                    // Only send email if recipient email is valid
-                    if (recipientEmail != null && !recipientEmail.equals("No email provided") && recipientEmail.contains("@")) {
-                        EmailSender.sendEmail(recipientEmail, username, password, reportCode, locationName, reportFloor, reportEqmtType, reportIssue, reportDate);
-                    }
-                    
-                    response.sendRedirect("reports");
-                } else {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update report status");
-                }
+                                    PrintWriter out = response.getWriter();
+                                    out.println("Report status updated successfully to RESOLVED.");
+                                    out.println("REPORT_CODE: " + reportCode);
+                                    
+                                    // Only send email if recipient email is valid
+                                    if (recipientEmail != null && !recipientEmail.equals("No email provided") && recipientEmail.contains("@")) {
+                                        EmailSender.sendEmail(recipientEmail, username, password, reportCode, locationName, reportFloor, reportEqmtType, reportIssue, reportDate);
+                                    }
+                                    
+                                  
+                                    response.sendRedirect("reports?action=resolved");
+                                } else {
+                                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update report status");
+                                }
             }
 
         } catch (Exception e) {

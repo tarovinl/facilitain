@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <%@ page contentType="text/html;charset=windows-1252"%>
 <%@ page import="java.util.ArrayList" %>
@@ -195,6 +194,9 @@ function generateReport() {
         doc.text(`${locName}`, 105, contentStartY + 10, {align: 'center'});
 
         // Subtitle
+        doc.setFont('helvetica', 'normal');
+        
+        // Add "Pending Maintenance" label above pie chart
         doc.setFontSize(14);
         doc.setFont(undefined, 'bold');
         doc.text("Pending Maintenance", 105, contentStartY + 25, {align: 'center'});
@@ -343,8 +345,6 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
-
-
           
 <div class="container-fluid d-flex flex-column" style="min-height: 80vh;">
   <div class="row flex-grow-1" style="min-height: 40vh;">
@@ -471,8 +471,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>
