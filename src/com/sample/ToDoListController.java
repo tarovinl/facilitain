@@ -208,10 +208,26 @@ public class ToDoListController extends HttpServlet {
             if (rowsAffected == 0) {
                 System.out.println("Warning: No rows were affected by the operation");
             }
-            
-            // Redirect to homepage after the action is performed
-            System.out.println("Redirecting to: " + fullUrl);
-            response.sendRedirect(fullUrl);
+            if (tdAction == null) {
+                // Store a one-time success flag in session
+                    HttpSession session = request.getSession();
+                    session.setAttribute("todoSuccess", true);
+                    
+                // Redirect to homepage after the action is performed
+                System.out.println("Redirecting to: " + fullUrl);
+                response.sendRedirect(fullUrl);
+            }else{
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                PrintWriter out = response.getWriter();
+    
+                if (rowsAffected > 0) {
+                    out.print("{\"success\": true, \"message\": \"Action completed successfully\"}");
+                } else {
+                    out.print("{\"success\": false, \"message\": \"No rows affected\"}");
+                }
+                out.flush();
+            }
             
         } catch (SQLException e) {
             System.err.println("=== SQL Exception Details ===");
