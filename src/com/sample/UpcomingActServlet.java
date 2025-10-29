@@ -57,10 +57,10 @@ public class UpcomingActServlet extends HttpServlet {
                     " m.no_of_days_warning, " +
                     " t.name as TYPE_NAME, " +
                     " c.name as CAT_NAME " +
-                    "FROM C##FMO_ADM.FMO_ITEMS i " +
-                    "JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.item_type_id = t.item_type_id " +
-                    "JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.item_cat_id = c.item_cat_id " +
-                    "JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED m ON i.item_type_id = m.item_type_id " +
+                    "FROM FMO_ADM.FMO_ITEMS i " +
+                    "JOIN FMO_ADM.FMO_ITEM_TYPES t ON i.item_type_id = t.item_type_id " +
+                    "JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON t.item_cat_id = c.item_cat_id " +
+                    "JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED m ON i.item_type_id = m.item_type_id " +
                     "WHERE i.location_id = ? " +
                     "  AND i.item_stat_id = 1 " +
                     "  AND m.archived_flag = 1 " +
