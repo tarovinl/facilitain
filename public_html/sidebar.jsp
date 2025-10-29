@@ -15,6 +15,9 @@
  
     <script src="https://kit.fontawesome.com/da872a78e8.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./resources/css/sidebar.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
     /* Sidebar base styles */
 .sidebar {
@@ -571,38 +574,22 @@ function loadToDoList(empNum) {
                 var endCell = checked ? '<s>' + todo.endDate + '</s>' : todo.endDate;
                 var checkVal = checked ? 'uncheck' : 'check';
                 var checkIcon = checked ? 'square-check' : 'empty-box';
+                var delt = 'delete';
+
 
                 row.innerHTML = '' +
                     '<td>' + taskCell + '</td>' +
                     '<td>' + startCell + '</td>' +
                     '<td>' + endCell + '</td>' +
                     '<td>' +
-                        '<form action="todolistcontroller" method="post">' +
-                            '<input type="hidden" name="originalUrl" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />' +
-                            '<input type="hidden" name="tdListId" value="' + todo.id + '" />' +
-                            '<input type="hidden" name="tdListContent" value="' + todo.content + '" />' +
-                            '<input type="hidden" name="tdListStart" value="' + todo.startDate + '" />' +
-                            '<input type="hidden" name="tdListEnd" value="' + todo.endDate + '" />' +
-                            '<input type="hidden" name="tdListChecked" value="' + todo.isChecked + '" />' +
-                            '<input type="hidden" name="tdListCreationDate" value="' + todo.creationDate + '" />' +
-                            '<button type="submit" name="tdAction" value="' + checkVal + '" style="background: none; border: none; padding: 0;">' +
-                                '<img src="resources/images/icons/' + checkIcon + '.svg" width="24" height="24">' +
-                            '</button>' +
-                        '</form>' +
+                        '<button type="button" onclick="handleToDoAction(\'' + checkVal + '\', ' + todo.id + ')" style="background: none; border: none; padding: 0; cursor: pointer;">' +
+                            '<img src="resources/images/icons/' + checkIcon + '.svg" width="24" height="24">' +
+                        '</button>' +
                     '</td>' +
                     '<td>' +
-                        '<form action="todolistcontroller" method="post">' +
-                            '<input type="hidden" name="originalUrl" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />' +
-                            '<input type="hidden" name="tdListId" value="' + todo.id + '" />' +
-                            '<input type="hidden" name="tdListContent" value="' + todo.content + '" />' +
-                            '<input type="hidden" name="tdListStart" value="' + todo.startDate + '" />' +
-                            '<input type="hidden" name="tdListEnd" value="' + todo.endDate + '" />' +
-                            '<input type="hidden" name="tdListChecked" value="' + todo.isChecked + '" />' +
-                            '<input type="hidden" name="tdListCreationDate" value="' + todo.creationDate + '" />' +
-                            '<button type="submit" name="tdAction" value="delete" style="background: none; border: none; padding: 0;">' +
-                                '<img src="resources/images/icons/trash-can.svg" width="24" height="24">' +
-                            '</button>' +
-                        '</form>' +
+                        '<button type="button" onclick="handleToDoAction(\'' + delt + '\', ' + todo.id + ')" style="background: none; border: none; padding: 0; cursor: pointer;">' +
+                            '<img src="resources/images/icons/trash-can.svg" width="24" height="24">' +
+                        '</button>' +
                     '</td>';
                     
                 tbody.appendChild(row);
@@ -614,7 +601,89 @@ function loadToDoList(empNum) {
                 '<tr><td colspan="5" class="text-center text-danger">Error loading list</td></tr>';
         });
 }
+
+function handleToDoAction(action, id) {
+    // Use URLSearchParams instead of FormData for proper form encoding
+    var params = new URLSearchParams();
+    params.append('tdAction', action);
+    params.append('tdListId', id);
+
+    
+    fetch('todolistcontroller', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: params.toString()
+    })
+    .then(function(res) {
+        if (!res.ok) {
+            throw new Error('Server returned ' + res.status);
+        }
+        return res.json();
+    })
+    .then(function(result) {
+        // Show SweetAlert2 popup based on response and action
+        if (result.success) {
+            let msg = '';
+            if (action === 'check') msg = 'Task marked as complete!';
+            else if (action === 'uncheck') msg = 'Task marked as incomplete!';
+            else if (action === 'delete') msg = 'Task deleted successfully!';
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: msg,
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true
+            });
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No changes made',
+                text: result.message || 'Please try again.',
+            });
+        }
+
+        // Reload the to-do list after a short delay
+        setTimeout(function() {
+            var empNum = '${empNum}';
+            loadToDoList(empNum);
+        }, 500);
+    })
+    .then(function() {
+        // Reload the to-do list after successful action
+        var empNum = '${empNum}';
+        loadToDoList(empNum);
+    })
+    .catch(function(err) {
+        console.error('Error performing action:', err);
+        alert('Failed to perform action. Please try again.');
+    });
+}
+
 </script>
+<%
+Boolean todoSuccess = (Boolean) session.getAttribute("todoSuccess");
+if (todoSuccess != null && todoSuccess) {
+    session.removeAttribute("todoSuccess"); // Remove it so it only shows once
+%>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    Swal.fire({
+        icon: 'success',
+        title: 'Task Added!',
+        text: 'Your new to-do item has been successfully added.',
+        showConfirmButton: false,
+        timer: 2000
+    });
+});
+</script>
+<%
+}
+%>
 
 <!-- bad eggs
 <script>
