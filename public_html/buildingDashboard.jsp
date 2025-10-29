@@ -91,6 +91,8 @@
 
 </style>
         <script>
+        var locIDajax = '<%= request.getParameter("locID") %>';
+
         google.charts.load('current', {packages: ['corechart']});
         google.charts.setOnLoadCallback(drawCharts);
         
@@ -100,58 +102,31 @@
         }
         
         function drawPieChart() {
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Item Category');
-        data.addColumn('number', 'MaintenanceNo');
+                fetch('<%= request.getContextPath() %>/PendingMaintServlet?locID=' + locIDajax)
+                .then(response => response.json())
+                .then(dataList => {
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Item Category');
+                    data.addColumn('number', 'MaintenanceNo');
     
-
-// loop that lists the category and how many items are in maintenance per category. change itemMaintStat to 2 when final
-        data.addRows([
-        <c:forEach var="category" items="${FMO_CATEGORIES_LIST}">
-            <c:set var="itemCount" value="0" />
-            <c:forEach var="itemz" items="${FMO_ITEMS_LIST}">
-                <c:if test="${itemz.itemLID == locID2}">
-
-                <c:set var="itemCID" value="" />
-
-                <c:forEach var="type" items="${FMO_TYPES_LIST}">
-                <c:if test="${type.itemTID == itemz.itemTID}">
-                    <c:forEach var="cat" items="${FMO_CATEGORIES_LIST}">
-                    <c:if test="${cat.itemCID == type.itemCID}">
-                        <c:set var="itemCID" value="${cat.itemCID}" />            
-                    </c:if>
-                    </c:forEach>
-                </c:if>
-                </c:forEach>
-            
-                <c:if test="${category.itemCID == itemCID}">
-                    <c:if test="${itemz.itemArchive == 1}">
-                    <c:if test="${itemz.itemMaintStat == 2}">
-                        <c:set var="itemCount" value="${itemCount + 1}" />
-                    </c:if>
-                    </c:if>
-                </c:if>
-                </c:if>
-            </c:forEach>
-
-            ['${category.itemCat}', ${itemCount}],
-        </c:forEach>
-
-        ]);
-       
-        // Set chart options
-        var options = {
-            chartArea: { 
-                left: 20,
-                width: '80%',
-                height: '80%'
-            },
-            legend: 'none'
-        }; 
-        // Instantiate and draw the chart.
-        var chart = new google.visualization.PieChart(document.getElementById('pendingMainChart'));
-        chart.draw(data, options);
+                    dataList.forEach(row => {
+                        data.addRow([row.category, row.count]);
+                    });
+    
+                    var options = {
+                        chartArea: {
+                            left: 20,
+                            width: '80%',
+                            height: '80%'
+                        }
+                    };
+    
+                    var chart = new google.visualization.PieChart(
+                        document.getElementById('pendingMainChart')
+                    );
+                    chart.draw(data, options);
+                })
+                .catch(err => console.error('Error loading chart data:', err));
         }
         
         function drawColumnChart() {
@@ -187,6 +162,7 @@
         console.log("Column Chart Data:", data.toJSON());
         chart.draw(data, options);
         }
+
 function generateReport() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({
@@ -195,28 +171,29 @@ function generateReport() {
         format: 'a4'
     });
 
-    // Get current date from JSP (not even working)
+    // Get current date from JSP
     const reportDate = '<%= new java.text.SimpleDateFormat("MMMM dd, yyyy").format(new java.util.Date()) %>';
-    
-  
+
+    // Header background
     doc.setFillColor(51, 51, 51);
     doc.rect(0, 0, 210, 25, 'F');
-    
-   
+
+    // Load logo
     const logoImg = new Image();
     logoImg.src = 'resources/images/USTLogo.png';
     logoImg.onload = function() {
-        // Left-aligned logo (15mm from left, 50mm width)
+        // Header logo
         doc.addImage(logoImg, 'PNG', 15, 5, 65, 13);
-        
-        // Main content starts below header
+
         const contentStartY = 30;
-        
-        // Building name (centered)
+
+        // Title
         doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0, 0, 0);
         doc.text(`${locName}`, 105, contentStartY + 10, {align: 'center'});
+
+        // Subtitle
         doc.setFont('helvetica', 'normal');
         
         // Add "Pending Maintenance" label above pie chart
@@ -224,179 +201,106 @@ function generateReport() {
         doc.setFont(undefined, 'bold');
         doc.text("Pending Maintenance", 105, contentStartY + 25, {align: 'center'});
         doc.setFont(undefined, 'normal');
-        
-        // Capture and add pie chart with proper margins
-        const pieChartDiv = document.getElementById('pendingMainChart');
-        
-        // Set temporary dimensions for capture
-        const originalStyles = {
-            width: pieChartDiv.style.width,
-            height: pieChartDiv.style.height,
-            overflow: pieChartDiv.style.overflow
-        };
-        pieChartDiv.style.width = '300px';
-        pieChartDiv.style.height = '300px';
-        pieChartDiv.style.overflow = 'visible';
-        
-        html2canvas(pieChartDiv, {
-            scale: 3, 
-            logging: false,
-            useCORS: true,
-            width: 300,
-            height: 300,
-            backgroundColor: null,
-            windowWidth: 300,
-            windowHeight: 300
-        }).then(canvas => {
-           
-            pieChartDiv.style.width = originalStyles.width;
-            pieChartDiv.style.height = originalStyles.height;
-            pieChartDiv.style.overflow = originalStyles.overflow;
-            
-            // Create canvas with extra padding
-            const padding = 50; // Extra padding to prevent cutoff
-            const paddedCanvas = document.createElement('canvas');
-            paddedCanvas.width = canvas.width + padding * 2;
-            paddedCanvas.height = canvas.height + padding * 2;
-            const ctx = paddedCanvas.getContext('2d');
-            
-           
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, paddedCanvas.width, paddedCanvas.height);
-            
-            // Draw centered pie chart with padding
-            ctx.drawImage(
-                canvas,
-                0,
-                0,
-                canvas.width,
-                canvas.height,
-                padding,
-                padding,
-                canvas.width,
-                canvas.height
-            );
-            
-            const pieChartImg = paddedCanvas.toDataURL('image/png');
-            
-       
-            doc.addImage(pieChartImg, 'PNG', 20, contentStartY + 30, 80, 80);
-            
-       
-            const legendStartX = 110;
-            let legendStartY = contentStartY + 40;
-            const legendItemHeight = 6;
-            
-           
-            const colors = [
-                {r: 66, g: 133, b: 244},   // Blue
-                {r: 234, g: 67, b: 53},     // Red
-                {r: 251, g: 188, b: 5},     // Yellow
-                {r: 52, g: 168, b: 83},     // Green
-                {r: 168, g: 50, b: 150},     // Purple
-                {r: 235, g: 122, b: 40}      // Orange
-            ];
-            
-            // Get the pie chart data to create the legend
-            let colorCounter = 0;
-            <c:forEach var="category" items="${FMO_CATEGORIES_LIST}" varStatus="status">
-                <c:set var="itemCount2" value="0" />
-                <c:forEach var="itemz" items="${FMO_ITEMS_LIST}">
-                    <c:if test="${itemz.itemLID == locID2}">
-                        <c:set var="itemCID2" value="" />
-                        <c:forEach var="type" items="${FMO_TYPES_LIST}">
-                            <c:if test="${type.itemTID == itemz.itemTID}">
-                                <c:forEach var="cat" items="${FMO_CATEGORIES_LIST}">
-                                    <c:if test="${cat.itemCID == type.itemCID}">
-                                        <c:set var="itemCID2" value="${cat.itemCID}" />            
-                                    </c:if>
-                                </c:forEach>
-                            </c:if>
-                        </c:forEach>
-                        <c:if test="${category.itemCID == itemCID2}">
-                            <c:if test="${itemz.itemArchive == 1}">
-                                <c:if test="${itemz.itemMaintStat == 2}">
-                                    <c:set var="itemCount2" value="${itemCount2 + 1}" />
-                                </c:if>
-                            </c:if>
-                        </c:if>
-                    </c:if>
-                </c:forEach>
-                
-                <c:if test="${itemCount2 > 0}">
-                    // Draw color box
-                    let colorIndex = ${status.index} % colors.length;
-                    doc.setFillColor(
-                        colors[colorIndex].r,
-                        colors[colorIndex].g,
-                        colors[colorIndex].b
-                    );
-                    // Draw circle: x, y, radius, style
-                    doc.circle(legendStartX + 2, legendStartY + 2, 2, 'F');
-                    
-                    // Add category name and count
-                    doc.setFontSize(10);
-                    doc.setTextColor(0, 0, 0); // Black text
-                    doc.text(`${category.itemCat} (${itemCount2})`, legendStartX + 6, legendStartY + 3);
-                    
-                    // Move to next line
-                    legendStartY += legendItemHeight;
-                    colorCounter++;
-                </c:if>
-            </c:forEach>
-            
-            const tableStartY = contentStartY + 120;
-            doc.setFontSize(14);
-            doc.setFont(undefined, 'bold');
-            doc.text("Repairs per Month", 105, tableStartY - 5, {align: 'center'});
-            doc.setFont(undefined, 'normal');
-            
-            // Create and add full-width table
-            doc.autoTable({
-                startY: tableStartY,
-                margin: {left: 20, right: 20},
-                head: [["Month", "Number of Repairs"]],
-                body: [
-                    <c:forEach var="month" items="${monthsList}" varStatus="status">
-                        <c:set var="repairCount2" value="0" />
-                        <c:set var="monthNumber2" value="${status.index + 1}" />
-                        <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
-                            <c:if test="${repair.repairLocID == locID2}">
-                                <c:if test="${repair.repairYear == currentYear}">
-                                    <c:if test="${repair.repairMonth == monthNumber2}">
-                                        <c:set var="repairCount2" value="${repair.repairCount}" />
-                                    </c:if>
-                                </c:if>
-                            </c:if>
-                        </c:forEach>
-                        ['${month}', '${repairCount2}'],
-                    </c:forEach>
-                ],
-                theme: 'grid',
-                headStyles: {
-                    fillColor: [51, 51, 51],
-                    textColor: [255, 255, 255],
-                    fontStyle: 'bold'
-                },
-                styles: {
-                    cellPadding: 5,
-                    fontSize: 11,
-                    valign: 'middle'
-                },
-                columnStyles: {
-                    0: { halign: 'left', cellWidth: 'auto' },
-                    1: { halign: 'center', cellWidth: 'auto' }
+
+        // Fetch table data from servlet (instead of pie chart)
+        fetch('reportpieservlet?locID=' + locIDajax)
+            .then(response => response.json())
+            .then(dataList => {
+                const tableStartY = contentStartY + 35;
+
+                if (!Array.isArray(dataList) || dataList.length === 0) {
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text("No pending maintenance data available.", 105, tableStartY + 5, {align: 'center'});
+                } else {
+                    // Build table data
+                    const bodyData = dataList.map(item => [
+                        item.category,
+                        item.count
+                    ]);
+    
+                    // Add Pending Maintenance Table
+                    doc.autoTable({
+                        startY: tableStartY,
+                        margin: { left: 20, right: 20 },
+                        head: [["Category", "Number of Equipment Pending Maintenance"]],
+                        body: bodyData,
+                        theme: 'grid',
+                        headStyles: {
+                            fillColor: [51, 51, 51],
+                            textColor: [255, 255, 255],
+                            fontStyle: 'bold'
+                        },
+                        styles: {
+                            cellPadding: 5,
+                            fontSize: 11,
+                            valign: 'middle'
+                        },
+                        columnStyles: {
+                            0: { halign: 'left', cellWidth: 'auto' },
+                            1: { halign: 'center', cellWidth: 'auto' }
+                        }
+                    });
                 }
+
+                // --- Repairs per Month table ---
+                let afterPendingY = contentStartY + 60;
+                if (doc.lastAutoTable && doc.lastAutoTable.finalY) {
+                    afterPendingY = doc.lastAutoTable.finalY + 25;
+                }
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'bold');
+                doc.text("Repairs per Month", 105, afterPendingY - 5, {align: 'center'});
+                doc.setFont(undefined, 'normal');
+
+                doc.autoTable({
+                    startY: afterPendingY,
+                    margin: {left: 20, right: 20},
+                    head: [["Month", "Number of Repairs"]],
+                    body: [
+                        <c:forEach var="month" items="${monthsList}" varStatus="status">
+                            <c:set var="repairCount2" value="0" />
+                            <c:set var="monthNumber2" value="${status.index + 1}" />
+                            <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
+                                <c:if test="${repair.repairLocID == locID2}">
+                                    <c:if test="${repair.repairYear == currentYear}">
+                                        <c:if test="${repair.repairMonth == monthNumber2}">
+                                            <c:set var="repairCount2" value="${repair.repairCount}" />
+                                        </c:if>
+                                    </c:if>
+                                </c:if>
+                            </c:forEach>
+                            ['${month}', '${repairCount2}'],
+                        </c:forEach>
+                    ],
+                    theme: 'grid',
+                    headStyles: {
+                        fillColor: [51, 51, 51],
+                        textColor: [255, 255, 255],
+                        fontStyle: 'bold'
+                    },
+                    styles: {
+                        cellPadding: 5,
+                        fontSize: 11,
+                        valign: 'middle'
+                    },
+                    columnStyles: {
+                        0: { halign: 'left', cellWidth: 'auto' },
+                        1: { halign: 'center', cellWidth: 'auto' }
+                    }
+                });
+
+                // Save the PDF
+                doc.save(`${locName}_Maintenance_Report.pdf`);
+            })
+            .catch(error => {
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please check console for details.');
             });
-            
-            // Save the PDF
-            doc.save('${locName}_Maintenance_Report.pdf');
-        }).catch(error => {
-            console.error('Error generating PDF:', error);
-            alert('Error generating PDF. Please check console for details.');
-        });
     };
 }
+
 
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.buttonsBuilding:nth-child(2)').addEventListener('click', generateReport);
@@ -491,56 +395,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Upcoming Activities</h4>
               </div>
               <div class="actContainer" id="upcoming-activities">
-                <c:forEach items="${FMO_ITEMS_LIST}" var="item">
-                <c:if test="${item.itemLID == locID}">
-                <c:if test="${item.itemArchive == 1}">
-                    <c:forEach items="${maintenanceList}" var="maint">
-                    <c:if test="${maint.archiveFlag == 1}">
-                        <c:if test="${item.itemTID == maint.itemTypeId}">
-                            <%-- Pass data to HTML elements using data-* attributes --%>
-                            <div class="d-flex align-items-center border-bottom p-3 actItem" 
-                                 style="border-color: #dee0e1 !important;"
-                                 data-item-name="${item.itemName}" 
-                                 data-item-room="${item.itemRoom}" 
-                                 data-last-maintenance-date="${item.lastMaintDate}" 
-                                 data-planned-maintenance-date="${item.plannedMaintDate}" 
-                                 data-no-of-days="${maint.noOfDays}" 
-                                 data-no-of-days-warning="${maint.noOfDaysWarning}">
-                            
-                              <!-- Dot -->
-                              <div class="me-3">
-                                <img src="resources/images/yellowDot.png" alt="activity status indicator" width="28" height="28">
-                              </div>
-                            
-                              <!-- Text -->
-                              <div>
-                                <h4 class="mb-1 fs-5 fw-semibold">
-                                  Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} in 
-                                  <span class="remaining-days">calculating...</span> days.
-                                </h4>
-                                <h6 class="mb-0 text-muted activity-text">
-                                  <c:forEach items="${FMO_TYPES_LIST}" var="type">
-                                    <c:if test="${type.itemTID == item.itemTID}">
-                                      <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
-                                        <c:if test="${type.itemCID == cat.itemCID}">
-                                          ${cat.itemCat}
-                                        </c:if>
-                                      </c:forEach>
-                                      - ${type.itemType}
-                                    </c:if>
-                                  </c:forEach>
-                                </h6>
-                              </div>
-                            
-                            </div>
-
-            
-                        </c:if>
-                    </c:if>
-                    </c:forEach>
-                </c:if>
-                </c:if>
-                </c:forEach>
+                
               </div>
             </div>
     </div>
@@ -550,45 +405,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Recent Activities</h4>
               </div>
               <div class="actContainer" id="recent-activities">
-                <c:forEach items="${FMO_ITEMS_LIST}" var="item">
-                <c:if test="${item.itemLID == locID}">
-                <c:if test="${item.itemArchive == 1}">
-                    <c:forEach items="${maintenanceList}" var="maint">
-                    <c:if test="${maint.archiveFlag == 1}">
-                        <c:if test="${item.itemTID == maint.itemTypeId}">
-                            <%-- Pass data to HTML elements using data-* attributes --%>
-                             <div class="d-flex align-items-center border-bottom p-3 actItem" 
-                                 style="border-color: #dee0e1 !important;"
-                                data-last-maintenance-date="${item.lastMaintDate}"
-                                 data-planned-maintenance-date="${item.plannedMaintDate}">
-                                 
-                                <div class="me-3">
-                                    <img src="resources/images/greenDot.png" alt="activity status indicator" width="28" height="28">
-                                </div>
-                                <div>
-                                    <h4 class="mb-1 fs-5 fw-semibold activity-text">
-                                        Maintenance for ${item.itemName} ${not empty item.itemRoom ? item.itemRoom : ''} <span class="remaining-days">calculating...</span> days ago.
-                                    </h4>
-                                    <h6 class="mb-0 text-muted">
-                                        <c:forEach items="${FMO_TYPES_LIST}" var="type">
-                                        <c:if test="${type.itemTID == item.itemTID}">
-                                                <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
-                                                <c:if test="${type.itemCID == cat.itemCID}">
-                                                    ${cat.itemCat}
-                                                </c:if>
-                                                </c:forEach>
-                                             - ${type.itemType}
-                                        </c:if>
-                                        </c:forEach>
-                                    </h6>
-                                </div>
-                            </div>
-                        </c:if>
-                    </c:if>    
-                    </c:forEach>
-                </c:if>
-                </c:if>
-                </c:forEach>
+                
               </div>
             </div>
     </div>
@@ -640,94 +457,17 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>-->
     
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const currentDate = new Date('<%= currentDate %>');
-    console.log('Current Date:', currentDate);
+document.addEventListener('DOMContentLoaded', function() {
+  const locIDajax = '<%= request.getParameter("locID") %>';
+  fetch('upcomingactservlet?locID=' + locIDajax)
+    .then(res => res.text())
+    .then(html => document.getElementById('upcoming-activities').innerHTML = html)
+    .catch(err => console.error('Error loading upcoming activities:', err));
 
-    // UPCOMING ACTIVITIES
-    document.querySelectorAll('#upcoming-activities .actItem').forEach(function (itemDiv) {
-        const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
-        const plannedMaintenanceDateStr = itemDiv.getAttribute('data-planned-maintenance-date');
-        const noOfDays = parseInt(itemDiv.getAttribute('data-no-of-days')) || 0;
-        const noOfDaysWarning = parseInt(itemDiv.getAttribute('data-no-of-days-warning')) || 0;
-
-        console.log('UA Planned Maintenance Date String:', plannedMaintenanceDateStr);
-        console.log('UA Last Maintenance Date String:', lastMaintenanceDateStr);
-        console.log('UA Number of Days:', noOfDays);
-        console.log('UA Number of Days Warning:', noOfDaysWarning);
-
-        if (plannedMaintenanceDateStr) {
-            const plannedMaintenanceDate = new Date(plannedMaintenanceDateStr);
-
-            if (!isNaN(plannedMaintenanceDate)) {
-                const daysSincePlannedMaintenance = (currentDate - plannedMaintenanceDate) / (1000 * 60 * 60 * 24);
-                const daysRemaining = (plannedMaintenanceDate - currentDate) / (1000 * 60 * 60 * 24);
-                
-                console.log('UA Days Remaining:', daysRemaining);
-
-                if (daysRemaining > 0 && daysRemaining <= noOfDaysWarning) {
-                    const remainingDaysElement = itemDiv.querySelector('.remaining-days');
-                    if (remainingDaysElement) {
-                        remainingDaysElement.textContent = Math.floor(daysRemaining);
-                    }
-                } else {
-                    itemDiv.style.setProperty('display', 'none', 'important'); 
-                }
-            } else {
-                itemDiv.style.setProperty('display', 'none', 'important'); 
-            }
-        } else {
-            itemDiv.style.setProperty('display', 'none', 'important'); 
-        }
-    });
-
-    // RECENT ACTIVITIES
-    document.querySelectorAll('#recent-activities .actItem').forEach(function (itemDiv) {
-        const plannedMaintenanceDateStr = itemDiv.getAttribute('data-planned-maintenance-date');
-        const lastMaintenanceDateStr = itemDiv.getAttribute('data-last-maintenance-date');
-        
-        if (lastMaintenanceDateStr) {
-            const lastMaintenanceDate = new Date(lastMaintenanceDateStr);
-
-            if (!isNaN(lastMaintenanceDate)) {
-                const daysSinceLastMaintenance = (currentDate - lastMaintenanceDate) / (1000 * 60 * 60 * 24);
-                console.log('RA daysSinceLastMaintenance:', daysSinceLastMaintenance);
-                if (daysSinceLastMaintenance >= 0 && daysSinceLastMaintenance <= 30) {
-                    const remainingDaysElement = itemDiv.querySelector('.remaining-days');
-                    if (remainingDaysElement) {
-                        remainingDaysElement.textContent = Math.floor(daysSinceLastMaintenance);
-                    }
-                } else {
-                    itemDiv.style.setProperty('display', 'none', 'important'); 
-                }
-            } else {
-                console.error("RA Invalid lastMaintenanceDate:", lastMaintenanceDateStr);
-                itemDiv.style.setProperty('display', 'none', 'important'); 
-            }
-        } else {
-            itemDiv.style.setProperty('display', 'none', 'important'); 
-        }
-    });
-
-    // FALLBACK MESSAGE IF NO ITEMS VISIBLE
-    function addNoDataMessage(containerId, message) {
-        const container = document.getElementById(containerId);
-        const visibleItems = container.querySelectorAll('.actItem:not([style*="display: none"])');
-        if (visibleItems.length === 0) {
-            const noDataDiv = document.createElement('div');
-            noDataDiv.className = 'd-flex justify-content-center align-items-center text-muted';
-            noDataDiv.style.minHeight = "100%";  // takes full container height
-            
-            noDataDiv.textContent = message;
-            
-            // clear out anything left just in case
-            container.innerHTML = '';
-            container.appendChild(noDataDiv);
-        }
-    }
-
-    addNoDataMessage('upcoming-activities', 'No upcoming activities');
-    addNoDataMessage('recent-activities', 'No recent activities');
+  fetch('recentactservlet?locID=' + locIDajax)
+    .then(res => res.text())
+    .then(html => document.getElementById('recent-activities').innerHTML = html)
+    .catch(err => console.error('Error loading recent activities:', err));
 });
 </script>
 

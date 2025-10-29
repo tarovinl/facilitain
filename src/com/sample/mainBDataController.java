@@ -502,7 +502,6 @@ public class mainBDataController extends HttpServlet {
                    "<img src='resources/images/kebabMenu.svg' alt='Actions' width='20' height='20'>" +
                    "</button>" +
                    "<div class='dropdown-menu'>" +
-                     editHtml +
                      quotationHtml +
                      "<a class='dropdown-item history-btn' href='#' " +
                          "data-toggle='modal' " +
@@ -510,6 +509,7 @@ public class mainBDataController extends HttpServlet {
                          "data-itemhid='" + itemId + "'>" +
                          "History" +
                      "</a>" +
+                     editHtml +
                      archiveHtml +
                    "</div>" +
                  "</div>";
