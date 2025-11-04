@@ -440,7 +440,7 @@
                                 <div class="col">
                                     <label for="flrName" class="fw-bold">Floor Name <span style="color: red;">*</span></label>
                                     <input type="text" name="editFlrName" id="editFlrName" class="form-control mt-3" maxlength="15" required>
-                                    <small class="text-muted">Only letters, numbers, spaces, and periods allowed.</small>
+                                    <p class="text-muted">Only letters, numbers, spaces, and periods allowed.</p>
                                 </div>
                             </div>
                             <input type="hidden" name="editFlrLocID" id="editFlrLocID" class="form-control" value="${locID}">
@@ -455,7 +455,7 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-outline-danger" data-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
-                          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save</button>
+                          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save Changes</button>
                         </div>
                     </form>
                 
@@ -478,7 +478,7 @@
           <div class="mb-3">
             <label for="addFlrName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Floor Name <span style="color: red;">*</span></label>
             <input type="text" name="addFlrName" id="addFlrName" class="form-control" maxlength="15" style="font-family: 'NeueHaasLight', sans-serif;" required>
-            <small class="text-muted">Only letters, numbers, spaces, and periods allowed.</small>
+            <p class="text-muted">Only letters, numbers, spaces, and periods allowed.</p>
           </div>
           <div class="mb-3">
             <label for="addFlrDesc" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Floor Description</label>
@@ -786,7 +786,7 @@
         reverseButtons: true,
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#ffffff',
-        confirmButtonText: 'Confirm',
+        confirmButtonText: 'Yes, archive it',
         cancelButtonText: 'Cancel',
         customClass: {
              cancelButton: 'btn-cancel-outline'
@@ -803,13 +803,17 @@
     
         Swal.fire({
             title: 'Are you sure?',
-            text: "You want to archive this floor?",
+            text: "Do you want to archive this floor?",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, archive it!',
-            cancelButtonText: 'Cancel'
+            reverseButtons: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#ffffff',
+            confirmButtonText: 'Yes, archive it',
+            cancelButtonText: 'Cancel',
+            customClass: {
+             cancelButton: 'btn-cancel-outline'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#archiveFloor').submit();

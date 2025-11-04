@@ -141,7 +141,7 @@
             reverseButtons: true,
             confirmButtonColor: '#dc3545',
             cancelButtonColor: '#ffffff',
-            confirmButtonText: 'Confirm',
+            confirmButtonText: 'Yes, archive it',
             cancelButtonText: 'Cancel',
             customClass: {
                  cancelButton: 'btn-cancel-outline'
