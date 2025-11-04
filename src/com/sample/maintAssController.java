@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -496,7 +498,27 @@ public class maintAssController extends HttpServlet {
                         row.put("userID", rs.getInt("USER_ID"));
                         row.put("userEmail", userEmail);
                         row.put("isCurrentUser", isCurrentUser);
-                        row.put("dateOfMaint", rs.getString("DATE_OF_MAINTENANCE"));
+                        String dateOfMaint = rs.getString("DATE_OF_MAINTENANCE");
+                        // Format date to yyyy-MM-dd if it's not null
+                        if (dateOfMaint != null && !dateOfMaint.isEmpty()) {
+                            try {
+                                // Parse and reformat the date to ensure consistent format
+                                SimpleDateFormat oracleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                java.util.Date date;
+                                try {
+                                    date = inputFormat.parse(dateOfMaint);
+                                } catch (ParseException e) {
+                                    // If dd/MM/yyyy fails, try yyyy-MM-dd
+                                    date = oracleFormat.parse(dateOfMaint);
+                                }
+                                dateOfMaint = oracleFormat.format(date);
+                            } catch (Exception e) {
+                                // If parsing fails, use original value
+                                e.printStackTrace();
+                            }
+                        }
+                        row.put("dateOfMaint", dateOfMaint);
                         row.put("locId", rs.getInt("LOCATION_ID"));
                         row.put("maintStatus", rs.getInt("MAINTENANCE_STATUS"));
                         
