@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -78,7 +80,8 @@ public class maintAssController extends HttpServlet {
         
         try (Connection con = PooledConnection.getConnection()) {
             String sql = "SELECT i.NAME FROM C##FMO_ADM.FMO_ITEMS i " +
-                        "WHERE i.MAINTENANCE_STATUS != 1 " +
+                        "WHERE i.ITEM_STAT_ID = 1 " +
+                        "AND i.MAINTENANCE_STATUS != 1 " +
                         "AND NOT EXISTS (" +
                         "  SELECT 1 FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
                         "  WHERE ma.ITEM_ID = i.ITEM_ID AND ma.IS_COMPLETED = 0" +
@@ -205,7 +208,8 @@ public class maintAssController extends HttpServlet {
             // Build equipment list string for autocomplete (only unassigned items)
             StringBuilder equipBuilder = new StringBuilder();
             String equipSql = "SELECT i.NAME FROM C##FMO_ADM.FMO_ITEMS i " +
-                            "WHERE i.MAINTENANCE_STATUS != 1 " +
+                            "WHERE i.ITEM_STAT_ID = 1 " +
+                            "AND i.MAINTENANCE_STATUS != 1 " +
                             "AND NOT EXISTS (" +
                             "  SELECT 1 FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
                             "  WHERE ma.ITEM_ID = i.ITEM_ID AND ma.IS_COMPLETED = 0" +
@@ -261,8 +265,9 @@ public class maintAssController extends HttpServlet {
 
         try (Connection con = PooledConnection.getConnection()) {
             
-            // Count total records (not operational)
-            String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS WHERE MAINTENANCE_STATUS != 1";
+            // Count total records 
+            String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS " +
+                              "WHERE ITEM_STAT_ID = 1 AND MAINTENANCE_STATUS != 1";
             try (PreparedStatement stmt = con.prepareStatement(countSql);
                  ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -284,7 +289,7 @@ public class maintAssController extends HttpServlet {
                .append("  JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
                .append("  JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
                .append("  JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
-               .append("  WHERE i.MAINTENANCE_STATUS != 1");
+               .append("  WHERE i.ITEM_STAT_ID = 1 AND i.MAINTENANCE_STATUS != 1");
 
             // Add search filter if provided
             if (searchValue != null && !searchValue.isEmpty()) {
@@ -358,7 +363,7 @@ public class maintAssController extends HttpServlet {
                                .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
                                .append("JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
                                .append("JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
-                               .append("WHERE i.MAINTENANCE_STATUS != 1 AND (")
+                               .append("WHERE i.ITEM_STAT_ID = 1 AND i.MAINTENANCE_STATUS != 1 AND (")
                                .append("  UPPER(i.NAME) LIKE ? OR ")
                                .append("  UPPER(t.NAME) LIKE ? OR ")
                                .append("  UPPER(c.NAME) LIKE ? OR ")
@@ -419,7 +424,9 @@ public class maintAssController extends HttpServlet {
         try (Connection con = PooledConnection.getConnection()) {
             
             // Count total incomplete assignments
-            String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN WHERE IS_COMPLETED = 0";
+            String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
+                              "JOIN C##FMO_ADM.FMO_ITEMS i ON ma.ITEM_ID = i.ITEM_ID " +
+                              "WHERE i.ITEM_STAT_ID = 1 AND ma.IS_COMPLETED = 0";
             try (PreparedStatement stmt = con.prepareStatement(countSql);
                  ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -445,7 +452,7 @@ public class maintAssController extends HttpServlet {
                .append("  JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
                .append("  JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES mt ON ma.MAIN_TYPE_ID = mt.MAIN_TYPE_ID ")
                .append("  JOIN C##FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID ")
-               .append("  WHERE ma.IS_COMPLETED = 0");
+               .append("  WHERE i.ITEM_STAT_ID = 1 AND ma.IS_COMPLETED = 0");
 
             if (searchValue != null && !searchValue.isEmpty()) {
                 sql.append(" AND (")
@@ -491,7 +498,27 @@ public class maintAssController extends HttpServlet {
                         row.put("userID", rs.getInt("USER_ID"));
                         row.put("userEmail", userEmail);
                         row.put("isCurrentUser", isCurrentUser);
-                        row.put("dateOfMaint", rs.getString("DATE_OF_MAINTENANCE"));
+                        String dateOfMaint = rs.getString("DATE_OF_MAINTENANCE");
+                        // Format date to yyyy-MM-dd if it's not null
+                        if (dateOfMaint != null && !dateOfMaint.isEmpty()) {
+                            try {
+                                // Parse and reformat the date to ensure consistent format
+                                SimpleDateFormat oracleFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                java.util.Date date;
+                                try {
+                                    date = inputFormat.parse(dateOfMaint);
+                                } catch (ParseException e) {
+                                    // If dd/MM/yyyy fails, try yyyy-MM-dd
+                                    date = oracleFormat.parse(dateOfMaint);
+                                }
+                                dateOfMaint = oracleFormat.format(date);
+                            } catch (Exception e) {
+                                // If parsing fails, use original value
+                                e.printStackTrace();
+                            }
+                        }
+                        row.put("dateOfMaint", dateOfMaint);
                         row.put("locId", rs.getInt("LOCATION_ID"));
                         row.put("maintStatus", rs.getInt("MAINTENANCE_STATUS"));
                         
@@ -511,7 +538,7 @@ public class maintAssController extends HttpServlet {
                                .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
                                .append("JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES mt ON ma.MAIN_TYPE_ID = mt.MAIN_TYPE_ID ")
                                .append("JOIN C##FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID ")
-                               .append("WHERE ma.IS_COMPLETED = 0 AND (")
+                               .append("WHERE i.ITEM_STAT_ID = 1 AND ma.IS_COMPLETED = 0 AND (")
                                .append("  UPPER(i.NAME) LIKE ? OR ")
                                .append("  UPPER(t.NAME) LIKE ? OR ")
                                .append("  UPPER(c.NAME) LIKE ? OR ")
