@@ -250,7 +250,10 @@
                                 <!-- Remarks -->
                                 <div class="mb-3">
                                     <label for="addRemarks" class="form-label">Remarks</label>
-                                    <input type="text" class="form-control" id="addRemarks" name="remarks">
+                                    <input type="text" class="form-control" id="addRemarks" name="remarks" maxlength="250" oninput="updateCharCounter('addRemarks', 'addRemarksCounter')">
+                                    <small class="form-text text-muted d-block mt-1">
+                                        <span id="addRemarksCounter">0</span>/250 characters
+                                    </small>
                                 </div>
 
                                 <!-- Number of Days Warning -->
@@ -282,7 +285,7 @@
                                 
                                 <!-- Item Type Dropdown -->
                                 <div class="mb-3">
-                                    <label for="editItemTypeId" class="form-label">Item Type</label>
+                                    <label for="editItemTypeId" class="form-label">Item Type</label> <span class="text-danger">*</span>
                                     <select class="form-select" id="editItemTypeId" name="itemTypeId" required>
                                         <option value="" disabled>Select Item Type</option>
                                 <c:forEach var="typez" items="${FMO_TYPES_LIST}">
@@ -295,7 +298,7 @@
 
                                 <!-- Number of Days -->
                                 <div class="mb-3">
-                                    <label for="editNoOfDays" class="form-label">Number of Days</label>
+                                    <label for="editNoOfDays" class="form-label">Number of Days</label> <span class="text-danger">*</span>
                                     <input type="number" class="form-control" id="editNoOfDays" name="noOfDays" required oninput="toggleEditQuarterlyOptions()">
                                 </div>
 
@@ -333,18 +336,21 @@
                                 <!-- Remarks -->
                                 <div class="mb-3">
                                     <label for="editRemarks" class="form-label">Remarks</label>
-                                    <input type="text" class="form-control" id="editRemarks" name="remarks">
+                                    <input type="text" class="form-control" id="editRemarks" name="remarks" maxlength="250" oninput="updateCharCounter('editRemarks', 'editRemarksCounter')">
+                                    <small class="form-text text-muted d-block mt-1">
+                                        <span id="editRemarksCounter">0</span>/250 characters
+                                    </small>
                                 </div>
 
                                 <!-- Number of Days Warning -->
                                 <div class="mb-3">
-                                    <label for="editNoOfDaysWarning" class="form-label">Warning Days</label>
+                                    <label for="editNoOfDaysWarning" class="form-label">Warning Days</label> <span class="text-danger">*</span>
                                     <input type="number" class="form-control" id="editNoOfDaysWarning" name="noOfDaysWarning" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-success">Update</button>
+                                <button type="submit" class="btn btn-success">Save Changes</button>
                             </div>
                         </form>
                     </div>
@@ -385,6 +391,7 @@ $(document).ready(function() {
             document.getElementById('addMonth').value = '';
             document.getElementById('addQuarterlyOptionsGroup').style.display = 'none';
             document.getElementById('addAnnualOptionsGroup').style.display = 'none';
+            updateCharCounter('addRemarks', 'addRemarksCounter');
         });
     }
 
@@ -416,6 +423,10 @@ $(document).ready(function() {
             if (yearlyValue && yearlyValue !== '') {
                 document.getElementById('editMonth').value = yearlyValue;
             }
+            
+            setTimeout(() => {
+                updateCharCounter('editRemarks', 'editRemarksCounter');
+            }, 0);
         });
     }
 
@@ -487,13 +498,13 @@ $(document).ready(function() {
             
             Swal.fire({
                 title: 'Are you sure?',
-                text: 'You want to archive this maintenance schedule?',
+                text: 'Do you want to archive this maintenance schedule?',
                 icon: 'warning',
                 showCancelButton: true,
                 reverseButtons: true,
                 confirmButtonColor: '#dc3545',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, Archive it!',
+                confirmButtonText: 'Yes, Archive it',
                 cancelButtonText: 'Cancel',
                 customClass: {
                     cancelButton: 'btn-cancel-outline'
@@ -511,6 +522,23 @@ $(document).ready(function() {
         }
     });
 });
+
+function updateCharCounter(inputId, counterId) {
+    const input = document.getElementById(inputId);
+    const counter = document.getElementById(counterId);
+    const charCount = input.value.length;
+    
+    counter.textContent = charCount;
+    
+    // Change color when approaching limit (200+ characters)
+    if (charCount >= 200) {
+        counter.style.color = '#dc3545'; // Red
+    } else if (charCount >= 150) {
+        counter.style.color = '#ffc107'; // Yellow
+    } else {
+        counter.style.color = '#6c757d'; // Gray
+    }
+}
 
 function toggleAddQuarterlyOptions() {
     const value = document.getElementById('addNoOfDays').value;

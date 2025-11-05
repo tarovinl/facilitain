@@ -555,8 +555,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
-                    <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
+                    <button type="button" class="btn" style="font-family: 'NeueHaasMedium', sans-serif; background-color: #6c757d; color: white;" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn" style="background-color: #fccc4c; color: black; font-family: 'NeueHaasMedium', sans-serif;">Add</button>
+                            </div>
                 </div>
             </div>
         </form>
@@ -1224,13 +1225,13 @@ $(document).on('click', '.delete-maintenance-btn', function(e) {
 
     Swal.fire({
         title: 'Are you sure?',
-        text: "You want to delete this maintenance assignment?",
+        text: "Do you want to delete this maintenance assignment?",
         icon: 'warning',
         showCancelButton: true,
+         cancelButtonColor: '#3085d6',
         confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel'
+        cancelButtonText: 'Cancel',
+         confirmButtonText: 'Yes, delete i!'
     }).then((result) => {
         if (result.isConfirmed) {
             $('#deleteMaintID').val(maintID);

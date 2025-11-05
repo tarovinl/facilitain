@@ -984,7 +984,7 @@ $(document).ready(function() {
             reverseButtons: true,
             confirmButtonColor: '#28a745',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Confirm',
+            confirmButtonText: 'Resolve',
             cancelButtonText: 'Cancel',
             customClass: {
                 cancelButton: 'btn-cancel-outline'
@@ -1015,7 +1015,7 @@ $(document).ready(function() {
             reverseButtons: true,
             confirmButtonColor: '#dc3545',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Confirm',
+            confirmButtonText: 'Yes, Archive it',
             cancelButtonText: 'Cancel',
             customClass: {
                 cancelButton: 'btn-cancel-outline'

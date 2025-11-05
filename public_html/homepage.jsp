@@ -99,7 +99,7 @@
                 .search-container {
                     max-width: 250px !important; /* or adjust as needed */
                      height: 2.5rem; /* reduce height */
-                        font-size: 0.8rem; /* slightly smaller font */
+                        font-size: 0.8rem; 
                         padding-left: 2rem; /* slightly less padding if needed */
                   }
                   
@@ -107,7 +107,7 @@
            .custom-search {
                   background-color: #f2f2f2 !important;
                   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-                  height: 2.75rem; /* or adjust as needed */
+                  height: 2.75rem; 
                   font-size: 0.9rem;
                   border-radius: 0.5rem;
                   padding-left: 2.5rem; /* space for the icon */
@@ -125,7 +125,7 @@
                   overflow-x: hidden !important;
                 }
                 #searchInput::placeholder {
-                  padding-left: 0rem; /* Optional: fine-tune if needed */
+                  padding-left: 0rem; 
                 }
                 
                 .responsive-padding-top {
@@ -134,7 +134,7 @@
                 
                 @media (max-width: 576px) {
                   .responsive-padding-top {
-                    padding-top: 70px; /* or whatever smaller value you want */
+                    padding-top: 70px; 
                   }
                 }
             
