@@ -555,8 +555,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
-                    <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
+                    <button type="button" class="btn" style="font-family: 'NeueHaasMedium', sans-serif; background-color: #6c757d; color: white;" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn" style="background-color: #fccc4c; color: black; font-family: 'NeueHaasMedium', sans-serif;">Add</button>
+                            </div>
                 </div>
             </div>
         </form>
@@ -572,48 +573,50 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <input type="hidden" name="maintID" id="maintID">
-                        <div>
-                            <label for="equipmentEName" class="form-label">Equipment Name <span style="color: red;">*</span></label>
-                        </div>
-                        <div class="w-100">
-                            <input class="form-control w-100" id="equipmentEName" 
-                                   name="equipmentEName" maxlength="24" required style="width: 100%;">
-                        </div>
-                </div>
+                    <input type="hidden" name="maintID" id="maintID">
+                    
+                   <div class="mb-3">
+    <label for="equipmentEName" class="form-label d-block">Equipment Name</label>
+    <input class="form-control" id="equipmentEName" 
+           name="equipmentENameDisplay" maxlength="24" 
+           style="width: 100%; background-color: #e9ecef; cursor: not-allowed;" 
+           readonly>
+</div>
+                    
                     <div class="mb-3">
                         <label for="maintenanceEType" class="form-label">Maintenance Type <span style="color: red;">*</span></label>
                         <select class="form-select" id="maintenanceEType" name="maintenanceEType" required>
-                            <c:forEach items="${FMO_MAINTTYPE_LIST}" var="mtype" >
+                            <c:forEach items="${FMO_MAINTTYPE_LIST}" var="mtype">
                                 <option value="${mtype.itemTypeId}">${mtype.itemTypeName}</option>
                             </c:forEach>
                         </select>
                     </div>
-                     <div class="mb-3">
-                                <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
-                                <select class="form-select" id="assignedETo" name="assignedETo" required>
-                                    <!-- Show current user first if they're not a Respondent -->
-                                    <c:forEach items="${FMO_USERS}" var="user">
-                                        <c:if test="${sessionScope.email == user.email && user.role != 'Respondent'}">
-                                            <option value="${user.userId}">${user.name}</option>
-                                        </c:if>
-                                    </c:forEach>
-                                    <c:forEach items="${FMO_USERS}" var="user">
-                                        <c:if test="${sessionScope.email != user.email && user.role != 'Respondent'}">
-                                            <option value="${user.userId}">${user.name}</option>
-                                        </c:if>
-                                    </c:forEach>
-                                </select>
-                            </div>
+                    
                     <div class="mb-3">
-                        <label for="" class="form-label">Date of Maintenance <span style="color: red;">*</span></label>
+                        <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
+                        <select class="form-select" id="assignedETo" name="assignedETo" required>
+                            <!-- Show current user first if they're not a Respondent -->
+                            <c:forEach items="${FMO_USERS}" var="user">
+                                <c:if test="${sessionScope.email == user.email && user.role != 'Respondent'}">
+                                    <option value="${user.userId}">${user.name}</option>
+                                </c:if>
+                            </c:forEach>
+                            <c:forEach items="${FMO_USERS}" var="user">
+                                <c:if test="${sessionScope.email != user.email && user.role != 'Respondent'}">
+                                    <option value="${user.userId}">${user.name}</option>
+                                </c:if>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dateEMaint" class="form-label">Date of Maintenance <span style="color: red;">*</span></label>
                         <input type="date" name="dateEMaint" id="dateEMaint" class="form-control" required>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">Edit</button>
+                    <button type="submit" class="btn btn-warning">Save Changes</button>
                 </div>
             </div>
         </form>
@@ -1078,37 +1081,73 @@ $(document).ready(function() {
 </script>
 
 <script>
-    function populateEditMaintenance(button) {
-        var assignID = button.getAttribute('data-mainteid');
-        var itemName = button.getAttribute('data-maintename');
-        var itemID = button.getAttribute('data-itemeid');
-        var userID = button.getAttribute('data-usereid');
-        var maintTypeID = button.getAttribute('data-mainttypeeid');
-        var dateMaint = button.getAttribute('data-datemaint');
-        document.querySelector('input[name="maintID"]').value = assignID;
-        document.querySelector('input[name="equipmentEName"]').value = itemName;
-        var maintTypeDrop = document.querySelector('select[name="maintenanceEType"]');
-        if (maintTypeDrop) {
-            var options = maintTypeDrop.options;
-            for (var i = 0; i < options.length; i++) {
-                if (options[i].value === maintTypeID) {
-                    options[i].selected = true;
-                    break;
-                }
-            }
-        }
-        var assignedToDrop = document.querySelector('select[name="assignedETo"]');
-        if (assignedToDrop) {
-            var options = assignedToDrop.options;
-            for (var i = 0; i < options.length; i++) {
-                if (options[i].value === userID) {
-                    options[i].selected = true;
-                    break;
-                }
-            }
-        }
-        document.querySelector('input[name="dateEMaint"]').value = dateMaint;
+function populateEditMaintenance(button) {
+    var assignID = button.getAttribute('data-mainteid');
+    var itemName = button.getAttribute('data-maintename');
+    var maintTypeID = button.getAttribute('data-mainttypeeid');
+    var userID = button.getAttribute('data-usereid');
+    var dateMaint = button.getAttribute('data-datemaint');
+    
+    console.log('Populating edit modal with:', {
+        assignID, itemName, maintTypeID, userID, dateMaint
+    });
+    
+    // Set the hidden maintenance ID
+    document.getElementById('maintID').value = assignID;
+    
+    // Set the equipment name (readonly field for display only)
+    var equipmentNameField = document.getElementById('equipmentEName');
+    if (equipmentNameField) {
+        equipmentNameField.value = itemName;
     }
+    
+    // Set maintenance type dropdown
+    var maintTypeDrop = document.getElementById('maintenanceEType');
+    if (maintTypeDrop) {
+        maintTypeDrop.value = maintTypeID;
+    }
+    
+    // Set assigned to dropdown
+    var assignedToDrop = document.getElementById('assignedETo');
+    if (assignedToDrop) {
+        assignedToDrop.value = userID;
+    }
+    
+    // Set date - handle multiple date formats
+    var dateInput = document.getElementById('dateEMaint');
+    if (dateInput && dateMaint) {
+        var convertedDate = '';
+        
+        // Remove any time portion if present
+        dateMaint = dateMaint.split(' ')[0];
+        
+        // Check if date is in dd/mm/yyyy format
+        if (dateMaint.includes('/')) {
+            var parts = dateMaint.split('/');
+            if (parts.length === 3) {
+                var day = parts[0].padStart(2, '0');
+                var month = parts[1].padStart(2, '0');
+                var year = parts[2];
+                convertedDate = year + '-' + month + '-' + day;
+            }
+        } 
+        // Check if date is in dd-mm-yyyy format
+        else if (dateMaint.match(/^\d{2}-\d{2}-\d{4}$/)) {
+            var parts = dateMaint.split('-');
+            var day = parts[0].padStart(2, '0');
+            var month = parts[1].padStart(2, '0');
+            var year = parts[2];
+            convertedDate = year + '-' + month + '-' + day;
+        }
+        // Check if already in yyyy-mm-dd format
+        else if (dateMaint.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            convertedDate = dateMaint;
+        }
+        
+        dateInput.value = convertedDate;
+        console.log('Date converted from', dateMaint, 'to', convertedDate);
+    }
+}
 </script>
 
 
@@ -1186,13 +1225,13 @@ $(document).on('click', '.delete-maintenance-btn', function(e) {
 
     Swal.fire({
         title: 'Are you sure?',
-        text: "You want to delete this maintenance assignment?",
+        text: "Do you want to delete this maintenance assignment?",
         icon: 'warning',
         showCancelButton: true,
+         cancelButtonColor: '#3085d6',
         confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel'
+        cancelButtonText: 'Cancel',
+         confirmButtonText: 'Yes, delete i!'
     }).then((result) => {
         if (result.isConfirmed) {
             $('#deleteMaintID').val(maintID);
