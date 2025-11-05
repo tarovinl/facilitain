@@ -23,28 +23,30 @@ public class LogoutFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = httpRequest.getSession(false);
         String uri = httpRequest.getRequestURI();
+        String contextPath = httpRequest.getContextPath();
 
         //  prevents page caching)
         addSecurityHeaders(httpResponse);
 
-        // Allow access to login, logout, public pages, and static resources without session
-        if (uri.contains("login") || uri.contains("logout") || uri.endsWith("index.jsp") ||
-                uri.endsWith("termsClient.jsp") || uri.endsWith("privacyClient.jsp") ||
-                uri.endsWith("loginFeedbackClient.jsp") || uri.endsWith("loginReportsClient.jsp") ||
-                uri.startsWith(httpRequest.getContextPath() + "/static/") ||
-                uri.startsWith(httpRequest.getContextPath() + "/resources/")) {
+        String requestPath = uri.substring(contextPath.length());
+        if (requestPath.isEmpty()) {
+            requestPath = "/";
+        }
+
+        // Using better path matching that accounts for query strings and context paths
+        if (isPublicPage(requestPath)) {
             chain.doFilter(request, response);
             return;
         }
 
         // Require session and email for all other pages
         if (session == null || session.getAttribute("email") == null) {
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/index.jsp");
+            httpResponse.sendRedirect(contextPath + "/index.jsp");
             return;
         }
 
         // Allow unauthorized.jsp for all authenticated users
-        if (uri.endsWith("unauthorized.jsp")) {
+        if (requestPath.equals("/unauthorized.jsp")) {
             chain.doFilter(request, response);
             return;
         }
@@ -52,43 +54,59 @@ public class LogoutFilter implements Filter {
         // Check the user's role 
         String role = (String) session.getAttribute("role");
         if (role == null) {
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/index.jsp");
+            httpResponse.sendRedirect(contextPath + "/index.jsp");
             return;
         }
 
-        switch (role) {
-            case "Admin":
-                // Admin has access to all pages
-                chain.doFilter(request, response);
-                break;
-            case "Support":
-                // Restrict access to specific paths for Support role
-                if (uri.endsWith("/settings") || uri.endsWith("/itemCategories") ||
-                        uri.endsWith("/itemType") || uri.endsWith("/maintenance")) {
-                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/unauthorized.jsp");
-                } else {
-                    chain.doFilter(request, response);
-                }
-                break;
-            case "Respondent":
-                // Allow access only to specific paths for Respondent role
-                boolean isAllowedPage = uri.endsWith("/feedbackClient") ||
-                                         uri.endsWith("/reportsClient") ||
-                                         uri.endsWith("reportsThanksClient.jsp") ||
-                                         uri.endsWith("feedbackThanksClient.jsp");
-                if (isAllowedPage) {
-                    chain.doFilter(request, response);
-                } else {
-                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/unauthorized.jsp");
-                }
-                break;
-            default:
-                // Unknown role, redirect to login
-                httpResponse.sendRedirect(httpRequest.getContextPath() + "/index.jsp");
+        boolean hasAccess = checkRoleAccess(role, requestPath);
+        
+        if (hasAccess) {
+            chain.doFilter(request, response);
+        } else {
+            httpResponse.sendRedirect(contextPath + "/unauthorized.jsp");
         }
     }
 
-    
+    private boolean isPublicPage(String requestPath) {
+        return requestPath.equals("/") ||
+               requestPath.equals("/index.jsp") ||
+               requestPath.contains("login") ||
+               requestPath.contains("logout") ||
+               requestPath.contains("Logout") ||
+               requestPath.equals("/termsClient.jsp") ||
+               requestPath.equals("/privacyClient.jsp") ||
+               requestPath.equals("/loginFeedbackClient.jsp") ||
+               requestPath.equals("/loginReportClient.jsp") ||
+               requestPath.startsWith("/static/") ||
+               requestPath.startsWith("/resources/");
+    }
+
+    private boolean checkRoleAccess(String role, String requestPath) {
+        switch (role) {
+            case "Admin":
+                // Admin has access to all pages
+                return true;
+                
+            case "Support":
+                // Restrict access to specific paths for Support role
+                return !requestPath.equals("/settings") && 
+                       !requestPath.equals("/itemCategories") &&
+                       !requestPath.equals("/itemType") && 
+                       !requestPath.equals("/maintenance");
+                
+            case "Respondent":
+                // Allow access only to specific paths for Respondent role
+                return requestPath.endsWith("/feedbackClient") ||
+                       requestPath.endsWith("/reportsClient") ||
+                       requestPath.equals("/reportsThanksClient.jsp") ||
+                       requestPath.equals("/feedbackThanksClient.jsp");
+                
+            default:
+                // Unknown role, deny access
+                return false;
+        }
+    }
+
     private void addSecurityHeaders(HttpServletResponse response) {
         // Prevent page caching - this stops back button from showing cached pages
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");

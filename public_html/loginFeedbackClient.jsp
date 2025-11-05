@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <%@ page contentType="text/html;charset=windows-1252"%>
+<%
+    // Prevent caching - CRITICAL for security
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
+    
+%>
 <html lang="en">
     <head>
         <!-- Meta Tags -->
@@ -75,7 +82,11 @@
         </script>
     </head>
     <body class="d-flex flex-column min-vh-100">
-        <jsp:include page="headerClient.jsp"/>
+        <header class="bg-facilGray p-3 d-flex justify-content-between align-items-center">
+    <img src="resources/images/USTLogo2.png" alt="UST Logo" class="img-fluid d-none d-md-block" style="max-height: 4rem;">
+    <img src="resources/images/USTLogo2.png" alt="UST Logo" class="img-fluid d-md-none" style="max-height: 2rem;">
+    <!-- No logout button here -->
+</header>
         <div class="container justify-content-center align-items-center flex-grow-1 my-5 montserrat-regular">
             <div class="row justify-content-center align-items-center">
                 <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
