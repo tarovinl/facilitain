@@ -59,7 +59,7 @@ public class editMaintenanceController extends HttpServlet {
             
             if (maintDeleteID != null && !maintDeleteID.isEmpty()) {
                 // DELETE operation
-                sql = "DELETE FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN WHERE assign_id = ?";
+                sql = "DELETE FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN WHERE assign_id = ?";
                 
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, Integer.parseInt(maintDeleteID));
@@ -68,7 +68,7 @@ public class editMaintenanceController extends HttpServlet {
                 }
             } else {
                 // UPDATE operation - DON'T update item_id, only update the other fields
-                sql = "UPDATE C##FMO_ADM.FMO_MAINTENANCE_ASSIGN " +
+                sql = "UPDATE FMO_ADM.FMO_MAINTENANCE_ASSIGN " +
                       "SET main_type_id = ?, user_id = ?, date_of_maintenance = ? " +
                       "WHERE assign_id = ?";
                 
