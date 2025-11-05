@@ -449,7 +449,8 @@
                             <div class="mb-3">
                                 <div class="col">
                                     <label for="flrDesc" class="fw-bold">Floor Description</label>
-                                    <textarea class="form-control mt-3" name="editFlrDesc" id="editFlrDesc" rows="2"></textarea>
+                                    <textarea class="form-control mt-3" maxlength="250" name="editFlrDesc" id="editFlrDesc" rows="2"></textarea>
+                                    <small id="editCharCount" class="form-text text-muted">0 / 250 characters</small>
                                 </div>
                             </div>
                         </div>
@@ -483,6 +484,7 @@
           <div class="mb-3">
             <label for="addFlrDesc" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Floor Description</label>
             <textarea class="form-control" name="addFlrDesc" id="addFlrDesc" rows="2" style="font-family: 'NeueHaasLight', sans-serif;"></textarea>
+            <small id="addCharCount" class="form-text text-muted">0 / 250 characters</small>
           </div>
           <input type="hidden" name="addFlrLocID" id="addFlrLocID" class="form-control" value="${locID}">
           <input type="hidden" name="locID" value="${locID}">
@@ -918,6 +920,44 @@
                 }
             });
         }
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const textareaE = document.getElementById('editFlrDesc');
+    const counterE = document.getElementById('editCharCount');
+    const maxLengthE = 250;
+
+    // Function to update character count safely
+    function updateCharCountE() {
+        const currentLengthE = textareaE.value.length || 0;
+        counterE.textContent = currentLengthE + " / " + maxLengthE + " characters";
+    }
+
+    // Update count live while typing
+    textareaE.addEventListener('input', updateCharCountE);
+
+    // Recalculate count every time the modal is shown (after populateEditModal fills it)
+    $('#editFloor').on('shown.bs.modal', function() {
+        updateCharCountE();
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const textareaA = document.getElementById('addFlrDesc');
+    const counterA = document.getElementById('addCharCount');
+    const maxLengthA = 250;
+
+    if (textareaA && counterA) {
+        // Initialize on page load
+        const charCountA = textareaA.value.length;
+        counterA.textContent = charCountA + " / " + maxLengthA + " characters";
+
+        // Update on every input
+        textareaA.addEventListener('input', function() {
+            const charCountA = textareaA.value.length;
+            console.log("the char count: "+charCountA);
+            counterA.textContent = charCountA + " / " + maxLengthA + " characters";
+        });
     }
 });
 </script>
