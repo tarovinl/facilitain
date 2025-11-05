@@ -440,7 +440,7 @@
                                 <div class="col">
                                     <label for="flrName" class="fw-bold">Floor Name <span style="color: red;">*</span></label>
                                     <input type="text" name="editFlrName" id="editFlrName" class="form-control mt-3" maxlength="15" required>
-                                    <small class="text-muted">Only letters, numbers, spaces, and periods allowed.</small>
+                                    <p class="text-muted">Only letters, numbers, spaces, and periods allowed.</p>
                                 </div>
                             </div>
                             <input type="hidden" name="editFlrLocID" id="editFlrLocID" class="form-control" value="${locID}">
@@ -449,13 +449,14 @@
                             <div class="mb-3">
                                 <div class="col">
                                     <label for="flrDesc" class="fw-bold">Floor Description</label>
-                                    <textarea class="form-control mt-3" name="editFlrDesc" id="editFlrDesc" rows="2"></textarea>
+                                    <textarea class="form-control mt-3" maxlength="250" name="editFlrDesc" id="editFlrDesc" rows="2"></textarea>
+                                    <small id="editCharCount" class="form-text text-muted">0 / 250 characters</small>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-outline-danger" data-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
-                          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save</button>
+                          <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save Changes</button>
                         </div>
                     </form>
                 
@@ -478,11 +479,12 @@
           <div class="mb-3">
             <label for="addFlrName" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Floor Name <span style="color: red;">*</span></label>
             <input type="text" name="addFlrName" id="addFlrName" class="form-control" maxlength="15" style="font-family: 'NeueHaasLight', sans-serif;" required>
-            <small class="text-muted">Only letters, numbers, spaces, and periods allowed.</small>
+            <p class="text-muted">Only letters, numbers, spaces, and periods allowed.</p>
           </div>
           <div class="mb-3">
             <label for="addFlrDesc" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Floor Description</label>
             <textarea class="form-control" name="addFlrDesc" id="addFlrDesc" rows="2" style="font-family: 'NeueHaasLight', sans-serif;"></textarea>
+            <small id="addCharCount" class="form-text text-muted">0 / 250 characters</small>
           </div>
           <input type="hidden" name="addFlrLocID" id="addFlrLocID" class="form-control" value="${locID}">
           <input type="hidden" name="locID" value="${locID}">
@@ -786,7 +788,7 @@
         reverseButtons: true,
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#ffffff',
-        confirmButtonText: 'Confirm',
+        confirmButtonText: 'Yes, archive it',
         cancelButtonText: 'Cancel',
         customClass: {
              cancelButton: 'btn-cancel-outline'
@@ -803,13 +805,17 @@
     
         Swal.fire({
             title: 'Are you sure?',
-            text: "You want to archive this floor?",
+            text: "Do you want to archive this floor?",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, archive it!',
-            cancelButtonText: 'Cancel'
+            reverseButtons: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#ffffff',
+            confirmButtonText: 'Yes, archive it',
+            cancelButtonText: 'Cancel',
+            customClass: {
+             cancelButton: 'btn-cancel-outline'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#archiveFloor').submit();
@@ -914,6 +920,44 @@
                 }
             });
         }
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const textareaE = document.getElementById('editFlrDesc');
+    const counterE = document.getElementById('editCharCount');
+    const maxLengthE = 250;
+
+    // Function to update character count safely
+    function updateCharCountE() {
+        const currentLengthE = textareaE.value.length || 0;
+        counterE.textContent = currentLengthE + " / " + maxLengthE + " characters";
+    }
+
+    // Update count live while typing
+    textareaE.addEventListener('input', updateCharCountE);
+
+    // Recalculate count every time the modal is shown (after populateEditModal fills it)
+    $('#editFloor').on('shown.bs.modal', function() {
+        updateCharCountE();
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const textareaA = document.getElementById('addFlrDesc');
+    const counterA = document.getElementById('addCharCount');
+    const maxLengthA = 250;
+
+    if (textareaA && counterA) {
+        // Initialize on page load
+        const charCountA = textareaA.value.length;
+        counterA.textContent = charCountA + " / " + maxLengthA + " characters";
+
+        // Update on every input
+        textareaA.addEventListener('input', function() {
+            const charCountA = textareaA.value.length;
+            console.log("the char count: "+charCountA);
+            counterA.textContent = charCountA + " / " + maxLengthA + " characters";
+        });
     }
 });
 </script>
