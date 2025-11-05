@@ -1225,13 +1225,13 @@ $(document).on('click', '.delete-maintenance-btn', function(e) {
 
     Swal.fire({
         title: 'Are you sure?',
-        text: "You want to delete this maintenance assignment?",
+        text: "Do you want to delete this maintenance assignment?",
         icon: 'warning',
         showCancelButton: true,
+         cancelButtonColor: '#3085d6',
         confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel'
+        cancelButtonText: 'Cancel',
+         confirmButtonText: 'Yes, delete i!'
     }).then((result) => {
         if (result.isConfirmed) {
             $('#deleteMaintID').val(maintID);
