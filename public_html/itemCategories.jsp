@@ -87,6 +87,16 @@
                 padding-top: 80px; /* or whatever smaller value you want */
                 }
                 }
+                
+                .char-counter {
+                    font-size: 0.875rem;
+                    color: #6c757d;
+                    margin-top: 0.25rem;
+                }
+                
+                .char-counter.text-danger {
+                    color: #dc3545 !important;
+                }
     </style>
 </head>
 <body>
@@ -161,22 +171,27 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addCategoryModalLabel">Add Item Category</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancel"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="categoryName">Category Name</label>
-                        <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+                    <div class="form-group mb-3">
+                        <label for="categoryName">Category Name</label> <span class="text-danger">*</span> 
+                        <input type="text" class="form-control" id="categoryName" name="categoryName" maxlength="250" required>
+                        <div class="char-counter">
+                            <span id="categoryNameCounter">0</span> / 250 characters
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea class="form-control" id="description" name="description" ></textarea>
+                        <textarea class="form-control" id="description" name="description" maxlength="250"></textarea>
+                        <div class="char-counter">
+                            <span id="descriptionCounter">0</span> / 250 characters
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-success">Add</button>
-                    
+                    <button type="button" class="btn" style="font-family: 'NeueHaasMedium', sans-serif; background-color: #6c757d; color: white;" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn" style="background-color: #fccc4c; color: black; font-family: 'NeueHaasMedium', sans-serif;">Add</button>
                 </div>
             </div>
         </form>
@@ -194,19 +209,25 @@
         </div>
         <div class="modal-body">
             <input type="hidden" id="editItemCID" name="itemCID">
-            <input type="hidden" name="editMode" value="true">  <!-- Add this line -->
-            <div class="form-group">
-                <label for="editCategoryName">Category Name</label>
-                <input type="text" class="form-control" id="editCategoryName" name="categoryName" required>
+            <input type="hidden" name="editMode" value="true">
+            <div class="form-group mb-3">
+                <label for="editCategoryName">Category Name</label> <span class="text-danger">*</span>
+                <input type="text" class="form-control" id="editCategoryName" name="categoryName" maxlength="250" required>
+                <div class="char-counter">
+                    <span id="editCategoryNameCounter">0</span> / 250 characters
+                </div>
             </div>
             <div class="form-group">
                 <label for="editDescription">Description</label>
-                <textarea class="form-control" id="editDescription" name="description" required></textarea>
+                <textarea class="form-control" id="editDescription" name="description" maxlength="250" required></textarea>
+                <div class="char-counter">
+                    <span id="editDescriptionCounter">0</span> / 250 characters
+                </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-success">Save Changes</button>
+            <button type="button" class="btn" style="font-family: 'NeueHaasMedium', sans-serif; background-color: #6c757d; color: white;" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn" style="background-color: #fccc4c; color: black; font-family: 'NeueHaasMedium', sans-serif;">Save Changes</button>
         </div>
     </div>
 </form>
@@ -218,9 +239,61 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script>
+    // Character counter function
+    function updateCharCounter(input, counter) {
+        const count = input.value.length;
+        counter.textContent = count;
+        
+        // Change color to red if at or near limit
+        if (count >= 240) {
+            counter.parentElement.classList.add('text-danger');
+        } else {
+            counter.parentElement.classList.remove('text-danger');
+        }
+    }
+
     $(document).ready(function () {
         // Initialize DataTable
         $('#categoriesTable').DataTable();
+        
+        // Add modal character counters
+        const categoryNameInput = document.getElementById('categoryName');
+        const categoryNameCounter = document.getElementById('categoryNameCounter');
+        const descInput = document.getElementById('description');
+        const descCounter = document.getElementById('descriptionCounter');
+        
+        categoryNameInput.addEventListener('input', function() {
+            updateCharCounter(this, categoryNameCounter);
+        });
+        
+        descInput.addEventListener('input', function() {
+            updateCharCounter(this, descCounter);
+        });
+        
+        // Edit modal character counters
+        const editCategoryNameInput = document.getElementById('editCategoryName');
+        const editCategoryNameCounter = document.getElementById('editCategoryNameCounter');
+        const editDescInput = document.getElementById('editDescription');
+        const editDescCounter = document.getElementById('editDescriptionCounter');
+        
+        editCategoryNameInput.addEventListener('input', function() {
+            updateCharCounter(this, editCategoryNameCounter);
+        });
+        
+        editDescInput.addEventListener('input', function() {
+            updateCharCounter(this, editDescCounter);
+        });
+        
+        // Reset add modal counters when modal is shown
+        const addModal = document.getElementById('addCategoryModal');
+        addModal.addEventListener('show.bs.modal', function() {
+            categoryNameInput.value = '';
+            descInput.value = '';
+            categoryNameCounter.textContent = '0';
+            descCounter.textContent = '0';
+            categoryNameCounter.parentElement.classList.remove('text-danger');
+            descCounter.parentElement.classList.remove('text-danger');
+        });
 
         // Prefill Edit Modal with data
         const editModal = document.getElementById('editCategoryModal');
@@ -231,8 +304,12 @@
             const description = button.getAttribute('data-description');
 
             document.getElementById('editItemCID').value = cid;
-            document.getElementById('editCategoryName').value = name;
-            document.getElementById('editDescription').value = description;
+            editCategoryNameInput.value = name;
+            editDescInput.value = description;
+            
+            // Update counters
+            updateCharCounter(editCategoryNameInput, editCategoryNameCounter);
+            updateCharCounter(editDescInput, editDescCounter);
         });
 
         // Handle SweetAlert2 notifications
@@ -303,13 +380,13 @@
                 
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: 'You want to archive this category?',
+                    text: 'Do you want to archive this item category?',
                     icon: 'warning',
                     showCancelButton: true,
                     reverseButtons: true,
                     confirmButtonColor: '#dc3545',
                     cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Yes, Archive it!',
+                    confirmButtonText: 'Yes, Archive it',
                     cancelButtonText: 'Cancel',
                     customClass: {
                         cancelButton: 'btn-cancel-outline'

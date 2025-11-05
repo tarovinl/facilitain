@@ -282,7 +282,7 @@
                                 
                                 <!-- Item Type Dropdown -->
                                 <div class="mb-3">
-                                    <label for="editItemTypeId" class="form-label">Item Type</label>
+                                    <label for="editItemTypeId" class="form-label">Item Type</label> <span class="text-danger">*</span>
                                     <select class="form-select" id="editItemTypeId" name="itemTypeId" required>
                                         <option value="" disabled>Select Item Type</option>
                                 <c:forEach var="typez" items="${FMO_TYPES_LIST}">
@@ -295,7 +295,7 @@
 
                                 <!-- Number of Days -->
                                 <div class="mb-3">
-                                    <label for="editNoOfDays" class="form-label">Number of Days</label>
+                                    <label for="editNoOfDays" class="form-label">Number of Days</label> <span class="text-danger">*</span>
                                     <input type="number" class="form-control" id="editNoOfDays" name="noOfDays" required oninput="toggleEditQuarterlyOptions()">
                                 </div>
 
@@ -338,13 +338,13 @@
 
                                 <!-- Number of Days Warning -->
                                 <div class="mb-3">
-                                    <label for="editNoOfDaysWarning" class="form-label">Warning Days</label>
+                                    <label for="editNoOfDaysWarning" class="form-label">Warning Days</label> <span class="text-danger">*</span>
                                     <input type="number" class="form-control" id="editNoOfDaysWarning" name="noOfDaysWarning" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-success">Update</button>
+                                <button type="submit" class="btn btn-success">Save Changes</button>
                             </div>
                         </form>
                     </div>
@@ -487,13 +487,13 @@ $(document).ready(function() {
             
             Swal.fire({
                 title: 'Are you sure?',
-                text: 'You want to archive this maintenance schedule?',
+                text: 'Do you want to archive this maintenance schedule?',
                 icon: 'warning',
                 showCancelButton: true,
                 reverseButtons: true,
                 confirmButtonColor: '#dc3545',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, Archive it!',
+                confirmButtonText: 'Yes, Archive it',
                 cancelButtonText: 'Cancel',
                 customClass: {
                     cancelButton: 'btn-cancel-outline'
