@@ -39,75 +39,80 @@
                 font-style: normal;
             }
             
-            /* Privacy Modal Styles */
-            .privacy-modal .modal-dialog {
+            /* Agreement Modal Styles */
+            .agreement-modal .modal-dialog {
                 max-width: 90vw;
                 width: 100%;
                 margin: 1rem auto;
             }
             
+           .agreement-modal .modal-header {
+            background-color: #ffffff !important;
+            border-bottom: 1px solid #d2d2d2;
+            }
+            
             @media (min-width: 576px) {
-                .privacy-modal .modal-dialog {
+                .agreement-modal .modal-dialog {
                     max-width: 500px;
                 }
             }
             
             @media (min-width: 768px) {
-                .privacy-modal .modal-dialog {
+                .agreement-modal .modal-dialog {
                     max-width: 600px;
                 }
             }
             
             @media (min-width: 992px) {
-                .privacy-modal .modal-dialog {
+                .agreement-modal .modal-dialog {
                     max-width: 700px;
                 }
             }
             
-            .privacy-modal .modal-body {
+            .agreement-modal .modal-body {
                 max-height: 60vh;
                 overflow-y: auto;
                 padding: 0;
             }
             
-            .privacy-modal .modal-body-content {
+            .agreement-modal .modal-body-content {
                 padding: 1.5rem;
             }
             
             @media (max-width: 575.98px) {
-                .privacy-modal .modal-dialog {
+                .agreement-modal .modal-dialog {
                     margin: 0.5rem;
                     max-width: calc(100vw - 1rem);
                 }
                 
-                .privacy-modal .modal-body {
+                .agreement-modal .modal-body {
                     max-height: 70vh;
                 }
                 
-                .privacy-modal .modal-body-content {
+                .agreement-modal .modal-body-content {
                     padding: 1rem;
                 }
                 
-                .privacy-modal .modal-title {
+                .agreement-modal .modal-title {
                     font-size: 1.1rem;
                 }
             }
             
-            .privacy-modal .modal-body::-webkit-scrollbar {
+            .agreement-modal .modal-body::-webkit-scrollbar {
                 width: 8px;
             }
             
-            .privacy-modal .modal-body::-webkit-scrollbar-track {
+            .agreement-modal .modal-body::-webkit-scrollbar-track {
                 background: #f1f1f1;
                 border-radius: 4px;
             }
             
-            .privacy-modal .modal-body::-webkit-scrollbar-thumb {
+            .agreement-modal .modal-body::-webkit-scrollbar-thumb {
                 background: #fbbe15;
                 border-radius: 4px;
             }
             
-            .privacy-modal .modal-body::-webkit-scrollbar-thumb:hover {
+            .agreement-modal .modal-body::-webkit-scrollbar-thumb:hover {
                 background: #e6a912;
             }
             
@@ -130,15 +135,15 @@
                     // Store the credential response
                     pendingCredential = response;
                     
-                    // Show the privacy policy modal
-                    const privacyModal = new bootstrap.Modal(document.getElementById('privacyModal'), {
+                    // Show the agreement modal (not privacy modal)
+                    const agreementModal = new bootstrap.Modal(document.getElementById('agreementModal'), {
                         backdrop: true,
                         keyboard: true
                     });
-                    privacyModal.show();
+                    agreementModal.show();
                     
                     // Clear credential if modal is closed without agreeing
-                    document.getElementById('privacyModal').addEventListener('hidden.bs.modal', function () {
+                    document.getElementById('agreementModal').addEventListener('hidden.bs.modal', function () {
                         if (pendingCredential) {
                             pendingCredential = null;
                             console.log('Login cancelled - modal closed');
@@ -201,7 +206,7 @@
             }
             
             function enableAgreeButton() {
-                const checkbox = document.getElementById('privacyCheckbox');
+                const checkbox = document.getElementById('agreementCheckbox');
                 const agreeBtn = document.getElementById('agreeBtn');
                 agreeBtn.disabled = !checkbox.checked;
             }
@@ -214,7 +219,10 @@
             }
         </script>
     </head>
-    <body class="d-flex flex-column min-vh-100">
+    <body class="d-flex flex-column min-vh-100" style="background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('resources/images/ust-bg.jpg'); 
+             background-size: cover; 
+             background-position: center; 
+             background-repeat: no-repeat;">
         <header class="bg-facilGray p-3 d-flex justify-content-between align-items-center">
             <img src="resources/images/USTLogo2.png" alt="UST Logo" class="img-fluid d-none d-md-block" style="max-height: 4rem;">
             <img src="resources/images/USTLogo2.png" alt="UST Logo" class="img-fluid d-md-none" style="max-height: 2rem;">
@@ -257,12 +265,12 @@
             </div>
         </div>
         
-        <!-- Agreement Modal -->
-        <div class="modal fade privacy-modal" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+        <!-- Agreement Modal (for login) -->
+        <div class="modal fade agreement-modal" id="agreementModal" tabindex="-1" aria-labelledby="agreementModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: #fbbe15;">
-                        <h5 class="modal-title montserrat-boldl" id="privacyModalLabel">AGREEMENT REMINDER</h5>
+                   <div class="modal-header" style="background-color: #ffffff; border-bottom: 1px solid #d2d2d2;">
+                        <h5 class="modal-title montserrat-boldl" id="agreementModalLabel">AGREEMENT REMINDER</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="cancelLogin()"></button>
                     </div>
                     <div class="modal-body">
@@ -278,8 +286,8 @@
                     </div>
                     <div class="modal-footer flex-column align-items-stretch">
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="privacyCheckbox" onchange="enableAgreeButton()">
-                            <label class="form-check-label montserrat-regular" for="privacyCheckbox">
+                            <input class="form-check-input" type="checkbox" id="agreementCheckbox" onchange="enableAgreeButton()">
+                            <label class="form-check-label montserrat-regular" for="agreementCheckbox">
                                 I have read and agree to the terms above
                             </label>
                         </div>
@@ -292,7 +300,7 @@
                             onmouseout="if(!this.disabled) { this.style.backgroundColor='#fbbe15'; this.style.color='#212529'; }" 
                             onclick="proceedWithLogin()"
                             disabled>
-                            Agree and Continue
+                            Continue
                         </button>
                     </div>
                 </div>

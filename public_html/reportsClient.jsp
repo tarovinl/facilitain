@@ -250,12 +250,6 @@
                 </form>
 
             
-                <div>
-               <button type="button" onclick="window.location.href='agreementReportsClient.jsp';" class="btn  p-2 shadow-none focus:outline-none active:outline-none"
-                        style="background-color: transparent; border: none;">
-                    <i class="bi bi-arrow-left-short"></i>Back
-                </button>
-            </div>
             </div>
             </div>
             </div>
