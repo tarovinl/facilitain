@@ -181,8 +181,7 @@ public class itemController extends HttpServlet {
             if (itemEID != null && !itemEID.isEmpty()) {
                 for (Item itemz : listItemz) {
                     if (itemz.getItemName().equalsIgnoreCase(itemEditName) &&
-                        itemz.getItemID() != Integer.parseInt(itemEID) &&
-                        itemz.getItemArchive() == 1) {
+                        itemz.getItemID() != Integer.parseInt(itemEID)) {
                         action = "edit";
                         status = "error_dup";
                         response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
@@ -217,8 +216,7 @@ public class itemController extends HttpServlet {
                     
             } else {
                 for (Item itemz : listItemz) {
-                    if (itemz.getItemName().equalsIgnoreCase(itemName) &&
-                        itemz.getItemArchive() == 1) {
+                    if (itemz.getItemName().equalsIgnoreCase(itemName)) {
                         action = "add";
                         status = "error_dup";
                         response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
