@@ -1961,6 +1961,16 @@ function roomEditRenderCopy() {
       timer: 5000,
       timerProgressBar: true
     });
+  } else if (status === 'error_dup') {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'That equipment name is already taken. Try a different name.',
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true
+    });
   }
   
   $(document).on('click', '.archive-maintenance-btn', function(e) {
