@@ -29,10 +29,17 @@ public class LogoutController extends HttpServlet {
         
         String role = null;
         String source = request.getParameter("source");
-        
+        String storedLoginSource = null;
+
         if (session != null) {
             role = (String) session.getAttribute("role");
-            session.invalidate(); // Invalidate the session after getting role
+            storedLoginSource = (String) session.getAttribute("loginSource");
+            session.invalidate(); // Invalidate the session after getting attributes
+        }
+
+        // Use source parameter first, fallback to stored login source
+        if (source == null || source.isEmpty()) {
+            source = storedLoginSource;
         }
 
         String redirectUrl;
