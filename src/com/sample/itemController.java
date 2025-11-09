@@ -36,6 +36,7 @@ import javax.servlet.annotation.MultipartConfig;
 
 import sample.model.ItemUser;
 import sample.model.MaintAssign;
+import sample.model.Item;
 
 @WebServlet(name = "itemController", urlPatterns = { "/itemcontroller" })
 public class itemController extends HttpServlet {
@@ -130,11 +131,13 @@ public class itemController extends HttpServlet {
         
         ArrayList<MaintAssign> listAssign = new ArrayList<>();
         ArrayList<ItemUser> listDUsers = new ArrayList<>();
+        ArrayList<Item> listItemz = new ArrayList<>();
         
         try (
              Connection con = PooledConnection.getConnection();
              PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
              PreparedStatement stmntDUsers = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_DUSERS ORDER BY USER_ID");
+             PreparedStatement stmntItemz = con.prepareCall("SELECT ITEM_ID, NAME, LOCATION_ID, ITEM_STAT_ID from C##FMO_ADM.FMO_ITEMS ORDER BY ITEM_ID");
         ){
             ResultSet rsAssign = stmntAssign.executeQuery();
             while (rsAssign.next()) {
@@ -159,17 +162,39 @@ public class itemController extends HttpServlet {
                 listDUsers.add(itemUser);
             }
             rsDUsers.close();
+            
+            ResultSet rsItemz = stmntItemz.executeQuery();
+            while (rsItemz.next()) {
+                Item items = new Item();
+                items.setItemID(rsItemz.getInt("ITEM_ID"));
+                items.setItemLID(rsItemz.getInt("LOCATION_ID"));
+                items.setItemName(rsItemz.getString("NAME"));
+                items.setItemArchive(rsItemz.getInt("ITEM_STAT_ID"));
+                listItemz.add(items);
+            }
+            rsItemz.close();
         } catch (SQLException error) {
             error.printStackTrace();
         }
         
         try {
             if (itemEID != null && !itemEID.isEmpty()) {
+                for (Item itemz : listItemz) {
+                    if (itemz.getItemName().equalsIgnoreCase(itemEditName) &&
+                        itemz.getItemID() != Integer.parseInt(itemEID)) {
+                        action = "edit";
+                        status = "error_dup";
+                        response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
+                        return;
+                    }
+                }
                 java.util.Date parsedEDate = dateFormat.parse(itemEditDateInst);
                 sqlEditDate = new Date(parsedEDate.getTime());
 
                 java.util.Date parsedEditExpireDate = dateFormat.parse(itemEditExpiry);
                 sqlEditExpire = new Date(parsedEditExpireDate.getTime());
+                System.out.println("we see u but edit");
+                
             } else if(maintStatID != null && !maintStatID.isEmpty()){
                 for (MaintAssign assign : listAssign) {
                     if (assign.getItemID() == Integer.parseInt(maintStatID) && assign.getIsCompleted() == 0) {
@@ -190,6 +215,14 @@ public class itemController extends HttpServlet {
             } else if(itemAID != null && !itemAID.isEmpty()){
                     
             } else {
+                for (Item itemz : listItemz) {
+                    if (itemz.getItemName().equalsIgnoreCase(itemName)) {
+                        action = "add";
+                        status = "error_dup";
+                        response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
+                        return;
+                    }
+                }
                 java.util.Date parsedDate = dateFormat.parse(itemDateInst);
                 sqlDate = new Date(parsedDate.getTime()); 
 
@@ -245,6 +278,8 @@ public class itemController extends HttpServlet {
                 return;
             }
         }
+        
+//        check if same name add
         
         try (Connection conn = PooledConnection.getConnection()) {
             String sql;
