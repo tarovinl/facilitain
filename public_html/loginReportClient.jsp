@@ -232,13 +232,13 @@
             <div class="row justify-content-center align-items-center">
                 <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body text-center">
                             <img src="resources/images/FACILITAIN_WLOGO2.png" 
                              alt="FACILITAIN" 
                              class="img-fluid mb-4 d-block mx-auto" 
                              style="max-height: 5rem;">
-                            <h3 class="text-center p-1 montserrat-bold">Sign in to Give Reports</h3>
-                            <p>Help improve our campus facilities! Please log in using your <strong>UST Google Workspace Personal Account</strong> to access the <strong>FACILITAIN Reports Portal</strong>.</p>
+                            <h3 class="text-center p-1 montserrat-bold">Sign in to Report a Facility Issue</h3>
+                            <p>Help us maintain our campus facilities by reporting any damaged or malfunctioning equipment. Log in with your UST Google Workspace account to continue.</p>
                             <div class="mt-3 d-flex justify-content-center px-0">
                                 <div id="g_id_onload"
                                      data-client_id="103164757802-4v37vphomb6foi27vbhhc4advakt16q3.apps.googleusercontent.com"
@@ -257,7 +257,7 @@
                             </div>
                             <hr class="my-3">
                             <div class="text-center">
-                               <a href="#" class="d-block text-decoration-none text-dark montserrat-regular text-center" style="font-size: 1rem;">Need help signing in? <strong>Learn More</strong></a>
+                               <a class="d-block text-decoration-none text-dark montserrat-regular text-center" style="font-size: 1rem;">Only <strong>UST Google Workspace</strong> accounts are supported</a>
                             </div>
                         </div>
                     </div>
