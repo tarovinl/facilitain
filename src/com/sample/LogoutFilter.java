@@ -41,7 +41,9 @@ public class LogoutFilter implements Filter {
 
         // Require session and email for all other pages
         if (session == null || session.getAttribute("email") == null) {
-            httpResponse.sendRedirect(contextPath + "/index.jsp");
+            // Redirect to appropriate login page based on requested page
+            String redirectUrl = getLoginPageForRequest(contextPath, requestPath);
+            httpResponse.sendRedirect(redirectUrl);
             return;
         }
 
@@ -54,7 +56,8 @@ public class LogoutFilter implements Filter {
         // Check the user's role 
         String role = (String) session.getAttribute("role");
         if (role == null) {
-            httpResponse.sendRedirect(contextPath + "/index.jsp");
+            String redirectUrl = getLoginPageForRequest(contextPath, requestPath);
+            httpResponse.sendRedirect(redirectUrl);
             return;
         }
 
@@ -112,6 +115,26 @@ public class LogoutFilter implements Filter {
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0);
+    }
+    
+    private String getLoginPageForRequest(String contextPath, String requestPath) {
+        // Check for feedback CLIENT pages (not admin feedback page)
+        if (requestPath.contains("feedbackClient") || 
+            requestPath.equals("/feedbackThanksClient.jsp") ||
+            requestPath.equals("/loginFeedbackClient.jsp")) {
+            return contextPath + "/loginFeedbackClient.jsp";
+        } 
+        // Check for reports CLIENT pages (not admin reports page)
+        else if (requestPath.contains("reportsClient") || 
+                 requestPath.contains("ReportsClient") ||
+                 requestPath.equals("/reportsThanksClient.jsp") ||
+                 requestPath.equals("/loginReportClient.jsp")) {
+            return contextPath + "/loginReportClient.jsp";
+        } 
+        // Everything else goes to admin login (including /feedback and /reports admin pages)
+        else {
+            return contextPath + "/index.jsp";
+        }
     }
 
     @Override

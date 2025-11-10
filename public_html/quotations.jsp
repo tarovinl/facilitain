@@ -112,6 +112,48 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             border: none;
         }
+        
+        .description-cell {
+        max-width: 250px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .description-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+    }
+    
+    .description-btn {
+        border: none;
+        background-color: transparent;
+        color: #6c757d;
+        padding: 0;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;  
+    }
+    
+    .description-btn:hover {
+        color: #495057;  
+        transform: scale(1.1); 
+    }
+    
+    .description-btn:active {
+        transform: scale(0.95);  
+    }
+    
+    @media (max-width: 768px) {
+        .description-cell {
+            max-width: 150px;
+        }
+        .description-text {
+            max-width: 100px;
+        }
+    }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -243,7 +285,7 @@
 </div>
 
 <script>
-    // File size validation (10MB)
+      // File size validation (10MB)
     const MAX_FILE_SIZE = 10 * 1024 * 1024;
     const MAX_DESCRIPTION_LENGTH = 255;
     
@@ -522,6 +564,59 @@
         }
     });
 
+    // Initialize popovers for description buttons
+    function initializeDescriptionPopovers() {
+        console.log('Initializing description popovers...');
+        
+        // Destroy any existing popovers first to avoid duplicates
+        const existingPopovers = document.querySelectorAll('[data-bs-toggle="popover"]');
+        existingPopovers.forEach(function(el) {
+            const existingPopover = bootstrap.Popover.getInstance(el);
+            if (existingPopover) {
+                existingPopover.dispose();
+            }
+        });
+        
+        // Initialize new popovers
+        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        console.log('Found ' + popoverTriggerList.length + ' popover triggers');
+        
+        const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click',
+                html: true,
+                customClass: 'description-popover'
+            });
+        });
+        
+        // Show ellipsis button only if text is truncated
+        const descriptionTexts = document.querySelectorAll('.description-text');
+        descriptionTexts.forEach(function(textEl) {
+            const button = textEl.nextElementSibling;
+            if (button && button.classList.contains('description-btn')) {
+                // Check if text is truncated
+                if (textEl.scrollWidth > textEl.clientWidth) {
+                    button.style.display = 'inline-block';
+                } else {
+                    button.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    // Close popover when clicking outside
+    document.addEventListener('click', function(event) {
+        const popovers = document.querySelectorAll('[data-bs-toggle="popover"]');
+        popovers.forEach(function(trigger) {
+            const popoverInstance = bootstrap.Popover.getInstance(trigger);
+            if (popoverInstance && 
+                !trigger.contains(event.target) && 
+                !document.querySelector('.popover')?.contains(event.target)) {
+                popoverInstance.hide();
+            }
+        });
+    });
+
     // Function to capture the itemID when opening the main quotations modal
     function openQuotModal(button) {
         // Extract the clicked item ID
@@ -535,8 +630,15 @@
         fetch('quotationdisplaycontroller?itemID=' + itemId)
             .then(response => response.text())
             .then(data => {
+                console.log('Quotation data received, updating modal content...');
                 // Update the modal content with the received HTML content
                 document.getElementById('quotationModalContent').innerHTML = data;
+
+                // Re-initialize popovers after content loads
+                setTimeout(() => {
+                    console.log('Calling initializeDescriptionPopovers after timeout...');
+                    initializeDescriptionPopovers();
+                }, 200);
 
                 // Open the modal
                 const modal = new bootstrap.Modal(document.getElementById('quotEquipmentModal'));
@@ -567,6 +669,11 @@
             }
         });
     }
+
+    // Initialize on DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded - ready to initialize popovers when modal opens');
+    });
 </script>
 </body>
 </html>

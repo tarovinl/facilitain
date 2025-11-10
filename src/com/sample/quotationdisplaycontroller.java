@@ -98,7 +98,23 @@ public class quotationdisplaycontroller extends HttpServlet {
                 for (Quotation quotation : quotations) {
                     htmlContent.append("<tr>");
                     htmlContent.append("<td>").append(quotation.getQuotationId()).append("</td>");
-                    htmlContent.append("<td>").append(quotation.getDescription()).append("</td>");
+                    htmlContent.append("<td>");
+                    htmlContent.append("<div class='description-cell'>");
+                    htmlContent.append("<span class='description-text' title='").append(quotation.getDescription()).append("'>");
+                    htmlContent.append(quotation.getDescription()).append("</span>");
+                    if (quotation.getDescription() != null && !quotation.getDescription().isEmpty()) {
+                        htmlContent.append("<button class='btn btn-sm description-btn' ");
+                        htmlContent.append("type='button' ");
+                        htmlContent.append("data-bs-toggle='popover' ");
+                        htmlContent.append("data-bs-placement='left' ");
+                        htmlContent.append("data-bs-trigger='click' ");
+                        htmlContent.append("data-bs-content='").append(quotation.getDescription()).append("' ");
+                        htmlContent.append("title='Full Description'>");
+                        htmlContent.append("...");
+                        htmlContent.append("</button>");
+                    }
+                    htmlContent.append("</div>");
+                    htmlContent.append("</td>");
                     htmlContent.append("<td>").append(quotation.getDateUploaded()).append("</td>");
                     
                     // Add file view buttons
