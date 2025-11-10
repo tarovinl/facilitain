@@ -72,7 +72,7 @@
             white-space: nowrap;
             flex: 1;
         }
-               .remarks-btn {
+        .remarks-btn {
             border: none;
             background-color: transparent;
             color: #6c757d;
@@ -137,15 +137,14 @@
                                         <c:if test="${type.itemTID == maintenance.itemTypeId}">
                                             <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
                                                 <c:if test="${cat.itemCID == type.itemCID}">
-                                                    ${cat.itemCat.toUpperCase()}
+                                                    ${cat.itemCat.toUpperCase()} - ${type.itemType.toUpperCase()}
                                                 </c:if>
                                             </c:forEach>
-                                            ${type.itemType.toUpperCase()}
                                         </c:if>
                                     </c:forEach>
                                 </td>
                                 <td>${maintenance.noOfDays}</td>
-                                   <td>
+                                <td>
                                     <div class="remarks-cell">
                                         <span class="remarks-text" title="${maintenance.remarks}">${maintenance.remarks}</span>
                                         <c:if test="${not empty maintenance.remarks}">
@@ -202,11 +201,15 @@
                                     <label for="addItemTypeId" class="form-label">Item Type</label>
                                     <select class="form-select" id="addItemTypeId" name="itemTypeId" required>
                                         <option value="" disabled selected>Select Item Type</option>
-                                         <c:forEach var="typez" items="${FMO_TYPES_LIST}">
-                                    <c:if test="${typez.itemArchive == 1}">
-                                        <option value="${typez.itemTID}">${typez.itemType}</option>
-                                    </c:if>
-                                </c:forEach>
+                                        <c:forEach var="typez" items="${FMO_TYPES_LIST}">
+                                            <c:if test="${typez.itemArchive == 1}">
+                                                <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
+                                                    <c:if test="${cat.itemCID == typez.itemCID}">
+                                                        <option value="${typez.itemTID}">${cat.itemCat} - ${typez.itemType}</option>
+                                                    </c:if>
+                                                </c:forEach>
+                                            </c:if>
+                                        </c:forEach>
                                     </select>
                                 </div>
 
@@ -288,11 +291,15 @@
                                     <label for="editItemTypeId" class="form-label">Item Type</label> <span class="text-danger">*</span>
                                     <select class="form-select" id="editItemTypeId" name="itemTypeId" required>
                                         <option value="" disabled>Select Item Type</option>
-                                <c:forEach var="typez" items="${FMO_TYPES_LIST}">
-                                    <c:if test="${typez.itemArchive == 1}">
-                                        <option value="${typez.itemTID}">${typez.itemType}</option>
-                                    </c:if>
-                                </c:forEach>
+                                        <c:forEach var="typez" items="${FMO_TYPES_LIST}">
+                                            <c:if test="${typez.itemArchive == 1}">
+                                                <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
+                                                    <c:if test="${cat.itemCID == typez.itemCID}">
+                                                        <option value="${typez.itemTID}">${cat.itemCat} - ${typez.itemType}</option>
+                                                    </c:if>
+                                                </c:forEach>
+                                            </c:if>
+                                        </c:forEach>
                                     </select>
                                 </div>
 
@@ -582,24 +589,25 @@ function toggleEditQuarterlyOptions() {
     }
 }
 
- const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl, {
-            trigger: 'click',
-            html: true,
-            customClass: 'remarks-popover'
-        });
+const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl, {
+        trigger: 'click',
+        html: true,
+        customClass: 'remarks-popover'
     });
-    // Close popover when clicking outside
-    document.addEventListener('click', function(event) {
-        popoverTriggerList.forEach(function(trigger) {
-            if (!trigger.contains(event.target) && !document.querySelector('.popover')?.contains(event.target)) {
-                bootstrap.Popover.getInstance(trigger)?.hide();
-            }
-        });
+});
+
+// Close popover when clicking outside
+document.addEventListener('click', function(event) {
+    popoverTriggerList.forEach(function(trigger) {
+        if (!trigger.contains(event.target) && !document.querySelector('.popover')?.contains(event.target)) {
+            bootstrap.Popover.getInstance(trigger)?.hide();
+        }
     });
-    
-    // Show ellipsis button only if text is truncated
+});
+
+// Show ellipsis button only if text is truncated
 document.addEventListener('DOMContentLoaded', function() {
     const remarksTexts = document.querySelectorAll('.remarks-text');
     remarksTexts.forEach(function(textEl) {
