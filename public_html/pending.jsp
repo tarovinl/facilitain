@@ -555,8 +555,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn" style="font-family: 'NeueHaasMedium', sans-serif; background-color: #6c757d; color: white;" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn" style="background-color: #fccc4c; color: black; font-family: 'NeueHaasMedium', sans-serif;">Add</button>
+                    <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
                             </div>
                 </div>
             </div>
@@ -615,8 +615,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">Save Changes</button>
+                    <button type="button"  class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit"  class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save Changes</button>
                 </div>
             </div>
         </form>
