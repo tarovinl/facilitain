@@ -771,6 +771,17 @@ public class mainController extends HttpServlet {
                     queryString.matches("locID=\\d+/manage\\?floor=[\\w%]+&itemHID=\\d+")) {
                     return true;
                 }
+            
+            // NEW: Allow quotation upload/archive result parameters
+               if (queryString.matches("locID=\\d+/manage\\?floor=[\\w%]+&uploadResult=\\w+&uploadMessage=[\\w%\\+]+&itemID=\\d+") ||
+                   queryString.matches("locID=\\d+/manage\\?floor=[\\w%]+&quotationResult=\\w+&quotationMessage=[\\w%\\+]+&itemID=\\d+")) {
+                   return true;
+                       }
+                       
+                       // Allow with just uploadResult or quotationResult (in case some params are missing)
+                       if (queryString.matches("locID=\\d+/manage\\?floor=[\\w%]+((&uploadResult=\\w+)|(&quotationResult=\\w+)).*")) {
+                           return true;
+                       }
 
                 return false;
 
