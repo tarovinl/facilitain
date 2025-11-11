@@ -9,7 +9,6 @@
     <title>Reports - Facilitain</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <!-- Added DataTables responsive extension CSS -->
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">     
     <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
@@ -96,7 +95,6 @@
             color: #8388a4 !important;
         }
 
-        /* Chart container styling  */
         .chart-container {
             height: 400px;
         }
@@ -149,7 +147,6 @@
             transition: background-color 0.2s ease;
         }
 
-        /* Enhanced filter section - inside table container */
         .filters-section {
             background-color: #f8f9fa;
             border: 1px solid #dee2e6;
@@ -186,7 +183,6 @@
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
 
-        /* DataTables customization */
         .dataTables_wrapper .dataTables_length,
         .dataTables_wrapper .dataTables_filter {
             margin-bottom: 1.5rem;
@@ -210,7 +206,6 @@
             border-color: #0d6efd;
         }
 
-        /*  mobile responsive styles for DataTables */
         @media (max-width: 768px) {
             .dataTables_wrapper .dataTables_length,
             .dataTables_wrapper .dataTables_filter {
@@ -253,7 +248,6 @@
             }
         }
 
-        /* Enhanced responsive table styling */
         @media (max-width: 576px) {
             .table-responsive {
                 font-size: 0.875rem;
@@ -265,7 +259,6 @@
                 font-size: 0.7rem;
             }
             
-            /* Stack action buttons vertically on very small screens */
             .action-buttons {
                 display: flex;
                 flex-direction: column;
@@ -284,7 +277,6 @@
             }
         }
 
-        /* Responsive modal improvements */
         @media (max-width: 576px) {
             .modal-dialog {
                 margin: 0.5rem;
@@ -296,7 +288,6 @@
             }
         }
 
-        /* DataTables responsive child row styling */
         table.dataTable.dtr-inline.collapsed > tbody > tr > td.child,
         table.dataTable.dtr-inline.collapsed > tbody > tr > th.child,
         table.dataTable.dtr-inline.collapsed > tbody > tr > td.dataTables_empty {
@@ -324,7 +315,6 @@
             border-bottom: none;
         }
 
-        /* Sort indicator enhancement */
         .sort-btn {
             background: none;
             border: 1px solid #dee2e6;
@@ -376,7 +366,7 @@
                 <div class="col-lg-8 mb-3">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Reports by Location</h5>
+                            <h5 class="card-title">Top 5 Most Reported Locations</h5>
                             <div id="locationChart" class="chart-container"></div>
                         </div>
                     </div>
@@ -384,7 +374,7 @@
                 <div class="col-lg-4 mb-3">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Reports by Equipment Type</h5>
+                            <h5 class="card-title">Top 10 Unresolved Reports by Equipment</h5>
                             <div id="equipmentChart" class="chart-container"></div>
                         </div>
                     </div>
@@ -393,7 +383,6 @@
 
             
             <div class="table-container">
-                <!-- Enhanced Filters Section -->
                 <div class="filters-section">
                     <h6 class="mb-3">Filters & Sorting</h6>
                     <div class="row filter-row">
@@ -537,7 +526,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<!-- Added DataTables responsive extension JavaScript -->
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 
@@ -555,7 +543,6 @@ function drawCharts() {
 function drawLocationChart() {
     const chartDiv = document.getElementById('locationChart');
     
-    // Check if there's data to display
     if (${empty locationReports}) {
         chartDiv.innerHTML = '<div class="text-center p-5">' +
                              '<i class="bi bi-exclamation-circle fs-1 text-muted"></i>' +
@@ -574,7 +561,7 @@ function drawLocationChart() {
     ]);
 
     const options = {
-        title: 'Reports by Location',
+        title: 'Top 5 Most Reported Locations',
         hAxis: { 
             title: 'Number of Reports',
             minValue: 0
@@ -594,12 +581,11 @@ function drawLocationChart() {
 function drawEquipmentChart() {
     const chartDiv = document.getElementById('equipmentChart');
     
-    // Check if there's data to display
     if (${empty equipmentReports}) {
         chartDiv.innerHTML = '<div class="text-center p-5">' +
                              '<i class="bi bi-exclamation-circle fs-1 text-muted"></i>' +
-                             '<h6 class="mt-3">No reports data available</h6>' +
-                             '<p class="text-muted small">Chart will appear when reports are submitted.</p>' +
+                             '<h6 class="mt-3">No unresolved reports</h6>' +
+                             '<p class="text-muted small">Chart will appear when unresolved reports are submitted.</p>' +
                              '</div>';
         equipmentChart = { getImageURI: () => createNoDataCanvas(chartDiv) };
         return;
@@ -613,9 +599,9 @@ function drawEquipmentChart() {
     ]);
 
     const options = {
-        title: 'Reports by Equipment Type',
+        title: 'Top 10 Unresolved Reports by Equipment',
         pieHole: 0.4,
-        colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff'],
+        colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#c7ecee', '#778beb', '#f8a5c2'],
         legend: { position: 'bottom', textStyle: { fontSize: 12 } },
         chartArea: { left: 20, top: 50, width: '90%', height: '70%' }
     };
@@ -640,7 +626,7 @@ function createNoDataCanvas(container) {
 
 $(document).ready(function() {
     const table = $('#reportsTable').DataTable({
-        order: [[3, 'desc']], // Sort by date (newest first)
+        order: [[3, 'desc']],
         pageLength: 10,
         responsive: {
             details: {
@@ -654,24 +640,24 @@ $(document).ready(function() {
                 orderable: false
             },
             {
-                targets: 0, // ID column
+                targets: 0,
                 className: 'control',
                 responsivePriority: 1
             },
             {
-                targets: 1, // Equipment Type
+                targets: 1,
                 responsivePriority: 2
             },
             {
-                targets: 4, // Status
+                targets: 4,
                 responsivePriority: 3
             },
             {
-                targets: 5, // Actions
+                targets: 5,
                 responsivePriority: 1
             },
             {
-                targets: [2, 3], // Location and Date - can be hidden on small screens
+                targets: [2, 3],
                 responsivePriority: 10000
             }
         ],
@@ -697,7 +683,6 @@ $(document).ready(function() {
     $(window).on('resize', function() {
         table.columns.adjust().responsive.recalc();
         
-        // Adjust page length based on screen size
         if ($(window).width() < 768 && table.page.len() > 5) {
             table.page.len(5).draw();
         } else if ($(window).width() >= 768 && table.page.len() === 5) {
@@ -705,20 +690,16 @@ $(document).ready(function() {
         }
     });
 
-    // Custom filter functions
     function applyFilters() {
         table.draw();
     }
 
-    // Status filter -  Fixed to properly match status text in badges
     $('#statusFilter').on('change', function() {
         const selectedStatus = $(this).val();
         
         if (!selectedStatus) {
-            // Show all rows
             table.column(4).search('').draw();
         } else {
-            // Use custom search to match badge text
             $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                 const row = table.row(dataIndex).node();
                 const statusBadge = $(row).find('td:eq(4) .badge').text().trim();
@@ -731,8 +712,6 @@ $(document).ready(function() {
         }
     });
 
-
-    // Similar reports filter
     $('#similarFilter').on('change', function() {
         const filterValue = $(this).val();
         
@@ -754,13 +733,11 @@ $(document).ready(function() {
         $.fn.dataTable.ext.search.pop();
     });
 
-    // Equipment filter
     $('#equipmentFilter').on('change', function() {
         const selectedEquipment = $(this).val();
         table.column(1).search(selectedEquipment).draw();
     });
 
-    // Date sorting buttons
     $('#sortDateAsc').on('click', function() {
         $('.sort-btn').removeClass('active');
         $(this).addClass('active');
@@ -773,23 +750,17 @@ $(document).ready(function() {
         table.order([3, 'desc']).draw();
     });
 
-    // Clear all filters
     $('#clearFilters').on('click', function() {
-        // Reset all select filters
         $('#statusFilter, #similarFilter, #equipmentFilter').val('');
         
-        // Reset sorting to default (newest first)
         $('.sort-btn').removeClass('active');
         $('#sortDateDesc').addClass('active');
         
-        // Clear DataTable searches and reset order
         table.search('').columns().search('').order([3, 'desc']).draw();
         
-        // Clear any custom search functions
         $.fn.dataTable.ext.search = [];
     });
 
-    // Populate equipment filter with unique values
     function populateEquipmentFilter() {
         const equipmentTypes = new Set();
         table.rows().every(function() {
@@ -808,67 +779,149 @@ $(document).ready(function() {
         });
     }
 
-    // Initialize equipment filter
     populateEquipmentFilter();
 
-    // Generate Report functionality
+    // Enhanced Generate Report functionality with detailed lists
     $('#generate-report').on('click', function() {
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
-        
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 15;
         let yPosition = 20;
+
+        // Helper function to check if we need a new page
+        function checkPageBreak(requiredSpace) {
+            if (yPosition + requiredSpace > pageHeight - margin) {
+                pdf.addPage();
+                yPosition = margin;
+                return true;
+            }
+            return false;
+        }
 
         // Add header
         pdf.setFontSize(20);
         pdf.setFont(undefined, 'bold');
-        pdf.text('University of Santo Tomas', 105, yPosition, { align: 'center' });
-        yPosition += 10;
+        pdf.text('University of Santo Tomas', pageWidth / 2, yPosition, { align: 'center' });
+        yPosition += 8;
         
         pdf.setFontSize(16);
-        pdf.text('Reports Dashboard', 105, yPosition, { align: 'center' });
-        yPosition += 20;
+        pdf.text('Facilities Management Office - Reports Dashboard', pageWidth / 2, yPosition, { align: 'center' });
+        yPosition += 15;
 
-        // Add location chart
-        const locationImage = locationChart.getImageURI();
-        if (locationImage) {
-            try {
-                pdf.addImage(locationImage, 'PNG', 10, yPosition, 90, 60);
-            } catch (error) {
-                console.warn('Location chart could not be added:', error);
-            }
-        }
+        // Add generation date
+        pdf.setFontSize(10);
+        pdf.setFont(undefined, 'italic');
+        const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        pdf.text('Generated on: ' + currentDate, pageWidth / 2, yPosition, { align: 'center' });
+        yPosition += 15;
 
-        // Add equipment chart
-        const equipmentImage = equipmentChart.getImageURI();
-        if (equipmentImage) {
-            try {
-                pdf.addImage(equipmentImage, 'PNG', 110, yPosition, 80, 60);
-            } catch (error) {
-                console.warn('Equipment chart could not be added:', error);
-            }
-        }
-
-        yPosition += 70;
-
-        // Add reports summary table
+        // SECTION 1: Monthly Report Summary
+        checkPageBreak(50);
         pdf.setFontSize(14);
         pdf.setFont(undefined, 'bold');
-        pdf.text('Reports Summary', 20, yPosition);
+        pdf.text('Monthly Report Summary', margin, yPosition);
+        yPosition += 8;
+
+        pdf.setFontSize(10);
+        pdf.setFont(undefined, 'normal');
+        
+        <c:choose>
+            <c:when test="${not empty monthlyReports}">
+                <c:forEach var="monthData" items="${monthlyReports}">
+                    checkPageBreak(7);
+                    pdf.text('${monthData.key}: ${monthData.value} report(s)', margin + 5, yPosition);
+                    yPosition += 6;
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                pdf.text('No monthly data available', margin + 5, yPosition);
+                yPosition += 6;
+            </c:otherwise>
+        </c:choose>
+
         yPosition += 10;
+
+        // SECTION 2: Top 10 Unresolved Reports by Equipment Type
+        checkPageBreak(50);
+        pdf.setFontSize(14);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('Top 10 Unresolved Reports by Equipment Type', margin, yPosition);
+        yPosition += 8;
+
+        pdf.setFontSize(10);
+        pdf.setFont(undefined, 'normal');
+        
+        <c:choose>
+            <c:when test="${not empty top10UnresolvedEquipment}">
+                let rank = 1;
+                <c:forEach var="equipData" items="${top10UnresolvedEquipment}">
+                    checkPageBreak(7);
+                    pdf.text(rank + '. ${equipData.key}: ${equipData.value} unresolved report(s)', margin + 5, yPosition);
+                    yPosition += 6;
+                    rank++;
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                pdf.text('No unresolved reports', margin + 5, yPosition);
+                yPosition += 6;
+            </c:otherwise>
+        </c:choose>
+
+        yPosition += 10;
+
+        // SECTION 3: All Reports by Location
+        checkPageBreak(50);
+        pdf.setFontSize(14);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('All Reports by Location', margin, yPosition);
+        yPosition += 8;
+
+        pdf.setFontSize(10);
+        pdf.setFont(undefined, 'normal');
+        
+        <c:choose>
+            <c:when test="${not empty allLocationReports}">
+                <c:forEach var="locData" items="${allLocationReports}">
+                    checkPageBreak(7);
+                    pdf.text('${locData.key}: ${locData.value} report(s)', margin + 5, yPosition);
+                    yPosition += 6;
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                pdf.text('No location data available', margin + 5, yPosition);
+                yPosition += 6;
+            </c:otherwise>
+        </c:choose>
+
+        yPosition += 10;
+
+        // SECTION 4: Recent Reports Summary Table
+        checkPageBreak(50);
+        pdf.setFontSize(14);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('Recent Reports Summary', margin, yPosition);
+        yPosition += 8;
 
         const reportRows = document.querySelectorAll('#reportsTable tbody tr');
         
         if (reportRows.length === 0) {
-            pdf.setFontSize(12);
+            pdf.setFontSize(10);
             pdf.setFont(undefined, 'normal');
-            pdf.text('No reports data available', 20, yPosition);
+            pdf.text('No reports data available', margin + 5, yPosition);
         } else {
             // Table headers
-            pdf.setFontSize(10);
+            checkPageBreak(15);
+            pdf.setFontSize(9);
             pdf.setFont(undefined, 'bold');
             const headers = ['ID', 'Equipment', 'Location', 'Date', 'Status'];
-            const columnWidths = [15, 40, 40, 30, 25];
-            let xPosition = 20;
+            const columnWidths = [15, 50, 45, 30, 25];
+            let xPosition = margin;
+            
+            // Draw header background
+            pdf.setFillColor(240, 240, 240);
+            pdf.rect(margin, yPosition - 5, pageWidth - (2 * margin), 7, 'F');
             
             headers.forEach((header, index) => {
                 pdf.text(header, xPosition, yPosition);
@@ -876,17 +929,14 @@ $(document).ready(function() {
             });
             yPosition += 8;
 
-            // Table data (limit to first 20 rows to fit in page)
+            // Table data
             pdf.setFont(undefined, 'normal');
-            const maxRows = Math.min(reportRows.length, 20);
+            const maxRows = Math.min(reportRows.length, 25);
             for (let i = 0; i < maxRows; i++) {
-                if (yPosition > 270) {
-                    pdf.addPage();
-                    yPosition = 20;
-                }
+                checkPageBreak(8);
 
                 const cells = reportRows[i].querySelectorAll('td');
-                xPosition = 20;
+                xPosition = margin;
                 
                 for (let j = 0; j < Math.min(cells.length, 5); j++) {
                     let text = cells[j].textContent.trim();
@@ -896,11 +946,10 @@ $(document).ready(function() {
                         text = text.includes('Resolved') ? 'Resolved' : 'Not Resolved';
                     }
                     
-                    // Truncate long text
-                    if (text.length > 15 && j !== 1) {
-                        text = text.substring(0, 12) + '...';
-                    } else if (j === 1 && text.length > 20) {
-                        text = text.substring(0, 17) + '...';
+                    // Truncate long text based on column
+                    const maxLength = j === 1 ? 25 : (j === 2 ? 20 : 15);
+                    if (text.length > maxLength) {
+                        text = text.substring(0, maxLength - 3) + '...';
                     }
                     
                     pdf.text(text, xPosition, yPosition);
@@ -909,26 +958,22 @@ $(document).ready(function() {
                 yPosition += 6;
             }
 
-            if (reportRows.length > 20) {
+            if (reportRows.length > 25) {
                 yPosition += 5;
                 pdf.setFont(undefined, 'italic');
-                pdf.text(`... and ${reportRows.length - 20} more reports`, 20, yPosition);
+                pdf.setFontSize(9);
+                pdf.text('... and ' + (reportRows.length - 25) + ' more reports (showing first 25)', margin, yPosition);
             }
         }
 
-        // Add generation date
-        yPosition += 15;
-        if (yPosition > 270) {
-            pdf.addPage();
-            yPosition = 20;
-        }
-        
-        pdf.setFontSize(10);
+        // Add footer on last page
+        yPosition = pageHeight - 15;
+        pdf.setFontSize(8);
         pdf.setFont(undefined, 'italic');
-        const currentDate = new Date().toLocaleDateString();
-        pdf.text(`Generated on: ${currentDate}`, 105, yPosition, { align: 'center' });
+        pdf.setTextColor(128, 128, 128);
+        pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, yPosition, { align: 'center' });
 
-        pdf.save('reports_dashboard.pdf');
+        pdf.save('FMO_Reports_Dashboard_' + new Date().toISOString().split('T')[0] + '.pdf');
     });
 
     // QR Code download functionality
@@ -947,9 +992,7 @@ $(document).ready(function() {
         const room = $(row).data('reproom');
         const description = $(row).data('repissue');
         const reportId = $(row).data('report-id');
-        console.log('Details Data:', { floor, room, description, reportId });
 
-        // Set modal content
         $('#modalFloor').text(floor || 'N/A');
         $('#modalRoom').text(room || 'N/A');
         $('#modalDescription').text(description || 'N/A');
@@ -967,9 +1010,8 @@ $(document).ready(function() {
         $('#detailsModal').modal('hide');
     });
     
-    
-        //Resolve confirmation
-         $(document).on('click', '.resolve-btn', function(e) {
+    // Resolve confirmation
+    $(document).on('click', '.resolve-btn', function(e) {
         e.preventDefault();
         e.stopPropagation();
         
@@ -978,7 +1020,7 @@ $(document).ready(function() {
         
         Swal.fire({
             title: 'Resolve Report?',
-            text: `Are you sure you want to mark this report as resolved?`,
+            text: 'Are you sure you want to mark this report as resolved?',
             icon: 'question',
             showCancelButton: true,
             reverseButtons: true,
@@ -999,6 +1041,7 @@ $(document).ready(function() {
         
         return false;
     });
+
     // Archive confirmation handler
     $(document).on('click', '.archive-btn', function(e) {
         e.preventDefault();
@@ -1009,13 +1052,13 @@ $(document).ready(function() {
         
         Swal.fire({
             title: 'Are you sure?',
-            text: `You want to archive this report?`,
+            text: 'You want to archive this report?',
             icon: 'warning',
             showCancelButton: true,
             reverseButtons: true,
             confirmButtonColor: '#dc3545',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, Archive it',
+            confirmButtonText: 'Yes, archive it',
             cancelButtonText: 'Cancel',
             customClass: {
                 cancelButton: 'btn-cancel-outline'
