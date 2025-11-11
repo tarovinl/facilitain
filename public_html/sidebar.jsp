@@ -667,8 +667,10 @@ function handleToDoAction(action, id) {
 </script>
 <%
 Boolean todoSuccess = (Boolean) session.getAttribute("todoSuccess");
+String todoError = (String) session.getAttribute("todoError");
+
 if (todoSuccess != null && todoSuccess) {
-    session.removeAttribute("todoSuccess"); // Remove it so it only shows once
+    session.removeAttribute("todoSuccess");
 %>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -682,8 +684,24 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <%
+} else if (todoSuccess != null && !todoSuccess && todoError != null) {
+    session.removeAttribute("todoSuccess");
+    session.removeAttribute("todoError");
+%>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    Swal.fire({
+        icon: 'error',
+        title: 'Invalid Dates',
+        text: '<%= todoError %>',
+        showConfirmButton: true
+    });
+});
+</script>
+<%
 }
 %>
+
 
 <!-- bad eggs
 <script>

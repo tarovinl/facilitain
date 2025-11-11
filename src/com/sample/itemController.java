@@ -270,6 +270,19 @@ public class itemController extends HttpServlet {
                 return;
             }
         }
+        if ("4".equals(oldMaintStat) && "3".equals(maintStatus)) {
+            if ("true".equals(hasAssignment)) {
+                action = "modify_status";
+                status = "error_4to3";
+                response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
+                return;
+            } else{
+                action = "modify_status";
+                status = "error_assign";
+                response.sendRedirect("buildingDashboard?locID=" + loc + "/manage?floor=" + flr + "&action=" + action + "&status=" + status);
+                return;
+            }
+        }
         if ("2".equals(oldMaintStat) && "1".equals(maintStatus)) {
             if ("true".equals(hasAssignment)) {
                 action = "modify_status";
