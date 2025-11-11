@@ -81,7 +81,7 @@ public class maintAssController extends HttpServlet {
         try (Connection con = PooledConnection.getConnection()) {
             String sql = "SELECT i.NAME FROM C##FMO_ADM.FMO_ITEMS i " +
                         "WHERE i.ITEM_STAT_ID = 1 " +
-                        "AND i.MAINTENANCE_STATUS != 1 " +
+                        "AND i.MAINTENANCE_STATUS = 2 " +
                         "AND NOT EXISTS (" +
                         "  SELECT 1 FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
                         "  WHERE ma.ITEM_ID = i.ITEM_ID AND ma.IS_COMPLETED = 0" +
@@ -209,7 +209,7 @@ public class maintAssController extends HttpServlet {
             StringBuilder equipBuilder = new StringBuilder();
             String equipSql = "SELECT i.NAME FROM C##FMO_ADM.FMO_ITEMS i " +
                             "WHERE i.ITEM_STAT_ID = 1 " +
-                            "AND i.MAINTENANCE_STATUS != 1 " +
+                            "AND i.MAINTENANCE_STATUS = 2 " +
                             "AND NOT EXISTS (" +
                             "  SELECT 1 FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
                             "  WHERE ma.ITEM_ID = i.ITEM_ID AND ma.IS_COMPLETED = 0" +
@@ -267,7 +267,8 @@ public class maintAssController extends HttpServlet {
             
             // Count total records 
             String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS " +
-                              "WHERE ITEM_STAT_ID = 1 AND MAINTENANCE_STATUS != 1";
+                              "WHERE ITEM_STAT_ID = 1 AND MAINTENANCE_STATUS = 2";
+
             try (PreparedStatement stmt = con.prepareStatement(countSql);
                  ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -289,7 +290,7 @@ public class maintAssController extends HttpServlet {
                .append("  JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
                .append("  JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
                .append("  JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
-               .append("  WHERE i.ITEM_STAT_ID = 1 AND i.MAINTENANCE_STATUS != 1");
+               .append("  WHERE i.ITEM_STAT_ID = 1 AND i.MAINTENANCE_STATUS = 2");
 
             // Add search filter if provided
             if (searchValue != null && !searchValue.isEmpty()) {
@@ -363,7 +364,7 @@ public class maintAssController extends HttpServlet {
                                .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
                                .append("JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
                                .append("JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
-                               .append("WHERE i.ITEM_STAT_ID = 1 AND i.MAINTENANCE_STATUS != 1 AND (")
+                               .append("WHERE i.ITEM_STAT_ID = 1 AND i.MAINTENANCE_STATUS = 2 AND (")
                                .append("  UPPER(i.NAME) LIKE ? OR ")
                                .append("  UPPER(t.NAME) LIKE ? OR ")
                                .append("  UPPER(c.NAME) LIKE ? OR ")
