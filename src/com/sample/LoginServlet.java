@@ -39,11 +39,18 @@ public class LoginServlet extends HttpServlet {
         try {
             UserInfo userInfo = getUserInfoFromDatabase(email);
                 if (userInfo != null && userInfo.getRole() != null) {
-                    HttpSession session = request.getSession();
-                    session.setAttribute("email", email);
-                    session.setAttribute("name", name);
-                    session.setAttribute("role", userInfo.getRole());
-                    session.setAttribute("userID", userInfo.getUserId());
+                HttpSession session = request.getSession();
+                session.setAttribute("email", email);
+                session.setAttribute("name", name);
+                session.setAttribute("role", userInfo.getRole());
+                session.setAttribute("userID", userInfo.getUserId());
+
+                // Store login source for logout redirect
+                if ("feedbackClient".equals(loginPage)) {
+                    session.setAttribute("loginSource", "feedback");
+                } else if ("reportsClient".equals(loginPage)) {
+                    session.setAttribute("loginSource", "reports");
+                }
 
                 // Determine redirection URL based on loginPage parameter and role
                 String redirectUrl;

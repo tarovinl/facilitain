@@ -135,8 +135,8 @@
                         <h6 class="montserrat-bold mt-4">3. User Responsibilities</h6>
                         <p class="montserrat-regular">
                             As a user of FACILITAIN, you agree to:<br/>
-                            • Provide accurate, current, and complete information as prompted by the website's registration forms.<br/>
-                            • Maintain the confidentiality of your account credentials and restrict access to your account.
+                            &bull; Provide accurate, current, and complete information as prompted by the website's registration forms.<br/>
+                            &bull; Maintain the confidentiality of your account credentials and restrict access to your account.
                         </p>
                         
                         <h6 class="montserrat-bold mt-4">4. Intellectual Property</h6>

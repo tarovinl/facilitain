@@ -79,9 +79,9 @@ public class updateStatusController extends HttpServlet {
         FileData file1Data = extractFileData(filePart1);
         FileData file2Data = extractFileData(filePart2);
         
-//        System.out.println("equip ID: " + updateEquipmentID);
-//        System.out.println("old equip status: " + oldEquipmentStatus);
-//        System.out.println("new equip status: " + newEquipmentStatus);
+        System.out.println("equip ID: " + updateEquipmentID);
+        System.out.println("old equip status: " + oldEquipmentStatus);
+        System.out.println("new equip status: " + newEquipmentStatus);
         if (newEquipmentStatus == null || newEquipmentStatus.isEmpty()) {
             status = "error";
             response.sendRedirect("maintenancePage?action=" + action + "&status=" + status);
@@ -89,6 +89,12 @@ public class updateStatusController extends HttpServlet {
         }
         //maintenance required to operational mistake checker
         if (oldEquipmentStatus.equals("2") && newEquipmentStatus.equals("1")) {
+            status = "error";
+            action = "2to1";
+            response.sendRedirect("maintenancePage" + "?action=" + action + "&status=" + status);
+            return;
+        }
+        if (oldEquipmentStatus.equals("4") && newEquipmentStatus.equals("1")) {
             status = "error";
             action = "2to1";
             response.sendRedirect("maintenancePage" + "?action=" + action + "&status=" + status);

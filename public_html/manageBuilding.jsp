@@ -435,7 +435,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         
         <c:if test="${floorName == 'all'}">
         <div class="roomDropsdiv ">
-            <div >
+            <div class="table-responsive">
             <table id="allItemsTable" class="display dataTable" style="width:100%;">
                 <thead>
                     <tr>
@@ -533,7 +533,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         <!-- list of room dropdowns  (turn roomDropdown <li> into foreach)-->
         <c:if test="${floorName != 'all'}">
         <div class="roomDropsdiv">
-            <div >
+            <div class="table-responsive">
             <table id="itemsTable" class="display dataTable" style="width:100%;">
                 <thead>
                     <tr>
@@ -1957,6 +1957,26 @@ function roomEditRenderCopy() {
       position: 'top-end',
       icon: 'error',
       title: 'Maintenance Required to In Maintenance can only be changed in the Maintenance Page.',
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true
+    });
+  } else if (status === 'error_4to3') {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'Needs Replacement to In Maintenance can only be changed in the Maintenance Page.',
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true
+    });
+  } else if (status === 'error_dup') {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'That equipment name is already taken. Try a different name.',
       showConfirmButton: false,
       timer: 5000,
       timerProgressBar: true

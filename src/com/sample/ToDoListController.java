@@ -131,10 +131,29 @@ public class ToDoListController extends HttpServlet {
                 LocalDateTime endDateTime = LocalDateTime.parse(tdListEnd, formatter);
                 sqlStartTimestamp = Timestamp.valueOf(startDateTime);
                 sqlEndTimestamp = Timestamp.valueOf(endDateTime);
+                LocalDateTime now = LocalDateTime.now();
                 
                 System.out.println("Parsed timestamps:");
                 System.out.println("Start: " + sqlStartTimestamp);
                 System.out.println("End: " + sqlEndTimestamp);
+                
+                if (startDateTime.isBefore(now)) {
+                    System.out.println("Start date cannot be before current date/time.");
+                    HttpSession session = request.getSession();
+                    session.setAttribute("todoError", "Start date cannot be before the current date/time.");
+                    session.setAttribute("todoSuccess", false);
+                    response.sendRedirect(fullUrl);
+                    return;
+                }
+
+                if (endDateTime.isBefore(startDateTime)) {
+                    System.out.println("End date cannot be before start date.");
+                    HttpSession session = request.getSession();
+                    session.setAttribute("todoError", "End date cannot be before start date.");
+                    session.setAttribute("todoSuccess", false);
+                    response.sendRedirect(fullUrl);
+                    return;
+                }
             } catch (DateTimeParseException e) {
                 System.err.println("Date parsing error: " + e.getMessage());
                 throw new ServletException("Invalid date format for start or end date: " + e.getMessage(), e);
