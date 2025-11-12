@@ -169,7 +169,7 @@ public class buildingController extends HttpServlet {
      * @return true if duplicate exists, false otherwise
      */
     private boolean isDuplicateLocationName(Connection conn, String locationName, int currentLocId) throws SQLException {
-        String checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE UPPER(NAME) = UPPER(?) AND ARCHIVED_FLAG = 1 AND ITEM_LOC_ID != ?";
+        String checkSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_LOCATIONS WHERE UPPER(NAME) = UPPER(?) AND ARCHIVED_FLAG = 1 AND ITEM_LOC_ID != ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
             stmt.setString(1, locationName);

@@ -69,7 +69,7 @@ public class itemCategoriesController extends HttpServlet {
                 if (isDuplicateCategoryName(conn, categoryName, itemCID)) {
                     redirectParams = "?error=duplicate";
                 } else {
-                    String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET NAME = ?, DESCRIPTION = ? WHERE ITEM_CAT_ID = ?";
+                    String updateSql = "UPDATE FMO_ADM.FMO_ITEM_CATEGORIES SET NAME = ?, DESCRIPTION = ? WHERE ITEM_CAT_ID = ?";
                     try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
                         stmt.setString(1, categoryName);
                         stmt.setString(2, description);
@@ -83,7 +83,7 @@ public class itemCategoriesController extends HttpServlet {
                 if (isDuplicateCategoryName(conn, categoryName, null)) {
                     redirectParams = "?error=duplicate";
                 } else {
-                    String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_CATEGORIES (ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (C##FMO_ADM.FMO_ITEM_CAT_ID_SEQ.NEXTVAL, ?, ?)";
+                    String insertSql = "INSERT INTO FMO_ADM.FMO_ITEM_CATEGORIES (ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (FMO_ADM.FMO_ITEM_CAT_ID_SEQ.NEXTVAL, ?, ?)";
                     try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
                         stmt.setString(1, categoryName);
                         stmt.setString(2, description);
@@ -117,10 +117,10 @@ public class itemCategoriesController extends HttpServlet {
         String checkSql;
         if (excludeItemCID != null) {
             // For updates: check if name exists in other active categories
-            checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE UPPER(NAME) = UPPER(?) AND ARCHIVED_FLAG = 1 AND ITEM_CAT_ID != ?";
+            checkSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_CATEGORIES WHERE UPPER(NAME) = UPPER(?) AND ARCHIVED_FLAG = 1 AND ITEM_CAT_ID != ?";
         } else {
             // For new entries: check if name exists in any active category
-            checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE UPPER(NAME) = UPPER(?) AND ARCHIVED_FLAG = 1";
+            checkSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_CATEGORIES WHERE UPPER(NAME) = UPPER(?) AND ARCHIVED_FLAG = 1";
         }
 
         try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {

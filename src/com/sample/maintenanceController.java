@@ -127,11 +127,11 @@ public class maintenanceController extends HttpServlet {
         String checkSql;
         if (excludeItemMsId != null) {
             // For updates: check if item type exists in other active schedules
-            checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+            checkSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
                       "WHERE ITEM_TYPE_ID = ? AND ARCHIVED_FLAG = 1 AND ITEM_MS_ID != ?";
         } else {
             // For new entries: check if item type exists in any active schedule
-            checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+            checkSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
                       "WHERE ITEM_TYPE_ID = ? AND ARCHIVED_FLAG = 1";
         }
 
