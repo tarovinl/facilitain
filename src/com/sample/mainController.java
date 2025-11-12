@@ -772,7 +772,7 @@ public class mainController extends HttpServlet {
                     return true;
                 }
             
-            // NEW: Allow quotation upload/archive result parameters
+            // Allow quotation upload/archive result parameters
                if (queryString.matches("locID=\\d+/manage\\?floor=[\\w%]+&uploadResult=\\w+&uploadMessage=[\\w%\\+]+&itemID=\\d+") ||
                    queryString.matches("locID=\\d+/manage\\?floor=[\\w%]+&quotationResult=\\w+&quotationMessage=[\\w%\\+]+&itemID=\\d+")) {
                    return true;
@@ -782,6 +782,12 @@ public class mainController extends HttpServlet {
                        if (queryString.matches("locID=\\d+/manage\\?floor=[\\w%]+((&uploadResult=\\w+)|(&quotationResult=\\w+)).*")) {
                            return true;
                        }
+            
+              if (queryString.matches("locID=\\d+/edit&error=\\w+&errorMsg=[\\w%\\+\\.]+") ||
+                            queryString.matches("locID=\\d+/edit&error=\\w+")) {
+                            return true;
+                        }
+
 
                 return false;
 

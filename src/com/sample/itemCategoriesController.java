@@ -64,29 +64,76 @@ public class itemCategoriesController extends HttpServlet {
                     stmt.executeUpdate();
                 }
                 redirectParams = "?action=archived";
-            } else if ("true".equals(editMode) && itemCID != null) {  // Check for edit mode
-                String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET NAME = ?, DESCRIPTION = ? WHERE ITEM_CAT_ID = ?";
-                try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
-                    stmt.setString(1, categoryName);
-                    stmt.setString(2, description);
-                    stmt.setInt(3, itemCID);
-                    stmt.executeUpdate();
+            } else if ("true".equals(editMode) && itemCID != null) {
+                // Check for duplicate category name (excluding current category)
+                if (isDuplicateCategoryName(conn, categoryName, itemCID)) {
+                    redirectParams = "?error=duplicate";
+                } else {
+                    String updateSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET NAME = ?, DESCRIPTION = ? WHERE ITEM_CAT_ID = ?";
+                    try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+                        stmt.setString(1, categoryName);
+                        stmt.setString(2, description);
+                        stmt.setInt(3, itemCID);
+                        stmt.executeUpdate();
+                    }
+                    redirectParams = "?action=updated";
                 }
-                redirectParams = "?action=updated";
-            } else if (itemCID == null) {  // This is a new record
-                String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_CATEGORIES (ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (C##FMO_ADM.FMO_ITEM_CAT_ID_SEQ.NEXTVAL, ?, ?)";
-                try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
-                    stmt.setString(1, categoryName);
-                    stmt.setString(2, description);
-                    stmt.executeUpdate();
+            } else if (itemCID == null) {
+                // Check for duplicate category name for new entries
+                if (isDuplicateCategoryName(conn, categoryName, null)) {
+                    redirectParams = "?error=duplicate";
+                } else {
+                    String insertSql = "INSERT INTO C##FMO_ADM.FMO_ITEM_CATEGORIES (ITEM_CAT_ID, NAME, DESCRIPTION) VALUES (C##FMO_ADM.FMO_ITEM_CAT_ID_SEQ.NEXTVAL, ?, ?)";
+                    try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+                        stmt.setString(1, categoryName);
+                        stmt.setString(2, description);
+                        stmt.executeUpdate();
+                    }
+                    redirectParams = "?action=added";
                 }
-                redirectParams = "?action=added";
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            redirectParams = "?error=true";
+            // Check if it's a unique constraint violation
+            // Oracle error code for unique constraint: 1 (ORA-00001)
+            if (e.getErrorCode() == 1) {
+                redirectParams = "?error=duplicate";
+            } else {
+                redirectParams = "?error=true";
+            }
         }
 
         response.sendRedirect(request.getContextPath() + "/itemCategories" + redirectParams);
+    }
+
+    /**
+     * Checks if a category name already exists for active categories (ARCHIVED_FLAG = 1)
+     * @param conn Database connection
+     * @param categoryName Name to check
+     * @param excludeItemCID ID to exclude from check (for updates), null for new entries
+     * @return true if duplicate exists, false otherwise
+     */
+    private boolean isDuplicateCategoryName(Connection conn, String categoryName, Integer excludeItemCID) throws SQLException {
+        String checkSql;
+        if (excludeItemCID != null) {
+            // For updates: check if name exists in other active categories
+            checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE UPPER(NAME) = UPPER(?) AND ARCHIVED_FLAG = 1 AND ITEM_CAT_ID != ?";
+        } else {
+            // For new entries: check if name exists in any active category
+            checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_CATEGORIES WHERE UPPER(NAME) = UPPER(?) AND ARCHIVED_FLAG = 1";
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
+            stmt.setString(1, categoryName.trim());
+            if (excludeItemCID != null) {
+                stmt.setInt(2, excludeItemCID);
+            }
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
     }
 }
