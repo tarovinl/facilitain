@@ -1,8 +1,11 @@
 package com.sample;
 
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -56,6 +59,13 @@ public class buildingController extends HttpServlet {
             if(archLocId != null && !archLocId.isEmpty()){
                 sql = "UPDATE FMO_ADM.FMO_ITEM_LOCATIONS SET ARCHIVED_FLAG = 2 WHERE ITEM_LOC_ID = ?";
             } else {
+                // Check for duplicate location name (excluding current location)
+                if (isDuplicateLocationName(conn, locName.trim(), Integer.parseInt(locId))) {
+                    String errorMsg = URLEncoder.encode("A location with this name already exists. Please choose a different name.", "UTF-8");
+                    response.sendRedirect(request.getContextPath() + "/buildingDashboard?locID=" + locId + "/edit&error=duplicate&errorMsg=" + errorMsg);
+                    return;
+                }
+                
                 // Check if we have a new image to update
                 if (filePart != null && filePart.getSize() > 0) {
                     sql = "UPDATE FMO_ADM.FMO_ITEM_LOCATIONS SET NAME = ?, DESCRIPTION = ?, IMAGE = ? WHERE ITEM_LOC_ID = ?";
@@ -131,10 +141,46 @@ public class buildingController extends HttpServlet {
                 }
             }
         
+        } catch (SQLException e) {
+            e.printStackTrace();
+            String errorMsg;
+            // Check if it's a unique constraint violation
+            // Oracle error code for unique constraint: 1 (ORA-00001)
+            if (e.getErrorCode() == 1) { 
+                errorMsg = URLEncoder.encode("A location with this name already exists. Please choose a different name.", "UTF-8");
+                response.sendRedirect(request.getContextPath() + "/buildingDashboard?locID=" + locId + "/edit&error=duplicate&errorMsg=" + errorMsg);
+            } else {
+                errorMsg = URLEncoder.encode("Database error: " + e.getMessage(), "UTF-8");
+                response.sendRedirect(request.getContextPath() + "/buildingDashboard?locID=" + locId + "/edit&error=true&errorMsg=" + errorMsg);
+            }
+            return;
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error saving data");
         }
+    }
+
+    /**
+     * Checks if a location name already exists for active locations (ARCHIVED_FLAG = 1)
+     * excluding the current location being edited
+     * @param conn Database connection
+     * @param locationName Name to check
+     * @param currentLocId The ID of the location being edited (to exclude from check)
+     * @return true if duplicate exists, false otherwise
+     */
+    private boolean isDuplicateLocationName(Connection conn, String locationName, int currentLocId) throws SQLException {
+        String checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE UPPER(NAME) = UPPER(?) AND ARCHIVED_FLAG = 1 AND ITEM_LOC_ID != ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
+            stmt.setString(1, locationName);
+            stmt.setInt(2, currentLocId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean isNullOrEmpty(String str) {

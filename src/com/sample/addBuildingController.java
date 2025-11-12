@@ -16,10 +16,9 @@ import javax.servlet.http.*;
 import sample.model.PooledConnection;
 
 @WebServlet(name = "addBuildingController", urlPatterns = { "/addbuildingcontroller" })
-// <CHANGE> Updated maxFileSize to 5MB
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-    maxFileSize = 1024 * 1024 * 10, // 
+    maxFileSize = 1024 * 1024 * 10, // 10MB
     maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 public class addBuildingController extends HttpServlet {
@@ -52,28 +51,28 @@ public class addBuildingController extends HttpServlet {
             System.out.println("No file received for buildingImage.");
         }
 
-        // <CHANGE> Enhanced validation with character limits
-        // Check if locName and locDescription are null or empty
-        if (locName == null || locDescription == null || locName.trim().isEmpty() || locDescription.trim().isEmpty()) {
-            String errorMsg = URLEncoder.encode("Location name and description are required fields.", "UTF-8");
+        // Check if locName is null or empty
+        if (locName == null || locName.trim().isEmpty()) {
+            String errorMsg = URLEncoder.encode("Location name is required.", "UTF-8");
             response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
             return;
         }
         
-        // Validate character limits (250 characters)
+        // Validate character limit for locName (250 characters)
         if (locName.trim().length() > 250) {
             String errorMsg = URLEncoder.encode("Location name must not exceed 250 characters.", "UTF-8");
             response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
             return;
         }
         
-        if (locDescription.trim().length() > 250) {
+        // Validate character limit for locDescription (250 characters) - if provided
+        if (locDescription != null && locDescription.trim().length() > 250) {
             String errorMsg = URLEncoder.encode("Location description must not exceed 250 characters.", "UTF-8");
             response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
             return;
         }
         
-        // Validate file size (5MB = 5 * 1024 * 1024 bytes)
+        // Validate file size (10MB = 10 * 1024 * 1024 bytes)
         if (filePart != null && filePart.getSize() > 10 * 1024 * 1024) {
             String errorMsg = URLEncoder.encode("Image file size must not exceed 10MB.", "UTF-8");
             response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
@@ -82,6 +81,13 @@ public class addBuildingController extends HttpServlet {
 
         // Save the building data in the database, including the image as a BLOB
         try (Connection conn = PooledConnection.getConnection()) {
+            
+            // Check for duplicate location name
+            if (isDuplicateLocationName(conn, locName.trim())) {
+                String errorMsg = URLEncoder.encode("A location with this name already exists. Please choose a different name.", "UTF-8");
+                response.sendRedirect(request.getContextPath() + "/homepage?error=duplicate&errorMsg=" + errorMsg);
+                return;
+            }
 
             // Get the highest ITEM_LOC_ID and increment it
             int newItemLocId = 1; // Default to 1 if there are no entries in the table
@@ -98,8 +104,8 @@ public class addBuildingController extends HttpServlet {
             try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
                 stmt.setInt(1, newItemLocId); // Set the new ITEM_LOC_ID
                 stmt.setString(2, locName.trim());
-                stmt.setString(3, locDescription.trim());
-                stmt.setInt(4, 1); //
+                stmt.setString(3, locDescription != null ? locDescription.trim() : "");
+                stmt.setInt(4, 1);
 
                 System.out.println("Executing SQL query: " + stmt);
                 // Handle file upload if there's an image provided
@@ -113,7 +119,7 @@ public class addBuildingController extends HttpServlet {
                 int affectedRows = stmt.executeUpdate();
                 if (affectedRows > 0) {
                     System.out.println("Building added successfully with ITEM_LOC_ID: " + newItemLocId);
-                    // <CHANGE> Set session attribute for success message
+                    // Set session attribute for success message
                     HttpSession session = request.getSession();
                     session.setAttribute("addLocationSuccess", true);
                 } else {
@@ -123,21 +129,42 @@ public class addBuildingController extends HttpServlet {
                     return;
                 }
             }
-            } catch (SQLException e) {
-                String errorMsg;
-                // unique constraint violation
-                if (e.getErrorCode() == 1) { 
-                    errorMsg = URLEncoder.encode("A location with the same name already exists. Please choose a different name.", "UTF-8");
-                } else {
-                    errorMsg = URLEncoder.encode("Database error: " + e.getMessage(), "UTF-8");
-                }
-                // Redirect with error query parameters
+        } catch (SQLException e) {
+            e.printStackTrace();
+            String errorMsg;
+            // Check if it's a unique constraint violation
+            // Oracle error code for unique constraint: 1 (ORA-00001)
+            if (e.getErrorCode() == 1) { 
+                errorMsg = URLEncoder.encode("A location with this name already exists. Please choose a different name.", "UTF-8");
+                response.sendRedirect(request.getContextPath() + "/homepage?error=duplicate&errorMsg=" + errorMsg);
+            } else {
+                errorMsg = URLEncoder.encode("Database error: " + e.getMessage(), "UTF-8");
                 response.sendRedirect(request.getContextPath() + "/homepage?error=true&errorMsg=" + errorMsg);
-                return;
             }
+            return;
+        }
     
-       
         response.sendRedirect(request.getContextPath() + "/homepage?action=added");
+    }
+    
+    /**
+     * Checks if a location name already exists for active locations (ARCHIVED_FLAG = 1)
+     * @param conn Database connection
+     * @param locationName Name to check
+     * @return true if duplicate exists, false otherwise
+     */
+    private boolean isDuplicateLocationName(Connection conn, String locationName) throws SQLException {
+        String checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE UPPER(NAME) = UPPER(?) AND ARCHIVED_FLAG = 1";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
+            stmt.setString(1, locationName);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
