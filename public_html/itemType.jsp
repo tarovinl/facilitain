@@ -9,108 +9,114 @@
     <title>Item Types - Facilitain</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
-     <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
+    <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
-    body, h1, h2, h3, h4, th ,h5{
-    font-family: 'NeueHaasMedium', sans-serif !important;
-}
- h6, input, textarea, td, tr, p, label, select, option {
-    font-family: 'NeueHaasLight', sans-serif !important;
-}
-.hover-outline {
-                transition: all 0.3s ease;
-                border: 1px solid transparent; /* Reserve space for border */
-                            }
-
-            .hover-outline:hover {
-                background-color: 	#1C1C1C !important;
-                color: 	#f2f2f2 !important;
-                border: 1px solid 	#f2f2f2 !important;
-                                }
-            .hover-outline img {
-                transition: filter 0.3s ease;
-                                }
-
-            .hover-outline:hover img {
-                filter: invert(1);
-                            }
-
-            .buttonsBack:hover {
-                text-decoration: underline !important;
-                }
-            .buildingManage:hover {
-                text-decoration: underline !important;
-                }
-                    a.paginate-button {
-                    margin: 0 5px;
-                    
-                    border: 1px solid black; /* Border color */
-                    background-color: #fccc4c;   /* Background color */
-                    color: black;            /* Text color */
-                    cursor: pointer;
-                    border-radius: 5px;
-                    font-size: 14px;
-                    font-weight: bold;
-                    transition: background-color 0.3s, color 0.3s; /* Add a smooth hover effect */
-                }
-                a.paginate-button:hover {
-                    background-color: #ffcc00; 
-                    color: black;              
-                }
-                a.paginate-button.active {
-                    background-color: black; 
-                    color: #fccc4c;              /* Active button text color */
-                    border-color: black;     /* Border color for the active button */
-                }
-                
-                .btn-cancel-outline {
-                  color: #8388a4 !important;        /* Text color */
-                  background-color: white !important; /* White background */
-                  border: 2px solid #8388a4 !important; /* Outline */
-                  box-shadow: none !important;       /* Remove default shadow */
-                }
-                
-                /* Optional: add hover effect */
-                .btn-cancel-outline:hover {
-                  background-color: #f0f2f7 !important; 
-                  border-color: #8388a4 !important;
-                  color: #8388a4 !important;
-                }
-                .responsive-padding-top {
-                                  padding-top: 100px;
-                                }
-                                
-                @media (max-width: 576px) {
-                .responsive-padding-top {
-                padding-top: 80px; /* or whatever smaller value you want */
-                }
-                }
-                
-                .char-counter {
-                    font-size: 0.875rem;
-                    color: #6c757d;
-                    margin-top: 0.25rem;
-                }
-                
-                .char-counter.text-danger {
-                    color: #dc3545 !important;
-                }
-    </style>
+    body, h1, h2, h3, h4, th, h5 {
+        font-family: 'NeueHaasMedium', sans-serif !important;
+    }
+    
+    h6, input, textarea, td, tr, p, label, select, option {
+        font-family: 'NeueHaasLight', sans-serif !important;
+    }
+    
+    .hover-outline {
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+    
+    .hover-outline:hover {
+        background-color: #1C1C1C !important;
+        color: #f2f2f2 !important;
+        border: 1px solid #f2f2f2 !important;
+    }
+    
+    .hover-outline img {
+        transition: filter 0.3s ease;
+    }
+    
+    .hover-outline:hover img {
+        filter: invert(1);
+    }
+    
+    .buttonsBack:hover {
+        text-decoration: underline !important;
+    }
+    
+    .buildingManage:hover {
+        text-decoration: underline !important;
+    }
+    
+    a.paginate-button {
+        margin: 0 5px;
+        border: 1px solid black;
+        background-color: #fccc4c;
+        color: black;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    a.paginate-button:hover {
+        background-color: #ffcc00; 
+        color: black;              
+    }
+    
+    a.paginate-button.active {
+        background-color: black; 
+        color: #fccc4c;
+        border-color: black;
+    }
+    
+    .btn-cancel-outline {
+        color: #8388a4 !important;
+        background-color: white !important;
+        border: 2px solid #8388a4 !important;
+        box-shadow: none !important;
+    }
+    
+    .btn-cancel-outline:hover {
+        background-color: #f0f2f7 !important; 
+        border-color: #8388a4 !important;
+        color: #8388a4 !important;
+    }
+    
+    .responsive-padding-top {
+        padding-top: 100px;
+    }
+    
+    @media (max-width: 576px) {
+        .responsive-padding-top {
+            padding-top: 80px;
+        }
+    }
+    
+    .char-counter {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+    
+    .char-counter.text-danger {
+        color: #dc3545 !important;
+    }
+</style>
 </head>
 <body>
 <jsp:include page="navbar.jsp"/>
-  <div class="container-fluid">
+<div class="container-fluid">
     <div class="row vh-100">
-   <jsp:include page="sidebar.jsp">
-  <jsp:param name="page" value="itemType" />
-</jsp:include>
+        <jsp:include page="sidebar.jsp">
+            <jsp:param name="page" value="itemType" />
+        </jsp:include>
         <div class="col-md-10 responsive-padding-top">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif; font-size: 2rem;">Item Types</h1>
-                <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-2 hover-outline " style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">
-                    <img src="resources/images/icons/plus.svg" alt="add"  width="25" height="25">  
+                <button class="buttonsBuilding d-flex align-items-center px-3 py-2 rounded-2 hover-outline" style="background-color: #fccc4c;" data-bs-toggle="modal" data-bs-target="#addItemTypeModal">
+                    <img src="resources/images/icons/plus.svg" alt="add" width="25" height="25">  
                     <span class="d-none d-lg-inline ps-2">Add</span>
                 </button>
             </div>
@@ -150,7 +156,7 @@
                                             data-description="${type.description}">
                                         Edit
                                     </button>
-                                    <form action="itemType" method="post" class="d-inline" >
+                                    <form action="itemType" method="post" class="d-inline">
                                         <input type="hidden" name="itemTypeId" value="${type.itemTypeId}">
                                         <input type="hidden" name="action" value="archive">
                                         <button type="submit" class="btn btn-danger btn-sm">Archive</button>
@@ -169,7 +175,7 @@
                         <form action="itemType" method="post">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="addItemTypeModalLabel">Add Item Type</h5>
-                                <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="mb-3">
@@ -198,7 +204,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit"  class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
+                                <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
                             </div>
                         </form>
                     </div>
@@ -251,9 +257,9 @@
         </div>
     </div>
 </div>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script>
 // Character counter function
@@ -306,6 +312,7 @@ $(document).ready(function () {
     addModal.addEventListener('show.bs.modal', function() {
         nameInput.value = '';
         descInput.value = '';
+        document.getElementById('itemCatId').value = '';
         nameCounter.textContent = '0';
         descCounter.textContent = '0';
         nameCounter.parentElement.classList.remove('text-danger');
@@ -342,12 +349,21 @@ $(document).ready(function () {
         };
 
         if (error) {
-            alertConfig = {
-                ...alertConfig,
-                title: 'Error!',
-                text: 'An error occurred while processing your request.',
-                icon: 'error'
-            };
+            if (error === 'duplicate') {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Duplicate Item Type!',
+                    text: 'An item type with this name already exists in the selected category. Please use a different name.',
+                    icon: 'warning'
+                };
+            } else {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Error!',
+                    text: 'An error occurred while processing your request.',
+                    icon: 'error'
+                };
+            }
         } else {
             switch(action) {
                 case 'archived':

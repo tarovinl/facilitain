@@ -675,20 +675,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const error = urlParams.get('error');
     const errorMsg = urlParams.get('errorMsg');
 
-    if (action || error) {
+   if (action || error) {
         let alertConfig = {
             confirmButtonText: 'OK',
             allowOutsideClick: false
         };
 
-       if (error) {
-    alertConfig = {
-        ...alertConfig,
-        title: 'Error!',
-        text: errorMsg || 'An error occurred while adding the location.',
-        icon: 'error'
-    };
-}
+        if (error) {
+            if (error === 'duplicate') {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Duplicate Location!',
+                    text: errorMsg || 'A location with this name already exists. Please choose a different name.',
+                    icon: 'warning'
+                };
+            } else {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Error!',
+                    text: errorMsg || 'An error occurred while adding the location.',
+                    icon: 'error'
+                };
+            }
         } else if (action === 'added') {
             alertConfig = {
                 ...alertConfig,
