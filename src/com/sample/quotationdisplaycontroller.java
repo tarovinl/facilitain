@@ -171,7 +171,7 @@ public class quotationdisplaycontroller extends HttpServlet {
         String query = "SELECT QUOTATION_ID, ITEM_ID, DESCRIPTION, DATE_UPLOADED, " +
                       "QUOTATION_FILE1, QUOTATION_FILE2, FILE1_NAME, FILE2_NAME, " +
                       "FILE1_TYPE, FILE2_TYPE, ARCHIVED_FLAG " +
-                      "FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS WHERE ITEM_ID = ? AND (ARCHIVED_FLAG IS NULL OR ARCHIVED_FLAG = 1) " +
+                      "FROM FMO_ADM.FMO_ITEM_QUOTATIONS WHERE ITEM_ID = ? AND (ARCHIVED_FLAG IS NULL OR ARCHIVED_FLAG = 1) " +
                       "ORDER BY DATE_UPLOADED DESC";
 
         try (Connection conn = PooledConnection.getConnection();

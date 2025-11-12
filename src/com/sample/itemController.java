@@ -135,9 +135,9 @@ public class itemController extends HttpServlet {
         
         try (
              Connection con = PooledConnection.getConnection();
-             PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
-             PreparedStatement stmntDUsers = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_DUSERS ORDER BY USER_ID");
-             PreparedStatement stmntItemz = con.prepareCall("SELECT ITEM_ID, NAME, LOCATION_ID, ITEM_STAT_ID from C##FMO_ADM.FMO_ITEMS ORDER BY ITEM_ID");
+             PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
+             PreparedStatement stmntDUsers = con.prepareCall("SELECT * FROM FMO_ADM.FMO_ITEM_DUSERS ORDER BY USER_ID");
+             PreparedStatement stmntItemz = con.prepareCall("SELECT ITEM_ID, NAME, LOCATION_ID, ITEM_STAT_ID from FMO_ADM.FMO_ITEMS ORDER BY ITEM_ID");
         ){
             ResultSet rsAssign = stmntAssign.executeQuery();
             while (rsAssign.next()) {

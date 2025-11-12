@@ -266,7 +266,7 @@ public class maintAssController extends HttpServlet {
         try (Connection con = PooledConnection.getConnection()) {
             
             // Count total records 
-            String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS " +
+            String countSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEMS " +
                               "WHERE ITEM_STAT_ID = 1 AND MAINTENANCE_STATUS = 2";
 
             try (PreparedStatement stmt = con.prepareStatement(countSql);
@@ -285,11 +285,11 @@ public class maintAssController extends HttpServlet {
                .append("    l.NAME AS LOC_NAME, ")
                .append("    s.STATUS_NAME, ")
                .append("    ROW_NUMBER() OVER (ORDER BY i.PLANNED_MAINTENANCE_DATE DESC NULLS LAST, i.ITEM_ID ASC) AS rn ")
-               .append("  FROM C##FMO_ADM.FMO_ITEMS i ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
-               .append("  JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
+               .append("  FROM FMO_ADM.FMO_ITEMS i ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
+               .append("  JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
                .append("  WHERE i.ITEM_STAT_ID = 1 AND i.MAINTENANCE_STATUS = 2");
 
             // Add search filter if provided
@@ -359,11 +359,11 @@ public class maintAssController extends HttpServlet {
             // Count filtered records if search was applied
             if (searchValue != null && !searchValue.isEmpty()) {
                 StringBuilder countFilteredSql = new StringBuilder();
-                countFilteredSql.append("SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS i ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
-                               .append("JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
+                countFilteredSql.append("SELECT COUNT(*) FROM FMO_ADM.FMO_ITEMS i ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
+                               .append("JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
                                .append("WHERE i.ITEM_STAT_ID = 1 AND i.MAINTENANCE_STATUS = 2 AND (")
                                .append("  UPPER(i.NAME) LIKE ? OR ")
                                .append("  UPPER(t.NAME) LIKE ? OR ")
