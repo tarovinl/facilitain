@@ -781,200 +781,164 @@ $(document).ready(function() {
 
     populateEquipmentFilter();
 
-    // Enhanced Generate Report functionality with detailed lists
     $('#generate-report').on('click', function() {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const margin = 15;
-        let yPosition = 20;
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 15;
+    let yPosition = 20;
 
-        // Helper function to check if we need a new page
-        function checkPageBreak(requiredSpace) {
-            if (yPosition + requiredSpace > pageHeight - margin) {
-                pdf.addPage();
-                yPosition = margin;
-                return true;
-            }
-            return false;
+    // Helper function to check if we need a new page
+    function checkPageBreak(requiredSpace) {
+        if (yPosition + requiredSpace > pageHeight - margin) {
+            pdf.addPage();
+            yPosition = margin;
+            return true;
         }
+        return false;
+    }
 
-        // Add header
-        pdf.setFontSize(20);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('University of Santo Tomas', pageWidth / 2, yPosition, { align: 'center' });
-        yPosition += 8;
-        
-        pdf.setFontSize(16);
-        pdf.text('Facilities Management Office - Reports Dashboard', pageWidth / 2, yPosition, { align: 'center' });
-        yPosition += 15;
+    // Add logo with fixed default size (maintaining aspect ratio)
+    const logoUrl = './resources/images/FACILITAIN_FINAL.png';
+    const logoWidth = 25;  
+    const logoHeight = 15; 
+    pdf.addImage(logoUrl, 'PNG', margin, margin, logoWidth, logoHeight);
 
-        // Add generation date
-        pdf.setFontSize(10);
-        pdf.setFont(undefined, 'italic');
-        const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        pdf.text('Generated on: ' + currentDate, pageWidth / 2, yPosition, { align: 'center' });
-        yPosition += 15;
+    // Add header - adjust yPosition to account for logo
+    yPosition = margin + logoHeight + 5;
+    
+    pdf.setFontSize(20);
+    pdf.setFont('helvetica', 'bold'); // jsPDF uses helvetica as default, closest to NeueHaas
+    pdf.text('University of Santo Tomas', pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 8;
+    
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Facilities Management Office - Reports Dashboard', pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 15;
 
-        // SECTION 1: Monthly Report Summary
-        checkPageBreak(50);
-        pdf.setFontSize(14);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('Monthly Report Summary', margin, yPosition);
-        yPosition += 8;
+    checkPageBreak(50);
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Reports Summary', margin, yPosition);
+    yPosition += 8;
 
-        pdf.setFontSize(10);
-        pdf.setFont(undefined, 'normal');
-        
-        <c:choose>
-            <c:when test="${not empty monthlyReports}">
-                <c:forEach var="monthData" items="${monthlyReports}">
-                    checkPageBreak(7);
-                    pdf.text('${monthData.key}: ${monthData.value} report(s)', margin + 5, yPosition);
-                    yPosition += 6;
-                </c:forEach>
-            </c:when>
-            <c:otherwise>
-                pdf.text('No monthly data available', margin + 5, yPosition);
-                yPosition += 6;
-            </c:otherwise>
-        </c:choose>
-
-        yPosition += 10;
-
-        // SECTION 2: Top 10 Unresolved Reports by Equipment Type
-        checkPageBreak(50);
-        pdf.setFontSize(14);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('Top 10 Unresolved Reports by Equipment Type', margin, yPosition);
-        yPosition += 8;
-
-        pdf.setFontSize(10);
-        pdf.setFont(undefined, 'normal');
-        
-        <c:choose>
-            <c:when test="${not empty top10UnresolvedEquipment}">
-                let rank = 1;
-                <c:forEach var="equipData" items="${top10UnresolvedEquipment}">
-                    checkPageBreak(7);
-                    pdf.text(rank + '. ${equipData.key}: ${equipData.value} unresolved report(s)', margin + 5, yPosition);
-                    yPosition += 6;
-                    rank++;
-                </c:forEach>
-            </c:when>
-            <c:otherwise>
-                pdf.text('No unresolved reports', margin + 5, yPosition);
-                yPosition += 6;
-            </c:otherwise>
-        </c:choose>
-
-        yPosition += 10;
-
-        // SECTION 3: All Reports by Location
-        checkPageBreak(50);
-        pdf.setFontSize(14);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('All Reports by Location', margin, yPosition);
-        yPosition += 8;
-
-        pdf.setFontSize(10);
-        pdf.setFont(undefined, 'normal');
-        
-        <c:choose>
-            <c:when test="${not empty allLocationReports}">
-                <c:forEach var="locData" items="${allLocationReports}">
-                    checkPageBreak(7);
-                    pdf.text('${locData.key}: ${locData.value} report(s)', margin + 5, yPosition);
-                    yPosition += 6;
-                </c:forEach>
-            </c:when>
-            <c:otherwise>
-                pdf.text('No location data available', margin + 5, yPosition);
-                yPosition += 6;
-            </c:otherwise>
-        </c:choose>
-
-        yPosition += 10;
-
-        // SECTION 4: Recent Reports Summary Table
-        checkPageBreak(50);
-        pdf.setFontSize(14);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('Recent Reports Summary', margin, yPosition);
-        yPosition += 8;
-
-        const reportRows = document.querySelectorAll('#reportsTable tbody tr');
-        
-        if (reportRows.length === 0) {
-            pdf.setFontSize(10);
-            pdf.setFont(undefined, 'normal');
-            pdf.text('No reports data available', margin + 5, yPosition);
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'normal');
+    
+    // Calculate statistics
+    const reportRows = document.querySelectorAll('#reportsTable tbody tr');
+    let totalReports = reportRows.length;
+    let unresolvedCount = 0;
+    let resolvedCount = 0;
+    
+    reportRows.forEach(row => {
+        const statusBadge = row.querySelector('td:nth-child(5) .badge');
+        if (statusBadge.textContent.includes('Resolved') && !statusBadge.textContent.includes('Not')) {
+            resolvedCount++;
         } else {
-            // Table headers
-            checkPageBreak(15);
-            pdf.setFontSize(9);
-            pdf.setFont(undefined, 'bold');
-            const headers = ['ID', 'Equipment', 'Location', 'Date', 'Status'];
-            const columnWidths = [15, 50, 45, 30, 25];
-            let xPosition = margin;
-            
-            // Draw header background
-            pdf.setFillColor(240, 240, 240);
-            pdf.rect(margin, yPosition - 5, pageWidth - (2 * margin), 7, 'F');
-            
-            headers.forEach((header, index) => {
-                pdf.text(header, xPosition, yPosition);
-                xPosition += columnWidths[index];
-            });
-            yPosition += 8;
-
-            // Table data
-            pdf.setFont(undefined, 'normal');
-            const maxRows = Math.min(reportRows.length, 25);
-            for (let i = 0; i < maxRows; i++) {
-                checkPageBreak(8);
-
-                const cells = reportRows[i].querySelectorAll('td');
-                xPosition = margin;
-                
-                for (let j = 0; j < Math.min(cells.length, 5); j++) {
-                    let text = cells[j].textContent.trim();
-                    
-                    // Clean up status text
-                    if (j === 4) {
-                        text = text.includes('Resolved') ? 'Resolved' : 'Not Resolved';
-                    }
-                    
-                    // Truncate long text based on column
-                    const maxLength = j === 1 ? 25 : (j === 2 ? 20 : 15);
-                    if (text.length > maxLength) {
-                        text = text.substring(0, maxLength - 3) + '...';
-                    }
-                    
-                    pdf.text(text, xPosition, yPosition);
-                    xPosition += columnWidths[j];
-                }
-                yPosition += 6;
-            }
-
-            if (reportRows.length > 25) {
-                yPosition += 5;
-                pdf.setFont(undefined, 'italic');
-                pdf.setFontSize(9);
-                pdf.text('... and ' + (reportRows.length - 25) + ' more reports (showing first 25)', margin, yPosition);
-            }
+            unresolvedCount++;
         }
-
-        // Add footer on last page
-        yPosition = pageHeight - 15;
-        pdf.setFontSize(8);
-        pdf.setFont(undefined, 'italic');
-        pdf.setTextColor(128, 128, 128);
-        pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, yPosition, { align: 'center' });
-
-        pdf.save('FMO_Reports_Dashboard_' + new Date().toISOString().split('T')[0] + '.pdf');
     });
+
+    checkPageBreak(12);
+    pdf.text('Total Reports: ' + totalReports, margin + 5, yPosition);
+    yPosition += 6;
+    
+    checkPageBreak(6);
+    pdf.text('Unresolved Reports: ' + unresolvedCount, margin + 5, yPosition);
+    yPosition += 6;
+    
+    checkPageBreak(6);
+    pdf.text('Resolved Reports: ' + resolvedCount, margin + 5, yPosition);
+    yPosition += 15;
+
+    // SECTION 1: Monthly Report Summary
+    checkPageBreak(50);
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Monthly Report Summary', margin, yPosition);
+    yPosition += 8;
+
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    
+    // Monthly reports data (use JSP iteration in actual implementation)
+    const monthlyReportsData = ${not empty monthlyReports ? 'true' : 'false'};
+    if (monthlyReportsData) {
+        <c:forEach var="monthData" items="${monthlyReports}">
+        checkPageBreak(7);
+        pdf.text('${monthData.key}: ${monthData.value} report(s)', margin + 5, yPosition);
+        yPosition += 6;
+        </c:forEach>
+    } else {
+        checkPageBreak(7);
+        pdf.text('No monthly data available', margin + 5, yPosition);
+        yPosition += 6;
+    }
+
+    yPosition += 10;
+
+    // SECTION 2: Top 10 Unresolved Reports by Equipment Type
+    checkPageBreak(50);
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Top 10 Unresolved Reports by Equipment Type', margin, yPosition);
+    yPosition += 8;
+
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    
+    const unresolvedEquipmentData = ${not empty top10UnresolvedEquipment ? 'true' : 'false'};
+    if (unresolvedEquipmentData) {
+        let rank = 1;
+        <c:forEach var="equipData" items="${top10UnresolvedEquipment}">
+        checkPageBreak(7);
+        pdf.text(rank + '. ${equipData.key}: ${equipData.value} unresolved report(s)', margin + 5, yPosition);
+        yPosition += 6;
+        rank++;
+        </c:forEach>
+    } else {
+        checkPageBreak(7);
+        pdf.text('No unresolved reports', margin + 5, yPosition);
+        yPosition += 6;
+    }
+
+    yPosition += 10;
+
+    // SECTION 3: All Reports by Location
+    checkPageBreak(50);
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('All Reports by Location', margin, yPosition);
+    yPosition += 8;
+
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    
+    const locationReportsData = ${not empty allLocationReports ? 'true' : 'false'};
+    if (locationReportsData) {
+        <c:forEach var="locData" items="${allLocationReports}">
+        checkPageBreak(7);
+        pdf.text('${locData.key}: ${locData.value} report(s)', margin + 5, yPosition);
+        yPosition += 6;
+        </c:forEach>
+    } else {
+        checkPageBreak(7);
+        pdf.text('No location data available', margin + 5, yPosition);
+        yPosition += 6;
+    }
+
+    // Add footer on last page
+    yPosition = pageHeight - 15;
+    pdf.setFontSize(8);
+    pdf.setFont('helvetica', 'italic');
+    pdf.setTextColor(128, 128, 128);
+    pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, yPosition, { align: 'center' });
+
+    pdf.save('FMO_Reports_Dashboard_' + new Date().toISOString().split('T')[0] + '.pdf');
+});
 
     // QR Code download functionality
     $('#generateQRBtn').on('click', function() {
