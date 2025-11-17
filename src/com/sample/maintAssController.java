@@ -405,8 +405,9 @@ public class maintAssController extends HttpServlet {
     }
 
     /**
-     * Handles AJAX request for scheduled maintenance table with server-side pagination
+     * Handles AJAX request for scheduled maintenance table with server-side pagination - FIXED to filet archived items
      */
+    
     private void handleScheduledTableAjax(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
         
@@ -424,7 +425,7 @@ public class maintAssController extends HttpServlet {
 
         try (Connection con = PooledConnection.getConnection()) {
             
-            // Count total incomplete assignments
+            // Count total incomplete assignments WHERE ITEM IS ACTIVE
             String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
                               "JOIN C##FMO_ADM.FMO_ITEMS i ON ma.ITEM_ID = i.ITEM_ID " +
                               "WHERE i.ITEM_STAT_ID = 1 AND ma.IS_COMPLETED = 0";
@@ -435,7 +436,7 @@ public class maintAssController extends HttpServlet {
                 }
             }
 
-            // Main query with pagination
+            // Main query with pagination 
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM (")
             .append("  SELECT ma.ASSIGN_ID, ma.ITEM_ID, ma.USER_ID, ma.MAIN_TYPE_ID, ma.DATE_OF_MAINTENANCE, ")
@@ -530,7 +531,7 @@ public class maintAssController extends HttpServlet {
                 }
             }
 
-            // Count filtered records
+            // Count filtered records 
             if (searchValue != null && !searchValue.isEmpty()) {
                 StringBuilder countFilteredSql = new StringBuilder();
                 countFilteredSql.append("SELECT COUNT(*) FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma ")

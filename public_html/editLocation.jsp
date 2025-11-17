@@ -47,6 +47,22 @@
                 transition: all 0.3s ease;
                 border: 1px solid transparent; /* Reserve space for border */
                             }
+    #editCharCount,
+    #addCharCount,
+    #charCount {
+            font-family: 'NeueHaasLight', sans-serif !important;
+            font-size: 0.875rem;
+            color: #6c757d;
+            font-weight: 300;
+        }
+
+             .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.2) !important; 
+        }
+    
+        .modal-backdrop.show {
+            opacity: 1 !important;
+        }
 
             .hover-outline:hover {
                 background-color: 	#1C1C1C !important;
