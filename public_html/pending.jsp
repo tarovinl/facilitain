@@ -70,6 +70,20 @@
         #maintenanceTable tbody tr.selected {
             background-color: rgba(0,0,0,0.1);
         }
+        
+         .character-counter {
+            font-size: 0.875rem;
+            color: #6c757d;
+            text-align: right;
+            margin-top: 5px;
+            font-family: 'NeueHaasLight', sans-serif !important;
+        }
+        
+        .file-upload-container small {
+            font-family: 'NeueHaasLight', sans-serif !important;
+        } 
+
+        
           body, h1, h2, h3, h4,h5, h6, th,label,.custom-label {
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
