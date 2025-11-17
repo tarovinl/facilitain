@@ -98,6 +98,10 @@
                 max-width: 100px;
             }
         }
+        
+         .dataTables_filter {
+            margin-bottom: 20px; 
+    }
     </style>
 </head>
 <body>

@@ -103,6 +103,10 @@
     .char-counter.text-danger {
         color: #dc3545 !important;
     }
+    
+    .dataTables_filter {
+    margin-bottom: 20px; 
+    }
 </style>
 </head>
 <body>
