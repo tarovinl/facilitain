@@ -1228,10 +1228,12 @@ $(document).on('click', '.delete-maintenance-btn', function(e) {
         text: "Do you want to delete this maintenance assignment?",
         icon: 'warning',
         showCancelButton: true,
-         cancelButtonColor: '#3085d6',
-        confirmButtonColor: '#d33',
+        reverseButtons: true,
+        cancelButtonColor: '#6c757d',
+        confirmButtonColor: '#dc3545',
         cancelButtonText: 'Cancel',
-         confirmButtonText: 'Yes, delete i!'
+        confirmButtonText: 'Yes, archive it',
+        
     }).then((result) => {
         if (result.isConfirmed) {
             $('#deleteMaintID').val(maintID);
