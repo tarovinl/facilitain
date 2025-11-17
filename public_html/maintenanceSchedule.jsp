@@ -102,6 +102,12 @@
          .dataTables_filter {
             margin-bottom: 20px; 
     }
+    
+   .form-text.text-muted {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+ 
+       
     </style>
 </head>
 <body>

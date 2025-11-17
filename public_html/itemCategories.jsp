@@ -97,6 +97,7 @@
             font-size: 0.875rem;
             color: #6c757d;
             margin-top: 0.25rem;
+            font-family: 'NeueHaasLight', sans-serif !important;
         }
         
         .char-counter.text-danger {
