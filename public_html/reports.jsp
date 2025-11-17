@@ -781,7 +781,8 @@ $(document).ready(function() {
 
     populateEquipmentFilter();
 
-    $('#generate-report').on('click', function() {
+    
+$('#generate-report').on('click', function() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -789,9 +790,22 @@ $(document).ready(function() {
     const margin = 15;
     let yPosition = 20;
 
+    // Get current date and time
+    const now = new Date();
+    const reportDate = now.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    const reportTime = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+    });
+
     // Helper function to check if we need a new page
     function checkPageBreak(requiredSpace) {
-        if (yPosition + requiredSpace > pageHeight - margin) {
+        if (yPosition + requiredSpace > pageHeight - margin - 20) { // Extra space for footer
             pdf.addPage();
             yPosition = margin;
             return true;
@@ -806,8 +820,8 @@ $(document).ready(function() {
         const rowHeight = 8;
         let currentY = startY;
 
-        // Draw header with grey background
-        pdf.setFillColor(128, 128, 128); // Grey color
+        // Draw header with dark grey background (matching the buildingDashboard style)
+        pdf.setFillColor(51, 51, 51); // Dark grey color
         pdf.setTextColor(255, 255, 255); // White text
         pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
         
@@ -824,12 +838,12 @@ $(document).ready(function() {
         pdf.setFont('helvetica', 'normal');
         data.forEach((row, rowIndex) => {
             // Check if we need a new page
-            if (currentY + rowHeight > pageHeight - margin) {
+            if (currentY + rowHeight > pageHeight - margin - 20) {
                 pdf.addPage();
                 currentY = margin;
                 
                 // Redraw header on new page
-                pdf.setFillColor(128, 128, 128);
+                pdf.setFillColor(51, 51, 51);
                 pdf.setTextColor(255, 255, 255);
                 pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
                 pdf.setFont('helvetica', 'bold');
@@ -857,6 +871,20 @@ $(document).ready(function() {
         });
 
         return currentY;
+    }
+
+    // Helper function to add footer with generation date
+    function addFooter(pageNum) {
+        const footerY = pageHeight - 10;
+        pdf.setFontSize(8);
+        pdf.setFont('helvetica', 'italic');
+        pdf.setTextColor(128, 128, 128);
+        
+        // Generated on text on the left
+        pdf.text('Generated on: ' + reportDate + ' at ' + reportTime, margin, footerY);
+        
+        // Organization name centered
+        pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'left' });
     }
 
     // Load and add logo with proper aspect ratio
@@ -996,12 +1024,12 @@ $(document).ready(function() {
             yPosition += 6;
         }
 
-        // Add footer on last page
-        yPosition = pageHeight - 15;
-        pdf.setFontSize(8);
-        pdf.setFont('helvetica', 'italic');
-        pdf.setTextColor(128, 128, 128);
-        pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, yPosition, { align: 'center' });
+        // Add footer to all pages
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+            pdf.setPage(i);
+            addFooter(i);
+        }
 
         pdf.save('FMO_Reports_Dashboard_' + new Date().toISOString().split('T')[0] + '.pdf');
     }
