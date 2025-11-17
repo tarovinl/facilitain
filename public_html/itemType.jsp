@@ -98,10 +98,15 @@
         font-size: 0.875rem;
         color: #6c757d;
         margin-top: 0.25rem;
+        font-family: 'NeueHaasLight', sans-serif !important;
     }
     
     .char-counter.text-danger {
         color: #dc3545 !important;
+    }
+    
+    .dataTables_filter {
+    margin-bottom: 20px; 
     }
 </style>
 </head>
@@ -420,7 +425,7 @@ $(document).ready(function () {
                 reverseButtons: true,
                 confirmButtonColor: '#dc3545',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, Archive it',
+                confirmButtonText: 'Yes, archive it',
                 cancelButtonText: 'Cancel',
                 customClass: {
                     cancelButton: 'btn-cancel-outline'

@@ -85,12 +85,17 @@
             color: #6c757d;
             text-align: right;
             margin-top: 5px;
+            font-family: 'NeueHaasLight', sans-serif !important;
         }
         .character-counter.warning {
             color: #ffc107;
         }
         .character-counter.danger {
             color: #dc3545;
+        }
+        
+        .file-upload-container small {
+        font-family: 'NeueHaasLight', sans-serif !important;
         }
         .form-control.invalid {
             border-color: #dc3545;
