@@ -47,6 +47,22 @@
                 transition: all 0.3s ease;
                 border: 1px solid transparent; /* Reserve space for border */
                             }
+    #editCharCount,
+    #addCharCount,
+    #charCount {
+            font-family: 'NeueHaasLight', sans-serif !important;
+            font-size: 0.875rem;
+            color: #6c757d;
+            font-weight: 300;
+        }
+
+             .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.2) !important; 
+        }
+    
+        .modal-backdrop.show {
+            opacity: 1 !important;
+        }
 
             .hover-outline:hover {
                 background-color: 	#1C1C1C !important;
@@ -259,7 +275,7 @@
                     <label for="mapCoord" class="form-label h4" style="font-family: NeueHaasMedium, sans-serif !important;">Pin Location on Map:</label>
                     <h6 class="text-secondary fw-normal"  style="font-family: 'NeueHaasLight', sans-serif;">Select a location by clicking on the map. Press Reset to undo your selection.</h6>
                     <input type="hidden" class="form-control" id="mapCoord" name="mapCoord">
-                    <div id="map" style="width: 100%; height: 256px; border-radius:5px;"></div>
+                    <div id="map" style="width: 100%; height: 284px; border-radius:5px;"></div>
                 </div>           
             </div> 
         </div>
@@ -269,7 +285,7 @@
   <div class="col-md-6 col-12 text-center">
     <input type="submit" value="Save Changes" class="btn btn-success w-100" style="font-family: NeueHaasMedium, sans-serif !important;">
   </div> 
-  <div class="col-md-6 col-12 text-center mb-4 mt-md-0">
+  <div class="col-md-6 col-12 text-center">
     <button type="button" class="btn btn-outline-secondary w-100" style="font-family: NeueHaasMedium, sans-serif !important;" onclick="location.reload()">Reset</button>
   </div> 
 </div>

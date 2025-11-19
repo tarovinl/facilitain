@@ -602,7 +602,9 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                     <label for="itemType" class="form-label">Type <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemType" id="itemType">
                                         <c:forEach items="${FMO_TYPES_LIST}" var="type" >
+                                            <c:if test="${type.itemArchive == 1}">
                                             <option value="${type.itemTID}" data-item-cid="${type.itemCID}" selected>${type.itemType}</option>
+                                            </c:if>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -771,7 +773,9 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                     <label for="itemEditType" class="form-label">Type <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemEditType" id="itemEType">
                                         <c:forEach items="${FMO_TYPES_LIST}" var="type" >
+                                            <c:if test="${type.itemArchive == 1}">
                                             <option value="${type.itemTID}" data-item-cid="${type.itemCID}" selected>${type.itemType}</option>
+                                            </c:if>
                                         </c:forEach>
                                     </select>
                                 </div>

@@ -70,6 +70,30 @@
         #maintenanceTable tbody tr.selected {
             background-color: rgba(0,0,0,0.1);
         }
+        
+         .character-counter {
+            font-size: 0.875rem;
+            color: #6c757d;
+            text-align: right;
+            margin-top: 5px;
+            font-family: 'NeueHaasLight', sans-serif !important;
+        }
+        
+        .file-upload-container small {
+            font-family: 'NeueHaasLight', sans-serif !important;
+        } 
+        
+        .character-counter.warning {
+            color: #ffc107;
+        }
+        .character-counter.danger {
+            color: #dc3545;
+        }
+        .form-control.invalid {
+            border-color: #dc3545;
+        }
+
+        
           body, h1, h2, h3, h4,h5, h6, th,label,.custom-label {
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
@@ -1077,6 +1101,89 @@ $(document).ready(function() {
     });
 });
 
+// Character counter functionality
+const MAX_DESCRIPTION_LENGTH = 255;
+
+function setupCharacterCounter() {
+    var textarea = document.getElementById('quotationDescription');
+    var counter = document.getElementById('characterCounter');
+    
+    if (!textarea || !counter) return;
+    
+    textarea.addEventListener('input', function() {
+        var currentLength = textarea.value.length;
+        counter.textContent = currentLength + ' / ' + MAX_DESCRIPTION_LENGTH + ' characters';
+        
+        counter.classList.remove('warning', 'danger');
+        textarea.classList.remove('invalid');
+        
+        if (currentLength > MAX_DESCRIPTION_LENGTH) {
+            counter.classList.add('danger');
+            textarea.classList.add('invalid');
+        } else if (currentLength > MAX_DESCRIPTION_LENGTH * 0.8) {
+            counter.classList.add('warning');
+        }
+    });
+}
+
+// Initialize when modal opens
+$('#updateStatusModal').on('shown.bs.modal', function() {
+    setupCharacterCounter();
+    setupFileInput('quotationFile1', 'file1Preview');
+    setupFileInput('quotationFile2', 'file2Preview');
+});
+
+// File preview functionality
+function setupFileInput(inputId, previewId) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    
+    if (!input || !preview) return;
+    
+    // Remove any existing event listeners by cloning the element
+    const newInput = input.cloneNode(true);
+    input.parentNode.replaceChild(newInput, input);
+    
+    // Now attach the event listener to the new element
+    newInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        preview.innerHTML = '';
+        
+        if (file) {
+            // Validate file size (10MB)
+            const MAX_FILE_SIZE = 10 * 1024 * 1024;
+            if (file.size > MAX_FILE_SIZE) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger mt-2';
+                errorDiv.textContent = 'File size exceeds 10MB limit';
+                preview.appendChild(errorDiv);
+                newInput.value = '';
+                return;
+            }
+            
+            // Show file info
+            const fileInfo = document.createElement('div');
+            fileInfo.className = 'alert alert-info mt-2';
+            fileInfo.innerHTML = '<strong>Selected:</strong> ' + file.name + 
+                               '<br><strong>Size:</strong> ' + (file.size / 1024 / 1024).toFixed(2) + ' MB';
+            preview.appendChild(fileInfo);
+            
+            // Show preview for images
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'img-thumbnail mt-2';
+                    img.style.maxHeight = '100px';
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+}
+
 
 </script>
 
@@ -1228,10 +1335,12 @@ $(document).on('click', '.delete-maintenance-btn', function(e) {
         text: "Do you want to delete this maintenance assignment?",
         icon: 'warning',
         showCancelButton: true,
-         cancelButtonColor: '#3085d6',
-        confirmButtonColor: '#d33',
+        reverseButtons: true,
+        cancelButtonColor: '#6c757d',
+        confirmButtonColor: '#dc3545',
         cancelButtonText: 'Cancel',
-         confirmButtonText: 'Yes, delete i!'
+        confirmButtonText: 'Yes, archive it',
+        
     }).then((result) => {
         if (result.isConfirmed) {
             $('#deleteMaintID').val(maintID);

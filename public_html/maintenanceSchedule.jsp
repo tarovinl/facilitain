@@ -98,6 +98,16 @@
                 max-width: 100px;
             }
         }
+        
+         .dataTables_filter {
+            margin-bottom: 20px; 
+    }
+    
+   .form-text.text-muted {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+ 
+       
     </style>
 </head>
 <body>
@@ -511,7 +521,7 @@ $(document).ready(function() {
                 reverseButtons: true,
                 confirmButtonColor: '#dc3545',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, Archive it',
+                confirmButtonText: 'Yes, archive it',
                 cancelButtonText: 'Cancel',
                 customClass: {
                     cancelButton: 'btn-cancel-outline'

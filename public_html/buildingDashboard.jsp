@@ -163,6 +163,8 @@
         chart.draw(data, options);
         }
 
+
+
 function generateReport() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({
@@ -171,8 +173,21 @@ function generateReport() {
         format: 'a4'
     });
 
-    // Get current date from JSP
-    const reportDate = '<%= new java.text.SimpleDateFormat("MMMM dd, yyyy").format(new java.util.Date()) %>';
+    // Get location name from JSP variable
+    const locName = '${locName}';
+
+    // Get current date and time
+    const now = new Date();
+    const reportDate = now.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    const reportTime = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+    });
 
     // Header background
     doc.setFillColor(51, 51, 51);
@@ -186,12 +201,13 @@ function generateReport() {
         doc.addImage(logoImg, 'PNG', 15, 5, 65, 13);
 
         const contentStartY = 30;
+        const pageHeight = doc.internal.pageSize.getHeight();
 
         // Title
         doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0, 0, 0);
-        doc.text(`${locName}`, 105, contentStartY + 10, {align: 'center'});
+        doc.text(locName, 105, contentStartY + 10, {align: 'center'});
 
         // Subtitle
         doc.setFont('helvetica', 'normal');
@@ -209,9 +225,9 @@ function generateReport() {
                 const tableStartY = contentStartY + 35;
 
                 if (!Array.isArray(dataList) || dataList.length === 0) {
-                doc.setFontSize(12);
-                doc.setTextColor(100, 100, 100);
-                doc.text("No pending maintenance data available.", 105, tableStartY + 5, {align: 'center'});
+                    doc.setFontSize(12);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text("No pending maintenance data available.", 105, tableStartY + 5, {align: 'center'});
                 } else {
                     // Build table data
                     const bodyData = dataList.map(item => [
@@ -254,26 +270,28 @@ function generateReport() {
                 doc.text("Repairs per Month", 105, afterPendingY - 5, {align: 'center'});
                 doc.setFont(undefined, 'normal');
 
+                // Create repairs per month data array
+                const repairsData = [];
+                <c:forEach var="month" items="${monthsList}" varStatus="status">
+                    <c:set var="repairCount2" value="0" />
+                    <c:set var="monthNumber2" value="${status.index + 1}" />
+                    <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
+                        <c:if test="${repair.repairLocID == locID2}">
+                            <c:if test="${repair.repairYear == currentYear}">
+                                <c:if test="${repair.repairMonth == monthNumber2}">
+                                    <c:set var="repairCount2" value="${repair.repairCount}" />
+                                </c:if>
+                            </c:if>
+                        </c:if>
+                    </c:forEach>
+                    repairsData.push(['${month}', '${repairCount2}']);
+                </c:forEach>
+
                 doc.autoTable({
                     startY: afterPendingY,
-                    margin: {left: 20, right: 20},
+                    margin: {left: 20, right: 20, bottom: 25},
                     head: [["Month", "Number of Repairs"]],
-                    body: [
-                        <c:forEach var="month" items="${monthsList}" varStatus="status">
-                            <c:set var="repairCount2" value="0" />
-                            <c:set var="monthNumber2" value="${status.index + 1}" />
-                            <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
-                                <c:if test="${repair.repairLocID == locID2}">
-                                    <c:if test="${repair.repairYear == currentYear}">
-                                        <c:if test="${repair.repairMonth == monthNumber2}">
-                                            <c:set var="repairCount2" value="${repair.repairCount}" />
-                                        </c:if>
-                                    </c:if>
-                                </c:if>
-                            </c:forEach>
-                            ['${month}', '${repairCount2}'],
-                        </c:forEach>
-                    ],
+                    body: repairsData,
                     theme: 'grid',
                     headStyles: {
                         fillColor: [51, 51, 51],
@@ -291,8 +309,20 @@ function generateReport() {
                     }
                 });
 
+                // Add footer with generation date and time
+                const footerY = pageHeight - 10;
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'italic');
+                doc.setTextColor(128, 128, 128);
+                
+                // Generated on text on the left
+                doc.text('Generated on: ' + reportDate + ' at ' + reportTime, 15, footerY);
+                
+                // Organization name centered
+                doc.text('University of Santo Tomas - Facilities Management Office', 105, footerY, { align: 'left' });
+
                 // Save the PDF
-                doc.save(`${locName}_Maintenance_Report.pdf`);
+                doc.save(locName + '_Maintenance_Report.pdf');
             })
             .catch(error => {
                 console.error('Error generating PDF:', error);
