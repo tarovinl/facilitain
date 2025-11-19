@@ -426,8 +426,8 @@ public class maintAssController extends HttpServlet {
         try (Connection con = PooledConnection.getConnection()) {
             
             // Count total incomplete assignments WHERE ITEM IS ACTIVE
-            String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
-                              "JOIN C##FMO_ADM.FMO_ITEMS i ON ma.ITEM_ID = i.ITEM_ID " +
+            String countSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
+                              "JOIN FMO_ADM.FMO_ITEMS i ON ma.ITEM_ID = i.ITEM_ID " +
                               "WHERE i.ITEM_STAT_ID = 1 AND ma.IS_COMPLETED = 0";
             try (PreparedStatement stmt = con.prepareStatement(countSql);
                  ResultSet rs = stmt.executeQuery()) {

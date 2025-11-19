@@ -148,7 +148,7 @@ public class addMaintenanceController extends HttpServlet {
         try (Connection conn = PooledConnection.getConnection()) {
             
             // Fetch assigned user email and name
-            String userSql = "SELECT NAME, EMAIL FROM C##FMO_ADM.FMO_ITEM_DUSERS WHERE USER_ID = ?";
+            String userSql = "SELECT NAME, EMAIL FROM FMO_ADM.FMO_ITEM_DUSERS WHERE USER_ID = ?";
             try (PreparedStatement userStmt = conn.prepareStatement(userSql)) {
                 userStmt.setInt(1, Integer.parseInt(assignedTo));
                 try (ResultSet userRs = userStmt.executeQuery()) {
@@ -160,7 +160,7 @@ public class addMaintenanceController extends HttpServlet {
             }
             
             // Fetch maintenance type name
-            String maintTypeSql = "SELECT NAME FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES WHERE MAIN_TYPE_ID = ?";
+            String maintTypeSql = "SELECT NAME FROM FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES WHERE MAIN_TYPE_ID = ?";
             try (PreparedStatement maintTypeStmt = conn.prepareStatement(maintTypeSql)) {
                 maintTypeStmt.setInt(1, Integer.parseInt(maintenanceType));
                 try (ResultSet maintTypeRs = maintTypeStmt.executeQuery()) {
@@ -172,10 +172,10 @@ public class addMaintenanceController extends HttpServlet {
             
             // Fetch equipment type and location details
             String equipDetailSql = "SELECT t.NAME AS TYPE_NAME, c.NAME AS CAT_NAME, l.NAME AS LOC_NAME " +
-                                   "FROM C##FMO_ADM.FMO_ITEMS i " +
-                                   "JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID " +
-                                   "JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID " +
-                                   "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID " +
+                                   "FROM FMO_ADM.FMO_ITEMS i " +
+                                   "JOIN FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID " +
+                                   "JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID " +
+                                   "JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID " +
                                    "WHERE i.ITEM_ID = ?";
             try (PreparedStatement equipStmt = conn.prepareStatement(equipDetailSql)) {
                 equipStmt.setInt(1, equipmentMaintId);
@@ -190,7 +190,7 @@ public class addMaintenanceController extends HttpServlet {
             }
             
             // Insert maintenance assignment
-            String sql = "INSERT INTO C##FMO_ADM.FMO_MAINTENANCE_ASSIGN (item_id, main_type_id, user_id, date_of_maintenance) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO FMO_ADM.FMO_MAINTENANCE_ASSIGN (item_id, main_type_id, user_id, date_of_maintenance) VALUES (?, ?, ?, ?)";
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, equipmentMaintId);
