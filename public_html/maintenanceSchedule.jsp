@@ -72,7 +72,7 @@
             white-space: nowrap;
             flex: 1;
         }
-               .remarks-btn {
+        .remarks-btn {
             border: none;
             background-color: transparent;
             color: #6c757d;
@@ -98,6 +98,16 @@
                 max-width: 100px;
             }
         }
+        
+         .dataTables_filter {
+            margin-bottom: 20px; 
+    }
+    
+   .form-text.text-muted {
+    font-family: 'NeueHaasLight', sans-serif !important;
+}
+ 
+       
     </style>
 </head>
 <body>
@@ -137,15 +147,14 @@
                                         <c:if test="${type.itemTID == maintenance.itemTypeId}">
                                             <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
                                                 <c:if test="${cat.itemCID == type.itemCID}">
-                                                    ${cat.itemCat.toUpperCase()}
+                                                    ${cat.itemCat.toUpperCase()} - ${type.itemType.toUpperCase()}
                                                 </c:if>
                                             </c:forEach>
-                                            ${type.itemType.toUpperCase()}
                                         </c:if>
                                     </c:forEach>
                                 </td>
                                 <td>${maintenance.noOfDays}</td>
-                                   <td>
+                                <td>
                                     <div class="remarks-cell">
                                         <span class="remarks-text" title="${maintenance.remarks}">${maintenance.remarks}</span>
                                         <c:if test="${not empty maintenance.remarks}">
@@ -202,11 +211,15 @@
                                     <label for="addItemTypeId" class="form-label">Item Type</label>
                                     <select class="form-select" id="addItemTypeId" name="itemTypeId" required>
                                         <option value="" disabled selected>Select Item Type</option>
-                                         <c:forEach var="typez" items="${FMO_TYPES_LIST}">
-                                    <c:if test="${typez.itemArchive == 1}">
-                                        <option value="${typez.itemTID}">${typez.itemType}</option>
-                                    </c:if>
-                                </c:forEach>
+                                        <c:forEach var="typez" items="${FMO_TYPES_LIST}">
+                                            <c:if test="${typez.itemArchive == 1}">
+                                                <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
+                                                    <c:if test="${cat.itemCID == typez.itemCID}">
+                                                        <option value="${typez.itemTID}">${cat.itemCat} - ${typez.itemType}</option>
+                                                    </c:if>
+                                                </c:forEach>
+                                            </c:if>
+                                        </c:forEach>
                                     </select>
                                 </div>
 
@@ -250,7 +263,10 @@
                                 <!-- Remarks -->
                                 <div class="mb-3">
                                     <label for="addRemarks" class="form-label">Remarks</label>
-                                    <input type="text" class="form-control" id="addRemarks" name="remarks">
+                                    <input type="text" class="form-control" id="addRemarks" name="remarks" maxlength="250" oninput="updateCharCounter('addRemarks', 'addRemarksCounter')">
+                                    <small class="form-text text-muted d-block mt-1">
+                                        <span id="addRemarksCounter">0</span>/250 characters
+                                    </small>
                                 </div>
 
                                 <!-- Number of Days Warning -->
@@ -282,20 +298,24 @@
                                 
                                 <!-- Item Type Dropdown -->
                                 <div class="mb-3">
-                                    <label for="editItemTypeId" class="form-label">Item Type</label>
+                                    <label for="editItemTypeId" class="form-label">Item Type</label> <span class="text-danger">*</span>
                                     <select class="form-select" id="editItemTypeId" name="itemTypeId" required>
                                         <option value="" disabled>Select Item Type</option>
-                                <c:forEach var="typez" items="${FMO_TYPES_LIST}">
-                                    <c:if test="${typez.itemArchive == 1}">
-                                        <option value="${typez.itemTID}">${typez.itemType}</option>
-                                    </c:if>
-                                </c:forEach>
+                                        <c:forEach var="typez" items="${FMO_TYPES_LIST}">
+                                            <c:if test="${typez.itemArchive == 1}">
+                                                <c:forEach items="${FMO_CATEGORIES_LIST}" var="cat">
+                                                    <c:if test="${cat.itemCID == typez.itemCID}">
+                                                        <option value="${typez.itemTID}">${cat.itemCat} - ${typez.itemType}</option>
+                                                    </c:if>
+                                                </c:forEach>
+                                            </c:if>
+                                        </c:forEach>
                                     </select>
                                 </div>
 
                                 <!-- Number of Days -->
                                 <div class="mb-3">
-                                    <label for="editNoOfDays" class="form-label">Number of Days</label>
+                                    <label for="editNoOfDays" class="form-label">Number of Days</label> <span class="text-danger">*</span>
                                     <input type="number" class="form-control" id="editNoOfDays" name="noOfDays" required oninput="toggleEditQuarterlyOptions()">
                                 </div>
 
@@ -333,18 +353,21 @@
                                 <!-- Remarks -->
                                 <div class="mb-3">
                                     <label for="editRemarks" class="form-label">Remarks</label>
-                                    <input type="text" class="form-control" id="editRemarks" name="remarks">
+                                    <input type="text" class="form-control" id="editRemarks" name="remarks" maxlength="250" oninput="updateCharCounter('editRemarks', 'editRemarksCounter')">
+                                    <small class="form-text text-muted d-block mt-1">
+                                        <span id="editRemarksCounter">0</span>/250 characters
+                                    </small>
                                 </div>
 
                                 <!-- Number of Days Warning -->
                                 <div class="mb-3">
-                                    <label for="editNoOfDaysWarning" class="form-label">Warning Days</label>
+                                    <label for="editNoOfDaysWarning" class="form-label">Warning Days</label> <span class="text-danger">*</span>
                                     <input type="number" class="form-control" id="editNoOfDaysWarning" name="noOfDaysWarning" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-success">Update</button>
+                                <button type="submit" class="btn btn-success">Save Changes</button>
                             </div>
                         </form>
                     </div>
@@ -385,6 +408,7 @@ $(document).ready(function() {
             document.getElementById('addMonth').value = '';
             document.getElementById('addQuarterlyOptionsGroup').style.display = 'none';
             document.getElementById('addAnnualOptionsGroup').style.display = 'none';
+            updateCharCounter('addRemarks', 'addRemarksCounter');
         });
     }
 
@@ -416,6 +440,10 @@ $(document).ready(function() {
             if (yearlyValue && yearlyValue !== '') {
                 document.getElementById('editMonth').value = yearlyValue;
             }
+            
+            setTimeout(() => {
+                updateCharCounter('editRemarks', 'editRemarksCounter');
+            }, 0);
         });
     }
 
@@ -487,13 +515,13 @@ $(document).ready(function() {
             
             Swal.fire({
                 title: 'Are you sure?',
-                text: 'You want to archive this maintenance schedule?',
+                text: 'Do you want to archive this maintenance schedule?',
                 icon: 'warning',
                 showCancelButton: true,
                 reverseButtons: true,
                 confirmButtonColor: '#dc3545',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, Archive it!',
+                confirmButtonText: 'Yes, archive it',
                 cancelButtonText: 'Cancel',
                 customClass: {
                     cancelButton: 'btn-cancel-outline'
@@ -511,6 +539,23 @@ $(document).ready(function() {
         }
     });
 });
+
+function updateCharCounter(inputId, counterId) {
+    const input = document.getElementById(inputId);
+    const counter = document.getElementById(counterId);
+    const charCount = input.value.length;
+    
+    counter.textContent = charCount;
+    
+    // Change color when approaching limit (200+ characters)
+    if (charCount >= 200) {
+        counter.style.color = '#dc3545'; // Red
+    } else if (charCount >= 150) {
+        counter.style.color = '#ffc107'; // Yellow
+    } else {
+        counter.style.color = '#6c757d'; // Gray
+    }
+}
 
 function toggleAddQuarterlyOptions() {
     const value = document.getElementById('addNoOfDays').value;
@@ -554,24 +599,25 @@ function toggleEditQuarterlyOptions() {
     }
 }
 
- const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl, {
-            trigger: 'click',
-            html: true,
-            customClass: 'remarks-popover'
-        });
+const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl, {
+        trigger: 'click',
+        html: true,
+        customClass: 'remarks-popover'
     });
-    // Close popover when clicking outside
-    document.addEventListener('click', function(event) {
-        popoverTriggerList.forEach(function(trigger) {
-            if (!trigger.contains(event.target) && !document.querySelector('.popover')?.contains(event.target)) {
-                bootstrap.Popover.getInstance(trigger)?.hide();
-            }
-        });
+});
+
+// Close popover when clicking outside
+document.addEventListener('click', function(event) {
+    popoverTriggerList.forEach(function(trigger) {
+        if (!trigger.contains(event.target) && !document.querySelector('.popover')?.contains(event.target)) {
+            bootstrap.Popover.getInstance(trigger)?.hide();
+        }
     });
-    
-    // Show ellipsis button only if text is truncated
+});
+
+// Show ellipsis button only if text is truncated
 document.addEventListener('DOMContentLoaded', function() {
     const remarksTexts = document.querySelectorAll('.remarks-text');
     remarksTexts.forEach(function(textEl) {

@@ -107,7 +107,32 @@
              background-size: cover; 
              background-position: center; 
              background-repeat: no-repeat;">
-        <jsp:include page="headerClient.jsp"/>
+         <!-- Embedded header directly with logo and logout button -->
+        <%
+            // Prevent caching of header
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setDateHeader("Expires", 0);
+        %>
+        <header class="bg-facilGray p-3 d-flex justify-content-between align-items-center">
+            <!-- For large devices -->
+            <img src="resources/images/USTLogo2.png" alt="UST Logo" class="img-fluid d-none d-md-block" style="max-height: 4rem;">
+            <!-- For small devices -->
+            <img src="resources/images/USTLogo2.png" alt="UST Logo" class="img-fluid d-md-none" style="max-height: 2rem;">
+            
+            <% 
+                boolean isLoggedIn = session != null && session.getAttribute("email") != null;
+                if (isLoggedIn) { 
+            %>
+                <!-- Logout Button for logged-in users -->
+                <a href="<%=request.getContextPath()%>/LogoutController?source=reports" class="montserrat-regular btn btn-danger d-none d-md-block">
+                     <img src="resources/images/icons/logout.svg" alt="logout" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> Logout
+                </a>
+                <a href="<%=request.getContextPath()%>/LogoutController?source=reports" class="montserrat-regular btn btn-danger d-md-none">
+                     <img src="resources/images/icons/logout.svg" alt="logout" class="icon pe-2" style="width: 2em; height: 2em; vertical-align: middle;"> Logout
+                </a>
+            <% } %>
+        </header>
        <div class="container justify-content-center align-items-center flex-grow-1 my-5 montserrat-regular">
         <div class="row justify-content-center align-items-center">
             <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
@@ -225,12 +250,6 @@
                 </form>
 
             
-                <div>
-               <button type="button" onclick="window.location.href='agreementReportsClient.jsp';" class="btn  p-2 shadow-none focus:outline-none active:outline-none"
-                        style="background-color: transparent; border: none;">
-                    <i class="bi bi-arrow-left-short"></i>Back
-                </button>
-            </div>
             </div>
             </div>
             </div>

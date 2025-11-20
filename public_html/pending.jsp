@@ -70,6 +70,30 @@
         #maintenanceTable tbody tr.selected {
             background-color: rgba(0,0,0,0.1);
         }
+        
+         .character-counter {
+            font-size: 0.875rem;
+            color: #6c757d;
+            text-align: right;
+            margin-top: 5px;
+            font-family: 'NeueHaasLight', sans-serif !important;
+        }
+        
+        .file-upload-container small {
+            font-family: 'NeueHaasLight', sans-serif !important;
+        } 
+        
+        .character-counter.warning {
+            color: #ffc107;
+        }
+        .character-counter.danger {
+            color: #dc3545;
+        }
+        .form-control.invalid {
+            border-color: #dc3545;
+        }
+
+        
           body, h1, h2, h3, h4,h5, h6, th,label,.custom-label {
     font-family: 'NeueHaasMedium', sans-serif !important;
 }
@@ -169,6 +193,9 @@
 .modal-backdrop {
     background-color: rgba(128, 128, 128, 0.3) !important; 
 }
+
+
+
     </style>
 </head>
 
@@ -238,7 +265,7 @@
                     <div class="col-lg-6 mb-4 equal-height">
                         <div class="card shadow-sm">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">List of Equipment</h5>
+                                <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">Equipment List</h5>
                             </div>
                             <div class="card-body">
                                 <table id="maintenanceTable" class="table table-striped table-hover" style="width:100%">
@@ -555,8 +582,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" style="font-family: 'NeueHaasMedium', sans-serif;">Cancel</button>
-                    <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
+                    <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Add</button>
+                            </div>
                 </div>
             </div>
         </form>
@@ -572,48 +600,50 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <input type="hidden" name="maintID" id="maintID">
-                        <div>
-                            <label for="equipmentEName" class="form-label">Equipment Name <span style="color: red;">*</span></label>
-                        </div>
-                        <div class="w-100">
-                            <input class="form-control w-100" id="equipmentEName" 
-                                   name="equipmentEName" maxlength="24" required style="width: 100%;">
-                        </div>
-                </div>
+                    <input type="hidden" name="maintID" id="maintID">
+                    
+                   <div class="mb-3">
+    <label for="equipmentEName" class="form-label d-block">Equipment Name</label>
+    <input class="form-control" id="equipmentEName" 
+           name="equipmentENameDisplay" maxlength="24" 
+           style="width: 100%; background-color: #e9ecef; cursor: not-allowed;" 
+           readonly>
+</div>
+                    
                     <div class="mb-3">
                         <label for="maintenanceEType" class="form-label">Maintenance Type <span style="color: red;">*</span></label>
                         <select class="form-select" id="maintenanceEType" name="maintenanceEType" required>
-                            <c:forEach items="${FMO_MAINTTYPE_LIST}" var="mtype" >
+                            <c:forEach items="${FMO_MAINTTYPE_LIST}" var="mtype">
                                 <option value="${mtype.itemTypeId}">${mtype.itemTypeName}</option>
                             </c:forEach>
                         </select>
                     </div>
-                     <div class="mb-3">
-                                <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
-                                <select class="form-select" id="assignedETo" name="assignedETo" required>
-                                    <!-- Show current user first if they're not a Respondent -->
-                                    <c:forEach items="${FMO_USERS}" var="user">
-                                        <c:if test="${sessionScope.email == user.email && user.role != 'Respondent'}">
-                                            <option value="${user.userId}">${user.name}</option>
-                                        </c:if>
-                                    </c:forEach>
-                                    <c:forEach items="${FMO_USERS}" var="user">
-                                        <c:if test="${sessionScope.email != user.email && user.role != 'Respondent'}">
-                                            <option value="${user.userId}">${user.name}</option>
-                                        </c:if>
-                                    </c:forEach>
-                                </select>
-                            </div>
+                    
                     <div class="mb-3">
-                        <label for="" class="form-label">Date of Maintenance <span style="color: red;">*</span></label>
+                        <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
+                        <select class="form-select" id="assignedETo" name="assignedETo" required>
+                            <!-- Show current user first if they're not a Respondent -->
+                            <c:forEach items="${FMO_USERS}" var="user">
+                                <c:if test="${sessionScope.email == user.email && user.role != 'Respondent'}">
+                                    <option value="${user.userId}">${user.name}</option>
+                                </c:if>
+                            </c:forEach>
+                            <c:forEach items="${FMO_USERS}" var="user">
+                                <c:if test="${sessionScope.email != user.email && user.role != 'Respondent'}">
+                                    <option value="${user.userId}">${user.name}</option>
+                                </c:if>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dateEMaint" class="form-label">Date of Maintenance <span style="color: red;">*</span></label>
                         <input type="date" name="dateEMaint" id="dateEMaint" class="form-control" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">Edit</button>
+                    <button type="button"  class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit"  class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save Changes</button>
                 </div>
             </div>
         </form>
@@ -721,8 +751,8 @@
                     
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">Update</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Update</button>
                 </div>
             </div>
         </form>
@@ -766,6 +796,8 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         responsive: true,
+        
+         
         ajax: {
             url: 'maintenancePage',
             type: 'GET',
@@ -1075,41 +1107,160 @@ $(document).ready(function() {
     });
 });
 
+// Character counter functionality
+const MAX_DESCRIPTION_LENGTH = 255;
+
+function setupCharacterCounter() {
+    var textarea = document.getElementById('quotationDescription');
+    var counter = document.getElementById('characterCounter');
+    
+    if (!textarea || !counter) return;
+    
+    textarea.addEventListener('input', function() {
+        var currentLength = textarea.value.length;
+        counter.textContent = currentLength + ' / ' + MAX_DESCRIPTION_LENGTH + ' characters';
+        
+        counter.classList.remove('warning', 'danger');
+        textarea.classList.remove('invalid');
+        
+        if (currentLength > MAX_DESCRIPTION_LENGTH) {
+            counter.classList.add('danger');
+            textarea.classList.add('invalid');
+        } else if (currentLength > MAX_DESCRIPTION_LENGTH * 0.8) {
+            counter.classList.add('warning');
+        }
+    });
+}
+
+// Initialize when modal opens
+$('#updateStatusModal').on('shown.bs.modal', function() {
+    setupCharacterCounter();
+    setupFileInput('quotationFile1', 'file1Preview');
+    setupFileInput('quotationFile2', 'file2Preview');
+});
+
+// File preview functionality
+function setupFileInput(inputId, previewId) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    
+    if (!input || !preview) return;
+    
+    // Remove any existing event listeners by cloning the element
+    const newInput = input.cloneNode(true);
+    input.parentNode.replaceChild(newInput, input);
+    
+    // Now attach the event listener to the new element
+    newInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        preview.innerHTML = '';
+        
+        if (file) {
+            // Validate file size (10MB)
+            const MAX_FILE_SIZE = 10 * 1024 * 1024;
+            if (file.size > MAX_FILE_SIZE) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger mt-2';
+                errorDiv.textContent = 'File size exceeds 10MB limit';
+                preview.appendChild(errorDiv);
+                newInput.value = '';
+                return;
+            }
+            
+            // Show file info
+            const fileInfo = document.createElement('div');
+            fileInfo.className = 'alert alert-info mt-2';
+            fileInfo.innerHTML = '<strong>Selected:</strong> ' + file.name + 
+                               '<br><strong>Size:</strong> ' + (file.size / 1024 / 1024).toFixed(2) + ' MB';
+            preview.appendChild(fileInfo);
+            
+            // Show preview for images
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'img-thumbnail mt-2';
+                    img.style.maxHeight = '100px';
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+}
+
 
 </script>
 
 <script>
-    function populateEditMaintenance(button) {
-        var assignID = button.getAttribute('data-mainteid');
-        var itemName = button.getAttribute('data-maintename');
-        var itemID = button.getAttribute('data-itemeid');
-        var userID = button.getAttribute('data-usereid');
-        var maintTypeID = button.getAttribute('data-mainttypeeid');
-        var dateMaint = button.getAttribute('data-datemaint');
-        document.querySelector('input[name="maintID"]').value = assignID;
-        document.querySelector('input[name="equipmentEName"]').value = itemName;
-        var maintTypeDrop = document.querySelector('select[name="maintenanceEType"]');
-        if (maintTypeDrop) {
-            var options = maintTypeDrop.options;
-            for (var i = 0; i < options.length; i++) {
-                if (options[i].value === maintTypeID) {
-                    options[i].selected = true;
-                    break;
-                }
-            }
-        }
-        var assignedToDrop = document.querySelector('select[name="assignedETo"]');
-        if (assignedToDrop) {
-            var options = assignedToDrop.options;
-            for (var i = 0; i < options.length; i++) {
-                if (options[i].value === userID) {
-                    options[i].selected = true;
-                    break;
-                }
-            }
-        }
-        document.querySelector('input[name="dateEMaint"]').value = dateMaint;
+function populateEditMaintenance(button) {
+    var assignID = button.getAttribute('data-mainteid');
+    var itemName = button.getAttribute('data-maintename');
+    var maintTypeID = button.getAttribute('data-mainttypeeid');
+    var userID = button.getAttribute('data-usereid');
+    var dateMaint = button.getAttribute('data-datemaint');
+    
+    console.log('Populating edit modal with:', {
+        assignID, itemName, maintTypeID, userID, dateMaint
+    });
+    
+    // Set the hidden maintenance ID
+    document.getElementById('maintID').value = assignID;
+    
+    // Set the equipment name (readonly field for display only)
+    var equipmentNameField = document.getElementById('equipmentEName');
+    if (equipmentNameField) {
+        equipmentNameField.value = itemName;
     }
+    
+    // Set maintenance type dropdown
+    var maintTypeDrop = document.getElementById('maintenanceEType');
+    if (maintTypeDrop) {
+        maintTypeDrop.value = maintTypeID;
+    }
+    
+    // Set assigned to dropdown
+    var assignedToDrop = document.getElementById('assignedETo');
+    if (assignedToDrop) {
+        assignedToDrop.value = userID;
+    }
+    
+    // Set date - handle multiple date formats
+    var dateInput = document.getElementById('dateEMaint');
+    if (dateInput && dateMaint) {
+        var convertedDate = '';
+        
+        // Remove any time portion if present
+        dateMaint = dateMaint.split(' ')[0];
+        
+        // Check if date is in dd/mm/yyyy format
+        if (dateMaint.includes('/')) {
+            var parts = dateMaint.split('/');
+            if (parts.length === 3) {
+                var day = parts[0].padStart(2, '0');
+                var month = parts[1].padStart(2, '0');
+                var year = parts[2];
+                convertedDate = year + '-' + month + '-' + day;
+            }
+        } 
+        // Check if date is in dd-mm-yyyy format
+        else if (dateMaint.match(/^\d{2}-\d{2}-\d{4}$/)) {
+            var parts = dateMaint.split('-');
+            var day = parts[0].padStart(2, '0');
+            var month = parts[1].padStart(2, '0');
+            var year = parts[2];
+            convertedDate = year + '-' + month + '-' + day;
+        }
+        // Check if already in yyyy-mm-dd format
+        else if (dateMaint.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            convertedDate = dateMaint;
+        }
+        
+        dateInput.value = convertedDate;
+        console.log('Date converted from', dateMaint, 'to', convertedDate);
+    }
+}
 </script>
 
 
@@ -1190,11 +1341,12 @@ $(document).on('click', '.delete-maintenance-btn', function(e) {
 
     Swal.fire({
         title: 'Are you sure?',
-        text: "You want to delete this maintenance assignment?",
+        text: "Do you want to delete this maintenance assignment?",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
+        reverseButtons: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
         confirmButtonText: 'Yes, delete it',
         cancelButtonText: 'Cancel'
     }).then((result) => {
@@ -1304,6 +1456,9 @@ $(document).ready(function() {
         loadEquipmentList();
     });
 });
+
+
+    
 </script>
 
 <script>

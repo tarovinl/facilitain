@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class LogoutController
+ * Handles user logout and redirects to appropriate login page
  */
 @WebServlet("/LogoutController")
 public class LogoutController extends HttpServlet {
@@ -26,35 +27,43 @@ public class LogoutController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         
-        // Get the role BEFORE invalidating the session
         String role = null;
+        String source = request.getParameter("source");
+        String storedLoginSource = null;
+
         if (session != null) {
             role = (String) session.getAttribute("role");
-            session.invalidate(); // Invalidate after getting the role
+            storedLoginSource = (String) session.getAttribute("loginSource");
+            session.invalidate(); // Invalidate the session after getting attributes
         }
 
-        // Determine redirect URL based on source parameter and user role
-        String source = request.getParameter("source");
+        // Use source parameter first, fallback to stored login source
+        if (source == null || source.isEmpty()) {
+            source = storedLoginSource;
+        }
+
         String redirectUrl;
         
-        if ("Respondent".equals(role) && source != null) {
-            switch (source) {
+        // For Respondent users, redirect to their respective login pages based on source
+        if ("Respondent".equals(role) && source != null && !source.isEmpty()) {
+            switch (source.toLowerCase()) {
                 case "feedback":
                     redirectUrl = request.getContextPath() + "/loginFeedbackClient.jsp";
                     break;
                 case "reports":
-                    redirectUrl = request.getContextPath() + "/loginReportsClient.jsp";
+                    redirectUrl = request.getContextPath() + "/loginReportClient.jsp";
                     break;
                 default:
                     redirectUrl = request.getContextPath() + "/index.jsp";
                     break;
             }
         } else {
-            // For non-Respondent users or when source is unknown, redirect to main login
+            // For all other users (Admin, Support, etc.), redirect to main login
             redirectUrl = request.getContextPath() + "/index.jsp";
         }
 
-        // Redirect to appropriate login page
+        System.out.println("[LogoutController] Role: " + role + ", Source: " + source + ", Redirect: " + redirectUrl);
+
         response.sendRedirect(redirectUrl);
     }
 

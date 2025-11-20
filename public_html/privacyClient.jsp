@@ -25,6 +25,10 @@
             width: 100%;
             margin: 1rem auto;
         }
+        .privacy-modal .modal-header {
+        background-color: #ffffff !important;
+        border-bottom: 1px solid #d2d2d2;
+        }
         
         /* Responsive breakpoints */
         @media (min-width: 576px) {
@@ -115,7 +119,7 @@
     <div class="modal fade privacy-modal" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
-                <div class="modal-header" style="background-color: #fbbe15;">
+               <div class="modal-header" style="background-color: #ffffff; border-bottom: 1px solid #d2d2d2;">
                     <h5 class="modal-title montserrat-bold" id="privacyModalLabel">Privacy Policy</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>

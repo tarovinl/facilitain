@@ -10,10 +10,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @WebServlet(name="reportController", urlPatterns = {"/reports"})
 public class ReportController extends HttpServlet {
@@ -85,34 +83,60 @@ public class ReportController extends HttpServlet {
             }
         }
         
-        // Prepare data for charts
-        Map<String, Integer> locationReports = new HashMap<>();
-        Map<String, Integer> equipmentReports = new HashMap<>();
+        // Prepare data for charts - ALL locations for PDF
+        Map<String, Integer> allLocationReports = new HashMap<>();
+        Map<String, Integer> unresolvedEquipmentReports = new HashMap<>();
         
-        // Count reports by location and equipment
+        // Monthly reports data
+        Map<String, Integer> monthlyReports = new TreeMap<>(Collections.reverseOrder());
+        SimpleDateFormat monthYearFormat = new SimpleDateFormat("MMM yyyy");
+        
+        // Count reports by location, equipment (unresolved only), and month
         for (Report report : reportsList) {
-            // Count by location
+            // Count by location (all reports)
             String location = report.getLocName();
-            locationReports.put(location, locationReports.getOrDefault(location, 0) + 1);
+            allLocationReports.put(location, allLocationReports.getOrDefault(location, 0) + 1);
             
-            // Count by equipment type
-            String equipment = report.getRepEquipment();
-            equipmentReports.put(equipment, equipmentReports.getOrDefault(equipment, 0) + 1);
+            // Count by equipment type (unresolved only)
+            if (report.getStatus() == 0) {
+                String equipment = report.getRepEquipment();
+                unresolvedEquipmentReports.put(equipment, unresolvedEquipmentReports.getOrDefault(equipment, 0) + 1);
+            }
+            
+            // Count by month
+            String monthYear = monthYearFormat.format(report.getRecInstDt());
+            monthlyReports.put(monthYear, monthlyReports.getOrDefault(monthYear, 0) + 1);
         }
         
-        // Convert maps to lists for JSP
-        List<Map.Entry<String, Integer>> locationData = new ArrayList<>(locationReports.entrySet());
-        List<Map.Entry<String, Integer>> equipmentData = new ArrayList<>(equipmentReports.entrySet());
+        // Get TOP 5 locations for chart display
+        List<Map.Entry<String, Integer>> top5LocationData = new ArrayList<>(allLocationReports.entrySet());
+        top5LocationData.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+        if (top5LocationData.size() > 5) {
+            top5LocationData = top5LocationData.subList(0, 5);
+        }
         
-        // Sort by count (descending) for better visualization
-        locationData.sort((a, b) -> b.getValue().compareTo(a.getValue()));
-        equipmentData.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+        // Get TOP 10 unresolved equipment for pie chart
+        List<Map.Entry<String, Integer>> top10EquipmentData = new ArrayList<>(unresolvedEquipmentReports.entrySet());
+        top10EquipmentData.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+        if (top10EquipmentData.size() > 10) {
+            top10EquipmentData = top10EquipmentData.subList(0, 10);
+        }
+        
+        // All location data for PDF (sorted)
+        List<Map.Entry<String, Integer>> allLocationData = new ArrayList<>(allLocationReports.entrySet());
+        allLocationData.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+        
+        // Monthly data list
+        List<Map.Entry<String, Integer>> monthlyData = new ArrayList<>(monthlyReports.entrySet());
         
         // Set the reports list, similar reports map, and chart data as request attributes
         request.setAttribute("reportsList", reportsList);
         request.setAttribute("hasSimilarReports", hasSimilarReports);
-        request.setAttribute("locationReports", locationData);
-        request.setAttribute("equipmentReports", equipmentData);
+        request.setAttribute("locationReports", top5LocationData); // Top 5 for chart
+        request.setAttribute("equipmentReports", top10EquipmentData); // Top 10 unresolved for chart
+        request.setAttribute("allLocationReports", allLocationData); // All locations for PDF
+        request.setAttribute("monthlyReports", monthlyData); // Monthly data for PDF
+        request.setAttribute("top10UnresolvedEquipment", top10EquipmentData); // Top 10 unresolved for PDF
         
         request.getRequestDispatcher("/reports.jsp").forward(request, response);
     }

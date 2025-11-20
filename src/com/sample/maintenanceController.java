@@ -3,6 +3,7 @@ package com.sample;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,6 +29,15 @@ public class maintenanceController extends HttpServlet {
             } else {
                 // For both add and update operations
                 redirectParams = handleAddOrUpdate(request);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Check if it's a unique constraint violation
+            // Oracle error code for unique constraint: 1 (ORA-00001)
+            if (e.getErrorCode() == 1) {
+                redirectParams = "?error=duplicate";
+            } else {
+                redirectParams = "?error=true";
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,30 +84,69 @@ public class maintenanceController extends HttpServlet {
         
         // Determine if this is an edit operation
         boolean isEdit = itemMsIdStr != null && !itemMsIdStr.trim().isEmpty();
+        Integer itemMsId = isEdit ? Integer.parseInt(itemMsIdStr) : null;
         
-        // Choose appropriate SQL based on operation
-        String sql = isEdit ? getUpdateSql() : getInsertSql();
-        
-        try (Connection con = PooledConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            
-            // Set common parameters
-            setCommonParameters(ps, itemTypeId, noOfDays, remarks, noOfDaysWarning, 
-                              quarterlySchedule, yearlySchedule);
-            
-            // Set the ID parameter for update operations
-            if (isEdit) {
-                ps.setInt(7, Integer.parseInt(itemMsIdStr));
+        try (Connection con = PooledConnection.getConnection()) {
+            // Check for duplicate item type
+            if (isDuplicateItemType(con, itemTypeId, itemMsId)) {
+                return "?error=duplicate";
             }
             
-            int result = ps.executeUpdate();
+            // Choose appropriate SQL based on operation
+            String sql = isEdit ? getUpdateSql() : getInsertSql();
             
-            if (result > 0) {
-                return isEdit ? "?action=updated" : "?action=added";
-            } else {
-                return isEdit ? "?error=update_failed" : "?error=add_failed";
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                // Set common parameters
+                setCommonParameters(ps, itemTypeId, noOfDays, remarks, noOfDaysWarning, 
+                                  quarterlySchedule, yearlySchedule);
+                
+                // Set the ID parameter for update operations
+                if (isEdit) {
+                    ps.setInt(7, itemMsId);
+                }
+                
+                int result = ps.executeUpdate();
+                
+                if (result > 0) {
+                    return isEdit ? "?action=updated" : "?action=added";
+                } else {
+                    return isEdit ? "?error=update_failed" : "?error=add_failed";
+                }
             }
         }
+    }
+    
+    /**
+     * Checks if an item type already exists in active maintenance schedules (ARCHIVED_FLAG = 1)
+     * @param conn Database connection
+     * @param itemTypeId Item type ID to check
+     * @param excludeItemMsId ID to exclude from check (for updates), null for new entries
+     * @return true if duplicate exists, false otherwise
+     */
+    private boolean isDuplicateItemType(Connection conn, int itemTypeId, Integer excludeItemMsId) throws SQLException {
+        String checkSql;
+        if (excludeItemMsId != null) {
+            // For updates: check if item type exists in other active schedules
+            checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+                      "WHERE ITEM_TYPE_ID = ? AND ARCHIVED_FLAG = 1 AND ITEM_MS_ID != ?";
+        } else {
+            // For new entries: check if item type exists in any active schedule
+            checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+                      "WHERE ITEM_TYPE_ID = ? AND ARCHIVED_FLAG = 1";
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
+            stmt.setInt(1, itemTypeId);
+            if (excludeItemMsId != null) {
+                stmt.setInt(2, excludeItemMsId);
+            }
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
     }
     
     // Helper method to set common parameters for both add and update operations

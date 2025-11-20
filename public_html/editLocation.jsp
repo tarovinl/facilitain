@@ -47,6 +47,22 @@
                 transition: all 0.3s ease;
                 border: 1px solid transparent; /* Reserve space for border */
                             }
+    #editCharCount,
+    #addCharCount,
+    #charCount {
+            font-family: 'NeueHaasLight', sans-serif !important;
+            font-size: 0.875rem;
+            color: #6c757d;
+            font-weight: 300;
+        }
+
+             .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.2) !important; 
+        }
+    
+        .modal-backdrop.show {
+            opacity: 1 !important;
+        }
 
             .hover-outline:hover {
                 background-color: 	#1C1C1C !important;
@@ -721,18 +737,53 @@
 </script>
 
 <script>
+ document.addEventListener('DOMContentLoaded', function() {
   // Helper function to get query parameter by name
   function getQueryParam(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
   }
 
-  // Get action and status from URL parameters
+  // Get action, status, and error parameters from URL
   const action = getQueryParam('action');
   const status = getQueryParam('status');
+  const error = getQueryParam('error');
+  const errorMsg = getQueryParam('errorMsg');
 
-  // Trigger SweetAlert2 Toast based on action and status
-  if (status === 'success') {
+  // Handle error messages (including duplicate name errors)
+  if (error) {
+    let alertConfig = {
+      confirmButtonText: 'OK',
+      allowOutsideClick: false
+    };
+
+    if (error === 'duplicate') {
+      alertConfig = {
+        ...alertConfig,
+        title: 'Duplicate Location!',
+        text: errorMsg || 'A location with this name already exists. Please choose a different name.',
+        icon: 'warning'
+      };
+    } else if (error === 'true') {
+      alertConfig = {
+        ...alertConfig,
+        title: 'Error!',
+        text: errorMsg || 'An error occurred while updating the location.',
+        icon: 'error'
+      };
+    }
+
+    Swal.fire(alertConfig).then(() => {
+      // Remove error parameters from URL without refreshing
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.delete('error');
+      urlParams.delete('errorMsg');
+      const newUrl = window.location.pathname + '?' + urlParams.toString();
+      window.history.replaceState({}, document.title, newUrl);
+    });
+  }
+  // Handle success messages
+  else if (status === 'success') {
     let toastMessage = '';
     
     switch (action) {
@@ -776,6 +827,7 @@
       timerProgressBar: true
     });
   }
+});
   
     $(document).on('click', '.archive-location-btn', function(e) {
         e.preventDefault();
