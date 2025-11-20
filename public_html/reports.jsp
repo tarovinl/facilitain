@@ -1117,7 +1117,7 @@ $('#generate-report').on('click', function() {
         
         Swal.fire({
             title: 'Are you sure?',
-            text: 'You want to archive this report?',
+            text: 'Do you want to archive this report?',
             icon: 'warning',
             showCancelButton: true,
             reverseButtons: true,
