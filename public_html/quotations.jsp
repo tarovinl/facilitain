@@ -69,6 +69,15 @@
             background-color: #fff5f5;
         }
         
+        .file-preview-ellipsis {
+            max-width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        
         .error-message {
             color: #dc3545;
             font-size: 0.875rem;
@@ -338,7 +347,9 @@
                 // Show file info
                 const fileInfo = document.createElement('div');
                 fileInfo.className = 'alert alert-info';
-                fileInfo.innerHTML = '<strong>Selected:</strong> ' + file.name + '<br><strong>Size:</strong> ' + (file.size / 1024 / 1024).toFixed(2) + ' MB';
+                fileInfo.innerHTML = 
+    '<strong>Selected:</strong> <span class="file-preview-ellipsis">' + file.name + '</span>' +
+    '<br><strong>Size:</strong> ' + (file.size / 1024 / 1024).toFixed(2) + ' MB';
                 preview.appendChild(fileInfo);
                 
                 // Show preview for images
