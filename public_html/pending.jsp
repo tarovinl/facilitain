@@ -193,6 +193,95 @@
 .modal-backdrop {
     background-color: rgba(128, 128, 128, 0.3) !important; 
 }
+
+
+/* Ensure proper spacing for DataTables footer */
+#maintenanceTable_wrapper .row:last-child,
+#scheduledMaintTable_wrapper .row:last-child {
+    margin-top: 15px;
+    align-items: center;
+}
+
+/* Base pagination styles */
+.dataTables_wrapper .dataTables_paginate {
+    white-space: nowrap;
+}
+
+.dataTables_wrapper .dataTables_paginate .pagination {
+    flex-wrap: wrap;
+    gap: 2px;
+}
+
+/* Medium screens - reduce button size earlier */
+@media (max-width: 992px) {
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.375rem 0.6rem !important;
+        font-size: 0.875rem !important;
+        margin: 0 1px !important;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        font-size: 0.875rem;
+    }
+}
+
+/* Tablet screens - start stacking and reduce buttons */
+@media (max-width: 768px) {
+    .dataTables_wrapper .dataTables_info {
+        text-align: center;
+        padding-bottom: 10px;
+        width: 100%;
+        float: none !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: center;
+        float: none !important;
+        width: 100%;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .pagination {
+        justify-content: center;
+        margin: 0;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.3rem 0.5rem !important;
+        font-size: 0.813rem !important;
+    }
+}
+
+/* Small screens - more compact */
+@media (max-width: 576px) {
+    .dataTables_wrapper .dataTables_info {
+        font-size: 0.813rem;
+        margin-bottom: 10px;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.25rem 0.4rem !important;
+        font-size: 0.75rem !important;
+        min-width: 32px;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+        padding: 0.25rem 0.5rem !important;
+    }
+}
+
+/* Very small screens - hide ellipsis and extra numbers */
+@media (max-width: 480px) {
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        display: none !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.2rem 0.35rem !important;
+        font-size: 0.7rem !important;
+        min-width: 28px;
+    }
+}
     </style>
 </head>
 
@@ -262,7 +351,7 @@
                     <div class="col-lg-6 mb-4 equal-height">
                         <div class="card shadow-sm">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">List of Equipment</h5>
+                                <h5 class="mb-0" style="font-family: 'NeueHaasMedium', sans-serif;">Equipment List</h5>
                             </div>
                             <div class="card-body">
                                 <table id="maintenanceTable" class="table table-striped table-hover" style="width:100%">
@@ -792,6 +881,8 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         responsive: true,
+        
+         pagingType: "simple_numbers",
         ajax: {
             url: 'maintenancePage',
             type: 'GET',
@@ -1445,6 +1536,9 @@ $(document).ready(function() {
         loadEquipmentList();
     });
 });
+
+
+    
 </script>
 
 <script>
