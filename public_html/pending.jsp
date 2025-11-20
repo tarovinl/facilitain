@@ -688,6 +688,7 @@
                     <div>
                         <label for="statusNew" class="form-label">New Status</label>
                         <select class="form-select" id="statusNew" name="statusNew" required>
+                            <option value="" selected disabled>Select Status</option>
                             <c:forEach items="${FMO_MAINTSTAT_LIST}" var="status">
                                 <option value="${status.itemMaintStat}">
                                     ${status.maintStatName}
@@ -1068,7 +1069,7 @@ $(document).ready(function() {
             if (modal) {
                 modal.addEventListener("show.bs.modal", () => {
                     // Clear and reset visibility on modal open
-                    statusDropdownNew.value = "1";
+                    statusDropdownNew.value = "";
                     updateInputVisibility();
                     console.log()
                 });
@@ -1315,6 +1316,9 @@ function populateEditMaintenance(button) {
         case '2to1':
           errorMessage = 'Equipment must be maintained before changing to operational.';
           break;
+        case 'assigndate':
+          errorMessage = 'Maintenance date cannot be set earlier than today.';
+          break;
         default:
           errorMessage = 'An error occurred while processing your request.';
           break;
@@ -1341,11 +1345,10 @@ $(document).on('click', '.delete-maintenance-btn', function(e) {
         icon: 'warning',
         showCancelButton: true,
         reverseButtons: true,
-        cancelButtonColor: '#6c757d',
         confirmButtonColor: '#dc3545',
-        cancelButtonText: 'Cancel',
-        confirmButtonText: 'Yes, archive it',
-        
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
             $('#deleteMaintID').val(maintID);
@@ -1377,6 +1380,9 @@ $(document).on('click', '.update-bstatus-btn', function () {
     if (statusDropdownNew) { 
         Array.from(statusDropdownNew.options).forEach(option => {
             option.disabled = false;
+            if (!option.value) {
+                option.disabled = true;
+            }
         });
 
         Array.from(statusDropdownNew.options).forEach(option => { 
