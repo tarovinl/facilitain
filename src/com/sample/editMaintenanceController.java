@@ -94,17 +94,29 @@ public class editMaintenanceController extends HttpServlet {
         }
         
         Date sqlDate = null;
+        java.util.Date todayOnly = null;
+        java.util.Date maintOnly = null;
         if (dateEMaint != null && !dateEMaint.isEmpty()) {
             try {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 java.util.Date parsedDate = dateFormat.parse(dateEMaint);
                 sqlDate = new Date(parsedDate.getTime());
+                java.util.Date today = new java.util.Date();
+
+                    // Remove time from both dates (so only the date matters)
+                todayOnly = dateFormat.parse(dateFormat.format(today));
+                maintOnly = dateFormat.parse(dateFormat.format(parsedDate));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
 
-        
+        if (maintOnly.before(todayOnly)) {
+            status = "error";
+            response.sendRedirect("maintenancePage?action=assigndate&status=" + status);
+            return; 
+        }
+
         try (Connection conn = PooledConnection.getConnection()) {
             String sql;
             

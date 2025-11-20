@@ -89,9 +89,16 @@ public class addMaintenanceController extends HttpServlet {
         
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date sqlDate = null;
+        java.util.Date todayOnly = null;
+        java.util.Date maintOnly = null;
         try {
             java.util.Date parsedDate = dateFormat.parse(dateMaint);
             sqlDate = new Date(parsedDate.getTime()); 
+            java.util.Date today = new java.util.Date();
+
+                // Remove time from both dates (so only the date matters)
+            todayOnly = dateFormat.parse(dateFormat.format(today));
+            maintOnly = dateFormat.parse(dateFormat.format(parsedDate));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -109,6 +116,11 @@ public class addMaintenanceController extends HttpServlet {
             return; // Stop execution to prevent invalid database insert
         }
 
+        if (maintOnly.before(todayOnly)) {
+            status = "error";
+            response.sendRedirect("maintenancePage?action=assigndate&status=" + status);
+            return; 
+        }
         
         boolean isAlreadyAssigned = false;
         for (MaintAssign assignz : listAssign) {
