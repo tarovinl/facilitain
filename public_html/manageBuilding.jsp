@@ -1049,7 +1049,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             <h5 class="modal-title">Maintenance History</h5>
             <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body table-responsive">
             <table id="historyTable" class="table">
                 <thead>
                     <tr>
@@ -2019,18 +2019,25 @@ const flrN = "<%= floorName %>";
 $(document).ready(function() {
     $(document).on('click', '.history-btn', function() {
         var itemHID = $(this).data('itemhid');
+        let historyTable = $('#historyTable tbody'); 
+        historyTable.empty();
+        historyTable.append(`
+            <tr>
+                <td colspan="4" class="text-center text-muted">Loading...</td>
+            </tr>
+        `);
+        $('#historyEquipment').modal('show'); 
+        
         $.ajax({
             url: `buildingDashboard?locID=${LID}/manage?floor=${flrN}`,
             type: 'GET',
             data: { itemHID: itemHID },
             dataType: "json",
             success: function(response) {
-                let historyTable = $('#historyTable tbody'); 
                 historyTable.empty();
-                if (Array.isArray(response)) {
+
+                if (Array.isArray(response) && response.length > 0) {
                     response.forEach(entry => {
-                        console.log("Entry:", entry); //
-            
                         historyTable.append(`
                         <tr>
                             <td>`+entry.assignID+`</td>
@@ -2040,14 +2047,25 @@ $(document).ready(function() {
                         </tr>
                         `);
                     });
-                    $('#historyEquipment').modal('show'); 
-                    
                 } else {
-                    console.error("Unexpected response format:", response);
+                    historyTable.append(`
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">
+                                No maintenance history data.
+                            </td>
+                        </tr>
+                    `);
                 }
             },
             error: function() {
-                alert('Failed to load history data.');
+                historyTable.empty();
+                historyTable.append(`
+                    <tr>
+                        <td colspan="4" class="text-center text-danger">
+                            Failed to load history data.
+                        </td>
+                    </tr>
+                `);
             }
         });
     });

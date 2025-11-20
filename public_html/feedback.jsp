@@ -100,8 +100,8 @@
                 <!-- Feedback Table with clarification about displaying 15 most recent feedbacks -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Recent Feedbacks</h5>
-                        <p class="text-muted">Showing the 15 most recent feedbacks</p>
+                        <h5 class="card-title">Recent Feedback</h5>
+                        <p class="text-muted">Showing the 15 most recent feedback</p>
                         
                         <c:choose>
                             <c:when test="${empty feedbackList}">
@@ -242,7 +242,7 @@
             // Add feedback table
             pdf.setFontSize(14);
             pdf.setFont(undefined, 'bold');
-            pdf.text('Recent Feedbacks', 20, yPosition);
+            pdf.text('Recent Feedback', 20, yPosition);
             yPosition += 10;
 
             // Get feedback data from the table
