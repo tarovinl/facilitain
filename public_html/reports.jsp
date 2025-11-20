@@ -335,6 +335,11 @@
             color: white;
             border-color: #0d6efd;
         }
+        
+        .resolve-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
     </style>
 </head>
@@ -469,25 +474,26 @@
                                             ${report.status == 1 ? 'Resolved' : 'Not Resolved'}
                                         </span>
                                     </td>
-                                   <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-info btn-sm toggle-details" data-bs-toggle="modal" data-bs-target="#detailsModal">
-                                                Details
+                                                                   <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-info btn-sm toggle-details" data-bs-toggle="modal" data-bs-target="#detailsModal">
+                                            Details
+                                        </button>
+                                        
+                                        <form action="emailresolve" method="post" style="display:inline;" class="resolve-form">
+                                            <input type="hidden" name="reportId" value="${report.reportId}">
+                                            <button type="button" class="btn btn-sm btn-success resolve-btn" 
+                                                    ${report.status == 1 ? 'disabled' : ''}>
+                                                Resolve
                                             </button>
-                                            
-                                            <form action="emailresolve" method="post" style="display:inline;" class="resolve-form">
-                                                <input type="hidden" name="reportId" value="${report.reportId}">
-                                                <button type="button" class="btn btn-sm btn-success resolve-btn">
-                                                    Resolve
-                                                </button>
-                                            </form>
-                                            <form action="reports" method="post" style="display:inline;" class="archive-form">
-                                                <input type="hidden" name="reportId" value="${report.reportId}">
-                                                <button type="submit" class="btn btn-sm btn-danger archive-btn">
-                                                    Archive
-                                                </button>
-                                            </form>
-                                        </div>
+                                        </form>
+                                        <form action="reports" method="post" style="display:inline;" class="archive-form">
+                                            <input type="hidden" name="reportId" value="${report.reportId}">
+                                            <button type="submit" class="btn btn-sm btn-danger archive-btn">
+                                                Archive
+                                            </button>
+                                        </form>
+                                    </div>
                                     </td>
                                 </tr>
                             </c:forEach>
