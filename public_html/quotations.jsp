@@ -681,7 +681,10 @@ function confirmArchive(quotationId) {
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Yes, archive it',
-        cancelButtonText: 'Cancel'
+        cancelButtonText: 'Cancel',
+        customClass: {
+                cancelButton: 'btn-cancel-outline'
+            },
     }).then((result) => {
         if (result.isConfirmed) {
             // Show loading

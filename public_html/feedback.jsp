@@ -201,142 +201,241 @@
             chart.draw(data, options);
         }
 
-        const generatedDate = '${generatedDate}';
+         const generatedDate = '${generatedDate}';
         document.getElementById('download-chart').addEventListener('click', function () {
-            // Initialize jsPDF
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4'); // Portrait, millimeters, A4
-            
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const margin = 15;
             let yPosition = 20;
 
-          
-            try {
-                // Note:  need to convert your logo to base64 or use a different approach
-              
+            // Get current date and time
+            const now = new Date();
+            const reportDate = now.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            const reportTime = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+
+            // Helper function to check if we need a new page
+            function checkPageBreak(requiredSpace) {
+                if (yPosition + requiredSpace > pageHeight - margin - 20) {
+                    pdf.addPage();
+                    yPosition = margin;
+                    return true;
+                }
+                return false;
+            }
+
+            // Helper function to draw table with custom column widths
+            function drawTable(headers, data, startY, isMonthlyTable = false) {
+                const tableWidth = pageWidth - (2 * margin);
+                let columnWidths;
+                
+                if (isMonthlyTable) {
+                    // For monthly satisfaction rates: wider columns
+                    columnWidths = [50, 130]; // Month: 50mm, Satisfaction Rate: 130mm
+                } else {
+                    // For feedback table: custom widths
+                    // Rating, Room, Location, Suggestions, Equipment, Date
+                    columnWidths = [10, 35, 35, 45, 30, 25]; // Total = 180
+                }
+                
+                const rowHeight = 8;
+                let currentY = startY;
+
+                // Draw header with dark grey background
+                pdf.setFillColor(51, 51, 51);
+                pdf.setTextColor(255, 255, 255);
+                pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
+                
+                pdf.setFontSize(9);
+                pdf.setFont('helvetica', 'bold');
+                let xPos = margin;
+                headers.forEach((header, i) => {
+                    pdf.text(header, xPos + 2, currentY + 5.5);
+                    xPos += columnWidths[i];
+                });
+                
+                currentY += rowHeight;
+                pdf.setTextColor(0, 0, 0);
+
+                // Draw data rows
+                pdf.setFontSize(8);
+                pdf.setFont('helvetica', 'normal');
+                data.forEach((row, rowIndex) => {
+                    if (currentY + rowHeight > pageHeight - margin - 20) {
+                        pdf.addPage();
+                        currentY = margin;
+                        
+                        // Redraw header on new page
+                        pdf.setFillColor(51, 51, 51);
+                        pdf.setTextColor(255, 255, 255);
+                        pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
+                        pdf.setFontSize(9);
+                        pdf.setFont('helvetica', 'bold');
+                        xPos = margin;
+                        headers.forEach((header, i) => {
+                            pdf.text(header, xPos + 2, currentY + 5.5);
+                            xPos += columnWidths[i];
+                        });
+                        currentY += rowHeight;
+                        pdf.setTextColor(0, 0, 0);
+                        pdf.setFontSize(8);
+                        pdf.setFont('helvetica', 'normal');
+                    }
+
+                    // Alternate row colors
+                    if (rowIndex % 2 === 0) {
+                        pdf.setFillColor(245, 245, 245);
+                        pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
+                    }
+
+                    // Draw cell borders and text
+                    xPos = margin;
+                    row.forEach((cell, i) => {
+                        pdf.rect(xPos, currentY, columnWidths[i], rowHeight);
+                        
+                        let cellText = String(cell);
+                        const colWidth = columnWidths[i];
+                        
+                        // Less aggressive truncation (approximately 3.5 chars per mm at font size 8)
+                        const maxChars = Math.floor(colWidth / 1.5);
+                        if (cellText.length > maxChars) {
+                            cellText = cellText.substring(0, maxChars - 3) + '...';
+                        }
+                        
+                        pdf.text(cellText, xPos + 2, currentY + 5.5, { maxWidth: colWidth - 4 });
+                        xPos += columnWidths[i];
+                    });
+                    
+                    currentY += rowHeight;
+                });
+
+                return currentY;
+            }
+
+            // Helper function to add footer
+            function addFooter() {
+                const footerY = pageHeight - 10;
+                pdf.setFontSize(8);
+                pdf.setFont('helvetica', 'italic');
+                pdf.setTextColor(128, 128, 128);
+                
+                pdf.text('Generated on: ' + reportDate + ' at ' + reportTime, margin, footerY);
+                pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'left' });
+            }
+
+            // Load and add logo
+            const logoImg = new Image();
+            logoImg.src = './resources/images/USTLogo2.png';
+            
+            logoImg.onload = function() {
+                const imgWidth = logoImg.width;
+                const imgHeight = logoImg.height;
+                const aspectRatio = imgWidth / imgHeight;
+                
+                const logoHeight = 25;
+                const logoWidth = logoHeight * aspectRatio;
+                
+                pdf.addImage(logoImg, 'PNG', margin, margin, logoWidth, logoHeight);
+
+                yPosition = margin + logoHeight + 5;
+                
+                generatePDFContent();
+            };
+            
+            logoImg.onerror = function() {
+                yPosition = margin;
+                generatePDFContent();
+            };
+            
+            function generatePDFContent() {
                 pdf.setFontSize(20);
-                pdf.setFont(undefined, 'bold');
-                pdf.text('University of Santo Tomas', 105, yPosition, { align: 'center' });
-                yPosition += 10;
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('University of Santo Tomas', pageWidth / 2, yPosition, { align: 'center' });
+                yPosition += 8;
                 
                 pdf.setFontSize(16);
-                pdf.text('Feedback Report', 105, yPosition, { align: 'center' });
-                yPosition += 20;
-            } catch (error) {
-                console.warn('Logo could not be added to PDF:', error);
-            }
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('Facilities Management Office - Feedback Report', pageWidth / 2, yPosition, { align: 'center' });
+                yPosition += 15;
 
-            // Add chart to PDF
-            const chartImage = chart.getImageURI();
-            if (chartImage) {
-                try {
-                    pdf.addImage(chartImage, 'PNG', 20, yPosition, 170, 80);
-                    yPosition += 90;
-                } catch (error) {
-                    console.warn('Chart could not be added to PDF:', error);
-                    pdf.setFontSize(12);
-                    pdf.text('Chart could not be generated', 20, yPosition);
-                    yPosition += 10;
-                }
-            }
-
-            // Add feedback table
-            pdf.setFontSize(14);
-            pdf.setFont(undefined, 'bold');
-            pdf.text('Recent Feedback', 20, yPosition);
-            yPosition += 10;
-
-            // Get feedback data from the table
-            const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
-            
-            if (feedbackRows.length === 0) {
-                pdf.setFontSize(12);
-                pdf.setFont(undefined, 'normal');
-                pdf.text('No feedback data available', 20, yPosition);
-                yPosition += 10;
-            } else {
-                // Table headers
-                pdf.setFontSize(10);
-                pdf.setFont(undefined, 'bold');
-                const headers = ['Rating', 'Room', 'Location', 'Suggestions', 'Equipment', 'Date'];
-                const columnWidths = [20, 25, 25, 60, 25, 35];
-                let xPosition = 20;
-                
-                headers.forEach((header, index) => {
-                    pdf.text(header, xPosition, yPosition);
-                    xPosition += columnWidths[index];
-                });
+                // SECTION 1: Monthly Satisfaction Rates for Current Year
+                checkPageBreak(50);
+                pdf.setFontSize(14);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('Monthly Satisfaction Rates (Current Year)', margin, yPosition);
                 yPosition += 8;
 
-                // Table data
-                pdf.setFont(undefined, 'normal');
-                feedbackRows.forEach((row, rowIndex) => {
-                    if (yPosition > 270) { // Check if we need a new page
-                        pdf.addPage();
-                        yPosition = 20;
-                    }
-
-                    const cells = row.querySelectorAll('td');
-                    xPosition = 20;
-                    
-                    cells.forEach((cell, cellIndex) => {
-                        if (cellIndex < 6) { // Only process first 6 columns
-                            let text = cell.textContent.trim();
-                            
-                            // Truncate long text to fit in column
-                            if (cellIndex === 3 && text.length > 30) { // Suggestions column
-                                text = text.substring(0, 27) + '...';
-                            } else if (text.length > 15 && cellIndex !== 3) {
-                                text = text.substring(0, 12) + '...';
-                            }
-                            
-                            pdf.text(text, xPosition, yPosition);
-                            xPosition += columnWidths[cellIndex];
-                        }
-                    });
+                const satisfactionData = ${not empty satisfactionRates ? 'true' : 'false'};
+                if (satisfactionData) {
+                    const monthlyData = [];
+                    <c:forEach var="rate" items="${satisfactionRates}">
+                    monthlyData.push(['${rate[0]}', '${rate[1]}']);
+                    </c:forEach>
+                    yPosition = drawTable(['Month', 'Satisfaction Rate'], monthlyData, yPosition, true);
+                } else {
+                    pdf.setFontSize(10);
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.text('No satisfaction data available', margin + 5, yPosition);
                     yPosition += 6;
-                });
-            }
+                }
 
-            // Add generation date
-            yPosition += 10;
-            if (yPosition > 270) {
-                pdf.addPage();
-                yPosition = 20;
-            }
-            
-            pdf.setFontSize(10);
-            pdf.setFont(undefined, 'italic');
-            pdf.text(`Generated on: ${generatedDate}`, 105, yPosition, { align: 'center' });
+                yPosition += 10;
 
-            // Save the PDF
-            pdf.save('feedback_report.pdf');
-        });
+                // SECTION 2: Last 10 Recent Feedbacks
+                checkPageBreak(50);
+                pdf.setFontSize(14);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('Recent Feedback (Last 10)', margin, yPosition);
+                yPosition += 8;
 
-        // QR Code download functionality
-        document.getElementById('generateQRBtn').addEventListener('click', function() {
-            // Create a temporary anchor element to trigger download
-            const link = document.createElement('a');
-            // Use relative path instead of absolute path
-            link.href = './resources/images/feedback-qr.png'; 
-            link.download = 'feedback-qr.png';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
-
-        // Initialize DataTable with reduced pagination options and clear actions column
-        $(document).ready(function () {
-            if ($('#feedbackTable').length) {
-                $('#feedbackTable').DataTable({
-                    paging: true,
-                    searching: true,
-                    ordering: true,
-                    pageLength: 5,
-                    lengthMenu: [5, 10, 15],
-                    language: {
-                        emptyTable: "No feedback data available"
+                const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
+                
+                if (feedbackRows.length === 0) {
+                    pdf.setFontSize(10);
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.text('No feedback data available', margin + 5, yPosition);
+                    yPosition += 6;
+                } else {
+                    const feedbackData = [];
+                    const maxRows = Math.min(10, feedbackRows.length);
+                    
+                    for (let i = 0; i < maxRows; i++) {
+                        const cells = feedbackRows[i].querySelectorAll('td');
+                        const rating = cells[0].textContent.trim();
+                        const room = cells[1].textContent.trim();
+                        const location = cells[2].textContent.trim();
+                        const suggestions = cells[3].textContent.trim();
+                        const equipment = cells[4].textContent.trim();
+                        const date = cells[5].textContent.trim();
+                        
+                        feedbackData.push([rating, room, location, suggestions, equipment, date]);
                     }
-                });
+                    
+                    yPosition = drawTable(
+                        ['Rating', 'Room', 'Location', 'Suggestions', 'Equipment', 'Date'], 
+                        feedbackData, 
+                        yPosition,
+                        false
+                    );
+                }
+
+                // Add footer to all pages
+                const totalPages = pdf.internal.getNumberOfPages();
+                for (let i = 1; i <= totalPages; i++) {
+                    pdf.setPage(i);
+                    addFooter();
+                }
+
+                pdf.save('FMO_Feedback_Report_' + new Date().toISOString().split('T')[0] + '.pdf');
             }
         });
     </script>
