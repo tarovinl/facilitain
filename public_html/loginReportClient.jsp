@@ -124,6 +124,30 @@
                 opacity: 0.5;
                 cursor: not-allowed;
             }
+            
+             @media (max-width: 767.98px) {
+            .login-title {
+                font-size: 1.1rem !important;
+                line-height: 1.3;
+            }
+        
+            .login-description {
+                font-size: 0.85rem !important;
+                line-height: 1.4;
+            }
+    
+            .login-footer-text {
+                font-size: 0.70rem !important;
+            }
+            
+            .agreement-text {
+                font-size: 0.85rem !important;
+                line-height: 1.4;
+            }
+    
+            .agreement-footer-text {
+                font-size: 0.80rem !important;
+            }
         </style>
         <script src="https://accounts.google.com/gsi/client" async defer></script>
         <script>

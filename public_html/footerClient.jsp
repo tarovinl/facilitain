@@ -19,6 +19,15 @@
                 text-decoration: underline;
                 cursor: pointer;
             }
+            
+            .nav-link-hover {
+                text-decoration: none;
+            }
+
+            .nav-link-hover:hover {
+                text-decoration: underline;
+                cursor: pointer;
+            }
         </style>
     </head>
     <body>
