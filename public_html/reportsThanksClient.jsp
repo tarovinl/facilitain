@@ -47,8 +47,8 @@
                
             <h3 class="text-center ">Report a Problem</h3>
           <p class=" text-center p-5"> 
-         Thank you for reporting!<br/>
-         We will handle this issue immediately.
+       Thank you for reporting this issue.</br> 
+       We will address it as soon as possible.
           </p>
            
           
