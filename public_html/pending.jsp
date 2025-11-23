@@ -92,6 +92,26 @@
         .form-control.invalid {
             border-color: #dc3545;
         }
+        
+        .file-preview-ellipsis {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .alert .btn-close {
+            padding: 0.25rem;
+            font-size: 0.75rem;
+            margin-top: -0.25rem;
+        }
+
+        .alert.alert-info {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
 
         
           body, h1, h2, h3, h4,h5, h6, th,label,.custom-label {
@@ -1107,9 +1127,11 @@ $(document).ready(function() {
     });
 });
 
-// Character counter functionality
+// File size validation (10MB)
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const MAX_DESCRIPTION_LENGTH = 255;
 
+// Character counter functionality
 function setupCharacterCounter() {
     var textarea = document.getElementById('quotationDescription');
     var counter = document.getElementById('characterCounter');
@@ -1132,14 +1154,7 @@ function setupCharacterCounter() {
     });
 }
 
-// Initialize when modal opens
-$('#updateStatusModal').on('shown.bs.modal', function() {
-    setupCharacterCounter();
-    setupFileInput('quotationFile1', 'file1Preview');
-    setupFileInput('quotationFile2', 'file2Preview');
-});
-
-// File preview functionality
+// Enhanced file preview with clear button and truncation
 function setupFileInput(inputId, previewId) {
     const input = document.getElementById(inputId);
     const preview = document.getElementById(previewId);
@@ -1150,14 +1165,13 @@ function setupFileInput(inputId, previewId) {
     const newInput = input.cloneNode(true);
     input.parentNode.replaceChild(newInput, input);
     
-    // Now attach the event listener to the new element
+    // Attach event listener to the new element
     newInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         preview.innerHTML = '';
         
         if (file) {
             // Validate file size (10MB)
-            const MAX_FILE_SIZE = 10 * 1024 * 1024;
             if (file.size > MAX_FILE_SIZE) {
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'alert alert-danger mt-2';
@@ -1167,28 +1181,119 @@ function setupFileInput(inputId, previewId) {
                 return;
             }
             
-            // Show file info
-            const fileInfo = document.createElement('div');
-            fileInfo.className = 'alert alert-info mt-2';
-            fileInfo.innerHTML = '<strong>Selected:</strong> ' + file.name + 
-                               '<br><strong>Size:</strong> ' + (file.size / 1024 / 1024).toFixed(2) + ' MB';
-            preview.appendChild(fileInfo);
+            // Create file info container with clear button
+            const fileInfoContainer = document.createElement('div');
+            fileInfoContainer.className = 'alert alert-info mt-2 d-flex justify-content-between align-items-start';
+            
+            // File details
+            const fileDetails = document.createElement('div');
+            fileDetails.className = 'flex-grow-1';
+            
+            // Truncate filename for display
+            const maxFilenameLength = 35;
+            let displayName = file.name;
+            if (file.name.length > maxFilenameLength) {
+                const extension = file.name.split('.').pop();
+                const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.'));
+                const keepStart = 20; // Characters to keep from start
+                const keepEnd = 8;    // Characters to keep before extension
+                displayName = nameWithoutExt.substring(0, keepStart) + '...' + 
+                             nameWithoutExt.substring(nameWithoutExt.length - keepEnd) + 
+                             '.' + extension;
+            }
+            
+            fileDetails.innerHTML = 
+                '<div><strong>Selected:</strong></div>' +
+                '<div class="file-preview-ellipsis" title="' + file.name + '" style="word-break: break-all;">' + 
+                displayName + '</div>' +
+                '<div class="mt-1"><strong>Size:</strong> ' + (file.size / 1024 / 1024).toFixed(2) + ' MB</div>';
+            
+            // Clear button
+            const clearBtn = document.createElement('button');
+            clearBtn.type = 'button';
+            clearBtn.className = 'btn-close ms-2';
+            clearBtn.setAttribute('aria-label', 'Clear file');
+            clearBtn.onclick = function() {
+                newInput.value = '';
+                preview.innerHTML = '';
+            };
+            
+            fileInfoContainer.appendChild(fileDetails);
+            fileInfoContainer.appendChild(clearBtn);
+            preview.appendChild(fileInfoContainer);
             
             // Show preview for images
             if (file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'mt-2';
+                    
                     const img = document.createElement('img');
                     img.src = e.target.result;
-                    img.className = 'img-thumbnail mt-2';
+                    img.className = 'img-thumbnail';
                     img.style.maxHeight = '100px';
-                    preview.appendChild(img);
+                    
+                    imgContainer.appendChild(img);
+                    preview.appendChild(imgContainer);
                 };
                 reader.readAsDataURL(file);
             }
         }
     });
 }
+
+// Clear all form fields and file inputs
+function clearUpdateStatusModal() {
+    // Clear textarea
+    const textarea = document.getElementById('quotationDescription');
+    if (textarea) {
+        textarea.value = '';
+    }
+    
+    // Clear file inputs
+    const file1 = document.getElementById('quotationFile1');
+    const file2 = document.getElementById('quotationFile2');
+    if (file1) file1.value = '';
+    if (file2) file2.value = '';
+    
+    // Clear previews
+    const file1Preview = document.getElementById('file1Preview');
+    const file2Preview = document.getElementById('file2Preview');
+    if (file1Preview) file1Preview.innerHTML = '';
+    if (file2Preview) file2Preview.innerHTML = '';
+    
+    // Reset character counter
+    const counter = document.getElementById('characterCounter');
+    if (counter) {
+        counter.textContent = '0 / 255 characters';
+        counter.classList.remove('warning', 'danger');
+    }
+    if (textarea) textarea.classList.remove('invalid');
+    
+    // Reset status dropdowns
+    const statusDropdownNew = document.getElementById('statusNew');
+    if (statusDropdownNew) {
+        statusDropdownNew.value = '';
+    }
+}
+
+// Initialize when modal opens
+$('#updateStatusModal').on('shown.bs.modal', function() {
+    setupCharacterCounter();
+    setupFileInput('quotationFile1', 'file1Preview');
+    setupFileInput('quotationFile2', 'file2Preview');
+});
+
+// Clear form when modal is closed
+$('#updateStatusModal').on('hidden.bs.modal', function() {
+    clearUpdateStatusModal();
+});
+
+// Clear form when cancel button or X is clicked
+$('#updateStatusModal').on('click', '[data-bs-dismiss="modal"]', function() {
+    clearUpdateStatusModal();
+});
 
 
 </script>
