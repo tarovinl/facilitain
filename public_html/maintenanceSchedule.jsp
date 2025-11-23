@@ -459,12 +459,42 @@ $(document).ready(function() {
         };
 
         if (error) {
-            alertConfig = {
-                ...alertConfig,
-                title: 'Error!',
-                text: 'An error occurred while processing your request.',
-                icon: 'error'
-            };
+            if (error === 'duplicate') {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Duplicate Item Type!',
+                    text: 'A maintenance schedule for this item type already exists. Please choose a different item type.',
+                    icon: 'warning'
+                };
+            } else if (error === 'archive_failed') {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Archive Failed!',
+                    text: 'Failed to archive the maintenance schedule. Please try again.',
+                    icon: 'error'
+                };
+            } else if (error === 'update_failed') {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Update Failed!',
+                    text: 'Failed to update the maintenance schedule. Please try again.',
+                    icon: 'error'
+                };
+            } else if (error === 'add_failed') {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Add Failed!',
+                    text: 'Failed to add the maintenance schedule. Please try again.',
+                    icon: 'error'
+                };
+            } else {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Error!',
+                    text: 'An error occurred while processing your request.',
+                    icon: 'error'
+                };
+            }
         } else {
             switch(action) {
                 case 'archived':

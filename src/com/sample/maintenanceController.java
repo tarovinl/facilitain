@@ -32,13 +32,8 @@ public class maintenanceController extends HttpServlet {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            // Check if it's a unique constraint violation
-            // Oracle error code for unique constraint: 1 (ORA-00001)
-            if (e.getErrorCode() == 1) {
-                redirectParams = "?error=duplicate";
-            } else {
-                redirectParams = "?error=true";
-            }
+            // Generic database error (not duplicate)
+            redirectParams = "?error=true";
         } catch (Exception e) {
             e.printStackTrace();
             redirectParams = "?error=true";
@@ -87,7 +82,7 @@ public class maintenanceController extends HttpServlet {
         Integer itemMsId = isEdit ? Integer.parseInt(itemMsIdStr) : null;
         
         try (Connection con = PooledConnection.getConnection()) {
-            // Check for duplicate item type
+            // Check for duplicate item type 
             if (isDuplicateItemType(con, itemTypeId, itemMsId)) {
                 return "?error=duplicate";
             }
@@ -117,7 +112,7 @@ public class maintenanceController extends HttpServlet {
     }
     
     /**
-     * Checks if an item type already exists in active maintenance schedules (ARCHIVED_FLAG = 1)
+     * Checks if an item type already exists in maintenance schedules
      * @param conn Database connection
      * @param itemTypeId Item type ID to check
      * @param excludeItemMsId ID to exclude from check (for updates), null for new entries
@@ -126,13 +121,13 @@ public class maintenanceController extends HttpServlet {
     private boolean isDuplicateItemType(Connection conn, int itemTypeId, Integer excludeItemMsId) throws SQLException {
         String checkSql;
         if (excludeItemMsId != null) {
-            // For updates: check if item type exists in other active schedules
+            // For updates: check if item type exists in other schedules
             checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
-                      "WHERE ITEM_TYPE_ID = ? AND ARCHIVED_FLAG = 1 AND ITEM_MS_ID != ?";
+                      "WHERE ITEM_TYPE_ID = ? AND ITEM_MS_ID != ?";
         } else {
-            // For new entries: check if item type exists in any active schedule
+            // For new entries: check if item type exists in any schedule
             checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
-                      "WHERE ITEM_TYPE_ID = ? AND ARCHIVED_FLAG = 1";
+                      "WHERE ITEM_TYPE_ID = ?";
         }
 
         try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
