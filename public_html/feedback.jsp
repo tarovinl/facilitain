@@ -438,6 +438,19 @@
                 pdf.save('FMO_Feedback_Report_' + new Date().toISOString().split('T')[0] + '.pdf');
             }
         });
+        
+        // QR Code download functionality
+document.getElementById('generateQRBtn').addEventListener('click', function() {
+    // Create a temporary anchor element to trigger download
+    const link = document.createElement('a');
+    // Use relative path instead of absolute path
+    link.href = './resources/images/feedback-qr.png'; 
+    link.download = 'feedback-qr.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+
     </script>
 
     <!-- Include jQuery and DataTables JS -->

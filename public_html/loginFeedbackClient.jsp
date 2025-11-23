@@ -124,6 +124,31 @@
                 opacity: 0.5;
                 cursor: not-allowed;
             }
+            
+            @media (max-width: 767.98px) {
+            .login-title {
+                font-size: 1.1rem !important;
+                line-height: 1.3;
+            }
+        
+            .login-description {
+                font-size: 0.85rem !important;
+                line-height: 1.4;
+            }
+    
+            .login-footer-text {
+                font-size: 0.70rem !important;
+            }
+            
+            .agreement-text {
+                font-size: 0.85rem !important;
+                line-height: 1.4;
+            }
+    
+            .agreement-footer-text {
+                font-size: 0.80rem !important;
+            }
+}
         </style>
         <script src="https://accounts.google.com/gsi/client" async defer></script>
         <script>
@@ -237,8 +262,8 @@
                              alt="FACILITAIN" 
                              class="img-fluid mb-4 d-block mx-auto" 
                              style="max-height: 5rem;">
-                            <h3 class="text-center p-1 montserrat-bold">Sign in to Access the FACILITAIN Feedback Portal</h3>
-                            <p>Help us improve campus facilities by submitting your feedback. Log in with your <strong>UST Google Workspace</strong> account to continue.</p>
+                            <h3 class="text-center p-1 montserrat-bold  login-title">Sign in to Access the FACILITAIN Feedback Portal</h3>
+                            <p class="login-description">Help us improve campus facilities by submitting your feedback. Log in with your <strong>UST Google Workspace</strong> account to continue.</p>
                             <div class="mt-3 d-flex justify-content-center px-0">
                                 <div id="g_id_onload"
                                      data-client_id="103164757802-4v37vphomb6foi27vbhhc4advakt16q3.apps.googleusercontent.com"
@@ -257,7 +282,7 @@
                             </div>
                             <hr class="my-3">
                             <div class="text-center">
-                               <a href="#" class="d-block text-decoration-none text-dark montserrat-regular text-center" style="font-size: 1rem;">Only <Strong>UST Google Workspace</strong> accounts are supported.</a>
+                               <a href="#" class="d-block text-decoration-none text-dark montserrat-regular text-center login-footer-text" style="font-size: 1rem;">Only <Strong>UST Google Workspace</strong> accounts are supported.</a>
                             </div>
                         </div>
                     </div>
@@ -266,7 +291,7 @@
         </div>
         
         <!-- Agreement Modal (for login) -->
-        <div class="modal fade agreement-modal" id="agreementModal" tabindex="-1" aria-labelledby="agreementModalLabel" aria-hidden="true">
+                <div class="modal fade agreement-modal" id="agreementModal" tabindex="-1" aria-labelledby="agreementModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
                    <div class="modal-header" style="background-color: #ffffff; border-bottom: 1px solid #d2d2d2;">
@@ -276,18 +301,15 @@
                     <div class="modal-body">
                         <div class="modal-body-content text-center">
                             <img src="resources/images/FACILITAIN_WLOGO4.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
-                            <p class="montserrat-regular">
-                                Filling up the form abides by the<br/>
-                                Data Privacy Act of 2012 where your<br/>
-                                personal data is collected but for<br/>
-                                record-keeping purposes only
+                            <p class="montserrat-regular agreement-text">
+                                By filling out this form, you agree that your personal data may be collected and used strictly for record-keeping purposes in accordance with the Data Privacy Act of 2012.
                             </p>
                         </div>
                     </div>
                     <div class="modal-footer flex-column align-items-stretch">
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="agreementCheckbox" onchange="enableAgreeButton()">
-                            <label class="form-check-label montserrat-regular" for="agreementCheckbox">
+                            <label class="form-check-label montserrat-regular agreement-footer-text" for="agreementCheckbox">
                                 I have read and agree to the terms above
                             </label>
                         </div>
