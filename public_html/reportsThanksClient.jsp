@@ -56,7 +56,7 @@
      <div class="container mt-3 d-flex justify-content-center"> 
     <button class="btn  w-100 " style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
                      onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
-                    onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';" onclick="window.location.href='reportsClient';">Submit Another Report</button>
+                    onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';" onclick="window.location.href='reportsClient';"><strong>Submit Another Report</strong></button>
 </div>
     
             </div>
