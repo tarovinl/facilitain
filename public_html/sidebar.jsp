@@ -492,7 +492,7 @@
                         <input type="datetime-local" name="tdListEnd" id="tdListEnd" class="form-control" onchange="validateEndDate()" required>
                     </div>
                     <div id="validationMessage" class="text-danger"></div>
-                    <input type="hidden" name="originalUrl" class="form-control" value="<%= request.getRequestURL() %>?<%= request.getQueryString() %>" />
+                    <input type="hidden" name="originalUrl" class="form-control" value="<%= request.getRequestURI() %>?<%= request.getQueryString() %>" />
                     <input type="hidden" name="userNum" class="form-control" value="${empNum}" />
                 </div>
                 <div class="modal-footer">

@@ -279,7 +279,7 @@ public class maintAssController extends HttpServlet {
             // Build main query with pagination
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM (")
-            .append("  SELECT i.ITEM_ID, i.NAME, i.BRAND_NAME, i.FLOOR_NO, i.LOCATION_ID, i.MAINTENANCE_STATUS, i.PLANNED_MAINTENANCE_DATE, ")
+               .append("  SELECT i.ITEM_ID, i.NAME, i.BRAND_NAME, i.FLOOR_NO, i.LOCATION_ID, i.MAINTENANCE_STATUS, i.PLANNED_MAINTENANCE_DATE, ")
                .append("    t.NAME AS TYPE_NAME, t.ITEM_CAT_ID, ")
                .append("    c.NAME AS CAT_NAME, ")
                .append("    l.NAME AS LOC_NAME, ")
@@ -292,15 +292,15 @@ public class maintAssController extends HttpServlet {
                .append("  JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
                .append("  WHERE i.ITEM_STAT_ID = 1 AND i.MAINTENANCE_STATUS = 2");
 
-            // Add search filter if provided
+            // Add search filter if provided - STRIP WHITESPACE
             if (searchValue != null && !searchValue.isEmpty()) {
                 sql.append(" AND (")
-                   .append("    UPPER(i.NAME) LIKE ? OR ")
-                   .append("    UPPER(t.NAME) LIKE ? OR ")
-                   .append("    UPPER(c.NAME) LIKE ? OR ")
-                   .append("    UPPER(i.BRAND_NAME) LIKE ? OR ")
-                   .append("    UPPER(l.NAME) LIKE ? OR ")
-                   .append("    UPPER(s.STATUS_NAME) LIKE ?")
+                   .append("    REPLACE(UPPER(i.NAME), ' ', '') LIKE ? OR ")
+                   .append("    REPLACE(UPPER(t.NAME), ' ', '') LIKE ? OR ")
+                   .append("    REPLACE(UPPER(c.NAME), ' ', '') LIKE ? OR ")
+                   .append("    REPLACE(UPPER(i.BRAND_NAME), ' ', '') LIKE ? OR ")
+                   .append("    REPLACE(UPPER(l.NAME), ' ', '') LIKE ? OR ")
+                   .append("    REPLACE(UPPER(s.STATUS_NAME), ' ', '') LIKE ?")
                    .append("  )");
             }
 
@@ -309,9 +309,9 @@ public class maintAssController extends HttpServlet {
             try (PreparedStatement stmt = con.prepareStatement(sql.toString())) {
                 int paramIndex = 1;
                 
-                // Set search parameters
+                // Set search parameters 
                 if (searchValue != null && !searchValue.isEmpty()) {
-                    String searchPattern = "%" + searchValue.toUpperCase() + "%";
+                    String searchPattern = "%" + searchValue.toUpperCase().replaceAll("\\s+", "") + "%";
                     for (int i = 0; i < 6; i++) {
                         stmt.setString(paramIndex++, searchPattern);
                     }
@@ -365,16 +365,16 @@ public class maintAssController extends HttpServlet {
                                .append("JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON i.LOCATION_ID = l.ITEM_LOC_ID ")
                                .append("JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
                                .append("WHERE i.ITEM_STAT_ID = 1 AND i.MAINTENANCE_STATUS = 2 AND (")
-                               .append("  UPPER(i.NAME) LIKE ? OR ")
-                               .append("  UPPER(t.NAME) LIKE ? OR ")
-                               .append("  UPPER(c.NAME) LIKE ? OR ")
-                               .append("  UPPER(i.BRAND_NAME) LIKE ? OR ")
-                               .append("  UPPER(l.NAME) LIKE ? OR ")
-                               .append("  UPPER(s.STATUS_NAME) LIKE ?")
+                               .append("  REPLACE(UPPER(i.NAME), ' ', '') LIKE ? OR ")
+                               .append("  REPLACE(UPPER(t.NAME), ' ', '') LIKE ? OR ")
+                               .append("  REPLACE(UPPER(c.NAME), ' ', '') LIKE ? OR ")
+                               .append("  REPLACE(UPPER(i.BRAND_NAME), ' ', '') LIKE ? OR ")
+                               .append("  REPLACE(UPPER(l.NAME), ' ', '') LIKE ? OR ")
+                               .append("  REPLACE(UPPER(s.STATUS_NAME), ' ', '') LIKE ?")
                                .append(")");
 
                 try (PreparedStatement stmt = con.prepareStatement(countFilteredSql.toString())) {
-                    String searchPattern = "%" + searchValue.toUpperCase() + "%";
+                    String searchPattern = "%" + searchValue.toUpperCase().replaceAll("\\s+", "") + "%";
                     for (int i = 1; i <= 6; i++) {
                         stmt.setString(i, searchPattern);
                     }
@@ -403,6 +403,7 @@ public class maintAssController extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(jsonResponse.toString());
     }
+
 
     /**
      * Handles AJAX request for scheduled maintenance table with server-side pagination - FIXED to filet archived items
@@ -439,7 +440,7 @@ public class maintAssController extends HttpServlet {
             // Main query with pagination 
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM (")
-            .append("  SELECT ma.ASSIGN_ID, ma.ITEM_ID, ma.USER_ID, ma.MAIN_TYPE_ID, ma.DATE_OF_MAINTENANCE, ")
+               .append("  SELECT ma.ASSIGN_ID, ma.ITEM_ID, ma.USER_ID, ma.MAIN_TYPE_ID, ma.DATE_OF_MAINTENANCE, ")
                .append("    i.NAME AS ITEM_NAME, i.BRAND_NAME, i.FLOOR_NO, i.LOCATION_ID, i.MAINTENANCE_STATUS, ")
                .append("    t.NAME AS TYPE_NAME, t.ITEM_CAT_ID, ")
                .append("    c.NAME AS CAT_NAME, ")
@@ -456,13 +457,14 @@ public class maintAssController extends HttpServlet {
                .append("  JOIN FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID ")
                .append("  WHERE i.ITEM_STAT_ID = 1 AND ma.IS_COMPLETED = 0");
 
+            // Add search filter - STRIP WHITESPACE
             if (searchValue != null && !searchValue.isEmpty()) {
                 sql.append(" AND (")
-                   .append("    UPPER(i.NAME) LIKE ? OR ")
-                   .append("    UPPER(t.NAME) LIKE ? OR ")
-                   .append("    UPPER(c.NAME) LIKE ? OR ")
-                   .append("    UPPER(mt.NAME) LIKE ? OR ")
-                   .append("    UPPER(u.NAME) LIKE ?")
+                   .append("    REPLACE(UPPER(i.NAME), ' ', '') LIKE ? OR ")
+                   .append("    REPLACE(UPPER(t.NAME), ' ', '') LIKE ? OR ")
+                   .append("    REPLACE(UPPER(c.NAME), ' ', '') LIKE ? OR ")
+                   .append("    REPLACE(UPPER(mt.NAME), ' ', '') LIKE ? OR ")
+                   .append("    REPLACE(UPPER(u.NAME), ' ', '') LIKE ?")
                    .append("  )");
             }
 
@@ -471,8 +473,9 @@ public class maintAssController extends HttpServlet {
             try (PreparedStatement stmt = con.prepareStatement(sql.toString())) {
                 int paramIndex = 1;
                 
+                // Set search parameters - REMOVE WHITESPACE FROM SEARCH VALUE
                 if (searchValue != null && !searchValue.isEmpty()) {
-                    String searchPattern = "%" + searchValue.toUpperCase() + "%";
+                    String searchPattern = "%" + searchValue.toUpperCase().replaceAll("\\s+", "") + "%";
                     for (int i = 0; i < 5; i++) {
                         stmt.setString(paramIndex++, searchPattern);
                     }
@@ -531,7 +534,7 @@ public class maintAssController extends HttpServlet {
                 }
             }
 
-            // Count filtered records 
+            // Count filtered records
             if (searchValue != null && !searchValue.isEmpty()) {
                 StringBuilder countFilteredSql = new StringBuilder();
                 countFilteredSql.append("SELECT COUNT(*) FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ma ")
@@ -541,15 +544,15 @@ public class maintAssController extends HttpServlet {
                                .append("JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES mt ON ma.MAIN_TYPE_ID = mt.MAIN_TYPE_ID ")
                                .append("JOIN FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID ")
                                .append("WHERE i.ITEM_STAT_ID = 1 AND ma.IS_COMPLETED = 0 AND (")
-                               .append("  UPPER(i.NAME) LIKE ? OR ")
-                               .append("  UPPER(t.NAME) LIKE ? OR ")
-                               .append("  UPPER(c.NAME) LIKE ? OR ")
-                               .append("  UPPER(mt.NAME) LIKE ? OR ")
-                               .append("  UPPER(u.NAME) LIKE ?")
+                               .append("  REPLACE(UPPER(i.NAME), ' ', '') LIKE ? OR ")
+                               .append("  REPLACE(UPPER(t.NAME), ' ', '') LIKE ? OR ")
+                               .append("  REPLACE(UPPER(c.NAME), ' ', '') LIKE ? OR ")
+                               .append("  REPLACE(UPPER(mt.NAME), ' ', '') LIKE ? OR ")
+                               .append("  REPLACE(UPPER(u.NAME), ' ', '') LIKE ?")
                                .append(")");
 
                 try (PreparedStatement stmt = con.prepareStatement(countFilteredSql.toString())) {
-                    String searchPattern = "%" + searchValue.toUpperCase() + "%";
+                    String searchPattern = "%" + searchValue.toUpperCase().replaceAll("\\s+", "") + "%";
                     for (int i = 1; i <= 5; i++) {
                         stmt.setString(i, searchPattern);
                     }

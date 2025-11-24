@@ -41,6 +41,9 @@ public class mainADataController extends HttpServlet {
         int start = Integer.parseInt(request.getParameter("start"));
         int length = Integer.parseInt(request.getParameter("length"));
         String searchValue = request.getParameter("search[value]");
+            if (searchValue != null) {
+                searchValue = searchValue.trim();
+            }
         String draw = request.getParameter("draw");
 
         String locID = request.getParameter("locID");

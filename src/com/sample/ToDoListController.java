@@ -86,6 +86,11 @@ public class ToDoListController extends HttpServlet {
             // Replace "manageBuilding" with "buildingDashboard"
             fullUrl = fullUrl.replace("manageBuilding", "buildingDashboard");
             fullUrl = fullUrl.replace("editLocation", "buildingDashboard");
+            
+            if (fullUrl.contains("/pending")) {
+                fullUrl = fullUrl.replace("/pending", "/maintenancePage");
+            }
+
         }
         
         String tdListID = request.getParameter("tdListId");

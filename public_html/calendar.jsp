@@ -33,6 +33,38 @@
                             padding-top: 80px; /* or whatever smaller value you want */
                             }
                             }
+        
+        /* Make FullCalendar header responsive */
+        .fc .fc-toolbar.fc-header-toolbar {
+            flex-wrap: wrap !important;      /* Allow wrapping on small screens */
+            gap: 6px;                        /* Small spacing between wrapped items */
+        }
+        
+        /* Center buttons when wrapped */
+        .fc .fc-toolbar-title,
+        .fc .fc-button-group,
+        .fc .fc-today-button {
+            margin-bottom: 8px !important;
+        }
+        
+        /* Reduce font + button size on mobile */
+        @media (max-width: 576px) {
+            .fc-toolbar-title {
+                font-size: 1.1rem !important;
+                text-align: center;
+                width: 100%;                 /* Force title to its own row */
+            }
+        
+            .fc-button {
+                padding: 4px 8px !important;
+                font-size: 0.75rem !important;
+            }
+        
+            .fc .fc-button-group {
+                flex-wrap: wrap !important;  /* Wrap Prev/Next + View buttons */
+            }
+        }
+
     </style>
     
     <%@ page import="java.util.HashSet" %>
@@ -219,11 +251,18 @@
             ];
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                dayMaxEventRows: true,
+                eventMaxStack: 3,
                 events: events,
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                views: {
+                    timeGrid: {
+                      dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
+                    }
                 },
                 eventClick: function(info) {
                 var title = info.event.title;

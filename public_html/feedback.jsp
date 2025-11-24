@@ -16,6 +16,7 @@
     <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
    body, h1, h2, h3, h4,h5 th {
     font-family: 'NeueHaasMedium', sans-serif !important;
@@ -25,7 +26,7 @@
 }
    .hover-outline {
                 transition: all 0.3s ease;
-                border: 1px solid transparent; /* Reserve space for border */
+                border: 1px solid transparent;
                             }
 
             .hover-outline:hover {
@@ -69,9 +70,67 @@
                 
                 @media (max-width: 576px) {
                   .responsive-padding-top {
-                    padding-top: 80px; /* or whatever smaller value you want */
+                    padding-top: 80px;
                   }
                 }
+            
+            a.paginate-button {
+                margin: 0 5px;
+                border: 1px solid black;
+                background-color: #fccc4c;
+                color: black;
+                cursor: pointer;
+                border-radius: 5px;
+                font-size: 14px;
+                font-weight: bold;
+                transition: background-color 0.3s, color 0.3s;
+            }
+            
+            a.paginate-button:hover {
+                background-color: #ffcc00; 
+                color: black;              
+            }
+            
+            a.paginate-button.active {
+                background-color: black; 
+                color: #fccc4c;
+                border-color: black;
+            }
+            
+            .btn-cancel-outline {
+                color: #8388a4 !important;
+                background-color: white !important;
+                border: 2px solid #8388a4 !important;
+                box-shadow: none !important;
+            }
+            
+            .btn-cancel-outline:hover {
+                background-color: #f0f2f7 !important; 
+                border-color: #8388a4 !important;
+                color: #8388a4 !important;
+            }
+
+            .dataTables_filter {
+                margin-bottom: 20px; 
+            }
+
+            .dataTables_length select {
+                min-width: 80px !important;
+                width: auto !important;
+                padding: 5px 30px 5px 10px !important;
+                margin: 0 8px !important;
+                display: inline-block !important;
+            }
+
+            .dataTables_length {
+                margin-bottom: 15px;
+            }
+            
+            .dataTables_length label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
     </style>
 </head>
 <body>
@@ -97,11 +156,10 @@
                     </div>
                 </div>
 
-                <!-- Feedback Table with clarification about displaying 15 most recent feedbacks -->
+                <!-- Feedback Table -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Recent Feedback</h5>
-                        <p class="text-muted">Showing the 15 most recent feedback</p>
+                        <h5 class="card-title">All Feedback</h5>
                         
                         <c:choose>
                             <c:when test="${empty feedbackList}">
@@ -112,24 +170,24 @@
                                 </div>
                             </c:when>
                             <c:otherwise>
-                                <table id="feedbackTable" class="table table-striped">
-                                    <thead>
+                                <table id="feedbackTable" class="table table-striped table-bordered">
+                                    <thead class="table-dark">
                                         <tr>
                                             <th>Rating</th>
                                             <th>Room</th>
                                             <th>Location</th>
-                                            <th>Suggestions</th>
+                                            <th style="width: 35%;">Suggestions</th>
                                             <th>Equipment Type</th>
                                             <th>Date</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody class="table-light">
                                         <c:forEach var="feedback" items="${feedbackList}">
                                             <tr>
-                                                <td>${feedback.rating}</td>
+                                                <td><fmt:formatNumber value="${feedback.rating}" maxFractionDigits="2" minFractionDigits="0" /></td>
                                                 <td>${feedback.room}</td>
                                                 <td>${feedback.location}</td>
-                                                <td>${feedback.suggestions}</td>
+                                                <td style="white-space: normal; word-wrap: break-word; max-width: 400px;">${feedback.suggestions}</td>
                                                 <td>${feedback.itemCatName}</td>
                                                 <td><fmt:formatDate value="${feedback.recInsDt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                                             </tr>
@@ -438,6 +496,17 @@
                 pdf.save('FMO_Feedback_Report_' + new Date().toISOString().split('T')[0] + '.pdf');
             }
         });
+        
+        // QR Code download functionality
+        document.getElementById('generateQRBtn').addEventListener('click', function() {
+            const link = document.createElement('a');
+            link.href = './resources/images/feedback-qr.png'; 
+            link.download = 'feedback-qr.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
     </script>
 
     <!-- Include jQuery and DataTables JS -->
@@ -445,5 +514,83 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    $(document).ready(function() {
+        // Initialize DataTable with default ordering by date (column 5) descending
+        $('#feedbackTable').DataTable({
+            order: [[5, 'desc']] // Sort by Date column (index 5) in descending order
+        });
+
+        // Handle SweetAlert2 notifications for success/error messages
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action');
+        const error = urlParams.get('error');
+
+        if (action || error) {
+            let alertConfig = {
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+            };
+
+            if (error) {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Error!',
+                    text: 'An error occurred while processing your request.',
+                    icon: 'error'
+                };
+            } else {
+                switch(action) {
+                    case 'deleted':
+                        alertConfig = {
+                            ...alertConfig,
+                            title: 'Deleted!',
+                            text: 'The feedback has been successfully deleted.',
+                            icon: 'success'
+                        };
+                        break;
+                }
+            }
+
+            Swal.fire(alertConfig).then(() => {
+                // Remove the parameters from the URL without refreshing
+                const newUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+            });
+        }
+
+        // Delete confirmation handler
+        $(document).on('submit', '.delete-form', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const formElement = this;
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to delete this feedback?',
+                icon: 'warning',
+                showCancelButton: true,
+                reverseButtons: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    cancelButton: 'btn-cancel-outline'
+                },
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formElement.submit();
+                }
+            });
+            
+            return false;
+        });
+    });
+    </script>
 </body>
 </html>
