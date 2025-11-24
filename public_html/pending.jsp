@@ -1424,6 +1424,9 @@ function populateEditMaintenance(button) {
         case 'assigndate':
           errorMessage = 'Maintenance date cannot be set earlier than today.';
           break;
+        case 'assignop':
+          errorMessage = 'Equipment does not need maintenance.';
+          break;
         default:
           errorMessage = 'An error occurred while processing your request.';
           break;

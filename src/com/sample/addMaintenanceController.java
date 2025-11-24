@@ -63,6 +63,8 @@ public class addMaintenanceController extends HttpServlet {
         String floorNo = null;
         String roomNo = null;
         
+        boolean itemFoundOpeStatus = false;
+        
         //item list maker to check equipmentName
         try (
             Connection con = PooledConnection.getConnection();
@@ -121,12 +123,23 @@ public class addMaintenanceController extends HttpServlet {
         
         // Find equipment and store additional details for email
         for (Item itemz : listItem) {
-            if (equipmentName.equals(itemz.getItemName())) { 
-                equipmentMaintId = itemz.getItemID();
-                floorNo = itemz.getItemFloor();
-                roomNo = itemz.getItemRoom();
-                break;
+            if (equipmentName.equalsIgnoreCase(itemz.getItemName())) { 
+                if(itemz.getItemMaintStat() == 2){
+                    equipmentMaintId = itemz.getItemID();
+                    floorNo = itemz.getItemFloor();
+                    roomNo = itemz.getItemRoom();
+                    break;
+                } else{
+                    itemFoundOpeStatus = true;
+                    break;
+                }
+                
             }
+        }
+        if (itemFoundOpeStatus) {
+            status = "error";
+            response.sendRedirect("maintenancePage?action=assignop" + "&status=" + status);
+            return;
         }
         
         // Check if equipmentMaintId is still 0 (meaning no match was found)
@@ -141,6 +154,8 @@ public class addMaintenanceController extends HttpServlet {
             response.sendRedirect("maintenancePage?action=assigndate&status=" + status);
             return; 
         }
+        
+        
         
         boolean isAlreadyAssigned = false;
         for (MaintAssign assignz : listAssign) {
