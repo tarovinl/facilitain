@@ -30,9 +30,9 @@ public class FeedbackController extends HttpServlet {
         String feedbackQuery = 
             "SELECT F.FEEDBACK_ID, L.NAME AS LOCATION, F.ROOM, F.RATING, F.SUGGESTIONS, F.REC_INS_DT, " +
             "       COALESCE(IC.NAME, F.SPECIFY) AS ITEM_CAT_NAME " +
-            "FROM C##FMO_ADM.FMO_ITEM_FEEDBACK F " +
-            "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS L ON F.ITEM_LOC_ID = L.ITEM_LOC_ID " +
-            "LEFT JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES IC ON F.ITEM_CAT_ID = IC.ITEM_CAT_ID " +
+            "FROM FMO_ADM.FMO_ITEM_FEEDBACK F " +
+            "JOIN FMO_ADM.FMO_ITEM_LOCATIONS L ON F.ITEM_LOC_ID = L.ITEM_LOC_ID " +
+            "LEFT JOIN FMO_ADM.FMO_ITEM_CATEGORIES IC ON F.ITEM_CAT_ID = IC.ITEM_CAT_ID " +
             "ORDER BY F.REC_INS_DT DESC";
 
         String satisfactionQuery =

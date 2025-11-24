@@ -88,7 +88,7 @@ public class editMaintenanceController extends HttpServlet {
                 }
                 
                 // Perform UPDATE
-                sql = "UPDATE C##FMO_ADM.FMO_MAINTENANCE_ASSIGN " +
+                sql = "UPDATE FMO_ADM.FMO_MAINTENANCE_ASSIGN " +
                       "SET main_type_id = ?, user_id = ?, date_of_maintenance = ? " +
                       "WHERE assign_id = ?";
                 
