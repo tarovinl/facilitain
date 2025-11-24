@@ -281,7 +281,7 @@
                             </div>
                             <hr class="my-3">
                             <div class="text-center">
-                               <a class="d-block text-decoration-none text-dark montserrat-regular text-center login-footer-text" style="font-size: 1rem;">Only <strong>UST Google Workspace</strong> accounts are supported</a>
+                               <a class="d-block text-decoration-none text-dark montserrat-regular text-center login-footer-text" style="font-size: 1rem;">Only <strong>UST Google Workspace</strong> accounts are supported.</a>
                             </div>
                         </div>
                     </div>
@@ -301,7 +301,7 @@
                         <div class="modal-body-content text-center agreement-text">
                             <img src="resources/images/FACILITAIN_WLOGO4.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
                             <p class="montserrat-regular agreement-footer-text">
-                               By filling out this form, you agree that your personal data may be collected and used strictly for record-keeping purposes in accordance with the Data Privacy Act of 2012.
+                               By filling out this form, you agree that your personal data may be collected and used strictly for record-keeping purposes in accordance with the <strong>Data Privacy Act of 2012.</strong>
                             </p>
                         </div>
                     </div>

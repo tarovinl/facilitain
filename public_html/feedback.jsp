@@ -74,28 +74,6 @@
                   }
                 }
             
-            a.paginate-button {
-                margin: 0 5px;
-                border: 1px solid black;
-                background-color: #fccc4c;
-                color: black;
-                cursor: pointer;
-                border-radius: 5px;
-                font-size: 14px;
-                font-weight: bold;
-                transition: background-color 0.3s, color 0.3s;
-            }
-            
-            a.paginate-button:hover {
-                background-color: #ffcc00; 
-                color: black;              
-            }
-            
-            a.paginate-button.active {
-                background-color: black; 
-                color: #fccc4c;
-                border-color: black;
-            }
             
             .btn-cancel-outline {
                 color: #8388a4 !important;
@@ -131,6 +109,38 @@
                 align-items: center;
                 gap: 8px;
             }
+            
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5rem 1rem;
+            margin: 0 2px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+            color: #0d6efd !important;
+        }
+        
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #e9ecef;
+            border-color: #dee2e6;
+            color: #0d6efd !important;
+        }
+        
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #0d6efd;
+            color: white !important;
+            border-color: #0d6efd;
+        }
+        
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            background: #0d6efd;
+            color: white !important;
+            border-color: #0d6efd;
+        }
+        
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>

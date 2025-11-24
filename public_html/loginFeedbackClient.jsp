@@ -262,7 +262,7 @@
                              alt="FACILITAIN" 
                              class="img-fluid mb-4 d-block mx-auto" 
                              style="max-height: 5rem;">
-                            <h3 class="text-center p-1 montserrat-bold  login-title">Sign in to Access the FACILITAIN Feedback Portal</h3>
+                            <h3 class="text-center p-1 montserrat-bold  login-title">Sign in to access the FACILITAIN Feedback Form</h3>
                             <p class="login-description">Help us improve campus facilities by submitting your feedback. Log in with your <strong>UST Google Workspace</strong> account to continue.</p>
                             <div class="mt-3 d-flex justify-content-center px-0">
                                 <div id="g_id_onload"
@@ -302,7 +302,7 @@
                         <div class="modal-body-content text-center">
                             <img src="resources/images/FACILITAIN_WLOGO4.png" alt="FACILITAIN" class="img-fluid mb-4 d-block mx-auto" style="max-height: 4rem;">
                             <p class="montserrat-regular agreement-text">
-                                By filling out this form, you agree that your personal data may be collected and used strictly for record-keeping purposes in accordance with the Data Privacy Act of 2012.
+                                By filling out this form, you agree that your personal data may be collected and used strictly for record-keeping purposes in accordance with the <strong>Data Privacy Act of 2012.</strong>
                             </p>
                         </div>
                     </div>
