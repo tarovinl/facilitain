@@ -43,6 +43,10 @@ public class reportClientController extends HttpServlet {
             getRoomsByLocationAndFloor(request, response);
             return;
         }
+         else if ("getEquipment".equals(action)) { 
+                getEquipmentByLocation(request, response);
+                return;
+            }
         
         // Regular page load - get locations and equipment
         List<Map.Entry<Integer, String>> locationList = new ArrayList<>();
@@ -148,6 +152,72 @@ public class reportClientController extends HttpServlet {
         PrintWriter out = response.getWriter();
         Gson gson = new Gson();
         out.print(gson.toJson(rooms));
+        out.flush();
+    }
+    
+    private void getEquipmentByLocation(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        String locationId = request.getParameter("locationId");
+        String floorNo = request.getParameter("floorNo");
+        List<String> equipmentTypes = new ArrayList<>();
+        
+        if (locationId != null && !locationId.isEmpty() && floorNo != null && !floorNo.isEmpty()) {
+            String equipmentQuery;
+            
+            // Handle special case where floor is N/A (no specific floor)
+            if ("N/A".equals(floorNo)) {
+                equipmentQuery = 
+                    "SELECT DISTINCT c.NAME " +
+                    "FROM C##FMO_ADM.FMO_ITEMS i " +
+                    "JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID " +
+                    "JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID " +
+                    "WHERE i.LOCATION_ID = ? " +
+                    "AND i.ITEM_STAT_ID != 2 " +
+                    "AND t.ACTIVE_FLAG = 1 " +
+                    "AND c.ARCHIVED_FLAG = 1 " +
+                    "ORDER BY c.NAME";
+            } else {
+                // Query for specific floor
+                equipmentQuery = 
+                    "SELECT DISTINCT c.NAME " +
+                    "FROM C##FMO_ADM.FMO_ITEMS i " +
+                    "JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID " +
+                    "JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID " +
+                    "WHERE i.LOCATION_ID = ? " +
+                    "AND i.FLOOR_NO = ? " +
+                    "AND i.ITEM_STAT_ID != 2 " +
+                    "AND t.ACTIVE_FLAG = 1 " +
+                    "AND c.ARCHIVED_FLAG = 1 " +
+                    "ORDER BY c.NAME";
+            }
+            
+            try (Connection connection = PooledConnection.getConnection();
+                 PreparedStatement stmt = connection.prepareStatement(equipmentQuery)) {
+                
+                stmt.setInt(1, Integer.parseInt(locationId));
+                if (!"N/A".equals(floorNo)) {
+                    stmt.setString(2, floorNo);
+                }
+                
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        String equipmentName = rs.getString("NAME");
+                        if (equipmentName != null && !equipmentName.trim().isEmpty()) {
+                            equipmentTypes.add(equipmentName.toUpperCase());
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        Gson gson = new Gson();
+        out.print(gson.toJson(equipmentTypes));
         out.flush();
     }
     
