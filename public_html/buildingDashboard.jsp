@@ -321,9 +321,19 @@ function generateReport() {
                 // Organization name centered
                 doc.text('University of Santo Tomas - Facilities Management Office', 105, footerY, { align: 'left' });
 
-                // Save the PDF
-                doc.save(locName + '_Maintenance_Report.pdf');
-            })
+                // Generate PDF blob and open in new tab
+                const pdfBlob = doc.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                const newWindow = window.open(pdfUrl, '_blank');
+                
+                // Set the filename for when user downloads from the new tab
+                if (newWindow) {
+                    newWindow.document.title = locName + '_Maintenance_Report.pdf';
+                }
+                
+                // Clean up the URL after a delay
+                setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+                            })
             .catch(error => {
                 console.error('Error generating PDF:', error);
                 alert('Error generating PDF. Please check console for details.');

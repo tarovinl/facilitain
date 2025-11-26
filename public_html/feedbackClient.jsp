@@ -202,10 +202,10 @@
             </label>
             <div class="mt-1">
             <textarea id="suggestions" name="suggestions" rows="4" cols="50" class="d-block p-3 w-100 mx-auto rounded border"
-    style="width: 100%;" placeholder="Enter your feedback and suggestions here..." maxlength="250"></textarea>
+    style="width: 100%;" placeholder="Enter your feedback and suggestions here..." maxlength="300"></textarea>
             <div id="suggestionsError" class="text-danger"></div>
             <div id="suggestionsCount" class="text-muted" style="font-size: 12px; text-align: right;">
-                0 / 250 characters
+                0 / 300 characters
             </div>
             </div>
 
@@ -305,15 +305,15 @@ function validateForm() {
         valid = false;
     }
 
-    // Validate Suggestions (max 250 characters)
+    // Validate Suggestions (max 300 characters)
     const suggestions = document.getElementById('suggestions').value;
-    if (suggestions.length > 250) {
-        document.getElementById('suggestionsError').textContent = 'Feedback cannot exceed 250 characters.';
+    if (suggestions.length > 300) {
+        document.getElementById('suggestionsError').textContent = 'Feedback cannot exceed 300 characters.';
         valid = false;
     }
 
     // Validate Suggestions Length Display
-    document.getElementById('suggestionsCount').textContent = suggestions.length + " / 250 characters";
+    document.getElementById('suggestionsCount').textContent = suggestions.length + " / 300 characters";
 
     return valid;
 }

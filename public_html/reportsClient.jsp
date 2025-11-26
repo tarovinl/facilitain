@@ -143,111 +143,107 @@
      class="img-fluid mb-4 d-block mx-auto" 
      style="max-height: 5rem;">
                 <h3 class="text-center montserrat-bold">Report a Problem</h3>
-
-                <!-- Form Starts Here -->
-                <form action="reportsClient" method="post" enctype="multipart/form-data" onsubmit="return validateForm();">
-                    <!-- Equipment -->
-                   <label for="equipment">Type of Equipment<span style="color: red;"> *</span></label>
-<div class="mt-1">
-    <select name="equipment" id="equipment" class="form-control w-100" onchange="toggleOtherOption()" required>
-        <option value="">Select equipment type</option>
-        <c:forEach var="equipment" items="${equipmentList}">
-            <option value="${equipment.key}">${equipment.value}</option>
-        </c:forEach>
-        <option value="Other">OTHER</option>
-    </select>
-    <div id="equipmentError" class="error-message"></div>
-
-    <!-- Input field for "Other" option -->
-    <div id="otherEquipmentDiv" style="display:none;">
-        <label for="otherEquipment" class="mt-2">Please specify: <span style="color: red;"> *</span></label>
-        <input type="text" id="otherEquipment" name="otherEquipment" class="form-control w-100" />
-    </div>
-</div>
-
-                     <!-- Location -->
-                    <label for="location" class="mt-2">Location <span style="color: red;"> *</span></label>
-                    <div class="mt-1">
-                        <select name="location" id="location" class="form-control w-100" onchange="loadFloors()" required>
-                            <option value="">Select a location</option>
-                            <c:forEach var="location" items="${locationList}">
-                                <option value="${location.key}">${location.value}</option>
-                            </c:forEach>
-                        </select>
-                        <div id="locationError" class="error-message"></div>
-                    </div>
-
-                    <!-- Floor -->
-                    <label for="floor"class="mt-2">Floor <span style="color: red;"> *</span></label>
-                    <div class="mt-1">
-                        <select name="floor" id="floor" class="form-control w-100" onchange="loadRooms()" required disabled>
-                            <option value="">Select a floor</option>
-                        </select>
-                        <div id="floorError" class="error-message"></div>
-                    </div>
-
-             
-                    <label for="room"class="mt-2">Room <span style="color: red;"> *</span></label>
-                    <div class="mt-1">
-                        <select name="room" id="room" class="form-control w-100" required disabled>
-                            <option value="">Select a room</option>
-                        </select>
-                        <div id="roomError" class="error-message"></div>
-                    </div>
-                    
-                    <!-- Email field removed since it's now taken from session -->
-                    <% if (session.getAttribute("email") != null) { %>
-                    <div class="alert alert-info mt-3">
-                        <small>Your report will be linked to your email: <strong>${sessionScope.email}</strong></small>
-                    </div>
-                    <% } %>
-
-                  <label for="issue" class="d-block mt-3 mb-3">Describe Issue <span style="color: red;"> *</span></label>
+                 <!-- Form Starts Here -->
+               <form action="reportsClient" method="post" enctype="multipart/form-data" onsubmit="return validateForm();">
+    
+            <!-- Location -->
+            <label for="location">Location <span style="color: red;"> *</span></label>
             <div class="mt-1">
-                    <textarea id="issue" name="issue" rows="4" cols="50" class="d-block p-3 w-100 mx-auto rounded border" 
-                    style="width: 100%;" placeholder="Explain the issue here..." maxlength="250" required></textarea>
-                    <div id="issueError" class="text-danger"></div>
-            <div id="issueCount" class="text-muted" style="font-size: 12px; text-align: right;">
-                                    0 / 250 characters
+                <select name="location" id="location" class="form-control w-100" onchange="loadFloors()" required>
+                    <option value="">Select a location</option>
+                    <c:forEach var="location" items="${locationList}">
+                        <option value="${location.key}">${location.value}</option>
+                    </c:forEach>
+                </select>
+                <div id="locationError" class="error-message"></div>
+            </div>
+        
+            <!-- Floor -->
+            <label for="floor" class="mt-2">Floor <span style="color: red;"> *</span></label>
+            <div class="mt-1">
+                <select name="floor" id="floor" class="form-control w-100" onchange="loadRooms()" required disabled>
+                    <option value="">Select a floor</option>
+                </select>
+                <div id="floorError" class="error-message"></div>
+            </div>
+        
+            <!-- Room -->
+            <label for="room" class="mt-2">Room <span style="color: red;"> *</span></label>
+            <div class="mt-1">
+                <select name="room" id="room" class="form-control w-100" required disabled>
+                    <option value="">Select a room</option>
+                </select>
+                <div id="roomError" class="error-message"></div>
+            </div>
+        
+            <!-- Equipment -->
+            <label for="equipment" class="mt-2">Type of Equipment<span style="color: red;"> *</span></label>
+            <div class="mt-1">
+                <select name="equipment" id="equipment" class="form-control w-100" onchange="toggleOtherOption()" required disabled>
+                    <option value="">Select a floor first</option>
+                </select>
+                <div id="equipmentError" class="error-message"></div>
+        
+                <!-- Input field for "Other" option -->
+                <div id="otherEquipmentDiv" style="display:none;">
+                    <label for="otherEquipment" class="mt-2">Please specify: <span style="color: red;"> *</span></label>
+                    <input type="text" id="otherEquipment" name="otherEquipment" class="form-control w-100" />
                 </div>
-        </div>
+            </div>
+            
+            <!-- Email field removed since it's now taken from session -->
+            <% if (session.getAttribute("email") != null) { %>
+            <div class="alert alert-info mt-3">
+                <small>Your report will be linked to your email: <strong>${sessionScope.email}</strong></small>
+            </div>
+            <% } %>
+        
+            <!-- Issue Description -->
+            <label for="issue" class="d-block mt-3 mb-3">Describe Issue <span style="color: red;"> *</span></label>
+            <div class="mt-1">
+                <textarea id="issue" name="issue" rows="4" cols="50" class="d-block p-3 w-100 mx-auto rounded border" 
+                style="width: 100%;" placeholder="Explain the issue here..." maxlength="500" required></textarea>
+                <div id="issueError" class="text-danger"></div>
+                <div id="issueCount" class="text-muted" style="font-size: 12px; text-align: right;">
+                    0 / 500 characters
+                </div>
+            </div>
+        
+            <!-- Image Upload -->
+            <label for="imageUpload" class="d-block mt-3 mb-2">Upload an Image <span style="color: red;"> *</span></label>
+            
+            <!-- File Upload with Custom Styling -->
+            <div class="file-upload-wrapper">
+                <input type="file" name="imageUpload" id="imageUpload" class="form-control" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
+                <label for="imageUpload" class="file-upload-label" id="fileUploadLabel">
+                    <i class="bi bi-cloud-upload"></i>
+                    <div class="mt-1">Click to select an image</div>
+                    <small class="text-muted">Supports JPG, PNG, GIF (Max 5MB)</small>
+                </label>
+            </div>
+            
+            <!-- Image Preview Container -->
+            <div class="image-preview-container" id="imagePreviewContainer">
+                <img id="imagePreview" class="image-preview" alt="Image Preview">
+                <button type="button" class="remove-image-btn" onclick="removeImage()" title="Remove image">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            
+            <div id="imageUploadError" class="error-message"></div>
+        
+            <!-- Submit Button -->
+            <div class="container mt-3 px-0">
+                <button type="submit" 
+                 class="btn w-100" 
+                style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
+                 onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
+                onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
+                <strong>Submit</strong>
+                </button>
+            </div>
 
-                
-                    <label for="imageUpload" class="d-block mt-3 mb-2">Upload an Image <span style="color: red;"> *</span></label>
-                    
-                    <!-- File Upload with Custom Styling -->
-                    <div class="file-upload-wrapper">
-                        <input type="file" name="imageUpload" id="imageUpload" class="form-control" accept="image/*" required style="display: none;" onchange="handleImageSelect(event)">
-                        <label for="imageUpload" class="file-upload-label" id="fileUploadLabel">
-                            <i class="bi bi-cloud-upload"></i>
-                            <div class="mt-1">Click to select an image</div>
-                            <small class="text-muted">Supports JPG, PNG, GIF (Max 5MB)</small>
-                        </label>
-                    </div>
-                    
-                    <!-- Image Preview Container -->
-                    <div class="image-preview-container" id="imagePreviewContainer">
-                        <img id="imagePreview" class="image-preview" alt="Image Preview">
-                        <button type="button" class="remove-image-btn" onclick="removeImage()" title="Remove image">
-                            <i class="bi bi-x"></i>
-                        </button>
-                    </div>
-                    
-                    <div id="imageUploadError" class="error-message"></div>
-
-
-                    <!-- Submit Button -->
-                    <div class="container mt-3 px-0">
-                    <button type="submit" 
-                     class="btn  w-100" 
-                    style="background-color: #fbbe15; color: #212529; border: none; transition: background-color 0.3s, color 0.3s;"
-                     onmouseover="this.style.backgroundColor='#292927'; this.style.color='#fbbe15';" 
-                    onmouseout="this.style.backgroundColor='#fbbe15'; this.style.color='#212529';">
-                    <strong>Submit</strong>
-                    </button>
-                    </div>
-
-                </form>
+</form>
 
             
             </div>
@@ -274,54 +270,113 @@
         }
         
              // Function to load floors based on selected location
-            function loadFloors() {
-                const locationId = document.getElementById("location").value;
-                const floorSelect = document.getElementById("floor");
-                const roomSelect = document.getElementById("room");
-                
-                // Reset and disable floor and room dropdowns
-                floorSelect.innerHTML = '<option value="" disabled selected>Select a floor</option>';
-                floorSelect.disabled = true;
-                roomSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
-                roomSelect.disabled = true;
-                
-                if (locationId) {
-                    // Make AJAX call to get floors
-                    fetch('reportsClient?action=getFloors&locationId=' + locationId)
-                        .then(response => response.json())
-                        .then(floors => {
-                            floorSelect.innerHTML = '<option value="" disabled selected>Select a floor</option>';
-                            
-                            if (floors && floors.length > 0) {
-                                // Location has floors - populate dropdown normally
-                                floors.forEach(floor => {
-                                    const option = document.createElement('option');
-                                    option.value = floor;
-                                    option.textContent = floor;
-                                    floorSelect.appendChild(option);
-                                });
-                                floorSelect.disabled = false;
-                            } else {
-                                // Location has no floors - add "No specific floor" option
+           function loadFloors() {
+            const locationId = document.getElementById("location").value;
+            const floorSelect = document.getElementById("floor");
+            const roomSelect = document.getElementById("room");
+            const equipmentSelect = document.getElementById("equipment");
+            
+            // Reset all dependent dropdowns
+            floorSelect.innerHTML = '<option value="" disabled selected>Select a floor</option>';
+            floorSelect.disabled = true;
+            roomSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
+            roomSelect.disabled = true;
+            
+            // Reset equipment dropdown (will load after floor selection)
+            equipmentSelect.innerHTML = '<option value="" disabled selected>Select a floor first</option>';
+            equipmentSelect.disabled = true;
+            
+            // Hide "Other" input if visible
+            document.getElementById("otherEquipmentDiv").style.display = "none";
+            document.getElementById("otherEquipment").removeAttribute("required");
+            
+            if (locationId) {
+                // Make AJAX call to get floors
+                fetch('reportsClient?action=getFloors&locationId=' + locationId)
+                    .then(response => response.json())
+                    .then(floors => {
+                        floorSelect.innerHTML = '<option value="" disabled selected>Select a floor</option>';
+                        
+                        if (floors && floors.length > 0) {
+                            floors.forEach(floor => {
                                 const option = document.createElement('option');
-                                option.value = 'N/A';
-                                option.textContent = 'No specific floor (General area)';
+                                option.value = floor;
+                                option.textContent = floor;
                                 floorSelect.appendChild(option);
-                                floorSelect.disabled = false;
-                                // Auto-select the N/A option
-                                floorSelect.value = 'N/A';
+                            });
+                            floorSelect.disabled = false;
+                        } else {
+                            const option = document.createElement('option');
+                            option.value = 'N/A';
+                            option.textContent = 'No specific floor (General area)';
+                            floorSelect.appendChild(option);
+                            floorSelect.disabled = false;
+                            floorSelect.value = 'N/A';
+                            
+                            // Load equipment for N/A floor
+                            loadEquipment();
+                            
+                            // Load rooms for no floor
+                            loadRoomsForNoFloor(locationId);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading floors:', error);
+                        floorSelect.innerHTML = '<option value="">Error loading floors</option>';
+                    });
+            }
+}
+            
+            function loadEquipment() {
+                const locationId = document.getElementById("location").value;
+                const floorNo = document.getElementById("floor").value;
+                const equipmentSelect = document.getElementById("equipment");
+                
+                // Reset equipment dropdown
+                equipmentSelect.innerHTML = '<option value="" disabled selected>Loading equipment...</option>';
+                equipmentSelect.disabled = true;
+                
+                // Hide "Other" input if visible
+                document.getElementById("otherEquipmentDiv").style.display = "none";
+                document.getElementById("otherEquipment").removeAttribute("required");
+                
+                if (locationId && floorNo) {
+                    // Make AJAX call to get equipment types for this location and floor
+                    fetch('reportsClient?action=getEquipment&locationId=' + locationId + '&floorNo=' + encodeURIComponent(floorNo))
+                        .then(response => response.json())
+                        .then(equipmentTypes => {
+                            equipmentSelect.innerHTML = '<option value="" disabled selected>Select equipment type</option>';
+                            
+                            if (equipmentTypes && equipmentTypes.length > 0) {
+                                equipmentTypes.forEach(equipment => {
+                                    const option = document.createElement('option');
+                                    option.value = equipment;
+                                    option.textContent = equipment;
+                                    equipmentSelect.appendChild(option);
+                                });
                                 
-                                // Also handle room dropdown for locations without floors
-                                loadRoomsForNoFloor(locationId);
+                                // Always add "Other" option at the end
+                                const otherOption = document.createElement('option');
+                                otherOption.value = 'Other';
+                                otherOption.textContent = 'OTHER';
+                                equipmentSelect.appendChild(otherOption);
+                                
+                                equipmentSelect.disabled = false;
+                            } else {
+                                // No equipment found for this location and floor - only show "Other"
+                                const otherOption = document.createElement('option');
+                                otherOption.value = 'Other';
+                                otherOption.textContent = 'OTHER (No equipment registered for this floor)';
+                                equipmentSelect.appendChild(otherOption);
+                                equipmentSelect.disabled = false;
                             }
                         })
                         .catch(error => {
-                            console.error('Error loading floors:', error);
-                            floorSelect.innerHTML = '<option value="">Error loading floors</option>';
+                            console.error('Error loading equipment:', error);
+                            equipmentSelect.innerHTML = '<option value="">Error loading equipment</option>';
                         });
                 }
             }
-            
             // Function to load rooms for locations that don't have floors
             function loadRoomsForNoFloor(locationId) {
                 const roomSelect = document.getElementById("room");
@@ -361,52 +416,52 @@
             
             // Function to load rooms based on selected location and floor
             function loadRooms() {
-                const locationId = document.getElementById("location").value;
-                const floorNo = document.getElementById("floor").value;
-                const roomSelect = document.getElementById("room");
-                
-                // Reset room dropdown
+    const locationId = document.getElementById("location").value;
+    const floorNo = document.getElementById("floor").value;
+    const roomSelect = document.getElementById("room");
+    
+    // Reset room dropdown
+    roomSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
+    roomSelect.disabled = true;
+    
+    // Load equipment for the selected floor
+    loadEquipment();
+    
+    // Don't load rooms if floor is N/A (already handled in loadFloors)
+    if (floorNo === 'N/A') {
+        return;
+    }
+    
+    if (locationId && floorNo) {
+        // Make AJAX call to get rooms
+        fetch('reportsClient?action=getRooms&locationId=' + locationId + '&floorNo=' + encodeURIComponent(floorNo))
+            .then(response => response.json())
+            .then(rooms => {
                 roomSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
-                roomSelect.disabled = true;
                 
-                // Don't load rooms if floor is N/A (already handled in loadFloors)
-                if (floorNo === 'N/A') {
-                    return;
+                if (rooms && rooms.length > 0) {
+                    rooms.forEach(room => {
+                        const option = document.createElement('option');
+                        option.value = room;
+                        option.textContent = room;
+                        roomSelect.appendChild(option);
+                    });
+                    roomSelect.disabled = false;
+                } else {
+                    const option = document.createElement('option');
+                    option.value = 'N/A';
+                    option.textContent = 'No specific room (General floor area)';
+                    roomSelect.appendChild(option);
+                    roomSelect.disabled = false;
+                    roomSelect.value = 'N/A';
                 }
-                
-                if (locationId && floorNo) {
-                    // Make AJAX call to get rooms
-                    fetch('reportsClient?action=getRooms&locationId=' + locationId + '&floorNo=' + encodeURIComponent(floorNo))
-                        .then(response => response.json())
-                        .then(rooms => {
-                            roomSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
-                            
-                            if (rooms && rooms.length > 0) {
-                                // Floor has rooms - populate dropdown normally
-                                rooms.forEach(room => {
-                                    const option = document.createElement('option');
-                                    option.value = room;
-                                    option.textContent = room;
-                                    roomSelect.appendChild(option);
-                                });
-                                roomSelect.disabled = false;
-                            } else {
-                                // Floor has no rooms - add "No specific room" option
-                                const option = document.createElement('option');
-                                option.value = 'N/A';
-                                option.textContent = 'No specific room (General floor area)';
-                                roomSelect.appendChild(option);
-                                roomSelect.disabled = false;
-                                // Auto-select the N/A option
-                                roomSelect.value = 'N/A';
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error loading rooms:', error);
-                            roomSelect.innerHTML = '<option value="">Error loading rooms</option>';
-                        });
-                }
-            }
+            })
+            .catch(error => {
+                console.error('Error loading rooms:', error);
+                roomSelect.innerHTML = '<option value="">Error loading rooms</option>';
+            });
+    }
+}
 
         
         function updateCharCount() {
@@ -492,38 +547,81 @@
 
 </script>
             <script>
-            function validateForm() {
-                let valid = true;
+           function validateForm() {
+    let valid = true;
 
-                // Clear previous error messages
-                document.querySelectorAll('.text-danger').forEach(el => el.textContent = '');
-                
-                //validate image
-                const imageUpload = document.getElementById('imageUpload').files[0];
-                if (!imageUpload) {
-                    document.getElementById('imageUploadError').textContent = 'Please upload an image.';
-                    valid = false;
-                } else if (!imageUpload.type.startsWith('image/')) {
-                    document.getElementById('imageUploadError').textContent = 'Only image files are allowed.';
-                    valid = false;
-                } else if (imageUpload.size > 5 * 1024 * 1024) { // Check file size in bytes
-                    document.getElementById('imageUploadError').textContent = 'Image size must be below 5MB.';
-                    valid = false;
-                }
+    // Clear previous error messages
+    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+    
+    // Validate equipment
+    const equipment = document.getElementById('equipment').value;
+    if (!equipment) {
+        document.getElementById('equipmentError').textContent = 'Please select an equipment type.';
+        valid = false;
+    }
+    
+    // Validate "Other" equipment if selected
+    if (equipment === 'Other') {
+        const otherEquipment = document.getElementById('otherEquipment').value.trim();
+        if (!otherEquipment) {
+            document.getElementById('equipmentError').textContent = 'Please specify the equipment type.';
+            valid = false;
+        }
+    }
+    
+    // Validate location
+    const location = document.getElementById('location').value;
+    if (!location) {
+        document.getElementById('locationError').textContent = 'Please select a location.';
+        valid = false;
+    }
+    
+    // Validate floor
+    const floor = document.getElementById('floor').value;
+    if (!floor) {
+        document.getElementById('floorError').textContent = 'Please select a floor.';
+        valid = false;
+    }
+    
+    // Validate room
+    const room = document.getElementById('room').value;
+    if (!room) {
+        document.getElementById('roomError').textContent = 'Please select a room.';
+        valid = false;
+    }
+    
+    // Validate issue description
+    const issueTextarea = document.getElementById('issue');
+    const issueError = document.getElementById('issueError');
+    const currentLength = issueTextarea.value.trim().length;
 
-                const issueTextarea = document.getElementById('issue');
-                const issueCount = document.getElementById('issueCount');
-                const issueError = document.getElementById('issueError');
-                const currentLength = issueTextarea.value.length;
+    if (currentLength === 0) {
+        issueError.textContent = 'Please describe the issue.';
+        valid = false;
+    } else if (currentLength > 500) {
+        issueError.textContent = 'Issue description cannot exceed 500 characters.';
+        valid = false;
+    }
+    
+    // Validate image upload
+    const imageUpload = document.getElementById('imageUpload').files[0];
+    const imageError = document.getElementById('imageUploadError');
+    
+    if (!imageUpload) {
+        imageError.textContent = 'Please upload an image of the issue.';
+        valid = false;
+        // Scroll to the image upload section so user can see the error
+        document.getElementById('imageUpload').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (!imageUpload.type.startsWith('image/')) {
+        imageError.textContent = 'Only image files are allowed.';
+        valid = false;
+    } else if (imageUpload.size > 5 * 1024 * 1024) {
+        imageError.textContent = 'Image size must be below 5MB.';
+        valid = false;
+    }
 
-                // Validate the issue length
-                if (currentLength > 250) {
-                    issueError.textContent = 'Issue description cannot exceed 250 characters.';
-                    valid = false;
-                }
-
-                return valid;
-            }
+    return valid;
+}
 
         const issueTextarea = document.getElementById('issue');
         const issueCount = document.getElementById('issueCount');
@@ -534,11 +632,11 @@
             const currentLength = issueTextarea.value.length;
 
             // Update the character count
-            issueCount.textContent = currentLength + " / 250 characters";
+            issueCount.textContent = currentLength + " / 500 characters";
 
             // Validate the issue length
-            if (currentLength > 250) {
-                issueError.textContent = 'Issue description cannot exceed 250 characters.';
+            if (currentLength > 500) {
+                issueError.textContent = 'Issue description cannot exceed 500 characters.';
             } else {
                 issueError.textContent = ''; // Clear the error message
             }
