@@ -513,18 +513,22 @@
         <h5 class="modal-title" id="detailsModalLabel">Report Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <div class="detail-content">
-            <strong>Floor:</strong> <span id="modalFloor">N/A</span><br>
-            <strong>Room:</strong> <span id="modalRoom">N/A</span><br>
-            <strong>Description:</strong> <span id="modalDescription">N/A</span><br>
-            <form action="viewImage" method="get" target="_blank" class="mt-2">
-                <input type="hidden" name="reportId" id="modalReportId">
-                <button type="submit" class="btn btn-link p-0">View Proof</button>
-            </form>
+          <div class="modal-body">
+              <div class="detail-content">
+                  <strong>Floor:</strong> <span id="modalFloor">N/A</span><br>
+                  <strong>Room:</strong> <span id="modalRoom">N/A</span><br>
+                  <strong>Description:</strong> <span id="modalDescription">N/A</span>
+              </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+              <form action="viewImage" method="get" target="_blank">
+                  <input type="hidden" name="reportId" id="modalReportId">
+                  <button type="submit" class="btn btn-primary">
+                      <i class="bi bi-image"></i> View Image Proof
+                  </button>
+              </form>
+            </div>
         </div>
-      </div>
-    </div>
   </div>
 </div>
 
