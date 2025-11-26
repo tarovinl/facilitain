@@ -205,10 +205,10 @@
                   <label for="issue" class="d-block mt-3 mb-3">Describe Issue <span style="color: red;"> *</span></label>
             <div class="mt-1">
                     <textarea id="issue" name="issue" rows="4" cols="50" class="d-block p-3 w-100 mx-auto rounded border" 
-                    style="width: 100%;" placeholder="Explain the issue here..." maxlength="250" required></textarea>
+                    style="width: 100%;" placeholder="Explain the issue here..." maxlength="500" required></textarea>
                     <div id="issueError" class="text-danger"></div>
             <div id="issueCount" class="text-muted" style="font-size: 12px; text-align: right;">
-                                    0 / 250 characters
+                                    0 / 500 characters
                 </div>
         </div>
 
@@ -217,7 +217,7 @@
                     
                     <!-- File Upload with Custom Styling -->
                     <div class="file-upload-wrapper">
-                        <input type="file" name="imageUpload" id="imageUpload" class="form-control" accept="image/*" required style="display: none;" onchange="handleImageSelect(event)">
+                        <input type="file" name="imageUpload" id="imageUpload" class="form-control" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
                         <label for="imageUpload" class="file-upload-label" id="fileUploadLabel">
                             <i class="bi bi-cloud-upload"></i>
                             <div class="mt-1">Click to select an image</div>
@@ -492,38 +492,81 @@
 
 </script>
             <script>
-            function validateForm() {
-                let valid = true;
+           function validateForm() {
+    let valid = true;
 
-                // Clear previous error messages
-                document.querySelectorAll('.text-danger').forEach(el => el.textContent = '');
-                
-                //validate image
-                const imageUpload = document.getElementById('imageUpload').files[0];
-                if (!imageUpload) {
-                    document.getElementById('imageUploadError').textContent = 'Please upload an image.';
-                    valid = false;
-                } else if (!imageUpload.type.startsWith('image/')) {
-                    document.getElementById('imageUploadError').textContent = 'Only image files are allowed.';
-                    valid = false;
-                } else if (imageUpload.size > 5 * 1024 * 1024) { // Check file size in bytes
-                    document.getElementById('imageUploadError').textContent = 'Image size must be below 5MB.';
-                    valid = false;
-                }
+    // Clear previous error messages
+    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+    
+    // Validate equipment
+    const equipment = document.getElementById('equipment').value;
+    if (!equipment) {
+        document.getElementById('equipmentError').textContent = 'Please select an equipment type.';
+        valid = false;
+    }
+    
+    // Validate "Other" equipment if selected
+    if (equipment === 'Other') {
+        const otherEquipment = document.getElementById('otherEquipment').value.trim();
+        if (!otherEquipment) {
+            document.getElementById('equipmentError').textContent = 'Please specify the equipment type.';
+            valid = false;
+        }
+    }
+    
+    // Validate location
+    const location = document.getElementById('location').value;
+    if (!location) {
+        document.getElementById('locationError').textContent = 'Please select a location.';
+        valid = false;
+    }
+    
+    // Validate floor
+    const floor = document.getElementById('floor').value;
+    if (!floor) {
+        document.getElementById('floorError').textContent = 'Please select a floor.';
+        valid = false;
+    }
+    
+    // Validate room
+    const room = document.getElementById('room').value;
+    if (!room) {
+        document.getElementById('roomError').textContent = 'Please select a room.';
+        valid = false;
+    }
+    
+    // Validate issue description
+    const issueTextarea = document.getElementById('issue');
+    const issueError = document.getElementById('issueError');
+    const currentLength = issueTextarea.value.trim().length;
 
-                const issueTextarea = document.getElementById('issue');
-                const issueCount = document.getElementById('issueCount');
-                const issueError = document.getElementById('issueError');
-                const currentLength = issueTextarea.value.length;
+    if (currentLength === 0) {
+        issueError.textContent = 'Please describe the issue.';
+        valid = false;
+    } else if (currentLength > 500) {
+        issueError.textContent = 'Issue description cannot exceed 500 characters.';
+        valid = false;
+    }
+    
+    // Validate image upload
+    const imageUpload = document.getElementById('imageUpload').files[0];
+    const imageError = document.getElementById('imageUploadError');
+    
+    if (!imageUpload) {
+        imageError.textContent = 'Please upload an image of the issue.';
+        valid = false;
+        // Scroll to the image upload section so user can see the error
+        document.getElementById('imageUpload').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (!imageUpload.type.startsWith('image/')) {
+        imageError.textContent = 'Only image files are allowed.';
+        valid = false;
+    } else if (imageUpload.size > 5 * 1024 * 1024) {
+        imageError.textContent = 'Image size must be below 5MB.';
+        valid = false;
+    }
 
-                // Validate the issue length
-                if (currentLength > 250) {
-                    issueError.textContent = 'Issue description cannot exceed 250 characters.';
-                    valid = false;
-                }
-
-                return valid;
-            }
+    return valid;
+}
 
         const issueTextarea = document.getElementById('issue');
         const issueCount = document.getElementById('issueCount');
@@ -534,11 +577,11 @@
             const currentLength = issueTextarea.value.length;
 
             // Update the character count
-            issueCount.textContent = currentLength + " / 250 characters";
+            issueCount.textContent = currentLength + " / 500 characters";
 
             // Validate the issue length
-            if (currentLength > 250) {
-                issueError.textContent = 'Issue description cannot exceed 250 characters.';
+            if (currentLength > 500) {
+                issueError.textContent = 'Issue description cannot exceed 500 characters.';
             } else {
                 issueError.textContent = ''; // Clear the error message
             }

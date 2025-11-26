@@ -45,6 +45,14 @@
             border-radius: 4px;
             margin: 0.5rem 0;
         }
+
+        .detail-content span {
+            word-wrap: break-word;
+            word-break: break-word;
+            white-space: pre-wrap;
+            display: inline-block;
+            max-width: 100%;
+        }
         .similar-report-indicator {
             background-color: #fff3cd;
             border: 1px solid #ffeaa7;
@@ -514,11 +522,18 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
           <div class="modal-body">
-              <div class="detail-content">
-                  <strong>Floor:</strong> <span id="modalFloor">N/A</span><br>
-                  <strong>Room:</strong> <span id="modalRoom">N/A</span><br>
-                  <strong>Description:</strong> <span id="modalDescription">N/A</span>
-              </div>
+            <div class="detail-content">
+                <div class="mb-2">
+                    <strong>Floor:</strong> <span id="modalFloor">N/A</span>
+                </div>
+                <div class="mb-2">
+                    <strong>Room:</strong> <span id="modalRoom">N/A</span>
+                </div>
+                <div>
+                    <strong>Description:</strong><br>
+                    <span id="modalDescription" class="d-block mt-1">N/A</span>
+                </div>
+            </div>
             </div>
             <div class="modal-footer justify-content-end">
               <form action="viewImage" method="get" target="_blank">
