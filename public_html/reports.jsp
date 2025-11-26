@@ -1037,7 +1037,14 @@ $('#generate-report').on('click', function() {
             addFooter(i);
         }
 
-        pdf.save('FMO_Reports_Dashboard_' + new Date().toISOString().split('T')[0] + '.pdf');
+         // Open PDF in new tab with filename
+        const pdfBlob = pdf.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const newWindow = window.open(pdfUrl, '_blank');
+        
+        
+        // Clean up the URL after a delay to prevent memory leaks
+        setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
     }
 });
 
