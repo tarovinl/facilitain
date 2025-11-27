@@ -169,9 +169,9 @@ public class reportClientController extends HttpServlet {
             if ("N/A".equals(floorNo)) {
                 equipmentQuery = 
                     "SELECT DISTINCT c.NAME " +
-                    "FROM C##FMO_ADM.FMO_ITEMS i " +
-                    "JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID " +
-                    "JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID " +
+                    "FROM FMO_ADM.FMO_ITEMS i " +
+                    "JOIN FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID " +
+                    "JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID " +
                     "WHERE i.LOCATION_ID = ? " +
                     "AND i.ITEM_STAT_ID != 2 " +
                     "AND t.ACTIVE_FLAG = 1 " +
@@ -181,9 +181,9 @@ public class reportClientController extends HttpServlet {
                 // Query for specific floor
                 equipmentQuery = 
                     "SELECT DISTINCT c.NAME " +
-                    "FROM C##FMO_ADM.FMO_ITEMS i " +
-                    "JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID " +
-                    "JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID " +
+                    "FROM FMO_ADM.FMO_ITEMS i " +
+                    "JOIN FMO_ADM.FMO_ITEM_TYPES t ON i.ITEM_TYPE_ID = t.ITEM_TYPE_ID " +
+                    "JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON t.ITEM_CAT_ID = c.ITEM_CAT_ID " +
                     "WHERE i.LOCATION_ID = ? " +
                     "AND i.FLOOR_NO = ? " +
                     "AND i.ITEM_STAT_ID != 2 " +
