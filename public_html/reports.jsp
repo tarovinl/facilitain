@@ -45,6 +45,14 @@
             border-radius: 4px;
             margin: 0.5rem 0;
         }
+
+        .detail-content span {
+            word-wrap: break-word;
+            word-break: break-word;
+            white-space: pre-wrap;
+            display: inline-block;
+            max-width: 100%;
+        }
         .similar-report-indicator {
             background-color: #fff3cd;
             border: 1px solid #ffeaa7;
@@ -513,18 +521,29 @@
         <h5 class="modal-title" id="detailsModalLabel">Report Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <div class="detail-content">
-            <strong>Floor:</strong> <span id="modalFloor">N/A</span><br>
-            <strong>Room:</strong> <span id="modalRoom">N/A</span><br>
-            <strong>Description:</strong> <span id="modalDescription">N/A</span><br>
-            <form action="viewImage" method="get" target="_blank" class="mt-2">
-                <input type="hidden" name="reportId" id="modalReportId">
-                <button type="submit" class="btn btn-link p-0">View Proof</button>
-            </form>
+          <div class="modal-body">
+            <div class="detail-content">
+                <div class="mb-2">
+                    <strong>Floor:</strong> <span id="modalFloor">N/A</span>
+                </div>
+                <div class="mb-2">
+                    <strong>Room:</strong> <span id="modalRoom">N/A</span>
+                </div>
+                <div>
+                    <strong>Description:</strong><br>
+                    <span id="modalDescription" class="d-block mt-1">N/A</span>
+                </div>
+            </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+              <form action="viewImage" method="get" target="_blank">
+                  <input type="hidden" name="reportId" id="modalReportId">
+                  <button type="submit" class="btn btn-primary">
+                      <i class="bi bi-image"></i> View Image Proof
+                  </button>
+              </form>
+            </div>
         </div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -1037,7 +1056,14 @@ $('#generate-report').on('click', function() {
             addFooter(i);
         }
 
-        pdf.save('FMO_Reports_Dashboard_' + new Date().toISOString().split('T')[0] + '.pdf');
+         // Open PDF in new tab with filename
+        const pdfBlob = pdf.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const newWindow = window.open(pdfUrl, '_blank');
+        
+        
+        // Clean up the URL after a delay to prevent memory leaks
+        setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
     }
 });
 
