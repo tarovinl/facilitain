@@ -117,6 +117,16 @@
             padding-bottom: 2.5rem;
             margin-top: 1rem;
         }
+        
+        .detail-content strong {
+            font-family: 'NeueHaasMedium', sans-serif !important;
+            font-weight: 600;
+        }
+
+        .detail-content span {
+            font-family: 'NeueHaasLight', sans-serif !important;
+            font-weight: normal !important;
+        }
 
         .table-responsive {
             border: none;
@@ -523,15 +533,15 @@
       </div>
           <div class="modal-body">
             <div class="detail-content">
-                <div class="mb-2">
-                    <strong>Floor:</strong> <span id="modalFloor">N/A</span>
+                 <div class="mb-2">
+                    <strong>Floor:</strong> <span id="modalFloor" style="font-weight: normal;">N/A</span>
                 </div>
                 <div class="mb-2">
-                    <strong>Room:</strong> <span id="modalRoom">N/A</span>
+                    <strong>Room:</strong> <span id="modalRoom" style="font-weight: normal;">N/A</span>
                 </div>
                 <div>
                     <strong>Description:</strong><br>
-                    <span id="modalDescription" class="d-block mt-1">N/A</span>
+                    <span id="modalDescription" class="d-block mt-1" style="font-weight: normal;">N/A</span>
                 </div>
             </div>
             </div>
