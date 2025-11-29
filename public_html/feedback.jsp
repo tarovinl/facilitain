@@ -277,7 +277,7 @@
             const pageHeight = pdf.internal.pageSize.getHeight();
             const margin = 15;
             let yPosition = 20;
-
+        
             // Get current date and time
             const now = new Date();
             const reportDate = now.toLocaleDateString('en-US', { 
@@ -290,37 +290,33 @@
                 minute: '2-digit',
                 hour12: true 
             });
-
+        
             // Helper function to check if we need a new page
             function checkPageBreak(requiredSpace) {
                 if (yPosition + requiredSpace > pageHeight - margin - 20) {
                     pdf.addPage();
-                    yPosition = margin;
+                    yPosition = margin + 30; // Account for header on new pages
                     return true;
                 }
                 return false;
             }
-
-            // Helper function to draw table with custom column widths
-            function drawTable(headers, data, startY, isMonthlyTable = false) {
+        
+            
+            function drawTable(headers, data, startY, columnWidths = null) {
                 const tableWidth = pageWidth - (2 * margin);
-                let columnWidths;
                 
-                if (isMonthlyTable) {
-                    // For monthly satisfaction rates: wider columns
-                    columnWidths = [50, 130]; // Month: 50mm, Satisfaction Rate: 130mm
-                } else {
-                    // For feedback table: custom widths
-                    // Rating, Room, Location, Suggestions, Equipment, Date
-                    columnWidths = [10, 35, 35, 45, 30, 25]; // Total = 180
+                // If no custom widths provided, distribute evenly
+                if (!columnWidths) {
+                    const colWidth = tableWidth / headers.length;
+                    columnWidths = Array(headers.length).fill(colWidth);
                 }
                 
                 const rowHeight = 8;
                 let currentY = startY;
-
-                // Draw header with dark grey background
-                pdf.setFillColor(51, 51, 51);
-                pdf.setTextColor(255, 255, 255);
+        
+                // Draw header with dark grey background 
+                pdf.setFillColor(51, 51, 51); // Dark grey color
+                pdf.setTextColor(255, 255, 255); // White text
                 pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
                 
                 pdf.setFontSize(9);
@@ -332,15 +328,16 @@
                 });
                 
                 currentY += rowHeight;
-                pdf.setTextColor(0, 0, 0);
-
-                // Draw data rows
+                pdf.setTextColor(0, 0, 0); // Black text for data
+        
+                // Draw data rows with alternating colors
                 pdf.setFontSize(8);
                 pdf.setFont('helvetica', 'normal');
                 data.forEach((row, rowIndex) => {
+                    // Check if we need a new page
                     if (currentY + rowHeight > pageHeight - margin - 20) {
                         pdf.addPage();
-                        currentY = margin;
+                        currentY = margin + 30;
                         
                         // Redraw header on new page
                         pdf.setFillColor(51, 51, 51);
@@ -358,13 +355,13 @@
                         pdf.setFontSize(8);
                         pdf.setFont('helvetica', 'normal');
                     }
-
-                    // Alternate row colors
+        
+                    // Alternate row colors (light grey for even rows)
                     if (rowIndex % 2 === 0) {
                         pdf.setFillColor(245, 245, 245);
                         pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
                     }
-
+        
                     // Draw cell borders and text
                     xPos = margin;
                     row.forEach((cell, i) => {
@@ -373,7 +370,7 @@
                         let cellText = String(cell);
                         const colWidth = columnWidths[i];
                         
-                        // Less aggressive truncation (approximately 3.5 chars per mm at font size 8)
+                        // Truncate text if too long for column
                         const maxChars = Math.floor(colWidth / 1.5);
                         if (cellText.length > maxChars) {
                             cellText = cellText.substring(0, maxChars - 3) + '...';
@@ -385,10 +382,10 @@
                     
                     currentY += rowHeight;
                 });
-
+        
                 return currentY;
             }
-
+        
             // Helper function to add footer
             function addFooter() {
                 const footerY = pageHeight - 10;
@@ -396,75 +393,83 @@
                 pdf.setFont('helvetica', 'italic');
                 pdf.setTextColor(128, 128, 128);
                 
+                // Generated on text on the left
                 pdf.text('Generated on: ' + reportDate + ' at ' + reportTime, margin, footerY);
-                pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'left' });
+                
+                // Organization name centered
+                pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'center' });
             }
-
-            // Load and add logo
+        
+            // Load and add logo 
             const logoImg = new Image();
             logoImg.src = './resources/images/USTLogo2.png';
             
             logoImg.onload = function() {
+                // Add dark header background 
+                pdf.setFillColor(51, 51, 51);
+                pdf.rect(0, 0, pageWidth, 25, 'F');
+        
+                // Add logo to header
                 const imgWidth = logoImg.width;
                 const imgHeight = logoImg.height;
                 const aspectRatio = imgWidth / imgHeight;
-                
-                const logoHeight = 25;
+                const logoHeight = 13;
                 const logoWidth = logoHeight * aspectRatio;
                 
-                pdf.addImage(logoImg, 'PNG', margin, margin, logoWidth, logoHeight);
-
-                yPosition = margin + logoHeight + 5;
+                pdf.addImage(logoImg, 'PNG', margin, 6, logoWidth, logoHeight);
+        
+                // Adjust yPosition to account for header
+                yPosition = 35;
                 
                 generatePDFContent();
             };
             
             logoImg.onerror = function() {
+                // If logo fails to load, continue without it
                 yPosition = margin;
                 generatePDFContent();
             };
             
             function generatePDFContent() {
-                pdf.setFontSize(20);
-                pdf.setFont('helvetica', 'bold');
-                pdf.text('University of Santo Tomas', pageWidth / 2, yPosition, { align: 'center' });
-                yPosition += 8;
-                
+                // Title 
                 pdf.setFontSize(16);
                 pdf.setFont('helvetica', 'bold');
+                pdf.setTextColor(0, 0, 0);
                 pdf.text('Facilities Management Office - Feedback Report', pageWidth / 2, yPosition, { align: 'center' });
-                yPosition += 15;
-
+                yPosition += 12;
+        
                 // SECTION 1: Monthly Satisfaction Rates for Current Year
                 checkPageBreak(50);
                 pdf.setFontSize(14);
                 pdf.setFont('helvetica', 'bold');
                 pdf.text('Monthly Satisfaction Rates (Current Year)', margin, yPosition);
                 yPosition += 8;
-
+        
                 const satisfactionData = ${not empty satisfactionRates ? 'true' : 'false'};
                 if (satisfactionData) {
                     const monthlyData = [];
                     <c:forEach var="rate" items="${satisfactionRates}">
                     monthlyData.push(['${rate[0]}', '${rate[1]}']);
                     </c:forEach>
-                    yPosition = drawTable(['Month', 'Satisfaction Rate'], monthlyData, yPosition, true);
+                    // Use full table width, divided equally
+                    const tableWidth = pageWidth - (2 * margin);
+                    yPosition = drawTable(['Month', 'Satisfaction Rate'], monthlyData, yPosition, [tableWidth/2, tableWidth/2]);
                 } else {
                     pdf.setFontSize(10);
                     pdf.setFont('helvetica', 'normal');
                     pdf.text('No satisfaction data available', margin + 5, yPosition);
                     yPosition += 6;
                 }
-
+        
                 yPosition += 10;
-
+        
                 // SECTION 2: Last 10 Recent Feedbacks
                 checkPageBreak(50);
                 pdf.setFontSize(14);
                 pdf.setFont('helvetica', 'bold');
                 pdf.text('Recent Feedback (Last 10)', margin, yPosition);
                 yPosition += 8;
-
+        
                 const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
                 
                 if (feedbackRows.length === 0) {
@@ -488,31 +493,33 @@
                         feedbackData.push([rating, room, location, suggestions, equipment, date]);
                     }
                     
+                    // Custom column widths for better fit
+                    // Rating (small), Room, Location, Suggestions (largest), Equipment, Date
+                    const feedbackWidths = [18, 28, 32, 40, 32, 30];
                     yPosition = drawTable(
                         ['Rating', 'Room', 'Location', 'Suggestions', 'Equipment', 'Date'], 
                         feedbackData, 
                         yPosition,
-                        false
+                        feedbackWidths
                     );
                 }
-
+        
                 // Add footer to all pages
                 const totalPages = pdf.internal.getNumberOfPages();
                 for (let i = 1; i <= totalPages; i++) {
                     pdf.setPage(i);
                     addFooter();
                 }
-
-                  // Open PDF in new tab with filename
-        const pdfBlob = pdf.output('blob');
-        const pdfUrl = URL.createObjectURL(pdfBlob);
-        const newWindow = window.open(pdfUrl, '_blank');
         
-        
-        // Clean up the URL after a delay to prevent memory leaks
-        setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+                // Open PDF in new tab
+                const pdfBlob = pdf.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                const newWindow = window.open(pdfUrl, '_blank');
+                
+                // Clean up the URL after a delay to prevent memory leaks
+                setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
             }
-        });
+});
         
         // QR Code download functionality
         document.getElementById('generateQRBtn').addEventListener('click', function() {

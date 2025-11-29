@@ -840,22 +840,22 @@ $('#generate-report').on('click', function() {
 
     // Helper function to check if we need a new page
     function checkPageBreak(requiredSpace) {
-        if (yPosition + requiredSpace > pageHeight - margin - 20) { // Extra space for footer
+        if (yPosition + requiredSpace > pageHeight - margin - 20) {
             pdf.addPage();
-            yPosition = margin;
+            yPosition = margin + 30; // Account for header on new pages
             return true;
         }
         return false;
     }
 
-    // Helper function to draw table
+    // Helper function
     function drawTable(headers, data, startY) {
         const tableWidth = pageWidth - (2 * margin);
         const colWidth = tableWidth / headers.length;
         const rowHeight = 8;
         let currentY = startY;
 
-        // Draw header with dark grey background (matching the buildingDashboard style)
+        // Draw header with dark grey background 
         pdf.setFillColor(51, 51, 51); // Dark grey color
         pdf.setTextColor(255, 255, 255); // White text
         pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
@@ -869,13 +869,13 @@ $('#generate-report').on('click', function() {
         currentY += rowHeight;
         pdf.setTextColor(0, 0, 0); // Black text for data
 
-        // Draw data rows
+        // Draw data rows with alternating colors
         pdf.setFont('helvetica', 'normal');
         data.forEach((row, rowIndex) => {
             // Check if we need a new page
             if (currentY + rowHeight > pageHeight - margin - 20) {
                 pdf.addPage();
-                currentY = margin;
+                currentY = margin + 30;
                 
                 // Redraw header on new page
                 pdf.setFillColor(51, 51, 51);
@@ -890,7 +890,7 @@ $('#generate-report').on('click', function() {
                 pdf.setFont('helvetica', 'normal');
             }
 
-            // Alternate row colors
+            // Alternate row colors (light grey for even rows)
             if (rowIndex % 2 === 0) {
                 pdf.setFillColor(245, 245, 245);
                 pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
@@ -909,7 +909,7 @@ $('#generate-report').on('click', function() {
     }
 
     // Helper function to add footer with generation date
-    function addFooter(pageNum) {
+    function addFooter() {
         const footerY = pageHeight - 10;
         pdf.setFontSize(8);
         pdf.setFont('helvetica', 'italic');
@@ -922,23 +922,26 @@ $('#generate-report').on('click', function() {
         pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'left' });
     }
 
-    // Load and add logo with proper aspect ratio
+    // Load and add logo 
     const logoImg = new Image();
     logoImg.src = './resources/images/USTLogo2.png';
     
     logoImg.onload = function() {
+        // Add dark header background 
+        pdf.setFillColor(51, 51, 51);
+        pdf.rect(0, 0, pageWidth, 25, 'F');
+
+        // Add logo to header
         const imgWidth = logoImg.width;
         const imgHeight = logoImg.height;
         const aspectRatio = imgWidth / imgHeight;
-        
-        // Set desired height and calculate width based on aspect ratio
-        const logoHeight = 25;
+        const logoHeight = 13;
         const logoWidth = logoHeight * aspectRatio;
         
-        pdf.addImage(logoImg, 'PNG', margin, margin, logoWidth, logoHeight);
+        pdf.addImage(logoImg, 'PNG', margin, 6, logoWidth, logoHeight);
 
-        // Add header - adjust yPosition to account for logo
-        yPosition = margin + logoHeight + 5;
+        // Adjust yPosition to account for header
+        yPosition = 35;
         
         generatePDFContent();
     };
@@ -950,15 +953,12 @@ $('#generate-report').on('click', function() {
     };
     
     function generatePDFContent() {
-        pdf.setFontSize(20);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('University of Santo Tomas', pageWidth / 2, yPosition, { align: 'center' });
-        yPosition += 8;
-        
+        // Title 
         pdf.setFontSize(16);
         pdf.setFont('helvetica', 'bold');
+        pdf.setTextColor(0, 0, 0);
         pdf.text('Facilities Management Office - Reports Dashboard', pageWidth / 2, yPosition, { align: 'center' });
-        yPosition += 15;
+        yPosition += 12;
 
         // Calculate statistics
         const reportRows = document.querySelectorAll('#reportsTable tbody tr');
@@ -1063,14 +1063,13 @@ $('#generate-report').on('click', function() {
         const totalPages = pdf.internal.getNumberOfPages();
         for (let i = 1; i <= totalPages; i++) {
             pdf.setPage(i);
-            addFooter(i);
+            addFooter();
         }
 
-         // Open PDF in new tab with filename
+        // Open PDF in new tab
         const pdfBlob = pdf.output('blob');
         const pdfUrl = URL.createObjectURL(pdfBlob);
         const newWindow = window.open(pdfUrl, '_blank');
-        
         
         // Clean up the URL after a delay to prevent memory leaks
         setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
