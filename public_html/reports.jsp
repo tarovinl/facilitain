@@ -596,7 +596,7 @@ function drawLocationChart() {
     ]);
 
     const options = {
-        title: 'Top 5 Most Reported Locations',
+        title: '',
         hAxis: { 
             title: 'Number of Reports',
             minValue: 0
@@ -842,13 +842,13 @@ $('#generate-report').on('click', function() {
     function checkPageBreak(requiredSpace) {
         if (yPosition + requiredSpace > pageHeight - margin - 20) {
             pdf.addPage();
-            yPosition = margin + 30; // Account for header on new pages
+            yPosition = margin + 30;
             return true;
         }
         return false;
     }
 
-    // Helper function
+    // Helper function to draw table
     function drawTable(headers, data, startY) {
         const tableWidth = pageWidth - (2 * margin);
         const colWidth = tableWidth / headers.length;
@@ -856,8 +856,8 @@ $('#generate-report').on('click', function() {
         let currentY = startY;
 
         // Draw header with dark grey background 
-        pdf.setFillColor(51, 51, 51); // Dark grey color
-        pdf.setTextColor(255, 255, 255); // White text
+        pdf.setFillColor(51, 51, 51);
+        pdf.setTextColor(255, 255, 255);
         pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
         
         pdf.setFontSize(10);
@@ -867,12 +867,11 @@ $('#generate-report').on('click', function() {
         });
         
         currentY += rowHeight;
-        pdf.setTextColor(0, 0, 0); // Black text for data
+        pdf.setTextColor(0, 0, 0);
 
-        // Draw data rows with alternating colors
+        // Draw data rows
         pdf.setFont('helvetica', 'normal');
         data.forEach((row, rowIndex) => {
-            // Check if we need a new page
             if (currentY + rowHeight > pageHeight - margin - 20) {
                 pdf.addPage();
                 currentY = margin + 30;
@@ -890,7 +889,7 @@ $('#generate-report').on('click', function() {
                 pdf.setFont('helvetica', 'normal');
             }
 
-            // Alternate row colors (light grey for even rows)
+            // Alternate row colors
             if (rowIndex % 2 === 0) {
                 pdf.setFillColor(245, 245, 245);
                 pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
@@ -908,17 +907,14 @@ $('#generate-report').on('click', function() {
         return currentY;
     }
 
-    // Helper function to add footer with generation date
+    // Helper function to add footer
     function addFooter() {
         const footerY = pageHeight - 10;
         pdf.setFontSize(8);
         pdf.setFont('helvetica', 'italic');
         pdf.setTextColor(128, 128, 128);
         
-        // Generated on text on the left
         pdf.text('Generated on: ' + reportDate + ' at ' + reportTime, margin, footerY);
-        
-        // Organization name centered
         pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'left' });
     }
 
@@ -940,14 +936,12 @@ $('#generate-report').on('click', function() {
         
         pdf.addImage(logoImg, 'PNG', margin, 6, logoWidth, logoHeight);
 
-        // Adjust yPosition to account for header
         yPosition = 35;
         
         generatePDFContent();
     };
     
     logoImg.onerror = function() {
-        // If logo fails to load, continue without it
         yPosition = margin;
         generatePDFContent();
     };
@@ -1013,8 +1007,8 @@ $('#generate-report').on('click', function() {
 
         yPosition += 10;
 
-        // SECTION 2: Top 10 Unresolved Reports by Equipment Type
-        checkPageBreak(50);
+        // SECTION 2: Top 10 Unresolved Reports by Equipment Type (with PIE CHART)
+        checkPageBreak(80);
         pdf.setFontSize(14);
         pdf.setFont('helvetica', 'bold');
         pdf.text('Top 10 Unresolved Reports by Equipment Type', margin, yPosition);
@@ -1022,57 +1016,190 @@ $('#generate-report').on('click', function() {
 
         const unresolvedEquipmentData = ${not empty top10UnresolvedEquipment ? 'true' : 'false'};
         if (unresolvedEquipmentData) {
-            const equipmentData = [];
-            let rank = 1;
-            <c:forEach var="equipData" items="${top10UnresolvedEquipment}">
-            equipmentData.push([rank, '${equipData.key}', '${equipData.value}']);
-            rank++;
-            </c:forEach>
-            yPosition = drawTable(['Rank', 'Equipment Type', 'Unresolved Reports'], equipmentData, yPosition);
+            // Temporarily redraw chart without pagination for PDF
+            const pieChartDiv = document.getElementById('equipmentChart');
+            
+            // Store original chart
+            const originalChart = equipmentChart;
+            
+            // Redraw chart without legend pagination
+            const data = google.visualization.arrayToDataTable([
+                ['Equipment Type', 'Number of Reports'],
+                <c:forEach var="equipmentData" items="${equipmentReports}">
+                    ['${equipmentData.key}', ${equipmentData.value}],
+                </c:forEach>
+            ]);
+
+            const pdfOptions = {
+                pieHole: 0.4,
+                colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#c7ecee', '#778beb', '#f8a5c2'],
+                legend: { 
+                    position: 'right',
+                    textStyle: { fontSize: 10 },
+                    maxLines: 10
+                },
+                chartArea: { left: 20, top: 30, width: '90%', height: '100%' }
+            };
+
+            const tempChart = new google.visualization.PieChart(pieChartDiv);
+            
+            // Wait for chart to be drawn before capturing
+            google.visualization.events.addListener(tempChart, 'ready', function() {
+                html2canvas(pieChartDiv, {
+                    backgroundColor: '#ffffff',
+                    scale: 2
+                }).then(canvas => {
+                    const pieImgData = canvas.toDataURL('image/png');
+                    const pieChartY = yPosition;
+                    const pieChartHeight = 70;
+                    const pieChartWidth = 110;
+                    const pieChartX = (pageWidth - pieChartWidth) / 2;
+                    
+                    pdf.addImage(pieImgData, 'PNG', pieChartX, pieChartY, pieChartWidth, pieChartHeight);
+
+                    yPosition = pieChartY + pieChartHeight + 5;
+                    
+                    // Restore original chart
+                    drawEquipmentChart();
+
+                    // Add equipment table below pie chart
+                    const equipmentData = [];
+                    let rank = 1;
+                    <c:forEach var="equipData" items="${top10UnresolvedEquipment}">
+                    equipmentData.push([rank, '${equipData.key}', '${equipData.value}']);
+                    rank++;
+                    </c:forEach>
+                    yPosition = drawTable(['Rank', 'Equipment Type', 'Unresolved Reports'], equipmentData, yPosition);
+                    yPosition += 10;
+
+                    // SECTION 3: Top 5 Most Reported Locations 
+                   checkPageBreak(100);
+                    pdf.setFontSize(14);
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.text('Top 5 Most Reported Locations', margin, yPosition);
+                    yPosition += 15;
+
+                    const locationReportsData = ${not empty locationReports ? 'true' : 'false'};
+                    if (locationReportsData) {
+                        // Capture bar chart as image
+                        const barChartDiv = document.getElementById('locationChart');
+                        html2canvas(barChartDiv, {
+                            backgroundColor: '#ffffff',
+                            scale: 2
+                        }).then(barCanvas => {
+                            const barImgData = barCanvas.toDataURL('image/png');
+                            const barChartY = yPosition;
+                            const barChartHeight = 70;
+                            const barChartWidth = 150;
+                            const barChartX = (pageWidth - barChartWidth) / 2 + 20;
+                            
+                            pdf.addImage(barImgData, 'PNG', barChartX, barChartY, barChartWidth, barChartHeight);
+
+                            yPosition = barChartY + barChartHeight + 5;
+
+                            // Add All Reports by Location table below bar chart
+                            checkPageBreak(50);
+                            pdf.setFontSize(14);
+                            pdf.setFont('helvetica', 'bold');
+                            pdf.text('All Reports by Location', margin, yPosition);
+                            yPosition += 8;
+
+                            const allLocationReportsData = ${not empty allLocationReports ? 'true' : 'false'};
+                            if (allLocationReportsData) {
+                                const locationData = [];
+                                <c:forEach var="locData" items="${allLocationReports}">
+                                locationData.push(['${locData.key}', '${locData.value}']);
+                                </c:forEach>
+                                yPosition = drawTable(['Location', 'Reports'], locationData, yPosition);
+                            } else {
+                                pdf.setFontSize(10);
+                                pdf.setFont('helvetica', 'normal');
+                                pdf.text('No location data available', margin + 5, yPosition);
+                                yPosition += 6;
+                            }
+
+                            // Add footer to all pages
+                            const totalPages = pdf.internal.getNumberOfPages();
+                            for (let i = 1; i <= totalPages; i++) {
+                                pdf.setPage(i);
+                                addFooter();
+                            }
+
+                            // Open PDF in new tab
+                            const pdfBlob = pdf.output('blob');
+                            const pdfUrl = URL.createObjectURL(pdfBlob);
+                            const newWindow = window.open(pdfUrl, '_blank');
+                            
+                            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+                        });
+                    } else {
+                        pdf.setFontSize(10);
+                        pdf.setFont('helvetica', 'normal');
+                        pdf.text('No location data available', margin + 5, yPosition);
+                        yPosition += 6;
+
+                        // Add footer to all pages
+                        const totalPages = pdf.internal.getNumberOfPages();
+                        for (let i = 1; i <= totalPages; i++) {
+                            pdf.setPage(i);
+                            addFooter();
+                        }
+
+                        // Open PDF in new tab
+                        const pdfBlob = pdf.output('blob');
+                        const pdfUrl = URL.createObjectURL(pdfBlob);
+                        const newWindow = window.open(pdfUrl, '_blank');
+                        
+                        setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+                    }
+                });
+            });
+            
+            // Draw the modified chart
+            tempChart.draw(data, pdfOptions);
         } else {
             pdf.setFontSize(10);
             pdf.setFont('helvetica', 'normal');
             pdf.text('No unresolved reports', margin + 5, yPosition);
             yPosition += 6;
+
+            // Continue with location section
+            yPosition += 10;
+
+            checkPageBreak(50);
+            pdf.setFontSize(14);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Top 5 Most Reported Locations', margin, yPosition);
+            yPosition += 8;
+
+            const locationReportsData = ${not empty allLocationReports ? 'true' : 'false'};
+            if (locationReportsData) {
+                const locationData = [];
+                <c:forEach var="locData" items="${allLocationReports}">
+                locationData.push(['${locData.key}', '${locData.value}']);
+                </c:forEach>
+                yPosition = drawTable(['Location', 'Reports'], locationData, yPosition);
+            } else {
+                pdf.setFontSize(10);
+                pdf.setFont('helvetica', 'normal');
+                pdf.text('No location data available', margin + 5, yPosition);
+                yPosition += 6;
+            }
+
+            // Add footer to all pages
+            const totalPages = pdf.internal.getNumberOfPages();
+            for (let i = 1; i <= totalPages; i++) {
+                pdf.setPage(i);
+                addFooter();
+            }
+
+            // Open PDF in new tab
+            const pdfBlob = pdf.output('blob');
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            const newWindow = window.open(pdfUrl, '_blank');
+            
+            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
         }
-
-        yPosition += 10;
-
-        // SECTION 3: All Reports by Location
-        checkPageBreak(50);
-        pdf.setFontSize(14);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('All Reports by Location', margin, yPosition);
-        yPosition += 8;
-
-        const locationReportsData = ${not empty allLocationReports ? 'true' : 'false'};
-        if (locationReportsData) {
-            const locationData = [];
-            <c:forEach var="locData" items="${allLocationReports}">
-            locationData.push(['${locData.key}', '${locData.value}']);
-            </c:forEach>
-            yPosition = drawTable(['Location', 'Reports'], locationData, yPosition);
-        } else {
-            pdf.setFontSize(10);
-            pdf.setFont('helvetica', 'normal');
-            pdf.text('No location data available', margin + 5, yPosition);
-            yPosition += 6;
-        }
-
-        // Add footer to all pages
-        const totalPages = pdf.internal.getNumberOfPages();
-        for (let i = 1; i <= totalPages; i++) {
-            pdf.setPage(i);
-            addFooter();
-        }
-
-        // Open PDF in new tab
-        const pdfBlob = pdf.output('blob');
-        const pdfUrl = URL.createObjectURL(pdfBlob);
-        const newWindow = window.open(pdfUrl, '_blank');
-        
-        // Clean up the URL after a delay to prevent memory leaks
-        setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
     }
 });
 
