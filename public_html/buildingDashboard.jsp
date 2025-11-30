@@ -173,10 +173,7 @@ function generateReport() {
         format: 'a4'
     });
 
-    // Get location name from JSP variable
     const locName = '${locName}';
-
-    // Get current date and time
     const now = new Date();
     const reportDate = now.toLocaleDateString('en-US', { 
         year: 'numeric', 
@@ -193,11 +190,10 @@ function generateReport() {
     doc.setFillColor(51, 51, 51);
     doc.rect(0, 0, 210, 25, 'F');
 
-    // Load logo
     const logoImg = new Image();
     logoImg.src = 'resources/images/USTLogo.png';
+    
     logoImg.onload = function() {
-        // Header logo
         doc.addImage(logoImg, 'PNG', 15, 5, 65, 13);
 
         const contentStartY = 30;
@@ -209,137 +205,165 @@ function generateReport() {
         doc.setTextColor(0, 0, 0);
         doc.text(locName, 105, contentStartY + 10, {align: 'center'});
 
-        // Subtitle
-        doc.setFont('helvetica', 'normal');
-        
-        // Add "Pending Maintenance" label above pie chart
+        // Pending Maintenance Section
         doc.setFontSize(14);
         doc.setFont(undefined, 'bold');
         doc.text("Pending Maintenance", 105, contentStartY + 25, {align: 'center'});
         doc.setFont(undefined, 'normal');
 
-        // Fetch table data from servlet (instead of pie chart)
-        fetch('reportpieservlet?locID=' + locIDajax)
-            .then(response => response.json())
-            .then(dataList => {
-                const tableStartY = contentStartY + 35;
+        // Capture pie chart as image
+         const pieChartDiv = document.getElementById('pendingMainChart');
+        html2canvas(pieChartDiv, {
+            backgroundColor: '#ffffff',
+            scale: 2
+        }).then(canvas => {
+            const pieImgData = canvas.toDataURL('image/png');
+            const pieChartY = contentStartY + 30;
+            const pieChartHeight = 65;
+            const pieChartWidth = 175;
+            const pieChartX = (210 - pieChartWidth) / 2;
+            
+            doc.addImage(pieImgData, 'PNG', pieChartX, pieChartY, pieChartWidth, pieChartHeight);
 
-                if (!Array.isArray(dataList) || dataList.length === 0) {
-                    doc.setFontSize(12);
-                    doc.setTextColor(100, 100, 100);
-                    doc.text("No pending maintenance data available.", 105, tableStartY + 5, {align: 'center'});
-                } else {
-                    // Build table data
-                    const bodyData = dataList.map(item => [
-                        item.category,
-                        item.count
-                    ]);
-    
-                    // Add Pending Maintenance Table
-                    doc.autoTable({
-                        startY: tableStartY,
-                        margin: { left: 20, right: 20 },
-                        head: [["Category", "Number of Equipment Pending Maintenance"]],
-                        body: bodyData,
-                        theme: 'grid',
-                        headStyles: {
-                            fillColor: [51, 51, 51],
-                            textColor: [255, 255, 255],
-                            fontStyle: 'bold'
-                        },
-                        styles: {
-                            cellPadding: 5,
-                            fontSize: 11,
-                            valign: 'middle'
-                        },
-                        columnStyles: {
-                            0: { halign: 'left', cellWidth: 'auto' },
-                            1: { halign: 'center', cellWidth: 'auto' }
-                        }
-                    });
-                }
 
-                // --- Repairs per Month table ---
-                let afterPendingY = contentStartY + 60;
-                if (doc.lastAutoTable && doc.lastAutoTable.finalY) {
-                    afterPendingY = doc.lastAutoTable.finalY + 25;
-                }
-                doc.setTextColor(0, 0, 0);
-                doc.setFontSize(14);
-                doc.setFont(undefined, 'bold');
-                doc.text("Repairs per Month", 105, afterPendingY - 5, {align: 'center'});
-                doc.setFont(undefined, 'normal');
+            // Fetch table data for pending maintenance
+            fetch('reportpieservlet?locID=' + locIDajax)
+                .then(response => response.json())
+                .then(dataList => {
+                    const tableStartY = pieChartY + pieChartHeight + 5;
 
-                // Create repairs per month data array
-                const repairsData = [];
-                <c:forEach var="month" items="${monthsList}" varStatus="status">
-                    <c:set var="repairCount2" value="0" />
-                    <c:set var="monthNumber2" value="${status.index + 1}" />
-                    <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
-                        <c:if test="${repair.repairLocID == locID2}">
-                            <c:if test="${repair.repairYear == currentYear}">
-                                <c:if test="${repair.repairMonth == monthNumber2}">
-                                    <c:set var="repairCount2" value="${repair.repairCount}" />
-                                </c:if>
-                            </c:if>
-                        </c:if>
-                    </c:forEach>
-                    repairsData.push(['${month}', '${repairCount2}']);
-                </c:forEach>
+                    if (!Array.isArray(dataList) || dataList.length === 0) {
+                        doc.setFontSize(12);
+                        doc.setTextColor(100, 100, 100);
+                        doc.text("No pending maintenance data available.", 105, tableStartY + 5, {align: 'center'});
+                    } else {
+                        const bodyData = dataList.map(item => [
+                            item.category,
+                            item.count
+                        ]);
 
-                doc.autoTable({
-                    startY: afterPendingY,
-                    margin: {left: 20, right: 20, bottom: 25},
-                    head: [["Month", "Number of Repairs"]],
-                    body: repairsData,
-                    theme: 'grid',
-                    headStyles: {
-                        fillColor: [51, 51, 51],
-                        textColor: [255, 255, 255],
-                        fontStyle: 'bold'
-                    },
-                    styles: {
-                        cellPadding: 5,
-                        fontSize: 11,
-                        valign: 'middle'
-                    },
-                    columnStyles: {
-                        0: { halign: 'left', cellWidth: 'auto' },
-                        1: { halign: 'center', cellWidth: 'auto' }
+                        doc.autoTable({
+                            startY: tableStartY,
+                            margin: { left: 20, right: 20 },
+                            head: [["Category", "Number of Equipment Pending Maintenance"]],
+                            body: bodyData,
+                            theme: 'grid',
+                            headStyles: {
+                                fillColor: [51, 51, 51],
+                                textColor: [255, 255, 255],
+                                fontStyle: 'bold'
+                            },
+                            styles: {
+                                cellPadding: 5,
+                                fontSize: 11,
+                                valign: 'middle'
+                            },
+                            columnStyles: {
+                                0: { halign: 'left', cellWidth: 'auto' },
+                                1: { halign: 'center', cellWidth: 'auto' }
+                            }
+                        });
                     }
+
+                    // Repairs per Month Section
+                    let afterPendingY = tableStartY + 60;
+                    if (doc.lastAutoTable && doc.lastAutoTable.finalY) {
+                        afterPendingY = doc.lastAutoTable.finalY + 20;
+                    }
+
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.text("Repairs per Month", 105, afterPendingY, {align: 'center'});
+                    doc.setFont(undefined, 'normal');
+
+                    // Capture column chart as image
+                    const columnChartDiv = document.getElementById('repairNoChart');
+                    html2canvas(columnChartDiv, {
+                        backgroundColor: '#ffffff',
+                        scale: 2
+                    }).then(columnCanvas => {
+                        const columnImgData = columnCanvas.toDataURL('image/png');
+                        const columnChartY = afterPendingY + 5;
+                        const columnChartHeight = 60;
+                        const columnChartWidth = 120;
+                        const columnChartX = (210 - columnChartWidth) / 2;
+                        
+                        doc.addImage(columnImgData, 'PNG', columnChartX, columnChartY, columnChartWidth, columnChartHeight);
+
+                        // Repairs per month data table
+                        const repairsData = [];
+                        <c:forEach var="month" items="${monthsList}" varStatus="status">
+                            <c:set var="repairCount2" value="0" />
+                            <c:set var="monthNumber2" value="${status.index + 1}" />
+                            <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
+                                <c:if test="${repair.repairLocID == locID2}">
+                                    <c:if test="${repair.repairYear == currentYear}">
+                                        <c:if test="${repair.repairMonth == monthNumber2}">
+                                            <c:set var="repairCount2" value="${repair.repairCount}" />
+                                        </c:if>
+                                    </c:if>
+                                </c:if>
+                            </c:forEach>
+                            repairsData.push(['${month}', '${repairCount2}']);
+                        </c:forEach>
+
+                        const repairsTableY = columnChartY + columnChartHeight + 5;
+
+                        doc.autoTable({
+                            startY: repairsTableY,
+                            margin: {left: 20, right: 20, bottom: 25},
+                            head: [["Month", "Number of Repairs"]],
+                            body: repairsData,
+                            theme: 'grid',
+                            headStyles: {
+                                fillColor: [51, 51, 51],
+                                textColor: [255, 255, 255],
+                                fontStyle: 'bold'
+                            },
+                            styles: {
+                                cellPadding: 5,
+                                fontSize: 11,
+                                valign: 'middle'
+                            },
+                            columnStyles: {
+                                0: { halign: 'left', cellWidth: 'auto' },
+                                1: { halign: 'center', cellWidth: 'auto' }
+                            }
+                        });
+
+                        // Add footer
+                        const footerY = pageHeight - 10;
+                        doc.setFontSize(8);
+                        doc.setFont('helvetica', 'italic');
+                        doc.setTextColor(128, 128, 128);
+                        
+                        doc.text('Generated on: ' + reportDate + ' at ' + reportTime, 15, footerY);
+                        doc.text('University of Santo Tomas - Facilities Management Office', 105, footerY, { align: 'left' });
+
+                        // Generate PDF
+                        const pdfBlob = doc.output('blob');
+                        const pdfUrl = URL.createObjectURL(pdfBlob);
+                        const newWindow = window.open(pdfUrl, '_blank');
+                        
+                        if (newWindow) {
+                            newWindow.document.title = locName + '_Maintenance_Report.pdf';
+                        }
+                        
+                        setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error generating PDF:', error);
+                    alert('Error generating PDF. Please check console for details.');
                 });
-
-                // Add footer with generation date and time
-                const footerY = pageHeight - 10;
-                doc.setFontSize(8);
-                doc.setFont('helvetica', 'italic');
-                doc.setTextColor(128, 128, 128);
-                
-                // Generated on text on the left
-                doc.text('Generated on: ' + reportDate + ' at ' + reportTime, 15, footerY);
-                
-                // Organization name centered
-                doc.text('University of Santo Tomas - Facilities Management Office', 105, footerY, { align: 'left' });
-
-                // Generate PDF blob and open in new tab
-                const pdfBlob = doc.output('blob');
-                const pdfUrl = URL.createObjectURL(pdfBlob);
-                const newWindow = window.open(pdfUrl, '_blank');
-                
-                // Set the filename for when user downloads from the new tab
-                if (newWindow) {
-                    newWindow.document.title = locName + '_Maintenance_Report.pdf';
-                }
-                
-                // Clean up the URL after a delay
-                setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
-                            })
-            .catch(error => {
-                console.error('Error generating PDF:', error);
-                alert('Error generating PDF. Please check console for details.');
-            });
+        });
     };
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.buttonsBuilding:nth-child(2)').addEventListener('click', generateReport);
+});
 
 
 document.addEventListener('DOMContentLoaded', function() {
