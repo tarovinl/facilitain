@@ -450,7 +450,7 @@ public class mainController extends HttpServlet {
             // Check if any type in listTypes matches the category's itemCID
             boolean hasMatchingType = false;
             for (Item type : listTypes) {
-                if (type.getItemCID() == cat.getItemCID()) {
+                if (type.getItemCID() == cat.getItemCID() && type.getItemArchive() == 1) {
                     hasMatchingType = true;
                     break;
                 }
