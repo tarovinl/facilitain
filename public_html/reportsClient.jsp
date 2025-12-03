@@ -379,49 +379,55 @@
             }
             // Function to load rooms for locations that don't have floors
             function loadRoomsForNoFloor(locationId) {
-                const roomSelect = document.getElementById("room");
-                
-                // For locations without floors, we still try to load rooms
-                fetch('reportsClient?action=getRooms&locationId=' + locationId + '&floorNo=N/A')
-                    .then(response => response.json())
-                    .then(rooms => {
-                        roomSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
-                        
-                        if (rooms && rooms.length > 0) {
-                            rooms.forEach(room => {
-                                const option = document.createElement('option');
-                                option.value = room;
-                                option.textContent = room;
-                                roomSelect.appendChild(option);
-                            });
-                            roomSelect.disabled = false;
-                        } else {
-                            // No rooms either - add N/A option
-                            const option = document.createElement('option');
-                            option.value = 'N/A';
-                            option.textContent = 'No specific room (General area)';
-                            roomSelect.appendChild(option);
-                            roomSelect.disabled = false;
-                            roomSelect.value = 'N/A';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error loading rooms:', error);
-                        // On error, default to N/A
-                        roomSelect.innerHTML = '<option value="N/A">No specific room (General area)</option>';
-                        roomSelect.disabled = false;
-                        roomSelect.value = 'N/A';
-                    });
+    const roomSelect = document.getElementById("room");
+    
+    // For locations without floors, we still try to load rooms
+    fetch('reportsClient?action=getRooms&locationId=' + locationId + '&floorNo=N/A')
+        .then(response => response.json())
+        .then(rooms => {
+            // Always add "No specific room" as the first option
+            roomSelect.innerHTML = '';
+            
+            const naOption = document.createElement('option');
+            naOption.value = 'N/A';
+            naOption.textContent = 'No specific room (General area)';
+            naOption.selected = true; // Make it selected by default
+            roomSelect.appendChild(naOption);
+            
+            // Add other rooms if they exist
+            if (rooms && rooms.length > 0) {
+                rooms.forEach(room => {
+                    const option = document.createElement('option');
+                    option.value = room;
+                    option.textContent = room;
+                    roomSelect.appendChild(option);
+                });
             }
             
-            // Function to load rooms based on selected location and floor
-            function loadRooms() {
+            roomSelect.disabled = false;
+        })
+        .catch(error => {
+            console.error('Error loading rooms:', error);
+            // Even on error, provide the N/A option
+            roomSelect.innerHTML = '';
+            const naOption = document.createElement('option');
+            naOption.value = 'N/A';
+            naOption.textContent = 'No specific room (General area)';
+            naOption.selected = true;
+            roomSelect.appendChild(naOption);
+            roomSelect.disabled = false;
+        });
+}
+            
+       
+           // Function to load rooms based on selected location and floor
+function loadRooms() {
     const locationId = document.getElementById("location").value;
     const floorNo = document.getElementById("floor").value;
     const roomSelect = document.getElementById("room");
     
     // Reset room dropdown
-    roomSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
+    roomSelect.innerHTML = '<option value="" disabled>Select a room</option>';
     roomSelect.disabled = true;
     
     // Load equipment for the selected floor
@@ -437,8 +443,16 @@
         fetch('reportsClient?action=getRooms&locationId=' + locationId + '&floorNo=' + encodeURIComponent(floorNo))
             .then(response => response.json())
             .then(rooms => {
-                roomSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
+                // Always add "No specific room" as the first option
+                roomSelect.innerHTML = '';
                 
+                const naOption = document.createElement('option');
+                naOption.value = 'N/A';
+                naOption.textContent = 'No specific room (General floor area)';
+                naOption.selected = true; // Make it selected by default
+                roomSelect.appendChild(naOption);
+                
+                // Add other rooms if they exist
                 if (rooms && rooms.length > 0) {
                     rooms.forEach(room => {
                         const option = document.createElement('option');
@@ -446,19 +460,20 @@
                         option.textContent = room;
                         roomSelect.appendChild(option);
                     });
-                    roomSelect.disabled = false;
-                } else {
-                    const option = document.createElement('option');
-                    option.value = 'N/A';
-                    option.textContent = 'No specific room (General floor area)';
-                    roomSelect.appendChild(option);
-                    roomSelect.disabled = false;
-                    roomSelect.value = 'N/A';
                 }
+                
+                roomSelect.disabled = false;
             })
             .catch(error => {
                 console.error('Error loading rooms:', error);
-                roomSelect.innerHTML = '<option value="">Error loading rooms</option>';
+                // Even on error, provide the N/A option
+                roomSelect.innerHTML = '';
+                const naOption = document.createElement('option');
+                naOption.value = 'N/A';
+                naOption.textContent = 'No specific room (General floor area)';
+                naOption.selected = true;
+                roomSelect.appendChild(naOption);
+                roomSelect.disabled = false;
             });
     }
 }
