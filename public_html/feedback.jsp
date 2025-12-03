@@ -110,36 +110,51 @@
                 gap: 8px;
             }
             
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
+          .dataTables_wrapper .dataTables_paginate .paginate_button {
             padding: 0.5rem 1rem;
             margin: 0 2px;
-            border: 1px solid #dee2e6;
+            border: 1px solid #dee2e6 !important;
             border-radius: 4px;
-            background: white;
+            background: white !important;
             color: #0d6efd !important;
+            box-shadow: none !important;
         }
         
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-            background: #e9ecef;
-            border-color: #dee2e6;
+            background: #e9ecef !important;
+            border-color: #dee2e6 !important;
             color: #0d6efd !important;
+            box-shadow: none !important;
         }
         
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background: #0d6efd;
-            color: white !important;
-            border-color: #0d6efd;
-        }
-        
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
         .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-            background: #0d6efd;
+            background: #0d6efd !important;
             color: white !important;
-            border-color: #0d6efd;
+            border-color: #0d6efd !important;
+            box-shadow: none !important;
         }
         
-        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
             opacity: 0.5;
             cursor: not-allowed;
+            background: white !important;
+            border-color: #dee2e6 !important;
+        }
+        
+        /* Remove outer box from pagination */
+        .dataTables_wrapper .dataTables_paginate {
+            border: none !important;
+            background: none !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+        
+        .dataTables_wrapper .dataTables_paginate span {
+            border: none !important;
+            background: none !important;
+            padding: 0 !important;
         }
     </style>
 </head>
@@ -385,6 +400,10 @@
     // Helper function to add footer
     function addFooter() {
         const footerY = pageHeight - 10;
+        
+        pdf.setFillColor(255, 255, 255);
+        pdf.rect(0, footerY - 5, pageWidth, 15, 'F');
+        
         pdf.setFontSize(8);
         pdf.setFont('helvetica', 'italic');
         pdf.setTextColor(128, 128, 128);
