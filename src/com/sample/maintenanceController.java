@@ -121,13 +121,13 @@ public class maintenanceController extends HttpServlet {
     private boolean isDuplicateItemType(Connection conn, int itemTypeId, Integer excludeItemMsId) throws SQLException {
         String checkSql;
         if (excludeItemMsId != null) {
-            // For updates: check if item type exists in other schedules
+            // For updates: check if item type exists in other ACTIVE schedules
             checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
-                      "WHERE ITEM_TYPE_ID = ? AND ITEM_MS_ID != ?";
+                      "WHERE ITEM_TYPE_ID = ? AND ITEM_MS_ID != ? AND ARCHIVED_FLAG = 1";
         } else {
-            // For new entries: check if item type exists in any schedule
+            // For new entries: check if item type exists in any ACTIVE schedule
             checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
-                      "WHERE ITEM_TYPE_ID = ?";
+                      "WHERE ITEM_TYPE_ID = ? AND ARCHIVED_FLAG = 1";
         }
 
         try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
