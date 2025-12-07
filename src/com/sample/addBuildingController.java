@@ -154,7 +154,7 @@ public class addBuildingController extends HttpServlet {
      * @return true if duplicate exists, false otherwise
      */
     private boolean isDuplicateLocationName(Connection conn, String locationName) throws SQLException {
-        String checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE UPPER(NAME) = UPPER(?)";
+        String checkSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_LOCATIONS WHERE UPPER(NAME) = UPPER(?)";
         
         try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
             stmt.setString(1, locationName);

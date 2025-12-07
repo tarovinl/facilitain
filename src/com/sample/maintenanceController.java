@@ -141,16 +141,16 @@ public class maintenanceController extends HttpServlet {
         
     if (excludeItemMsId != null) {
             // For updates: check if item type exists in other schedules (excluding current record)
-            checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+            checkSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
                       "WHERE ITEM_TYPE_ID = ? AND ITEM_MS_ID != ?";
-            debugSql = "SELECT ITEM_MS_ID, ITEM_TYPE_ID, ARCHIVED_FLAG FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+            debugSql = "SELECT ITEM_MS_ID, ITEM_TYPE_ID, ARCHIVED_FLAG FROM FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
                       "WHERE ITEM_TYPE_ID = ? AND ITEM_MS_ID != ?";
             System.out.println("Checking for duplicates (UPDATE mode) - itemTypeId: " + itemTypeId + ", excludeItemMsId: " + excludeItemMsId);
         } else {
             // For new entries: check if item type exists in any schedule
-            checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+            checkSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
                       "WHERE ITEM_TYPE_ID = ?";
-            debugSql = "SELECT ITEM_MS_ID, ITEM_TYPE_ID, ARCHIVED_FLAG FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+            debugSql = "SELECT ITEM_MS_ID, ITEM_TYPE_ID, ARCHIVED_FLAG FROM FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
                       "WHERE ITEM_TYPE_ID = ?";
             System.out.println("Checking for duplicates (INSERT mode) - itemTypeId: " + itemTypeId);
         }
