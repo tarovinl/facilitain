@@ -493,49 +493,64 @@ function loadRooms() {
 
         // Image preview functions
         function handleImageSelect(event) {
-            const file = event.target.files[0];
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            const preview = document.getElementById('imagePreview');
-            const label = document.getElementById('fileUploadLabel');
-            const errorDiv = document.getElementById('imageUploadError');
-            
-            // Clear any previous error messages
-            errorDiv.textContent = '';
-            
-            if (file) {
-                // Validate file type
-                if (!file.type.startsWith('image/')) {
-                    errorDiv.textContent = 'Only image files are allowed.';
-                    resetImageUpload();
-                    return;
-                }
-                
-                // Validate file size (5MB = 5 * 1024 * 1024 bytes)
-                if (file.size > 5 * 1024 * 1024) {
-                    errorDiv.textContent = 'Image size must be below 5MB.';
-                    resetImageUpload();
-                    return;
-                }
-                
-                // Create image preview
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    previewContainer.style.display = 'block';
-                    
-                    // Update label appearance
-                    label.classList.add('has-file');
-                    label.innerHTML = `
-                        <i class="bi bi-check-circle-fill text-success"></i>
-                        <div class="mt-1">Image selected: ${file.name}</div>
-                        <small class="text-success">Click to change image</small>
-                    `;
-                };
-                reader.readAsDataURL(file);
-            } else {
-                resetImageUpload();
-            }
+    const file = event.target.files[0];
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const preview = document.getElementById('imagePreview');
+    const label = document.getElementById('fileUploadLabel');
+    const errorDiv = document.getElementById('imageUploadError');
+    
+    // Clear any previous error messages
+    errorDiv.textContent = '';
+    
+    // If no file is selected (user canceled), keep the previous image
+    if (!file) {
+        // Check if there was a previous image
+        if (preview.src && previewContainer.style.display === 'block') {
+            // Keep the existing preview, don't reset
+            return;
+        } else {
+            // No previous image, reset to initial state
+            resetImageUpload();
+            return;
         }
+    }
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        errorDiv.textContent = 'Only image files are allowed.';
+        // Don't reset if there was a valid previous image
+        if (!preview.src || previewContainer.style.display === 'none') {
+            resetImageUpload();
+        }
+        return;
+    }
+    
+    // Validate file size (5MB = 5 * 1024 * 1024 bytes)
+    if (file.size > 5 * 1024 * 1024) {
+        errorDiv.textContent = 'Image size must be below 5MB.';
+        // Don't reset if there was a valid previous image
+        if (!preview.src || previewContainer.style.display === 'none') {
+            resetImageUpload();
+        }
+        return;
+    }
+    
+    // Create image preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        preview.src = e.target.result;
+        previewContainer.style.display = 'block';
+        
+        // Update label appearance
+        label.classList.add('has-file');
+        label.innerHTML = `
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <div class="mt-1">Image selected: ${file.name}</div>
+            <small class="text-success">Click to change image</small>
+        `;
+    };
+    reader.readAsDataURL(file);
+}
         
         function removeImage() {
             document.getElementById('imageUpload').value = '';

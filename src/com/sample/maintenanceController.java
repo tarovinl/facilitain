@@ -73,17 +73,31 @@ public class maintenanceController extends HttpServlet {
         String yearlySchedule = request.getParameter("yearlySchedule");
         String itemMsIdStr = request.getParameter("itemMsId");
         
+        // FIXED: Better validation for itemMsId
+        boolean isEdit = false;
+        Integer itemMsId = null;
+        
+        if (itemMsIdStr != null && !itemMsIdStr.trim().isEmpty() && !itemMsIdStr.equals("null")) {
+            try {
+                itemMsId = Integer.parseInt(itemMsIdStr.trim());
+                isEdit = true;
+                System.out.println("Edit mode detected - itemMsId: " + itemMsId);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid itemMsId, treating as new entry: " + itemMsIdStr);
+                isEdit = false;
+            }
+        } else {
+            System.out.println("No itemMsId provided, treating as new entry");
+        }
+        
         // Log parameters for debugging
         logParameters(itemTypeId, noOfDays, remarks, noOfDaysWarning, 
-                     quarterlySchedule, yearlySchedule, itemMsIdStr);
-        
-        // Determine if this is an edit operation
-        boolean isEdit = itemMsIdStr != null && !itemMsIdStr.trim().isEmpty();
-        Integer itemMsId = isEdit ? Integer.parseInt(itemMsIdStr) : null;
+                     quarterlySchedule, yearlySchedule, itemMsIdStr, isEdit);
         
         try (Connection con = PooledConnection.getConnection()) {
             // Check for duplicate item type 
             if (isDuplicateItemType(con, itemTypeId, itemMsId)) {
+                System.out.println("Duplicate item type detected for itemTypeId: " + itemTypeId);
                 return "?error=duplicate";
             }
             
@@ -98,6 +112,9 @@ public class maintenanceController extends HttpServlet {
                 // Set the ID parameter for update operations
                 if (isEdit) {
                     ps.setInt(7, itemMsId);
+                    System.out.println("Executing UPDATE for itemMsId: " + itemMsId);
+                } else {
+                    System.out.println("Executing INSERT for new maintenance schedule");
                 }
                 
                 int result = ps.executeUpdate();
@@ -120,24 +137,59 @@ public class maintenanceController extends HttpServlet {
      */
     private boolean isDuplicateItemType(Connection conn, int itemTypeId, Integer excludeItemMsId) throws SQLException {
         String checkSql;
+        String debugSql;
+        
         if (excludeItemMsId != null) {
-            // For updates: check if item type exists in other schedules
+            // For updates: check if item type exists in other ACTIVE schedules (excluding current record)
             checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
-                      "WHERE ITEM_TYPE_ID = ? AND ITEM_MS_ID != ?";
+                      "WHERE ITEM_TYPE_ID = ? AND ITEM_MS_ID != ? AND ARCHIVED_FLAG = 1";
+            debugSql = "SELECT ITEM_MS_ID, ITEM_TYPE_ID, ARCHIVED_FLAG FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+                      "WHERE ITEM_TYPE_ID = ? AND ITEM_MS_ID != ? AND ARCHIVED_FLAG = 1";
+            System.out.println("Checking for duplicates (UPDATE mode) - itemTypeId: " + itemTypeId + ", excludeItemMsId: " + excludeItemMsId);
         } else {
-            // For new entries: check if item type exists in any schedule
+            // For new entries: check if item type exists in any ACTIVE schedule
             checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
-                      "WHERE ITEM_TYPE_ID = ?";
+                      "WHERE ITEM_TYPE_ID = ? AND ARCHIVED_FLAG = 1";
+            debugSql = "SELECT ITEM_MS_ID, ITEM_TYPE_ID, ARCHIVED_FLAG FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED " +
+                      "WHERE ITEM_TYPE_ID = ? AND ARCHIVED_FLAG = 1";
+            System.out.println("Checking for duplicates (INSERT mode) - itemTypeId: " + itemTypeId);
         }
 
+        // First, let's see what records match our criteria
+        try (PreparedStatement debugStmt = conn.prepareStatement(debugSql)) {
+            debugStmt.setInt(1, itemTypeId);
+            if (excludeItemMsId != null) {
+                debugStmt.setInt(2, excludeItemMsId);
+            }
+            
+            System.out.println("=== Records matching duplicate criteria ===");
+            try (ResultSet debugRs = debugStmt.executeQuery()) {
+                boolean hasRecords = false;
+                while (debugRs.next()) {
+                    hasRecords = true;
+                    System.out.println("Found: ITEM_MS_ID=" + debugRs.getInt("ITEM_MS_ID") + 
+                                     ", ITEM_TYPE_ID=" + debugRs.getInt("ITEM_TYPE_ID") + 
+                                     ", ARCHIVED_FLAG=" + debugRs.getInt("ARCHIVED_FLAG"));
+                }
+                if (!hasRecords) {
+                    System.out.println("No matching records found");
+                }
+            }
+            System.out.println("==========================================");
+        }
+
+        // Now do the actual count check
         try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
             stmt.setInt(1, itemTypeId);
             if (excludeItemMsId != null) {
                 stmt.setInt(2, excludeItemMsId);
             }
+            
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0;
+                    int count = rs.getInt(1);
+                    System.out.println("Duplicate check result: " + count + " matching records found");
+                    return count > 0;
                 }
             }
         }
@@ -186,7 +238,9 @@ public class maintenanceController extends HttpServlet {
     // Helper method to log parameters for debugging
     private void logParameters(int itemTypeId, int noOfDays, String remarks, 
                              int noOfDaysWarning, String quarterlySchedule, 
-                             String yearlySchedule, String itemMsIdStr) {
+                             String yearlySchedule, String itemMsIdStr, boolean isEdit) {
+        System.out.println("=== Maintenance Save Parameters ===");
+        System.out.println("Mode: " + (isEdit ? "EDIT" : "ADD"));
         System.out.println("itemTypeId: " + itemTypeId);
         System.out.println("noOfDays: " + noOfDays);
         System.out.println("remarks: " + remarks);
@@ -194,5 +248,6 @@ public class maintenanceController extends HttpServlet {
         System.out.println("quarterlySchedule: " + quarterlySchedule);
         System.out.println("yearlySchedule: " + yearlySchedule);
         System.out.println("itemMsIdStr: " + itemMsIdStr);
+        System.out.println("===================================");
     }
 }
