@@ -150,11 +150,11 @@ public class addBuildingController extends HttpServlet {
     /**
      * Checks if a location name already exists)
      * @param conn Database connection
-     * @param locationName Name to check
+     * @param locationName Name to check REGARDLESS OF ARCHIVE STATUS
      * @return true if duplicate exists, false otherwise
      */
     private boolean isDuplicateLocationName(Connection conn, String locationName) throws SQLException {
-        String checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE UPPER(NAME) = UPPER(?) AND ARCHIVED_FLAG = 1";
+        String checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE UPPER(NAME) = UPPER(?)";
         
         try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
             stmt.setString(1, locationName);
