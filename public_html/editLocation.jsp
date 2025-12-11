@@ -310,7 +310,7 @@
                 <div class="row mt-4">
                     <div class="col dropTbl table-responsive">
                         <table id="flrTable" class="table table-striped table-bordered display w-100">
-                            <thead>
+                            <thead class="table-dark">
                               <tr>
                                 <th>Edit</th>
                                 <th>Archive</th>
@@ -499,7 +499,7 @@
           </div>
           <div class="mb-3">
             <label for="addFlrDesc" class="form-label" style="font-family: 'NeueHaasLight', sans-serif;">Floor Description</label>
-            <textarea class="form-control" name="addFlrDesc" id="addFlrDesc" rows="2" style="font-family: 'NeueHaasLight', sans-serif;"></textarea>
+            <textarea class="form-control" name="addFlrDesc" id="addFlrDesc" maxlength="250" rows="2" style="font-family: 'NeueHaasLight', sans-serif;"></textarea>
             <small id="addCharCount" class="form-text text-muted">0 / 250 characters</small>
           </div>
           <input type="hidden" name="addFlrLocID" id="addFlrLocID" class="form-control" value="${locID}">
