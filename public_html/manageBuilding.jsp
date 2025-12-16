@@ -1057,6 +1057,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                         <th>Maintenance Type</th>
                         <th>Assigned User</th>
                         <th>Date of Maintenance</th>
+                        <th>Turnaround Time</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -2023,7 +2024,7 @@ $(document).ready(function() {
         historyTable.empty();
         historyTable.append(`
             <tr>
-                <td colspan="4" class="text-center text-muted">Loading...</td>
+                <td colspan="5" class="text-center text-muted">Loading...</td>
             </tr>
         `);
         $('#historyEquipment').modal('show'); 
@@ -2041,16 +2042,17 @@ $(document).ready(function() {
                         historyTable.append(`
                         <tr>
                             <td>`+entry.assignID+`</td>
-                            <td>`+entry.maintTID+`</td>
+                            <td>`+entry.maintName+`</td>
                             <td>`+entry.userName+`</td> 
                             <td>`+entry.dateOfMaint+`</td>
+                            <td>`+entry.turnaroundDays+` days</td>
                         </tr>
                         `);
                     });
                 } else {
                     historyTable.append(`
                         <tr>
-                            <td colspan="4" class="text-center text-muted">
+                            <td colspan="5" class="text-center text-muted">
                                 No maintenance history data.
                             </td>
                         </tr>
@@ -2061,7 +2063,7 @@ $(document).ready(function() {
                 historyTable.empty();
                 historyTable.append(`
                     <tr>
-                        <td colspan="4" class="text-center text-danger">
+                        <td colspan="5" class="text-center text-danger">
                             Failed to load history data.
                         </td>
                     </tr>
