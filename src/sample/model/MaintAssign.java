@@ -10,6 +10,33 @@ public class MaintAssign {
     private Date dateOfMaint;
     private int isCompleted;
     private String userName;
+    private Date dateOfPlanned;
+    private int turnaroundDays;
+    private String maintName;
+
+    public void setMaintName(String maintName) {
+        this.maintName = maintName;
+    }
+
+    public String getMaintName() {
+        return maintName;
+    }
+
+    public void setTurnaroundDays(int turnaroundDays) {
+        this.turnaroundDays = turnaroundDays;
+    }
+
+    public int getTurnaroundDays() {
+        return turnaroundDays;
+    }
+
+    public void setDateOfPlanned(Date dateOfPlanned) {
+        this.dateOfPlanned = dateOfPlanned;
+    }
+
+    public Date getDateOfPlanned() {
+        return dateOfPlanned;
+    }
 
     public void setIsCompleted(int isCompleted) {
         this.isCompleted = isCompleted;
