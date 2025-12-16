@@ -34,14 +34,14 @@
     appearance: none; /* Reset button appearance for other browsers */
 }
 
-.floorDLblDiv {
+/*.floorDLblDiv {
     background-color: #fccc4c;
     padding: 6px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border: solid 1px black;
-}
+}*/
 
 .floorDLblDiv button:hover {
     background-color: #ffcc00; /* Change button color on hover */
@@ -56,17 +56,13 @@
     border: none;
 }
 
-thead{
-    background-color: black !important;
-    color: white !important;
-}
-table.dataTable>thead>tr:hover td,
+/*table.dataTable>thead>tr:hover td,
 table.dataTable>thead>tr:hover th {
   background-color: #fccc4c !important;
   color: black !important;
   border: solid 1px black !important;
-}
-table.dataTable thead>tr>th.dt-orderable-asc span:hover,
+}*/
+/*table.dataTable thead>tr>th.dt-orderable-asc span:hover,
 table.dataTable thead>tr>th.dt-orderable-desc span:hover,
 table.dataTable thead>tr>th.dt-ordering-asc span:hover,
 table.dataTable thead>tr>th.dt-ordering-desc span:hover,
@@ -74,12 +70,12 @@ table.dataTable thead>tr>td.dt-orderable-asc span:hover,
 table.dataTable thead>tr>td.dt-orderable-desc span:hover,
 table.dataTable thead>tr>td.dt-ordering-asc span:hover,
 table.dataTable thead>tr>td.dt-ordering-desc span:hover {
-    color: black; /* Change this to your hover color */
-}
-div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-paging .dt-paging-button.current:hover {
+    color: black;*/ /* Change this to your hover color */
+/*}*/
+/*div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-paging .dt-paging-button.current:hover {
   border: 1px solid black !important;
   background-color: #fccc4c !important;
-}
+}*/
 
 
 @media (max-width: 400px) {
