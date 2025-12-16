@@ -133,7 +133,7 @@
         // Create the data table for the column chart.
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Month');
-        data.addColumn('number', 'No. of Repairs/Replacements');
+        data.addColumn('number', 'No. of Repairs');
         data.addRows([
             <c:forEach var="month" items="${monthsList}" varStatus="status">
                 <c:set var="repairCount" value="0" />
