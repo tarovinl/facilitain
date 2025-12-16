@@ -153,7 +153,7 @@
         // Set options for the column chart
         var options = {
             hAxis: { title: '${currentYear}' },
-            vAxis: { title: 'Repairs' },
+            vAxis: { title: 'Repairs/Replacements' },
             colors: ['#fccc4c'],
             legend: { position: 'none' }
         };
@@ -265,7 +265,7 @@ function generateReport() {
                         });
                     }
 
-                    // Repairs per Month Section
+                    // Repairs and Replacement per Month Section
                     let afterPendingY = tableStartY + 60;
                     if (doc.lastAutoTable && doc.lastAutoTable.finalY) {
                         afterPendingY = doc.lastAutoTable.finalY + 20;
@@ -274,7 +274,7 @@ function generateReport() {
                     doc.setTextColor(0, 0, 0);
                     doc.setFontSize(14);
                     doc.setFont(undefined, 'bold');
-                    doc.text("Repairs per Month", 105, afterPendingY, {align: 'center'});
+                    doc.text("Repairs and Replacements per Month", 105, afterPendingY, {align: 'center'});
                     doc.setFont(undefined, 'normal');
 
                     // Capture column chart as image
@@ -444,7 +444,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="col-12 col-lg-4 vh-25 align-items-stretch mb-4" style="margin-top: 14px;">
       	    <div class="diagram" style="height: 83%;">
               <div class="diagramTitle">
-                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Repairs per Month</h4>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Repairs and Replacements per Month</h4>
               </div>
               <div style="background: white; height: 240px; border-radius:15px;">
                 <div id="repairNoChart" style="height: 100%; width: 100%; overflow: hidden; border-radius:15px;"></div>
