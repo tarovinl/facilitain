@@ -223,7 +223,6 @@
                             <option value="quotation" <c:if test="${filterBy == 'quotation'}">selected</c:if>>Quotations</option>
                             <option value="maintenance" <c:if test="${filterBy == 'maintenance'}">selected</c:if>>Maintenance</option>
                             <option value="assign" <c:if test="${filterBy == 'assign'}">selected</c:if>>Assignments</option>
-                            <option value="warning" <c:if test="${filterBy == 'warning'}">selected</c:if>>Warnings</option>
                             <option value="read" <c:if test="${filterBy == 'read'}">selected</c:if>>Read Only</option>
                             <option value="unread" <c:if test="${filterBy == 'unread'}">selected</c:if>>Unread Only</option>
                         </select>
@@ -250,7 +249,6 @@
                                                 <c:when test="${notification.type == 'REPORT'}"><%=request.getContextPath()%>/reports</c:when>
                                                 <c:when test="${notification.type == 'QUOTATION'}"><%=request.getContextPath()%>/buildingDashboard?locID=${notification.itemLocId}</c:when>
                                                 <c:when test="${notification.type == 'ASSIGN'}"><%=request.getContextPath()%>/maintenancePage</c:when>
-                                                <c:when test="${notification.type == 'WARNING'}"><%=request.getContextPath()%>/buildingDashboard?locID=${notification.itemLocId}</c:when>
                                             </c:choose>
                                         "/>
                                         <button type="submit" class="btn text-start bg-transparent border-0 w-100 notification-button">
