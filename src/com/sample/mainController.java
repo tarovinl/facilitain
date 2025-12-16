@@ -582,9 +582,9 @@ public class mainController extends HttpServlet {
                                 try (Connection conn = PooledConnection.getConnection();
                                      PreparedStatement stmt = conn.prepareStatement(
                                          "SELECT ma.ASSIGN_ID, ma.MAIN_TYPE_ID, ma.USER_ID, ma.DATE_OF_MAINTENANCE, NVL(ma.DATE_OF_MAINTENANCE - ma.ORIGINAL_PLANNED_DATE, 0) AS TURNAROUND_DAYS, u.NAME AS NAME, mt.NAME AS MAINT_TYPE " +
-                                         "FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
-                                         "JOIN C##FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID " +
-                                         "JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES mt ON ma.MAIN_TYPE_ID = mt.MAIN_TYPE_ID " +
+                                         "FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
+                                         "JOIN FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID " +
+                                         "JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES mt ON ma.MAIN_TYPE_ID = mt.MAIN_TYPE_ID " +
                                          "WHERE ma.ITEM_ID = ? AND ma.IS_COMPLETED = 1")) {
                                     
                                     stmt.setInt(1, itemHID);
