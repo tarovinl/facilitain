@@ -122,6 +122,8 @@ public class addMaintenanceController extends HttpServlet {
         }
         
         // Find equipment and store additional details for email
+        // AI was used for equalsIgnoreCase
+        // Tool: ChatGPT, Prompt: "how do I make the code above ignore character case [code above is generally the same but w/o equalsIgnoreCase]"
         for (Item itemz : listItem) {
             if (equipmentName.equalsIgnoreCase(itemz.getItemName())) { 
                 if(itemz.getItemMaintStat() == 2){
