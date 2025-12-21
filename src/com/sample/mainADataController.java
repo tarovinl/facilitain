@@ -73,6 +73,8 @@ public class mainADataController extends HttpServlet {
             System.out.println("Records Total: " + recordsTotal);
             
             // Build base query
+            // AI was used to convert the SQL query into query.append("")
+            // Tool: ChatGPT, Prompt: "Insert this query inside query.append(" ")
             StringBuilder query = new StringBuilder();
             query.append("SELECT ")
                  .append("i.item_id, ")
@@ -304,6 +306,8 @@ public class mainADataController extends HttpServlet {
 
             // Filtered count
             // Count filtered
+            // AI was used to fix the searchbar query after converting the data-pulling code from client-side to server-side
+            // Tool: ChatGPT, Prompt: "The search function in DataTables isn't working. Could you fix it?"
             if (searchValue != null && !searchValue.isEmpty()) {
                 StringBuilder countFilteredSql = new StringBuilder();
                 countFilteredSql.append("SELECT COUNT(*) ")
@@ -384,7 +388,8 @@ public class mainADataController extends HttpServlet {
         //                  .append("<input type='hidden' name='itemFlr' value='").append(floorName).append("'/>")
         //                  .append("<input type='hidden' name='maintStatID' value='").append(itemId).append("'/>")
         //                  .append("<select name='statusDropdown' class='statusDropdown' onchange='this.form.submit()'>");
-            
+            // AI was used to convert the html code to appended code here
+            // Tool: ChatGPT, Prompt: "Convert the code above into .append("")"
             sb.append("<form action='itemcontroller' method='POST'>")
                   // always include locID and floorName
                   .append("<input type='hidden' name='itemLID' value='").append(locID).append("'/>")
@@ -478,6 +483,8 @@ public class mainADataController extends HttpServlet {
                         "</a>";
                 }
             String editHtml = "";
+            // AI was used to convert the html code to the code below
+            // Tool: ChatGPT, Prompt: "Convert the code above like this [code that covers the first few lines]"
                 if ("Admin".equalsIgnoreCase(userRole)) {
                     editHtml =
                     "<a class='dropdown-item' href='#' " +

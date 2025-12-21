@@ -196,6 +196,8 @@ public class itemController extends HttpServlet {
                 System.out.println("we see u but edit");
                 
             } else if(maintStatID != null && !maintStatID.isEmpty()){
+                // AI was used to check user privileges when manipulating maintenance status
+                // Tool: Microsoft Copilot, Prompt: "create a loop that checks if an equipment is assigned to a user. If item is assigned, user cannot update unless they are the assigned user"
                 for (MaintAssign assign : listAssign) {
                     if (assign.getItemID() == Integer.parseInt(maintStatID) && assign.getIsCompleted() == 0) {
                         hasAssignment = "true";
@@ -458,7 +460,8 @@ public class itemController extends HttpServlet {
                 stmt.executeUpdate();
             }
 
-            // Check conditions for FMO_ITEM_REPAIRS
+            // AI was used for the base that integrates the repairs per month graphs
+            // Tool: ChatGPT, Prompt: "If the old maintenance status is = 3 and the new maintenance status is = 1, print "item repaired!""
                 if ("3".equals(oldMaintStat) && "1".equals(maintStatus)) {
                     String assSQL = "UPDATE C##FMO_ADM.FMO_MAINTENANCE_ASSIGN SET IS_COMPLETED = 1 WHERE ITEM_ID = ?";
                     try (PreparedStatement astmt = conn.prepareStatement(assSQL)) {

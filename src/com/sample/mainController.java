@@ -383,7 +383,8 @@ public class mainController extends HttpServlet {
         
         
 
-//        // Group floors in proper order
+//        AI was used to refine grouping of floors in proper order
+        // Tool: ChatGPT, Prompt: "Create a map that stores all floors in every building, and attach their location id to those floors"
         Map<Integer, List<String>> groupedFloors = new HashMap<>();
         for (Location floor : listFloor) {
             int locID = floor.getItemLocId();
@@ -395,7 +396,7 @@ public class mainController extends HttpServlet {
             }
         }
         
-
+//        original floor mapping here (not working anymore):
 //        Map<Integer, List<String>> groupedFloors = new HashMap<>();
 //        for (Location floor : listFloor) {
 //            int locID = floor.getItemLocId();
@@ -406,6 +407,8 @@ public class mainController extends HttpServlet {
 //            groupedFloors.get(locID).add(floorName);
 //        }
 
+        // AI was used to refine grouping of floors in proper order
+        // Tool: ChatGPT, Prompt: "Map items using their IDs and NAMEs to their Room_No"
         Map<Integer, String> itemIdToName = new HashMap<>();
 
         Set<String> uniqueRooms = new HashSet<>();
@@ -573,6 +576,8 @@ public class mainController extends HttpServlet {
                     case "/buildingDashboard":
                         if (queryString != null && queryString.contains("/manage")) {
                             String itemHIDParam = request.getParameter("itemHID");
+                            // AI was used to create the logic for itemHID to pull for maintenance history of an equipment
+                            // Tool: ChatGPT, Prompt: "Create a list that displays upon ajax request using this query [SQL query from preparedstatement below here]"
                             System.out.println("query string: "+queryString);
                             System.out.println("Equipment History Item ID Param: "+itemHIDParam);
                             if (itemHIDParam != null && !itemHIDParam.isEmpty()) {
@@ -640,11 +645,11 @@ public class mainController extends HttpServlet {
                                             for (Location location : locations) {
                                                 for (Item item : listItem) {
                                                     if (location.getItemLocId() == item.getItemLID()) {
-                                                        for (Item type : listTypes) { // Assuming listTypes represents FMO_TYPES_LIST
+                                                        for (Item type : listTypes) { 
                                                             if (item.getItemTID() == type.getItemTID()) {
-                                                                for (Item category : filteredCategories) { // Assuming filteredCategories represents FMO_CATEGORIES_LIST
+                                                                for (Item category : filteredCategories) { 
                                                                     if (category.getItemCat().equals(eventCat) && category.getItemCID() == type.getItemCID()) {
-                                                                        for (Maintenance maintenance : listMaintSched) { // Assuming listMaintSched represents maintenanceList
+                                                                        for (Maintenance maintenance : listMaintSched) { 
                                                                             if (maintenance.getItemTypeId() == type.getItemTID()) {
                                                                                 uniqueLocations.add(location.getLocName());
 
@@ -748,6 +753,8 @@ public class mainController extends HttpServlet {
             case "/buildingDashboard":
                 if (queryString == null) return true;
 
+                // AI was used to generate regex patterns for URL security. Comments were made to describe what the regexes do
+                // Tool: ChatGPT, Prompt: "Make a regex that [insert descriptions above the regex if conditions below]"
                 // Accept AJAX-friendly malformed pattern: locID=/manage?floor=&itemHID=795
                 if (queryString.matches("locID=/manage\\?floor=(&?itemHID=\\d+)?") ||
                     queryString.matches("locID=\\d+/manage\\?floor=\\w*&itemHID=\\d+")) {
