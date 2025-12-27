@@ -341,7 +341,8 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                     <c:set var="locMatchFound" value="true" />
                 </c:if>
             </c:forEach>    
-            
+            <!--AI was used to format the brands in the list-->
+            <!--Tool: ChatGPT, Prompt: "create a loop that formats the brands like this 'Safeway, Mitsubishi, Brand, ...'"-->
             <c:set var="brandListString" value="" />
                 <c:forEach var="brand" items="${FMO_BRANDS_LIST}" varStatus="status">
                     <c:set var="brandListString" value="${brandListString}${brand.itemBrand}${status.last ? '' : ', '}" />
@@ -1201,7 +1202,8 @@ $(document).ready(function(){
             url: 'mainbdatacontroller',
             type: 'POST',
             data: function (d) {
-                // Pass locID and floorName from JSP to servlet
+                // AI was used to figure out how to pass locID and floorName from JSP to servlet
+                // Tool: Microsoft Copilot, Prompt: "convert the items table to server-side [copy paste of client-side code]"
                 d.locID = "${locID}";
                 d.floorName = "${floorName}";
                 d.userRole = "${sessionScope.role}";
@@ -1400,6 +1402,8 @@ $(document).ready(function(){
 //        });
 
 function filterTypes() {
+    // AI was used for dynamic rendering of equipment types. This was used as a reference for dynamic rendering of floors and the edit dropdown's item types too
+    // Tool: ChatGPT, Prompt: "Could you make it so that, when choosing a category in the dropdown, it dynamically renders the types under that category?"
     // Get the selected category's itemCID
     const selectedCategoryId = document.getElementById('itemCat').value;
 
