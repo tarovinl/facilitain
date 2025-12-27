@@ -95,7 +95,8 @@
 
         google.charts.load('current', {packages: ['corechart']});
         google.charts.setOnLoadCallback(drawCharts);
-        
+        // AI was used to understand how to draw the pie chart and have multiple charts in one page
+        // Tool: ChatGPT, Prompts: "How to use Google Charts API to draw a Pie Chart?", "How do I render both a pie chart and a column chart on the same page?"
         function drawCharts() {
         drawPieChart();
         drawColumnChart();
@@ -521,6 +522,8 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>-->
     
 <script>
+// AI was used to convert the script code of Upcoming Activities to server-side rather than client-side
+// Tool: ChatGPT, Prompt: "Could you convert the code above to fit the server-side rendering? [code above is initial client-side code of the program]"
 document.addEventListener('DOMContentLoaded', function() {
   const locIDajax = '<%= request.getParameter("locID") %>';
   fetch('upcomingactservlet?locID=' + locIDajax)
