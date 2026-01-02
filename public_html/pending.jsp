@@ -622,13 +622,13 @@
                 <div class="modal-body">
                     <input type="hidden" name="maintID" id="maintID">
                     
-                   <div class="mb-3">
-    <label for="equipmentEName" class="form-label d-block">Equipment Name</label>
-    <input class="form-control" id="equipmentEName" 
-           name="equipmentENameDisplay" maxlength="24" 
-           style="width: 100%; background-color: #e9ecef; cursor: not-allowed;" 
-           readonly>
-</div>
+                    <div class="mb-3">
+                        <label for="equipmentEName" class="form-label d-block">Equipment Name</label>
+                        <input class="form-control" id="equipmentEName" 
+                               name="equipmentENameDisplay" maxlength="24" 
+                               style="width: 100%; background-color: #e9ecef; cursor: not-allowed;" 
+                               readonly>
+                    </div>
                     
                     <div class="mb-3">
                         <label for="maintenanceEType" class="form-label">Maintenance Type <span style="color: red;">*</span></label>
@@ -639,10 +639,18 @@
                         </select>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
+            <div class="mb-3">
+                <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
+                <c:choose>
+                    <c:when test="${sessionScope.role == 'Support'}">
+                        <!-- Read-only field for Support users -->
+                        <input type="text" class="form-control" id="assignedEToDisplay" 
+                               style="background-color: #e9ecef; cursor: not-allowed;" readonly>
+                        <input type="hidden" name="assignedETo" id="assignedEToHidden">
+                    </c:when>
+                    <c:otherwise>
+                        <!-- Editable dropdown for Admin and other users -->
                         <select class="form-select" id="assignedETo" name="assignedETo" required>
-                            <!-- Show current user first if they're not a Respondent -->
                             <c:forEach items="${FMO_USERS}" var="user">
                                 <c:if test="${sessionScope.email == user.email && user.role != 'Respondent'}">
                                     <option value="${user.userId}">${user.name}</option>
@@ -654,7 +662,9 @@
                                 </c:if>
                             </c:forEach>
                         </select>
-                    </div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
                     
                     <div class="mb-3">
                         <label for="dateEMaint" class="form-label">Date of Maintenance <span style="color: red;">*</span></label>
@@ -662,8 +672,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button"  class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit"  class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save Changes</button>
+                    <button type="button" class="btn btn-outline-danger" style="font-family: 'NeueHaasMedium', sans-serif;" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success" style="font-family: 'NeueHaasMedium', sans-serif;">Save Changes</button>
                 </div>
             </div>
         </form>
@@ -1304,10 +1314,11 @@ function populateEditMaintenance(button) {
     var itemName = button.getAttribute('data-maintename');
     var maintTypeID = button.getAttribute('data-mainttypeeid');
     var userID = button.getAttribute('data-usereid');
+    var userName = button.getAttribute('data-username');
     var dateMaint = button.getAttribute('data-datemaint');
     
     console.log('Populating edit modal with:', {
-        assignID, itemName, maintTypeID, userID, dateMaint
+        assignID, itemName, maintTypeID, userID, userName, dateMaint
     });
     
     // Set the hidden maintenance ID
@@ -1325,10 +1336,20 @@ function populateEditMaintenance(button) {
         maintTypeDrop.value = maintTypeID;
     }
     
-    // Set assigned to dropdown
+    // Set assigned to field based on user role
     var assignedToDrop = document.getElementById('assignedETo');
-    if (assignedToDrop) {
+    var assignedToDisplay = document.getElementById('assignedEToDisplay');
+    var assignedToHidden = document.getElementById('assignedEToHidden');
+    
+    if (assignedToDrop && assignedToDrop.tagName === 'SELECT') {
+        // For Admin users - set the dropdown value
         assignedToDrop.value = userID;
+    }
+    
+    if (assignedToDisplay && assignedToHidden) {
+        // For Support users - display the user name and store the ID
+        assignedToDisplay.value = userName;
+        assignedToHidden.value = userID;
     }
     
     // Set date - handle multiple date formats
