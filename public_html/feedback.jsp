@@ -233,7 +233,7 @@
 
         let chart;
 
-        function drawChart() {
+      function drawChart() {
             const chartDiv = document.getElementById('chart_div');
             
             // Check if there's data to display
@@ -264,25 +264,32 @@
                 return;
             }
             
-            // Data is available, create the chart
-            const generalAverage = ${generalAverage};
+            // Data is available, create the chart with three-tier color coding
+            // Green: 4.0 - 5.0
+            // Yellow: 2.0 - 3.99
+            // Red: 0 - 1.99
+            
             const data = google.visualization.arrayToDataTable([
                 ['Month', 'Satisfaction Rate', { role: 'style' }],
                 <c:forEach var="rate" items="${satisfactionRates}">
-                    ['${rate[0]}', ${rate[1]}, '${rate[1] >= generalAverage ? "green" : "red"}'],
+                    [
+                        '${rate[0]}', 
+                        ${rate[1]}, 
+                        '${rate[1] >= 4 ? "green" : (rate[1] > 2 ? "#FFC107" : "red")}'
+                    ],
                 </c:forEach>
             ]);
-
+        
             const options = {
                 title: 'Monthly Satisfaction Rates',
                 hAxis: { title: 'Month' },
                 vAxis: { title: 'Average Rating', minValue: 0, maxValue: 5 },
                 legend: 'none',
             };
-
+        
             chart = new google.visualization.ColumnChart(chartDiv);
             chart.draw(data, options);
-        }
+}
 
          const generatedDate = '${generatedDate}';
         document.getElementById('download-chart').addEventListener('click', function () {
