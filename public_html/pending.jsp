@@ -642,17 +642,38 @@
                     <div class="mb-3">
                         <label for="assignedETo" class="form-label">Assign To <span style="color: red;">*</span></label>
                         <select class="form-select" id="assignedETo" name="assignedETo" required>
-                            <!-- Show current user first if they're not a Respondent -->
-                            <c:forEach items="${FMO_USERS}" var="user">
-                                <c:if test="${sessionScope.email == user.email && user.role != 'Respondent'}">
-                                    <option value="${user.userId}">${user.name}</option>
-                                </c:if>
-                            </c:forEach>
-                            <c:forEach items="${FMO_USERS}" var="user">
-                                <c:if test="${sessionScope.email != user.email && user.role != 'Respondent'}">
-                                    <option value="${user.userId}">${user.name}</option>
-                                </c:if>
-                            </c:forEach>
+                            <c:choose>
+                                <%-- If Support role, only show Support and Maintenance users --%>
+                                <c:when test="${sessionScope.role == 'Support'}">
+                                    <!-- Show current user first if they're Support -->
+                                    <c:forEach items="${FMO_USERS}" var="user">
+                                        <c:if test="${sessionScope.email == user.email && user.role == 'Support'}">
+                                            <option value="${user.userId}">${user.name}</option>
+                                        </c:if>
+                                    </c:forEach>
+                                    <!-- Show other Support -->
+                                    <c:forEach items="${FMO_USERS}" var="user">
+                                        <c:if test="${sessionScope.email != user.email && (user.role == 'Support')}">
+                                            <option value="${user.userId}">${user.name} (${user.role})</option>
+                                        </c:if>
+                                    </c:forEach>
+                                </c:when>
+                                <%-- For other roles, show all non-Respondent users --%>
+                                <c:otherwise>
+                                    <!-- Show current user first if they're not a Respondent -->
+                                    <c:forEach items="${FMO_USERS}" var="user">
+                                        <c:if test="${sessionScope.email == user.email && user.role != 'Respondent'}">
+                                            <option value="${user.userId}">${user.name}</option>
+                                        </c:if>
+                                    </c:forEach>
+                                    <!-- Show other users who are not Respondents -->
+                                    <c:forEach items="${FMO_USERS}" var="user">
+                                        <c:if test="${sessionScope.email != user.email && user.role != 'Respondent'}">
+                                            <option value="${user.userId}">${user.name}</option>
+                                        </c:if>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                         </select>
                     </div>
                     
@@ -1330,12 +1351,7 @@ function populateEditMaintenance(button) {
     if (assignedToDrop) {
         assignedToDrop.value = userID;
         
-        // Disable the dropdown for Support role
-        <c:if test="${sessionScope.role == 'Support'}">
-            assignedToDrop.disabled = true;
-            assignedToDrop.style.backgroundColor = '#e9ecef';
-            assignedToDrop.style.cursor = 'not-allowed';
-        </c:if>
+       
     }
     
     // Set date - handle multiple date formats
@@ -1374,14 +1390,6 @@ function populateEditMaintenance(button) {
     }
 }
 
-$('#editMaintenanceModal').on('hidden.bs.modal', function() {
-    var assignedToDrop = document.getElementById('assignedETo');
-    if (assignedToDrop) {
-        assignedToDrop.disabled = false;
-        assignedToDrop.style.backgroundColor = '';
-        assignedToDrop.style.cursor = '';
-    }
-});
 </script>
 
 
