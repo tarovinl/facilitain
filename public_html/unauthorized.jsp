@@ -7,83 +7,51 @@
     <title>Unauthorized - Facilitain</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="./resources/css/custom-fonts.css">
+    <link rel="icon" type="image/png" href="resources/images/FMO-Logo.ico">
     <style>
-        body {
-            font-family: 'NeueHaasLight', sans-serif !important;
-            background-color: #f8f9fa;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .unauthorized-container {
-            background: white;
-            border-radius: 8px;
-            padding: 2.5rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-        }
-        
-        .logo {
-            max-width: 200px;
-            height: auto;
-            margin-bottom: 1.5rem;
-        }
-        
-        .error-icon {
-            font-size: 3rem;
-            color: #dc3545;
-            margin-bottom: 1rem;
-        }
-        
-        h1 {
+        body, h1, h2, h3, h4, h5, h6, th, label, .custom-label {
             font-family: 'NeueHaasMedium', sans-serif !important;
-            color: #333;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
         }
         
-        .message {
-            color: #495057;
-            margin-bottom: 2rem;
-            line-height: 1.5;
-            font-weight: 500;
+        input, textarea, td, tr, p, select, option, id {
+            font-family: 'NeueHaasLight', sans-serif !important;
         }
         
-        .btn-outline-secondary {
-            color: #6c757d;
-            border-color: #6c757d;
-            padding: 0.5rem 1.5rem;
-            border-radius: 4px;
-            transition: all 0.2s ease;
-            background: transparent;
-            text-decoration: none;
+        .hover-outline {
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
         }
         
-        .btn-outline-secondary:hover {
-            background-color: #6c757d;
-            border-color: #6c757d;
-            color: white;
-            text-decoration: none;
+        .hover-outline:hover {
+            background-color: #1C1C1C !important;
+            color: #f2f2f2 !important;
+            border: 1px solid #f2f2f2 !important;
+        }
+        
+        .hover-outline img {
+            transition: filter 0.3s ease;
+        }
+        
+        .hover-outline:hover img {
+            filter: invert(1);
         }
     </style>
 </head>
-<body>
-    <div class="unauthorized-container">
-        <img src="<%=request.getContextPath()%>/resources/images/facilitain-home-logo.png" alt="Facilitain Logo" class="logo">
-        
-        <div class="error-icon">⚠️</div>
-        
-        <h1>Unauthorized</h1>
-        
-        <p class="message">This page is unauthorized. Please contact your administrator for access.</p>
-        
-        <button onclick="history.back()" class="btn btn-outline-secondary">
-            Go Back
-        </button>
+<body class="bg-light d-flex justify-content-center align-items-center vh-100">
+    <div class="container text-center">
+        <div class="">
+            <div class="card-body p-5">
+                <h1 class="text-danger fw-bold" style="font-size: 8rem;">403</h1>
+                <p class="h3 mb-4">Unauthorized Access<br/>Please contact your administrator for access.</p>
+                <button onclick="history.back()" class="btn btn-lg hover-outline" style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;">
+                    Go Back
+                </button>
+            </div>
+        </div>
     </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script> 
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
