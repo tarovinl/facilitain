@@ -403,6 +403,81 @@
                 
                 <!-- Buildings Listing -->
                 <div class="row mt-0" id="buildingsContainer">
+                            <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 building-card">
+                                <div class="card mb-4 position-relative shadow-sm hover-shadow hover-underline-title rounded-2" >
+                                    <a href="allDashboard" class="text-decoration-none" style="border-radius:20px;">
+                                        <div class="card-body rounded-2" style="
+                                            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%),
+                                                    url('resources/images/samplebuilding.jpg');
+                                            background-size: cover;
+                                            background-position: center;
+                                            min-height: 250px;
+                                            display: flex;
+                                            flex-direction: column;
+                                            justify-content: flex-end;
+                                            overflow: hidden;
+                                            outline: none;
+                                            position: relative;">
+                                            <c:forEach var="locStatus" items="${FMO_LOCATION_STATUS_LIST}">
+                                                <c:if test="${locStatus.location.itemLocId == 1}">
+                                                        <c:choose>
+                                                            <c:when test="${locStatus.statusRating == 3}">
+                                                                <div style="
+                                                                    position: absolute;
+                                                                    top: 10px;
+                                                                    right: 10px;
+                                                                   background-color: #28a745;
+                                                                    color: white;
+                                                                    padding: 4px 8px;
+                                                                    border-radius: 5px;
+                                                                    font-size: 0.9rem;
+                                                                    font-weight: bold;
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                                                    Optimal
+                                                                </div>
+                                                            </c:when>
+                                                            <c:when test="${locStatus.statusRating == 2}">
+                                                                <div style="
+                                                                    position: absolute;
+                                                                    top: 10px;
+                                                                    right: 10px;
+                                                                    background-color: #ff9800;
+                                                                    color: white;
+                                                                    padding: 4px 8px;
+                                                                    border-radius: 5px;
+                                                                    font-size: 0.9rem;
+                                                                    font-weight: bold;
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                                                    Moderate
+                                                                </div>
+                                                            </c:when>
+                                                            <c:when test="${locStatus.statusRating == 1}">
+                                                                <div style="
+                                                                    position: absolute;
+                                                                    top: 10px;
+                                                                    right: 10px;
+                                                                    background-color: #dc3545;
+                                                                    color: white;
+                                                                    padding: 4px 8px;
+                                                                    border-radius: 5px;
+                                                                    font-size: 0.9rem;
+                                                                    font-weight: bold;
+                                                                    z-index: 2;
+                                                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                                                    Danger
+                                                                </div>
+                                                            </c:when>
+                                                        </c:choose>
+                                                </c:if>
+                                            </c:forEach>
+                                            <h5 class="card-title text-light fs-4 " style="font-family: 'NeueHaasMedium', sans-serif;">All Equipment</h5>
+                                            <p class="card-text text-light fs-6" style="font-family: 'NeueHaasLight', sans-serif;"></p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
                     <c:forEach var="location" items="${locations}">
                         <c:if test="${location.locArchive == 1}">
                             <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 building-card">

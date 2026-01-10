@@ -45,31 +45,47 @@ public class UpcomingActServlet extends HttpServlet {
                     return;
                 }
                 
+                boolean isAllEquip = "allEquip".equalsIgnoreCase(locID);
+                
                 StringBuilder html = new StringBuilder();
-                String query = 
-                    "SELECT " +
-                    " i.item_id, " +
-                    " i.name, " +
-                    " i.room_no, " +
-                    " i.last_maintenance_date, " +
-                    " i.planned_maintenance_date, " +
-                    " m.no_of_days, " +
-                    " m.no_of_days_warning, " +
-                    " t.name as TYPE_NAME, " +
-                    " c.name as CAT_NAME " +
-                    "FROM C##FMO_ADM.FMO_ITEMS i " +
-                    "JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.item_type_id = t.item_type_id " +
-                    "JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.item_cat_id = c.item_cat_id " +
-                    "JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED m ON i.item_type_id = m.item_type_id " +
-                    "WHERE i.location_id = ? " +
+                StringBuilder query = new StringBuilder(
+                            "SELECT " +
+                            " i.item_id, " +
+                            " i.name, " +
+                            " i.room_no, " +
+                            " i.last_maintenance_date, " +
+                            " i.planned_maintenance_date, " +
+                            " m.no_of_days, " +
+                            " m.no_of_days_warning, " +
+                            " t.name as TYPE_NAME, " +
+                            " c.name as CAT_NAME, " +
+                            " l.name as LOCATION_NAME " +
+                            "FROM C##FMO_ADM.FMO_ITEMS i " +
+                            "JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.item_type_id = t.item_type_id " +
+                            "JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.item_cat_id = c.item_cat_id " +
+                            "JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED m ON i.item_type_id = m.item_type_id " +
+                            "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.location_id = l.item_loc_id " +
+                            "WHERE 1=1 "
+                );
+        
+                // AI was used to generate code that only adds location filter if NOT allEquip
+                // Tool: ChatGPT, Prompt: "if locID = allEquip, remove i.location_id = ? from query"
+                if (!isAllEquip) {
+                    query.append("  AND i.location_id = ? ");
+                }
+        
+                query.append(
                     "  AND i.item_stat_id = 1 " +
                     "  AND m.archived_flag = 1 " +
-                    "ORDER BY i.planned_maintenance_date ASC";
+                    "  ORDER BY i.planned_maintenance_date ASC"
+                );
         
                 try (Connection conn = PooledConnection.getConnection();
-                     PreparedStatement ps = conn.prepareStatement(query)) {
-        
-                    ps.setInt(1, Integer.parseInt(locID));
+                     PreparedStatement ps = conn.prepareStatement(query.toString())) {
+                    int paramIndex = 1;
+                    if (!isAllEquip) {
+                            ps.setInt(paramIndex++, Integer.parseInt(locID));
+                        }
         
                     try (ResultSet rs = ps.executeQuery()) {
                         boolean hasResults = false;
@@ -107,7 +123,7 @@ public class UpcomingActServlet extends HttpServlet {
                                                     "<span class='remaining-days'>" + daysRemaining + "</span> days." +
                                                 "</h4>" +
                                                 "<h6 class='mb-0 text-muted'>" +
-                                                    escapeHtml(rs.getString("cat_name")) + " - " + escapeHtml(rs.getString("type_name")) +
+                                                     escapeHtml(rs.getString("location_name")) + " - " + escapeHtml(rs.getString("cat_name")) + " - " + escapeHtml(rs.getString("type_name")) +
                                                 "</h6>" +
                                             "</div>" +
                                         
