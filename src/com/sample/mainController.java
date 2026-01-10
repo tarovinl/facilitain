@@ -51,7 +51,7 @@ import java.util.TreeSet;
 import sample.model.ItemUser;
 import sample.model.LocationStatus;
 
-@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/edit",
+@WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/allDashboard", "/edit",
                                                      "/calendar", "/settings", "/maintenanceSchedule", "/mapView"})
 public class mainController extends HttpServlet {
 
@@ -86,6 +86,7 @@ public class mainController extends HttpServlet {
         ArrayList<Maintenance> listMaintType = new ArrayList<>();
         
         ArrayList<Repairs> listRepairs = new ArrayList<>();
+        ArrayList<Repairs> listAllReps = new ArrayList<>();
         ArrayList<Jobs> listJobs = new ArrayList<>();
         ArrayList<ToDo> listToDo = new ArrayList<>();
         ArrayList<Maps> listMap = new ArrayList<>();
@@ -120,6 +121,7 @@ public class mainController extends HttpServlet {
              PreparedStatement stmntMaintSched = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1 ORDER BY ITEM_MS_ID");
              PreparedStatement stmntMaintType = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES");
              PreparedStatement stmntRepairs = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_REPAIRS ORDER BY REPAIR_YEAR, REPAIR_MONTH, ITEM_LOC_ID");
+             PreparedStatement stmntAllReps = con.prepareCall("SELECT repair_month, SUM(num_of_repairs) AS total_repairs FROM C##FMO_ADM.fmo_item_repairs WHERE repair_year = EXTRACT(YEAR FROM SYSDATE) GROUP BY repair_month ORDER BY repair_month");
              PreparedStatement stmntAssign = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ORDER BY DATE_OF_MAINTENANCE");
              PreparedStatement stmntDUsers = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_DUSERS ORDER BY USER_ID");
              PreparedStatement stmntQuotations = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_QUOTATIONS ORDER BY QUOTATION_ID");
@@ -338,6 +340,15 @@ public class mainController extends HttpServlet {
             }
             rsRepairs.close();
             
+            ResultSet rsAllReps = stmntAllReps.executeQuery();
+            while (rsAllReps.next()) {
+                Repairs areps = new Repairs();
+                areps.setRepairMonth(rsAllReps.getInt("REPAIR_MONTH"));
+                areps.setRepairCount(rsAllReps.getInt("TOTAL_REPAIRS"));
+                listAllReps.add(areps);
+            }
+            rsAllReps.close();
+            
             ResultSet rsToDo = stmntToDo.executeQuery();
             while (rsToDo.next()) {
                 ToDo todo = new ToDo();
@@ -515,6 +526,7 @@ public class mainController extends HttpServlet {
         
         request.setAttribute("monthsList", months);
         request.setAttribute("REPAIRS_PER_MONTH", listRepairs);
+        request.setAttribute("ALL_REPAIRS_PER_MONTH", listAllReps);
         request.setAttribute("FMO_MAP_LIST", listMap);
         request.setAttribute("calendarSched", listJobs);
         request.setAttribute("FMO_TO_DO_LIST", listToDo);
@@ -537,6 +549,10 @@ public class mainController extends HttpServlet {
         String role = (session != null) ? (String) session.getAttribute("role") : null;
 
         String locID = request.getParameter("locID");
+        
+//        System.out.println("_______________________________________________________");
+//        System.out.println("path: "+path); System.out.println("qstring: "+queryString);
+//        System.out.println("_______________________________________________________");
         
         if (!isValidPathAndQuery(path, queryString, request)) {
             request.getRequestDispatcher("/errorPage.jsp").forward(request, response);
@@ -630,6 +646,9 @@ public class mainController extends HttpServlet {
                         } else {
                             request.getRequestDispatcher("/buildingDashboard.jsp").forward(request, response);
                         }
+                        break;
+                    case "/allDashboard":
+                        request.getRequestDispatcher("/allDashboard.jsp").forward(request, response);
                         break;
         //            case "/notification":
         //                request.getRequestDispatcher("/notification.jsp").forward(request, response);
@@ -760,6 +779,11 @@ public class mainController extends HttpServlet {
                     queryString.matches("locID=\\d+/manage\\?floor=\\w*&itemHID=\\d+")) {
                     return true;
                 }
+            
+                // Explicitly allow "locID=all"
+//                if ("locID=all".equalsIgnoreCase(queryString)) {
+//                    return true;
+//                }
 
                 // Validate expected patterns
                 if (queryString.matches("locID=\\d+(/manage)?") ||
@@ -800,6 +824,7 @@ public class mainController extends HttpServlet {
 
                 return false;
 
+            case "/allDashboard":
             case "/homepage":
             case "/calendar":
             case "/settings":
