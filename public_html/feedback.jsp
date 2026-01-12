@@ -344,6 +344,53 @@
     dateModal.show();
 });
 
+function drawFilteredChart(startDate, endDate) {
+    return new Promise((resolve) => {
+        const chartDiv = document.createElement('div');
+        chartDiv.style.width = '800px';
+        chartDiv.style.height = '400px';
+        chartDiv.style.position = 'absolute';
+        chartDiv.style.left = '-9999px';
+        document.body.appendChild(chartDiv);
+        
+        const monthlyData = calculateMonthlySatisfactionForRange(startDate, endDate);
+        
+        if (monthlyData.length === 0) {
+            document.body.removeChild(chartDiv);
+            resolve(null);
+            return;
+        }
+        
+        const dataArray = [['Month', 'Satisfaction Rate', { role: 'style' }]];
+        monthlyData.forEach(([month, rate]) => {
+            const rateNum = parseFloat(rate);
+            const color = rateNum >= 4 ? 'green' : (rateNum > 2 ? '#FFC107' : 'red');
+            dataArray.push([month, rateNum, color]);
+        });
+        
+        const data = google.visualization.arrayToDataTable(dataArray);
+        
+        const options = {
+            title: 'Monthly Satisfaction Rates',
+            hAxis: { title: 'Month' },
+            vAxis: { title: 'Average Rating', minValue: 0, maxValue: 5 },
+            legend: 'none',
+            width: 800,
+            height: 400
+        };
+        
+        const tempChart = new google.visualization.ColumnChart(chartDiv);
+        
+        google.visualization.events.addListener(tempChart, 'ready', function() {
+            const imgURI = tempChart.getImageURI();
+            document.body.removeChild(chartDiv);
+            resolve(imgURI);
+        });
+        
+        tempChart.draw(data, options);
+    });
+}
+
 // Handle report type selection
 document.querySelectorAll('input[name="reportType"]').forEach(radio => {
     radio.addEventListener('change', function() {
@@ -465,7 +512,7 @@ function calculateMonthlySatisfactionForRange(startDate, endDate) {
 }
 
 // Generate filtered report
-function generateFilteredReport(startDate, endDate) {
+async function generateFilteredReport(startDate, endDate) {
     const filteredFeedback = filterDataByDateRange(startDate, endDate);
     const monthlySatisfaction = calculateMonthlySatisfactionForRange(startDate, endDate);
     
@@ -478,10 +525,12 @@ function generateFilteredReport(startDate, endDate) {
         return;
     }
     
-    generatePDFReport(filteredFeedback, monthlySatisfaction, startDate, endDate);
+    // Generate chart image for filtered data
+    const chartImage = await drawFilteredChart(startDate, endDate);
+    
+    generatePDFReport(filteredFeedback, monthlySatisfaction, startDate, endDate, chartImage);
 }
-
-// Generate full report (existing functionality)
+//full report
 function generateFullReport() {
     const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
     const allFeedback = [];
@@ -504,11 +553,14 @@ function generateFullReport() {
     monthlyData.push(['${rate[0]}', '${rate[1]}']);
     </c:forEach>
     
-    generatePDFReport(allFeedback, monthlyData, null, null);
+    // Get chart image from existing chart
+    const chartImage = chart ? chart.getImageURI() : null;
+    
+    generatePDFReport(allFeedback, monthlyData, null, null, chartImage);
 }
 
 // Main PDF generation function (modified version of your existing code)
-function generatePDFReport(feedbackData, monthlySatisfaction, startDate, endDate) {
+function generatePDFReport(feedbackData, monthlySatisfaction, startDate, endDate, chartImage) {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -668,6 +720,17 @@ function generatePDFReport(feedbackData, monthlySatisfaction, startDate, endDate
             yPosition += 10;
         } else {
             yPosition += 4;
+        }
+        // Add chart image if available
+        if (chartImage) {
+            checkPageBreak(100);
+            
+            const chartWidth = 160;
+            const chartHeight = 80;
+            const chartX = (pageWidth - chartWidth) / 2;
+            
+            pdf.addImage(chartImage, 'PNG', chartX, yPosition, chartWidth, chartHeight);
+            yPosition += chartHeight + 10;
         }
 
         // Monthly Satisfaction Rates
