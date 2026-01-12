@@ -226,6 +226,52 @@
             </div>
         </div>
     </div>
+    
+    <div class="modal fade" id="dateRangeModal" tabindex="-1" aria-labelledby="dateRangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dateRangeModalLabel">Generate Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Select Report Type:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="reportType" id="allReports" value="all" checked>
+                        <label class="form-check-label" for="allReports">
+                            All Reports (No Date Filter)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="reportType" id="dateRangeReports" value="range">
+                        <label class="form-check-label" for="dateRangeReports">
+                            Custom Date Range
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="dateRangeInputs" style="display: none;">
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate" required>
+                    </div>
+                    <div id="dateError" class="text-danger small" style="display: none;">
+                        End date must be after start date
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel-outline" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     <script>
         google.charts.load('current', { packages: ['corechart'] });
@@ -293,6 +339,176 @@
 
          const generatedDate = '${generatedDate}';
         document.getElementById('download-chart').addEventListener('click', function () {
+    // Show the modal instead of directly generating report
+    const dateModal = new bootstrap.Modal(document.getElementById('dateRangeModal'));
+    dateModal.show();
+});
+
+// Handle report type selection
+document.querySelectorAll('input[name="reportType"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const dateInputs = document.getElementById('dateRangeInputs');
+        if (this.value === 'range') {
+            dateInputs.style.display = 'block';
+            document.getElementById('startDate').required = true;
+            document.getElementById('endDate').required = true;
+        } else {
+            dateInputs.style.display = 'none';
+            document.getElementById('startDate').required = false;
+            document.getElementById('endDate').required = false;
+            document.getElementById('dateError').style.display = 'none';
+        }
+    });
+});
+
+// Validate dates
+function validateDates() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const dateError = document.getElementById('dateError');
+    
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+        dateError.style.display = 'block';
+        return false;
+    }
+    dateError.style.display = 'none';
+    return true;
+}
+
+document.getElementById('startDate').addEventListener('change', validateDates);
+document.getElementById('endDate').addEventListener('change', validateDates);
+
+// Generate report button
+document.getElementById('generateReportBtn').addEventListener('click', function() {
+    const reportType = document.querySelector('input[name="reportType"]:checked').value;
+    
+    if (reportType === 'range') {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        
+        if (!startDate || !endDate) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Missing Dates',
+                text: 'Please select both start and end dates'
+            });
+            return;
+        }
+        
+        if (!validateDates()) {
+            return;
+        }
+        
+        // Close modal and generate filtered report
+        bootstrap.Modal.getInstance(document.getElementById('dateRangeModal')).hide();
+        generateFilteredReport(new Date(startDate), new Date(endDate));
+    } else {
+        // Close modal and generate full report
+        bootstrap.Modal.getInstance(document.getElementById('dateRangeModal')).hide();
+        generateFullReport();
+    }
+});
+
+// Function to filter data by date range
+function filterDataByDateRange(startDate, endDate) {
+    const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
+    const filteredData = [];
+    
+    feedbackRows.forEach(row => {
+        const dateCell = row.querySelectorAll('td')[5].textContent.trim();
+        const rowDate = new Date(dateCell);
+        
+        if (rowDate >= startDate && rowDate <= endDate) {
+            const cells = row.querySelectorAll('td');
+            filteredData.push({
+                rating: cells[0].textContent.trim(),
+                room: cells[1].textContent.trim(),
+                location: cells[2].textContent.trim(),
+                suggestions: cells[3].textContent.trim(),
+                equipment: cells[4].textContent.trim(),
+                date: cells[5].textContent.trim()
+            });
+        }
+    });
+    
+    return filteredData;
+}
+
+// Function to calculate monthly satisfaction for date range
+function calculateMonthlySatisfactionForRange(startDate, endDate) {
+    const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
+    const monthlyData = {};
+    
+    feedbackRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const dateCell = cells[5].textContent.trim();
+        const rowDate = new Date(dateCell);
+        
+        if (rowDate >= startDate && rowDate <= endDate) {
+            const rating = parseFloat(cells[0].textContent.trim());
+            const monthYear = rowDate.toLocaleString('default', { month: 'short', year: 'numeric' });
+            
+            if (!monthlyData[monthYear]) {
+                monthlyData[monthYear] = { total: 0, count: 0 };
+            }
+            monthlyData[monthYear].total += rating;
+            monthlyData[monthYear].count += 1;
+        }
+    });
+    
+    const result = [];
+    for (const [month, data] of Object.entries(monthlyData)) {
+        result.push([month, (data.total / data.count).toFixed(2)]);
+    }
+    
+    return result;
+}
+
+// Generate filtered report
+function generateFilteredReport(startDate, endDate) {
+    const filteredFeedback = filterDataByDateRange(startDate, endDate);
+    const monthlySatisfaction = calculateMonthlySatisfactionForRange(startDate, endDate);
+    
+    if (filteredFeedback.length === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: 'No Data',
+            text: 'No feedback found in the selected date range'
+        });
+        return;
+    }
+    
+    generatePDFReport(filteredFeedback, monthlySatisfaction, startDate, endDate);
+}
+
+// Generate full report (existing functionality)
+function generateFullReport() {
+    const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
+    const allFeedback = [];
+    
+    feedbackRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        allFeedback.push({
+            rating: cells[0].textContent.trim(),
+            room: cells[1].textContent.trim(),
+            location: cells[2].textContent.trim(),
+            suggestions: cells[3].textContent.trim(),
+            equipment: cells[4].textContent.trim(),
+            date: cells[5].textContent.trim()
+        });
+    });
+    
+    // Use existing satisfaction data from server
+    const monthlyData = [];
+    <c:forEach var="rate" items="${satisfactionRates}">
+    monthlyData.push(['${rate[0]}', '${rate[1]}']);
+    </c:forEach>
+    
+    generatePDFReport(allFeedback, monthlyData, null, null);
+}
+
+// Main PDF generation function (modified version of your existing code)
+function generatePDFReport(feedbackData, monthlySatisfaction, startDate, endDate) {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -300,7 +516,6 @@
     const margin = 15;
     let yPosition = 20;
 
-    // Get current date and time
     const now = new Date();
     const reportDate = now.toLocaleDateString('en-US', { 
         year: 'numeric', 
@@ -313,7 +528,6 @@
         hour12: true 
     });
 
-    // Helper function to check if we need a new page
     function checkPageBreak(requiredSpace) {
         if (yPosition + requiredSpace > pageHeight - margin - 20) {
             pdf.addPage();
@@ -334,7 +548,6 @@
         const rowHeight = 8;
         let currentY = startY;
 
-        // Draw header with dark grey background 
         pdf.setFillColor(51, 51, 51);
         pdf.setTextColor(255, 255, 255);
         pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
@@ -350,7 +563,6 @@
         currentY += rowHeight;
         pdf.setTextColor(0, 0, 0);
 
-        // Draw data rows
         pdf.setFontSize(8);
         pdf.setFont('helvetica', 'normal');
         data.forEach((row, rowIndex) => {
@@ -358,7 +570,6 @@
                 pdf.addPage();
                 currentY = margin + 30;
                 
-                // Redraw header on new page
                 pdf.setFillColor(51, 51, 51);
                 pdf.setTextColor(255, 255, 255);
                 pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
@@ -375,13 +586,11 @@
                 pdf.setFont('helvetica', 'normal');
             }
 
-            // Alternate row colors
             if (rowIndex % 2 === 0) {
                 pdf.setFillColor(245, 245, 245);
                 pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
             }
 
-            // Draw cell borders and text
             xPos = margin;
             row.forEach((cell, i) => {
                 pdf.rect(xPos, currentY, columnWidths[i], rowHeight);
@@ -404,7 +613,6 @@
         return currentY;
     }
 
-    // Helper function to add footer
     function addFooter() {
         const footerY = pageHeight - 10;
         
@@ -419,16 +627,13 @@
         pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'center' });
     }
 
-    // Load and add logo 
     const logoImg = new Image();
     logoImg.src = './resources/images/USTLogo2.png';
     
     logoImg.onload = function() {
-        // Add dark header background 
         pdf.setFillColor(51, 51, 51);
         pdf.rect(0, 0, pageWidth, 25, 'F');
 
-        // Add logo to header
         const imgWidth = logoImg.width;
         const imgHeight = logoImg.height;
         const aspectRatio = imgWidth / imgHeight;
@@ -448,165 +653,86 @@
     };
     
     function generatePDFContent() {
-        // Title 
         pdf.setFontSize(16);
         pdf.setFont('helvetica', 'bold');
         pdf.setTextColor(0, 0, 0);
         pdf.text('Facilities Management Office - Feedback Report', pageWidth / 2, yPosition, { align: 'center' });
-        yPosition += 12;
+        yPosition += 8;
+        
+        // Add date range info if filtered
+        if (startDate && endDate) {
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'normal');
+            const dateRangeText = 'Period: ' + startDate.toLocaleDateString() + ' to ' + endDate.toLocaleDateString();
+            pdf.text(dateRangeText, pageWidth / 2, yPosition, { align: 'center' });
+            yPosition += 10;
+        } else {
+            yPosition += 4;
+        }
 
-        // SECTION 1: Monthly Satisfaction Rates (with CHART)
-        checkPageBreak(100);
+        // Monthly Satisfaction Rates
+        checkPageBreak(50);
         pdf.setFontSize(14);
         pdf.setFont('helvetica', 'bold');
-        pdf.text('Monthly Satisfaction Rates (Current Year)', margin, yPosition);
-        yPosition += 15;
+        pdf.text('Monthly Satisfaction Rates', margin, yPosition);
+        yPosition += 8;
 
-        const satisfactionData = ${not empty satisfactionRates ? 'true' : 'false'};
-        if (satisfactionData) {
-            // Capture bar chart as image
-            const chartDiv = document.getElementById('chart_div');
-            html2canvas(chartDiv, {
-                backgroundColor: '#ffffff',
-                scale: 2
-            }).then(canvas => {
-                const chartImgData = canvas.toDataURL('image/png');
-                const chartY = yPosition;
-                const chartHeight = 70;
-                const chartWidth = 180;
-                const chartX = (pageWidth - chartWidth) / 2 + 6;
-                
-                pdf.addImage(chartImgData, 'PNG', chartX, chartY, chartWidth, chartHeight);
-
-                yPosition = chartY + chartHeight + 5;
-
-                // Add satisfaction rates table below chart
-                const monthlyData = [];
-                <c:forEach var="rate" items="${satisfactionRates}">
-                monthlyData.push(['${rate[0]}', '${rate[1]}']);
-                </c:forEach>
-                
-                const tableWidth = pageWidth - (2 * margin);
-                yPosition = drawTable(['Month', 'Satisfaction Rate'], monthlyData, yPosition, [tableWidth/2, tableWidth/2]);
-
-                yPosition += 10;
-
-                // SECTION 2: Last 10 Recent Feedbacks
-                checkPageBreak(50);
-                pdf.setFontSize(14);
-                pdf.setFont('helvetica', 'bold');
-                pdf.text('Recent Feedback (Last 10)', margin, yPosition);
-                yPosition += 8;
-
-                const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
-                
-                if (feedbackRows.length === 0) {
-                    pdf.setFontSize(10);
-                    pdf.setFont('helvetica', 'normal');
-                    pdf.text('No feedback data available', margin + 5, yPosition);
-                    yPosition += 6;
-                } else {
-                    const feedbackData = [];
-                    const maxRows = Math.min(10, feedbackRows.length);
-                    
-                    for (let i = 0; i < maxRows; i++) {
-                        const cells = feedbackRows[i].querySelectorAll('td');
-                        const rating = cells[0].textContent.trim();
-                        const room = cells[1].textContent.trim();
-                        const location = cells[2].textContent.trim();
-                        const suggestions = cells[3].textContent.trim();
-                        const equipment = cells[4].textContent.trim();
-                        const date = cells[5].textContent.trim();
-                        
-                        feedbackData.push([rating, room, location, suggestions, equipment, date]);
-                    }
-                    
-                    const feedbackWidths = [18, 28, 32, 40, 32, 30];
-                    yPosition = drawTable(
-                        ['Rating', 'Room', 'Location', 'Suggestions', 'Equipment', 'Date'], 
-                        feedbackData, 
-                        yPosition,
-                        feedbackWidths
-                    );
-                }
-
-                // Add footer to all pages
-                const totalPages = pdf.internal.getNumberOfPages();
-                for (let i = 1; i <= totalPages; i++) {
-                    pdf.setPage(i);
-                    addFooter();
-                }
-
-                // Open PDF in new tab
-                const pdfBlob = pdf.output('blob');
-                const pdfUrl = URL.createObjectURL(pdfBlob);
-                const newWindow = window.open(pdfUrl, '_blank');
-                
-                setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
-            });
+        if (monthlySatisfaction && monthlySatisfaction.length > 0) {
+            const tableWidth = pageWidth - (2 * margin);
+            yPosition = drawTable(['Month', 'Satisfaction Rate'], monthlySatisfaction, yPosition, [tableWidth/2, tableWidth/2]);
+            yPosition += 10;
         } else {
             pdf.setFontSize(10);
             pdf.setFont('helvetica', 'normal');
-            pdf.text('No satisfaction data available', margin + 5, yPosition);
-            yPosition += 6;
-
+            pdf.text('No satisfaction data available for this period', margin + 5, yPosition);
             yPosition += 10;
-
-            // SECTION 2: Last 10 Recent Feedbacks
-            checkPageBreak(50);
-            pdf.setFontSize(14);
-            pdf.setFont('helvetica', 'bold');
-            pdf.text('Recent Feedback (Last 10)', margin, yPosition);
-            yPosition += 8;
-
-            const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
-            
-            if (feedbackRows.length === 0) {
-                pdf.setFontSize(10);
-                pdf.setFont('helvetica', 'normal');
-                pdf.text('No feedback data available', margin + 5, yPosition);
-                yPosition += 6;
-            } else {
-                const feedbackData = [];
-                const maxRows = Math.min(10, feedbackRows.length);
-                
-                for (let i = 0; i < maxRows; i++) {
-                    const cells = feedbackRows[i].querySelectorAll('td');
-                    const rating = cells[0].textContent.trim();
-                    const room = cells[1].textContent.trim();
-                    const location = cells[2].textContent.trim();
-                    const suggestions = cells[3].textContent.trim();
-                    const equipment = cells[4].textContent.trim();
-                    const date = cells[5].textContent.trim();
-                    
-                    feedbackData.push([rating, room, location, suggestions, equipment, date]);
-                }
-                
-                const feedbackWidths = [18, 28, 32, 40, 32, 30];
-                yPosition = drawTable(
-                    ['Rating', 'Room', 'Location', 'Suggestions', 'Equipment', 'Date'], 
-                    feedbackData, 
-                    yPosition,
-                    feedbackWidths
-                );
-            }
-
-            // Add footer to all pages
-            const totalPages = pdf.internal.getNumberOfPages();
-            for (let i = 1; i <= totalPages; i++) {
-                pdf.setPage(i);
-                addFooter();
-            }
-
-            // Open PDF in new tab
-            const pdfBlob = pdf.output('blob');
-            const pdfUrl = URL.createObjectURL(pdfBlob);
-            const newWindow = window.open(pdfUrl, '_blank');
-            
-            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
         }
+
+        // Recent/Filtered Feedbacks
+        checkPageBreak(50);
+        pdf.setFontSize(14);
+        pdf.setFont('helvetica', 'bold');
+        const feedbackTitle = startDate && endDate ? 'Feedback Records' : 'Recent Feedback (Last 10)';
+        pdf.text(feedbackTitle, margin, yPosition);
+        yPosition += 8;
+
+        if (feedbackData.length === 0) {
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'normal');
+            pdf.text('No feedback data available', margin + 5, yPosition);
+            yPosition += 6;
+        } else {
+            const maxRows = startDate && endDate ? feedbackData.length : Math.min(10, feedbackData.length);
+            const tableData = [];
+            
+            for (let i = 0; i < maxRows; i++) {
+                const fb = feedbackData[i];
+                tableData.push([fb.rating, fb.room, fb.location, fb.suggestions, fb.equipment, fb.date]);
+            }
+            
+            const feedbackWidths = [18, 28, 32, 40, 32, 30];
+            yPosition = drawTable(
+                ['Rating', 'Room', 'Location', 'Suggestions', 'Equipment', 'Date'], 
+                tableData, 
+                yPosition,
+                feedbackWidths
+            );
+        }
+
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+            pdf.setPage(i);
+            addFooter();
+        }
+
+        const pdfBlob = pdf.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        window.open(pdfUrl, '_blank');
+        
+        setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
     }
-});
+}
+
         
         // QR Code download functionality
         document.getElementById('generateQRBtn').addEventListener('click', function() {
