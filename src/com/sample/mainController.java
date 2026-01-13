@@ -52,7 +52,7 @@ import sample.model.ItemUser;
 import sample.model.LocationStatus;
 
 @WebServlet(name = "mainController", urlPatterns = { "/homepage", "/buildingDashboard","/manage", "/allDashboard", "/edit",
-                                                     "/calendar", "/settings", "/maintenanceSchedule", "/mapView"})
+                                                     "/allDashboard/manage", "/calendar", "/settings", "/maintenanceSchedule", "/mapView"})
 public class mainController extends HttpServlet {
 
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
@@ -111,7 +111,7 @@ public class mainController extends HttpServlet {
         
         try (
              Connection con = PooledConnection.getConnection();
-             PreparedStatement statement = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY UPPER(NAME)");
+             PreparedStatement statement = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOCATIONS WHERE ACTIVE_FLAG = 1 AND ARCHIVED_FLAG = 1 ORDER BY UPPER(NAME)");
              PreparedStatement stmntFloor = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_LOC_FLOORS ORDER BY ITEM_LOC_ID, CASE WHEN REGEXP_LIKE(NAME, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(NAME, '^[0-9]+')) ELSE 9999 END, NAME");
              PreparedStatement stmntItems = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEMS ORDER BY LOCATION_ID, CASE WHEN REGEXP_LIKE(FLOOR_NO, '^[0-9]+F') THEN TO_NUMBER(REGEXP_SUBSTR(FLOOR_NO, '^[0-9]+')) ELSE 9999 END, ROOM_NO, ITEM_ID");
              PreparedStatement stmntITypes = con.prepareCall("SELECT * FROM C##FMO_ADM.FMO_ITEM_TYPES ORDER BY NAME");
@@ -550,9 +550,9 @@ public class mainController extends HttpServlet {
 
         String locID = request.getParameter("locID");
         
-//        System.out.println("_______________________________________________________");
-//        System.out.println("path: "+path); System.out.println("qstring: "+queryString);
-//        System.out.println("_______________________________________________________");
+        System.out.println("_______________________________________________________");
+        System.out.println("path: "+path); System.out.println("qstring: "+queryString);
+        System.out.println("_______________________________________________________");
         
         if (!isValidPathAndQuery(path, queryString, request)) {
             request.getRequestDispatcher("/errorPage.jsp").forward(request, response);
@@ -647,8 +647,50 @@ public class mainController extends HttpServlet {
                             request.getRequestDispatcher("/buildingDashboard.jsp").forward(request, response);
                         }
                         break;
-                    case "/allDashboard":
-                        request.getRequestDispatcher("/allDashboard.jsp").forward(request, response);
+                    case "/allDashboard/manage":
+                            String itemHIDParam2 = request.getParameter("itemHID");
+                                System.out.println("query string: "+queryString);
+                                System.out.println("Equipment History Item ID Param: "+itemHIDParam2);
+                            if (itemHIDParam2 != null && !itemHIDParam2.isEmpty()) {
+                                int itemHID2 = Integer.parseInt(itemHIDParam2);
+                                List<MaintAssign> historyList2 = new ArrayList<>();
+                                    
+                                try (Connection conn2 = PooledConnection.getConnection();
+                                     PreparedStatement stmt2 = conn2.prepareStatement(
+                                         "SELECT ma.ASSIGN_ID, ma.MAIN_TYPE_ID, ma.USER_ID, ma.DATE_OF_MAINTENANCE, NVL(ma.DATE_OF_MAINTENANCE - ma.ORIGINAL_PLANNED_DATE, 0) AS TURNAROUND_DAYS, u.NAME AS NAME, mt.NAME AS MAINT_TYPE " +
+                                         "FROM C##FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
+                                         "JOIN C##FMO_ADM.FMO_ITEM_DUSERS u ON ma.USER_ID = u.USER_ID " +
+                                         "JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_TYPES mt ON ma.MAIN_TYPE_ID = mt.MAIN_TYPE_ID " +
+                                         "WHERE ma.ITEM_ID = ? AND ma.IS_COMPLETED = 1")) {
+                                        
+                                     stmt2.setInt(1, itemHID2);
+                                     ResultSet rsH2 = stmt2.executeQuery();
+                                    
+                                    while (rsH2.next()) {
+                                        MaintAssign massH = new MaintAssign();
+                                        massH.setAssignID(rsH2.getInt("ASSIGN_ID"));
+                                        massH.setUserID(rsH2.getInt("USER_ID"));
+                                        massH.setUserName(rsH2.getString("NAME"));
+                                        massH.setMaintName(rsH2.getString("MAINT_TYPE"));
+                                        massH.setDateOfMaint(rsH2.getDate("DATE_OF_MAINTENANCE"));
+                                        massH.setTurnaroundDays(rsH2.getInt("TURNAROUND_DAYS"));
+                                        historyList2.add(massH);
+                                    }
+                                    rsH2.close();
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                                System.out.println("Equipment History Item ID: "+itemHID2);
+                                response.setContentType("application/json");
+                                response.setCharacterEncoding("UTF-8");
+                                response.getWriter().write(new Gson().toJson(historyList2));
+                            } else {
+                                System.out.println("itemHID is null or empty, handle logic here.");
+                                request.getRequestDispatcher("/manageEquipment.jsp").forward(request, response);
+                            }
+                            //                    System.out.println(locID);
+                            //                    System.out.println(locID.substring(locID.indexOf("floor=") + 6));
+                        
                         break;
         //            case "/notification":
         //                request.getRequestDispatcher("/notification.jsp").forward(request, response);
@@ -737,6 +779,9 @@ public class mainController extends HttpServlet {
                     case "/settings":
                         request.getRequestDispatcher("/settings.jsp").forward(request, response);
                         break;
+                    case "/allDashboard":
+                        request.getRequestDispatcher("/allDashboard.jsp").forward(request, response);
+                        break;
                     case "/maintenanceSchedule":
                         request.getRequestDispatcher("/maintenanceSchedule.jsp").forward(request, response);
                         break;
@@ -824,8 +869,25 @@ public class mainController extends HttpServlet {
 
                 return false;
 
-            case "/allDashboard":
+            case "/allDashboard/manage":
+                if (queryString == null) return true;
+            
+                if (queryString.matches("manage\\?itemHID=\\d+")) {
+                    return true;
+                }
+            
+                if (queryString.matches("itemHID=\\d+")) return true;
+                if (queryString.matches(
+                    "(uploadResult=\\w+&uploadMessage=[\\w%\\+]+&itemID=\\d+)|" +
+                    "(quotationResult=\\w+&quotationMessage=[\\w%\\+]+&itemID=\\d+)"
+                )) return true;
+                // Allow action + status redirects (only _ allowed as special char)
+                if (queryString.matches("action=[A-Za-z0-9_]*&status=[A-Za-z0-9_]+")) return true;
+                
+                
+                return false;
             case "/homepage":
+            case "/allDashboard":
             case "/calendar":
             case "/settings":
             case "/mapView":

@@ -35,19 +35,31 @@ public class quotationcontroller extends HttpServlet {
         System.out.println("floorName: " + floorName);
         
         BigDecimal itemID = (itemIDStr != null && !itemIDStr.isEmpty()) ? new BigDecimal(itemIDStr) : null;
+        boolean isAllDashboard =
+                (locID == null || locID.trim().isEmpty()) &&
+                (floorName == null || floorName.trim().isEmpty());
+
+        String redirectBase = isAllDashboard
+            ? "allDashboard/manage?"
+            : "buildingDashboard?locID=" + locID + "/manage?floor=" + floorName + "&";
+
         
         // Validate required fields
         if (itemID == null) {
             System.out.println("ERROR: Item ID is null or empty");
-            response.sendRedirect("buildingDashboard?locID=" + locID + "/manage?floor=" + floorName + 
-                                "&uploadResult=error&uploadMessage=Item ID is required&itemID=" + itemIDStr);
+            response.sendRedirect(
+                    redirectBase +
+                    "uploadResult=error&uploadMessage=Item ID is required&itemID=" + itemIDStr
+                );
             return;
         }
         
         if (description == null || description.trim().isEmpty()) {
             System.out.println("ERROR: Description is null or empty");
-            response.sendRedirect("buildingDashboard?locID=" + locID + "/manage?floor=" + floorName + 
-                                "&uploadResult=error&uploadMessage=Description is required&itemID=" + itemIDStr);
+            response.sendRedirect(
+                    redirectBase +
+                    "uploadResult=error&uploadMessage=Description is required&itemID=" + itemIDStr
+                );
             return;
         }
         
@@ -60,16 +72,20 @@ public class quotationcontroller extends HttpServlet {
             file2Data = extractFileData(filePart2);
         } catch (IOException e) {
             System.out.println("ERROR: File extraction failed - " + e.getMessage());
-            response.sendRedirect("buildingDashboard?locID=" + locID + "/manage?floor=" + floorName + 
-                                "&uploadResult=error&uploadMessage=" + e.getMessage() + "&itemID=" + itemIDStr);
+            response.sendRedirect(
+                    redirectBase +
+                    "uploadResult=error&uploadMessage=" + e.getMessage() + "&itemID=" + itemIDStr
+                );
             return;
         }
 
         // At least one file must be uploaded
         if (file1Data.inputStream == null && file2Data.inputStream == null) {
             System.out.println("ERROR: No files uploaded");
-            response.sendRedirect("buildingDashboard?locID=" + locID + "/manage?floor=" + floorName + 
-                                "&uploadResult=error&uploadMessage=At least one file must be uploaded&itemID=" + itemIDStr);
+            response.sendRedirect(
+                    redirectBase +
+                    "uploadResult=error&uploadMessage=At least one file must be uploaded&itemID=" + itemIDStr
+                );
             return;
         }
 
@@ -83,24 +99,32 @@ public class quotationcontroller extends HttpServlet {
             if (insertIntoDatabase(conn, itemID, description, quotationID, file1Data, file2Data)) {
                 System.out.println("Successfully inserted quotation for item ID: " + itemID);
                 // Redirect with success message
-                response.sendRedirect("buildingDashboard?locID=" + locID + "/manage?floor=" + floorName + 
-                                    "&uploadResult=success&uploadMessage=Quotation uploaded successfully&itemID=" + itemIDStr);
+                response.sendRedirect(
+                        redirectBase +
+                        "uploadResult=success&uploadMessage=Quotation uploaded successfully&itemID=" + itemIDStr
+                    );
             } else {
                 System.out.println("Failed to insert quotation for item ID: " + itemID);
-                response.sendRedirect("buildingDashboard?locID=" + locID + "/manage?floor=" + floorName + 
-                                    "&uploadResult=error&uploadMessage=Failed to save quotation to database&itemID=" + itemIDStr);
+                response.sendRedirect(
+                        redirectBase +
+                        "uploadResult=error&uploadMessage=Failed to save quotation to database&itemID=" + itemIDStr
+                    );
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Database error while inserting quotation: " + e.getMessage());
-            response.sendRedirect("buildingDashboard?locID=" + locID + "/manage?floor=" + floorName + 
-                                "&uploadResult=error&uploadMessage=Database error occurred&itemID=" + itemIDStr);
+            response.sendRedirect(
+                    redirectBase +
+                    "uploadResult=error&uploadMessage=Database error occurred&itemID=" + itemIDStr
+                );
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Unexpected error while processing quotation: " + e.getMessage());
-            response.sendRedirect("buildingDashboard?locID=" + locID + "/manage?floor=" + floorName + 
-                                "&uploadResult=error&uploadMessage=An unexpected error occurred&itemID=" + itemIDStr);
+            response.sendRedirect(
+                    redirectBase +
+                    "uploadResult=error&uploadMessage=An unexpected error occurred&itemID=" + itemIDStr
+                );
         }
     }
 
