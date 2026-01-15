@@ -404,6 +404,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                         <th>Type</th>
                         <th>Brand</th>
                         <th>Capacity</th>
+                        <th>Last Maint. Date</th>
                         <th>Status</th>
                             <th>Actions</th>
                     </tr>
@@ -1147,6 +1148,7 @@ $(document).ready(function(){
             { data: 'type' },
             { data: 'itemBrand' },
             { data: 'capacity' },
+            { data: 'dateLastMaint' },
             { data: 'status', orderable: false },
             // Actions column only if Admin
             { data: 'actions', orderable: false, searchable: false }
