@@ -36,32 +36,45 @@ public class ReportPieServlet extends HttpServlet {
 
         List<Map<String, Object>> dataList = new ArrayList<>();
 
-        String query = 
-        "SELECT " + 
-        "    ROW_NUMBER() OVER (ORDER BY c.name) AS ROW_ORDER, " + 
-        "    c.item_cat_id AS CATEGORY_ID, " + 
-        "    c.name AS CATEGORY_NAME, " + 
-        "    COUNT(i.item_id) AS ITEM_COUNT " + 
-        "FROM C##FMO_ADM.FMO_ITEM_CATEGORIES c " + 
-        "JOIN " + 
-        "    C##FMO_ADM.FMO_ITEM_TYPES t " + 
-        "    ON c.item_cat_id = t.item_cat_id " + 
-        "JOIN " + 
-        "    C##FMO_ADM.FMO_ITEMS i " + 
-        "    ON i.item_type_id = t.item_type_id " + 
-        "WHERE " + 
-        "    i.location_id = ? " + 
-        "    AND i.item_stat_id = 1 " + 
-        "    AND i.maintenance_status = 2 " + 
-        "GROUP BY " + 
-        "    c.item_cat_id, c.name " + 
-        "ORDER BY " + 
-        "    c.name ";
+        boolean isAllEquip = "allEquip".equalsIgnoreCase(locID);
+        
+        StringBuilder html = new StringBuilder();
+        StringBuilder query = new StringBuilder(
+            "SELECT " + 
+            "    ROW_NUMBER() OVER (ORDER BY c.name) AS ROW_ORDER, " + 
+            "    c.item_cat_id AS CATEGORY_ID, " + 
+            "    c.name AS CATEGORY_NAME, " + 
+            "    COUNT(i.item_id) AS ITEM_COUNT " + 
+            "FROM C##FMO_ADM.FMO_ITEM_CATEGORIES c " + 
+            "JOIN " + 
+            "    C##FMO_ADM.FMO_ITEM_TYPES t " + 
+            "    ON c.item_cat_id = t.item_cat_id " + 
+            "JOIN " + 
+            "    C##FMO_ADM.FMO_ITEMS i " + 
+            "    ON i.item_type_id = t.item_type_id " +
+            "WHERE 1=1 "
+        ); 
+        
+        // only add location filter if NOT allEquip
+        if (!isAllEquip) {
+            query.append(" AND i.location_id = ? ");
+        } 
+        
+        query.append(
+            "    AND i.item_stat_id = 1 " + 
+            "    AND i.maintenance_status = 2 " + 
+            "GROUP BY " + 
+            "    c.item_cat_id, c.name " + 
+            "ORDER BY " + 
+            "    c.name "
+        );
 
         try (Connection conn = PooledConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(query)) {
+            PreparedStatement ps = conn.prepareStatement(query.toString())) {
 
-            ps.setInt(1, Integer.parseInt(locID));
+            if (!isAllEquip) {
+                    ps.setInt(1, Integer.parseInt(locID));
+                }
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {

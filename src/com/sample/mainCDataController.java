@@ -1,0 +1,597 @@
+package com.sample;
+
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+
+import sample.model.PooledConnection;
+
+@WebServlet(name = "mainCDataController", urlPatterns = { "/maincdatacontroller" })
+public class mainCDataController extends HttpServlet {
+    private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
+
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+    }
+    
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType(CONTENT_TYPE);
+        
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int start = Integer.parseInt(request.getParameter("start"));
+        int length = Integer.parseInt(request.getParameter("length"));
+        String searchValue = request.getParameter("search[value]");
+            if (searchValue != null) {
+                searchValue = searchValue.trim();
+            }
+        String draw = request.getParameter("draw");
+
+        String locID = "1";
+        String floorName = "all";
+        String userRole = request.getParameter("userRole");
+        String userEmail = request.getParameter("userEmail");
+        String sessionName = request.getParameter("sessionName");
+                    System.out.println("fake ahh loc id: " + locID);
+                    System.out.println("Floor Name: " + floorName);
+                    System.out.println("User Role: " + userRole);
+                    System.out.println("Session Name: " + sessionName);
+
+        List<Map<String, Object>> data = new ArrayList<>();
+        int recordsTotal = 0;
+        int recordsFiltered = 0;
+
+        try (Connection conn = PooledConnection.getConnection()) {
+            // Count total
+            String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS WHERE item_stat_id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(countSql)) {
+                ps.setString(1, locID);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    recordsTotal = rs.getInt(1);
+                }
+            }
+            System.out.println("Records Total: " + recordsTotal);
+            
+            // Build base query
+            // AI was used to convert the SQL query into query.append("")
+            // Tool: ChatGPT, Prompt: "Insert this query inside query.append(" ")
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT ")
+                 .append("i.item_id, i.location_id, ")
+                 .append("i.item_type_id, ")
+                 .append("i.location_text, ")
+                 .append("i.floor_no, ")
+                 .append("i.quantity, ")
+                 .append("i.capacity, ")
+                 .append("i.name AS item_name, ")
+                 .append("NVL(i.room_no, 'N/A') AS room_no, ")
+                 .append("c.name AS category_name, ")
+                 .append("c.item_cat_id, ")
+                 .append("t.name AS type_name, ")
+                 .append("NVL(i.brand_name, 'N/A') AS brand_name, ")
+                 .append("i.date_installed, ")
+                 .append("i.unit_of_measure, ")
+                 .append("i.electrical_v, ")
+                 .append("i.electrical_ph, ")
+                 .append("i.electrical_hz, ")
+                 .append("i.maintenance_status, ")
+                 .append("i.ac_fcu, ")
+                 .append("i.ac_accu, ")
+                 .append("i.ac_inverter, ")
+                 .append("i.expiry_date, ")
+                 .append("i.parent_item_id, ")
+                 .append("i.remarks, ")
+                 .append("i.pc_code, ")
+                 .append("i.planned_maintenance_date, ")
+                 .append("i.last_maintenance_date, ")
+                 .append("l.name AS location_name, ")
+                 .append("TRIM( ")
+                 .append("CASE WHEN i.ac_fcu = 1 THEN 'FCU ' ELSE '' END || ")
+                 .append("CASE WHEN i.ac_accu = 1 THEN 'ACCU ' ELSE '' END || ")
+                 .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
+                 .append(") AS ac_typez ")
+                 .append("FROM C##FMO_ADM.FMO_ITEMS i ")
+                 .append("JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id ")
+                 .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id ")
+                 .append("JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON l.item_loc_id = i.location_id ")
+                 .append("WHERE i.item_stat_id = ? ");
+
+                if (searchValue != null && !searchValue.isEmpty()) {
+                    query.append("AND (")
+                         .append("LOWER(i.name) LIKE ? OR ")
+                         .append("LOWER(c.name) LIKE ? OR ")
+                         .append("LOWER(t.name) LIKE ? OR ")
+                         .append("LOWER(i.brand_name) LIKE ? OR ")
+                         .append("LOWER(NVL(i.room_no, 'N/A')) LIKE ? OR ")
+                         .append("CAST(i.item_id AS VARCHAR(20)) LIKE ? OR ")
+                         .append("LOWER(")
+                         .append("TRIM( ")
+                         .append("CASE WHEN i.ac_fcu = 1 THEN 'FCU ' ELSE '' END || ")
+                         .append("CASE WHEN i.ac_accu = 1 THEN 'ACCU ' ELSE '' END || ")
+                         .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
+                         .append(")")
+                         .append(") LIKE ? OR ")
+                         .append("TO_CHAR(i.date_installed, 'YYYY-MM-DD') LIKE ? ")
+                         .append(")");
+                }
+
+        //                System.out.println("Query: " + query);
+            // Pagination (Oracle)
+            String paginatedQuery = "SELECT * FROM (SELECT a.*, ROWNUM rnum FROM (" +
+                    query.toString() + " ORDER BY i.name) a WHERE ROWNUM <= ?) WHERE rnum > ?";
+
+            try (PreparedStatement ps = conn.prepareStatement(paginatedQuery)) {
+                int paramIndex = 1;
+                ps.setString(paramIndex++,locID);
+                    if (searchValue != null && !searchValue.isEmpty()) {
+                        String sv = "%" + searchValue.toLowerCase() + "%";
+                        ps.setString(paramIndex++, sv); // i.name
+                        ps.setString(paramIndex++, sv); // c.name
+                        ps.setString(paramIndex++, sv); // t.name
+                        ps.setString(paramIndex++, sv); // brand_name
+                        ps.setString(paramIndex++, sv); // room_no
+                        ps.setString(paramIndex++, sv); // item_id (casted)
+                        ps.setString(paramIndex++, sv); // ac_typez
+                        ps.setString(paramIndex++, sv); // date_installed
+                    }
+                ps.setInt(paramIndex++, start + length);
+                ps.setInt(paramIndex, start);
+        //                                System.out.println("Start: " + start);
+        //                                System.out.println("Length: " + length);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    Map<String, Object> row = new HashMap<>();
+                    int itemId = rs.getInt("item_id");
+                    String itemName = rs.getString("item_name");
+                    String locID2 = rs.getString("location_id");
+                    String locName = rs.getString("location_name");
+                    String locText = rs.getString("location_text");
+                    int quantity = rs.getInt("quantity");
+                    String itemFloor = rs.getString("floor_no");
+                    String itemRoom = rs.getString("room_no");
+                    int capacity = rs.getInt("capacity");
+                    String category = rs.getString("category_name");
+                    int catID = rs.getInt("item_cat_id");
+                    String type = rs.getString("type_name");
+                    int typeID = rs.getInt("item_type_id");
+                    String itemBrand = rs.getString("brand_name");
+                    Date dateInstalled = rs.getDate("date_installed");
+                    Date dateExpiry = rs.getDate("expiry_date");
+                    String remarks = rs.getString("remarks");
+                    remarks = (remarks == null) ? "" : remarks;
+                    int statusId = rs.getInt("maintenance_status");
+                    int pcCode = rs.getInt("pc_code");
+                    int acFCU = rs.getInt("ac_fcu");
+                    int acACCU = rs.getInt("ac_accu");
+                    int acInv = rs.getInt("ac_inverter");
+                    String uoMeasure = rs.getString("unit_of_measure");
+                    int elecV = rs.getInt("electrical_v");
+                    int elecPH = rs.getInt("electrical_ph");
+                    int elecHZ = rs.getInt("electrical_hz");
+                    
+                    String acTypez = rs.getString("ac_typez");
+                    acTypez = (acTypez == null) ? "" : acTypez;
+                    
+                    System.out.println("Item ID: " + itemId);
+                    System.out.println("Location ID: " + locID2);
+                    System.out.println("Item Name: " + itemName);
+                    System.out.println("Location bruddah: " + locName);
+                    System.out.println("Item Floor: " + itemFloor);
+                    System.out.println("Item Room: " + itemRoom);
+                    System.out.println("Category: " + category);
+                    System.out.println("Type: " + type);
+                    System.out.println("Item Brand: " + itemBrand);
+                    System.out.println("Date Installed: " + dateInstalled);
+                    System.out.println("Status ID: " + statusId);
+                    System.out.println("----------------------------");
+                    
+                    row.put("itemInfo", buildInfoModal(
+                                                itemId,
+                                                statusId,
+                                                locID,
+                                                floorName,
+                                                itemName,
+                                                locText,
+                                                quantity,
+                                                itemFloor,
+                                                itemRoom,
+                                                capacity,
+                                                category,
+                                                catID,
+                                                type,
+                                                typeID,
+                                                itemBrand,
+                                                dateInstalled,
+                                                dateExpiry,
+                                                remarks,
+                                                pcCode,
+                                                acFCU,
+                                                acACCU,
+                                                acInv,
+                                                uoMeasure,
+                                                elecV,
+                                                elecPH,
+                                                elecHZ,
+                                                locName
+                                               ));
+                    row.put("itemID", itemId);
+                    row.put("itemName", itemName);
+                    row.put("locName", locName);
+                    row.put("itemFloor", itemFloor);
+                    row.put("itemRoom", itemRoom);
+                    row.put("category", category);
+                    row.put("type", type);
+                    row.put("itemBrand", itemBrand);
+//                    row.put("dateInstalled", dateInstalled != null ? dateInstalled.toString() : "N/A");
+
+                    // Quotation button
+        //                    String quotationHtml = "<form id='quotForm' method='GET' action='quotations.jsp' style='display: none;'>" +
+        //                                                "<input type='hidden' name='displayQuotItemID' id='hiddenItemID'>" +
+        //                                            "</form>" +
+        //                                            "<input type='image' " +
+        //                                                "src='resources/images/quotationsIcon.svg' " +
+        //                                                "id='quotModalButton' " +
+        //                                                "alt='Open Quotation Modal' " +
+        //                                                "width='24' " +
+        //                                                "height='24' " +
+        //                                                "data-itemid='" + itemId + "' " +
+        //                                                "data-bs-toggle='modal' " +
+        //                                                "data-bs-target='#quotEquipmentModal' " +
+        //                                                "onclick='openQuotModal(this)'>";
+        //                    row.put("quotation", quotationHtml);
+                    row.put("capacity", capacity);
+                    
+                    // Status dropdown
+                    row.put("status", buildStatusDropdown(
+                        conn,
+                        itemId,
+                        statusId,
+                        locID,
+                        itemFloor
+                    ));
+
+                    // Actions dropdown (only for admin)
+                    //if ("Admin".equals(userRole)) {
+                        row.put("actions", buildActionsDropdown(
+                                                itemId,
+                                                statusId,
+                                                locID2,
+                                                floorName,
+                                                itemName,
+                                                locText,
+                                                quantity,
+                                                itemFloor,
+                                                itemRoom,
+                                                capacity,
+                                                category,
+                                                catID,
+                                                type,
+                                                typeID,
+                                                itemBrand,
+                                                dateInstalled,
+                                                dateExpiry,
+                                                remarks,
+                                                pcCode,
+                                                acFCU,
+                                                acACCU,
+                                                acInv,
+                                                uoMeasure,
+                                                elecV,
+                                                elecPH,
+                                                elecHZ,
+                                                userRole
+                                               ));
+                    //}
+                    
+                    data.add(row);
+                }
+            }
+
+            // Filtered count
+            // Count filtered
+            // AI was used to fix the searchbar query after converting the data-pulling code from client-side to server-side
+            // Tool: ChatGPT, Prompt: "The search function in DataTables isn't working. Could you fix it?"
+            if (searchValue != null && !searchValue.isEmpty()) {
+                StringBuilder countFilteredSql = new StringBuilder();
+                countFilteredSql.append("SELECT COUNT(*) ")
+                                .append("FROM C##FMO_ADM.FMO_ITEMS i ")
+                                .append("JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id ")
+                                .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id ")
+                                .append("JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON l.item_loc_id = i.location_id ")
+                                .append("WHERE i.item_stat_id = ? ")
+                                .append("AND (")
+                                .append("LOWER(i.name) LIKE ? OR ")
+                                .append("LOWER(c.name) LIKE ? OR ")
+                                .append("LOWER(t.name) LIKE ? OR ")
+                                .append("LOWER(i.brand_name) LIKE ? OR ")
+                                .append("LOWER(NVL(i.room_no, 'N/A')) LIKE ? OR ")
+                                .append("CAST(i.item_id AS VARCHAR(20)) LIKE ? OR ")
+                                .append("LOWER(TRIM( ")
+                                .append("CASE WHEN i.ac_fcu = 1 THEN 'FCU ' ELSE '' END || ")
+                                .append("CASE WHEN i.ac_accu = 1 THEN 'ACCU ' ELSE '' END || ")
+                                .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
+                                .append(")) LIKE ? OR ")
+                                .append("TO_CHAR(i.date_installed, 'YYYY-MM-DD') LIKE ? ")
+                                .append(")");
+
+                try (PreparedStatement ps = conn.prepareStatement(countFilteredSql.toString())) {
+                    int idx = 1;
+                    ps.setString(idx++, locID);
+                    String sv = "%" + searchValue.toLowerCase() + "%";
+                    ps.setString(idx++, sv); // i.name
+                    ps.setString(idx++, sv); // c.name
+                    ps.setString(idx++, sv); // t.name
+                    ps.setString(idx++, sv); // brand_name
+                    ps.setString(idx++, sv); // room_no
+                    ps.setString(idx++, sv); // item_id
+                    ps.setString(idx++, sv); // ac_typez
+                    ps.setString(idx++, sv); // date_installed
+
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        recordsFiltered = rs.getInt(1);
+                    }
+                }
+            } else {
+                recordsFiltered = recordsTotal; // no search, both are same
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put("draw", draw);
+        jsonResponse.put("recordsTotal", recordsTotal);
+        jsonResponse.put("recordsFiltered", recordsFiltered);
+        jsonResponse.put("data", data);
+
+        String json = new Gson().toJson(jsonResponse);
+        response.setContentType("application/json");
+        response.getWriter().write(json);
+        
+        }
+
+        private String buildStatusDropdown(
+        Connection conn,
+        int itemId,
+        int selectedStatus,
+        String locID,
+        String floorName
+        ) {
+        StringBuilder sb = new StringBuilder();
+        String sql = "SELECT status_id, status_name FROM C##FMO_ADM.fmo_item_maintenance_status ORDER BY status_id";
+        
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+        
+        //                sb.append("<form action='itemcontroller' method='POST'>")
+        //                  .append("<input type='hidden' name='itemLID' value='").append(locID).append("'/>")
+        //                  .append("<input type='hidden' name='itemFlr' value='").append(floorName).append("'/>")
+        //                  .append("<input type='hidden' name='maintStatID' value='").append(itemId).append("'/>")
+        //                  .append("<select name='statusDropdown' class='statusDropdown' onchange='this.form.submit()'>");
+            // AI was used to convert the html code to appended code here
+            // Tool: ChatGPT, Prompt: "Convert the code above into .append("")"
+            sb.append("<form action='itemallcontroller' method='POST'>")
+                  // always include locID and floorName
+                  // current item ID
+                  .append("<input type='hidden' name='maintStatID' value='").append(itemId).append("'/>")
+                  // old maintenance status
+                  .append("<input type='hidden' name='oldMaintStat' value='").append(selectedStatus).append("'/>")
+                  // extra hidden field for type (if needed for submission)
+                  .append("<input type='hidden' name='itemMaintType' value=''/>")
+                  // dropdown
+                  .append("<select name='statusDropdown' class='statusDropdown'>"); // removed onchange for now
+
+            while (rs.next()) {
+                int statusId = rs.getInt("status_id");
+                String statusName = rs.getString("status_name");
+        
+                sb.append("<option value='").append(statusId).append("'");
+
+                    // mark selected
+                    if (selectedStatus == statusId) {
+                        sb.append(" selected");
+                    }
+
+                    // disable option 3 if selected status is 1
+                    if (selectedStatus == 1 && statusId == 3) {
+                        sb.append(" disabled");
+                    }
+
+                    sb.append(">")
+                      .append(statusName)
+                      .append("</option>");
+            }
+        
+            sb.append("</select></form>");
+        
+        } catch (SQLException e) {
+            e.printStackTrace(); // replace with proper logging
+        }
+        
+        return sb.toString();
+        }
+
+        private String buildActionsDropdown(
+        int itemId,
+        int selectedStatus,
+        String locID2,
+        String floorName,
+        String itemName,
+        String locText,
+        int quantity,
+        String itemFloor,
+        String itemRoom,
+        int capacity,
+        String category,
+        int catID,
+        String type,
+        int typeID,
+        String itemBrand,
+        Date dateInstalled,
+        Date dateExpiry,
+        String remarks,
+        int pcCode,
+        int acFCU,
+        int acACCU,
+        int acInv,
+        String uoMeasure,
+        int elecV,
+        int elecPH,
+        int elecHZ,
+        String userRole
+        ) {
+            String quotationHtml = "<form id='quotForm' method='GET' action='quotations.jsp' style='display: none;'>" +
+                                       "<input type='hidden' name='displayQuotItemID' id='hiddenItemID'>" +
+                                   "</form>" +
+                                   "<a class='dropdown-item' href='#' " +
+                                       "data-bs-toggle='modal' " +
+                                       "data-bs-target='#quotEquipmentModal' " +
+                                       "data-itemid='" + itemId + "' " +
+                                       "onclick='openQuotModal(this)'>" +
+                                       "Quotations" +
+                                   "</a>";
+            String archiveHtml = "";
+                if ("Admin".equalsIgnoreCase(userRole)) {
+                    archiveHtml =
+                        "<a class='dropdown-item archive-maintenance-btn' href='#' " +
+                            "data-toggle='modal' " +
+                            "data-itemaid='" + itemId + "' " +
+                            "data-itemaname='" + itemName + "'>" +
+                            "Archive" +
+                        "</a>";
+                }
+            String editHtml = "";
+            // AI was used to convert the html code to the code below
+            // Tool: ChatGPT, Prompt: "Convert the code above like this [code that covers the first few lines]"
+                if ("Admin".equalsIgnoreCase(userRole)) {
+                    editHtml =
+                    "<a class='dropdown-item' href='#' " +
+                        "data-toggle='modal' " +
+                        "data-target='#editEquipment' " +
+                        "data-itemid='" + itemId + "' " +
+                        "data-itemloc='" + locID2 + "' " +
+                        "data-itemname='" + itemName + "' " +
+                        "data-itembrand='" + itemBrand + "' " +
+                        "data-dateinst='" + dateInstalled + "' " +
+                        "data-itemexpiry='" + dateExpiry + "' " +
+                        "data-itemcat='" + catID + "' " +
+                        "data-itemfloor='" + itemFloor + "' " +
+                        "data-itemroom='" + itemRoom + "' " +
+                        "data-itemtype='" + typeID + "' " +
+                        "data-itemloctext='" + locText + "' " +
+                        "data-itemremarks='" + remarks + "' " +
+                        "data-itempcc='" + pcCode + "' " +
+                        "data-accu='" + acACCU + "' " +
+                        "data-fcu='" + acFCU + "' " +
+                        "data-inverter='" + acInv + "' " +
+                        "data-itemcapacity='" + capacity + "' " +
+                        "data-itemmeasure='" + uoMeasure + "' " +
+                        "data-itemev='" + elecV + "' " +
+                        "data-itemeph='" + elecPH + "' " +
+                        "data-itemehz='" + elecHZ + "' " +
+                        "onclick='populateEditModal(this); floorERender(); setFloorSelection(this); toggleEAirconDiv(" + catID + ");'>" +
+                        "Edit" +
+                    "</a>";
+                }
+        
+        return "<div class='dropdown'>" +
+               "<button class='btn btn-link p-0' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
+               "<img src='resources/images/kebabMenu.svg' alt='Actions' width='20' height='20'>" +
+               "</button>" +
+               "<div class='dropdown-menu'>" +
+                 quotationHtml +
+                 "<a class='dropdown-item history-btn' href='#' " +
+                     "data-toggle='modal' " +
+                     "data-target='#historyEquipment' " +
+                     "data-itemhid='" + itemId + "'>" +
+                     "History" +
+                 "</a>" +
+                 editHtml +
+                 archiveHtml +
+               "</div>" +
+             "</div>";
+
+        }
+        
+        private String buildInfoModal(
+            int itemId,
+            int selectedStatus,
+            String locID,
+            String floorName,
+            String itemName,
+            String locText,
+            int quantity,
+            String itemFloor,
+            String itemRoom,
+            int capacity,
+            String category,
+            int catID,
+            String type,
+            int typeID,
+            String itemBrand,
+            Date dateInstalled,
+            Date dateExpiry,
+            String remarks,
+            int pcCode,
+            int acFCU,
+            int acACCU,
+            int acInv,
+            String uoMeasure,
+            int elecV,
+            int elecPH,
+            int elecHZ,
+            String locName
+        ) {
+            return "<input type='image' " +
+                                            "src='resources/images/itemInfo.svg' " +
+                                            "id='infoModalButton' " +
+                                            "alt='Open Info Modal' " +
+                                            "width='24' height='24' " +
+                                            "data-itemiid='" + itemId + "' " +
+                                            "data-iteminame='" + itemName + "' " +
+                                            "data-itemilname='" + locName + "' " +
+                                            "data-itemibrand='" + itemBrand + "' " +
+                                            "data-dateiinst='" + dateInstalled + "' " +
+                                            "data-itemiexpiry='" + dateExpiry + "' " +
+                                            "data-itemicat='" + category + "' " +
+                                            "data-itemifloor='" + itemFloor + "' " +
+                                            "data-itemiroom='" + itemRoom + "' " +
+                                            "data-itemitype='" + type + "' " +
+                                            "data-itemiloctext='" + locText + "' " +
+                                            "data-itemiremarks='" + remarks + "' " +
+                                            "data-itemipcc='" + pcCode + "' " +
+                                            "data-iaccu='" + acACCU + "' " +
+                                            "data-ifcu='" + acFCU + "' " +
+                                            "data-iinverter='" + acInv + "' " +
+                                            "data-itemicapacity='" + capacity + "' " +
+                                            "data-itemimeasure='" + uoMeasure + "' " +
+                                            "data-itemiev='" + elecV + "' " +
+                                            "data-itemieph='" + elecPH + "' " +
+                                            "data-itemiehz='" + elecHZ + "' " +
+                                            "data-bs-toggle='modal' " +
+                                            "data-bs-target='#infoEquipment' " +
+                                            "onclick='populateInfoModal(this)'> ";
+        
+        }
+}
