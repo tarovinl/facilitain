@@ -120,6 +120,7 @@ public class mainCDataController extends HttpServlet {
                          .append("LOWER(c.name) LIKE ? OR ")
                          .append("LOWER(t.name) LIKE ? OR ")
                          .append("LOWER(i.brand_name) LIKE ? OR ")
+                         .append("LOWER(l.name) LIKE ? OR ")
                          .append("LOWER(NVL(i.room_no, 'N/A')) LIKE ? OR ")
                          .append("CAST(i.item_id AS VARCHAR(20)) LIKE ? OR ")
                          .append("LOWER(")
@@ -129,7 +130,8 @@ public class mainCDataController extends HttpServlet {
                          .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
                          .append(")")
                          .append(") LIKE ? OR ")
-                         .append("TO_CHAR(i.date_installed, 'YYYY-MM-DD') LIKE ? ")
+                         .append("TO_CHAR(i.date_installed, 'YYYY-MM-DD') LIKE ? OR ")
+                         .append("TO_CHAR(i.last_maintenance_date, 'YYYY-MM-DD') LIKE ? ")
                          .append(")");
                 }
 
@@ -147,10 +149,12 @@ public class mainCDataController extends HttpServlet {
                         ps.setString(paramIndex++, sv); // c.name
                         ps.setString(paramIndex++, sv); // t.name
                         ps.setString(paramIndex++, sv); // brand_name
+                        ps.setString(paramIndex++, sv); // l.name
                         ps.setString(paramIndex++, sv); // room_no
                         ps.setString(paramIndex++, sv); // item_id (casted)
                         ps.setString(paramIndex++, sv); // ac_typez
                         ps.setString(paramIndex++, sv); // date_installed
+                        ps.setString(paramIndex++, sv); // last_maintenance_date
                     }
                 ps.setInt(paramIndex++, start + length);
                 ps.setInt(paramIndex, start);
@@ -174,6 +178,7 @@ public class mainCDataController extends HttpServlet {
                     int typeID = rs.getInt("item_type_id");
                     String itemBrand = rs.getString("brand_name");
                     Date dateInstalled = rs.getDate("date_installed");
+                    Date dateLastMaint = rs.getDate("last_maintenance_date");
                     Date dateExpiry = rs.getDate("expiry_date");
                     String remarks = rs.getString("remarks");
                     remarks = (remarks == null) ? "" : remarks;
@@ -258,6 +263,7 @@ public class mainCDataController extends HttpServlet {
         //                                                "onclick='openQuotModal(this)'>";
         //                    row.put("quotation", quotationHtml);
                     row.put("capacity", capacity);
+                    row.put("dateLastMaint", dateLastMaint != null ? dateLastMaint.toString() : "N/A");
                     
                     // Status dropdown
                     row.put("status", buildStatusDropdown(
@@ -322,6 +328,7 @@ public class mainCDataController extends HttpServlet {
                                 .append("LOWER(c.name) LIKE ? OR ")
                                 .append("LOWER(t.name) LIKE ? OR ")
                                 .append("LOWER(i.brand_name) LIKE ? OR ")
+                                .append("LOWER(l.name) LIKE ? OR ")
                                 .append("LOWER(NVL(i.room_no, 'N/A')) LIKE ? OR ")
                                 .append("CAST(i.item_id AS VARCHAR(20)) LIKE ? OR ")
                                 .append("LOWER(TRIM( ")
@@ -330,6 +337,7 @@ public class mainCDataController extends HttpServlet {
                                 .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
                                 .append(")) LIKE ? OR ")
                                 .append("TO_CHAR(i.date_installed, 'YYYY-MM-DD') LIKE ? ")
+                                .append("TO_CHAR(i.last_maintenance_date, 'YYYY-MM-DD') LIKE ? ")
                                 .append(")");
 
                 try (PreparedStatement ps = conn.prepareStatement(countFilteredSql.toString())) {
@@ -340,10 +348,12 @@ public class mainCDataController extends HttpServlet {
                     ps.setString(idx++, sv); // c.name
                     ps.setString(idx++, sv); // t.name
                     ps.setString(idx++, sv); // brand_name
+                    ps.setString(idx++, sv); // l.name
                     ps.setString(idx++, sv); // room_no
                     ps.setString(idx++, sv); // item_id
                     ps.setString(idx++, sv); // ac_typez
                     ps.setString(idx++, sv); // date_installed
+                    ps.setString(idx++, sv); // last_maintenance_date
 
                     ResultSet rs = ps.executeQuery();
                     if (rs.next()) {
