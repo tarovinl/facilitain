@@ -58,12 +58,17 @@ public class itemCategoriesController extends HttpServlet {
 
         try (Connection conn = PooledConnection.getConnection()) {
             if ("archive".equals(action) && itemCID != null) {
-                String archiveSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET ARCHIVED_FLAG = 2 WHERE ITEM_CAT_ID = ?";
-                try (PreparedStatement stmt = conn.prepareStatement(archiveSql)) {
-                    stmt.setInt(1, itemCID);
-                    stmt.executeUpdate();
+                // Check if category is in use before archiving
+                if (isCategoryInUse(conn, itemCID)) {
+                    redirectParams = "?error=inuse";
+                } else {
+                    String archiveSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET ARCHIVED_FLAG = 2 WHERE ITEM_CAT_ID = ?";
+                    try (PreparedStatement stmt = conn.prepareStatement(archiveSql)) {
+                        stmt.setInt(1, itemCID);
+                        stmt.executeUpdate();
+                    }
+                    redirectParams = "?action=archived";
                 }
-                redirectParams = "?action=archived";
             } else if ("true".equals(editMode) && itemCID != null) {
                 // Check for duplicate category name (excluding current category)
                 if (isDuplicateCategoryName(conn, categoryName, itemCID)) {
@@ -104,6 +109,26 @@ public class itemCategoriesController extends HttpServlet {
         }
 
         response.sendRedirect(request.getContextPath() + "/itemCategories" + redirectParams);
+    }
+
+    /**
+     * Checks if a category is currently being used by any items
+     * @param conn Database connection
+     * @param itemCID Category ID to check
+     * @return true if category is in use, false otherwise
+     */
+    private boolean isCategoryInUse(Connection conn, Integer itemCID) throws SQLException {
+        String checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS WHERE ITEM_TYPE_ID = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
+            stmt.setInt(1, itemCID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
     }
 
     /**

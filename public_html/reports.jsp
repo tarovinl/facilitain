@@ -557,6 +557,54 @@
   </div>
 </div>
 
+<!-- Date Range Modal -->
+<div class="modal fade" id="dateRangeModal" tabindex="-1" aria-labelledby="dateRangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dateRangeModalLabel">Generate Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Select Report Type:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="reportType" id="allReports" value="all" checked>
+                        <label class="form-check-label" for="allReports">
+                            All Reports (No Date Filter)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="reportType" id="dateRangeReports" value="range">
+                        <label class="form-check-label" for="dateRangeReports">
+                            Custom Date Range
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="dateRangeInputs" style="display: none;">
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate" required>
+                    </div>
+                    <div id="dateError" class="text-danger small" style="display: none;">
+                        End date must be after start date
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel-outline" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -818,6 +866,287 @@ $(document).ready(function() {
 
     
 $('#generate-report').on('click', function() {
+    // Show the modal instead of directly generating report
+    const dateModal = new bootstrap.Modal(document.getElementById('dateRangeModal'));
+    dateModal.show();
+});
+
+// Handle report type selection
+document.querySelectorAll('input[name="reportType"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const dateInputs = document.getElementById('dateRangeInputs');
+        if (this.value === 'range') {
+            dateInputs.style.display = 'block';
+            document.getElementById('startDate').required = true;
+            document.getElementById('endDate').required = true;
+        } else {
+            dateInputs.style.display = 'none';
+            document.getElementById('startDate').required = false;
+            document.getElementById('endDate').required = false;
+            document.getElementById('dateError').style.display = 'none';
+        }
+    });
+});
+
+// Validate dates
+function validateDates() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const dateError = document.getElementById('dateError');
+    
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+        dateError.style.display = 'block';
+        return false;
+    }
+    dateError.style.display = 'none';
+    return true;
+}
+
+document.getElementById('startDate').addEventListener('change', validateDates);
+document.getElementById('endDate').addEventListener('change', validateDates);
+
+// Generate report button
+document.getElementById('generateReportBtn').addEventListener('click', function() {
+    const reportType = document.querySelector('input[name="reportType"]:checked').value;
+    
+    if (reportType === 'range') {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        
+        if (!startDate || !endDate) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Missing Dates',
+                text: 'Please select both start and end dates'
+            });
+            return;
+        }
+        
+        if (!validateDates()) {
+            return;
+        }
+        
+        // Close modal and generate filtered report
+        bootstrap.Modal.getInstance(document.getElementById('dateRangeModal')).hide();
+        generateFilteredReport(new Date(startDate), new Date(endDate));
+    } else {
+        // Close modal and generate full report
+        bootstrap.Modal.getInstance(document.getElementById('dateRangeModal')).hide();
+        generateFullReport();
+    }
+});
+
+// Function to filter reports by date range
+function filterReportsByDateRange(startDate, endDate) {
+    const reportRows = document.querySelectorAll('#reportsTable tbody tr');
+    const filteredData = [];
+    
+    reportRows.forEach(row => {
+        const dateCell = row.querySelectorAll('td')[3].textContent.trim();
+        const rowDate = new Date(dateCell);
+        
+        if (rowDate >= startDate && rowDate <= endDate) {
+            const cells = row.querySelectorAll('td');
+            filteredData.push({
+                id: cells[0].textContent.trim(),
+                equipment: cells[1].textContent.trim().replace(/\s*⚠\s*Similar\s*/g, ''),
+                location: cells[2].textContent.trim(),
+                date: cells[3].textContent.trim(),
+                status: cells[4].textContent.trim()
+            });
+        }
+    });
+    
+    return filteredData;
+}
+
+// Function to calculate statistics for date range
+function calculateStatsForDateRange(startDate, endDate) {
+    const reportRows = document.querySelectorAll('#reportsTable tbody tr');
+    let totalReports = 0;
+    let unresolvedCount = 0;
+    let resolvedCount = 0;
+    const locationCounts = {};
+    const equipmentCounts = {};
+    const monthlyData = {};
+    
+    reportRows.forEach(row => {
+        const dateCell = row.querySelectorAll('td')[3].textContent.trim();
+        const rowDate = new Date(dateCell);
+        
+        if (rowDate >= startDate && rowDate <= endDate) {
+            totalReports++;
+            
+            const statusBadge = row.querySelector('td:nth-child(5) .badge');
+            if (statusBadge.textContent.includes('Resolved') && !statusBadge.textContent.includes('Not')) {
+                resolvedCount++;
+            } else {
+                unresolvedCount++;
+                // Count equipment for unresolved only
+                const equipment = row.querySelectorAll('td')[1].textContent.trim().replace(/\s*⚠\s*Similar\s*/g, '');
+                equipmentCounts[equipment] = (equipmentCounts[equipment] || 0) + 1;
+            }
+            
+            // Count locations
+            const location = row.querySelectorAll('td')[2].textContent.trim();
+            locationCounts[location] = (locationCounts[location] || 0) + 1;
+            
+            // Count monthly
+            const monthYear = rowDate.toLocaleString('default', { month: 'short', year: 'numeric' });
+            monthlyData[monthYear] = (monthlyData[monthYear] || 0) + 1;
+        }
+    });
+    
+    // Convert to sorted arrays
+    const sortedLocations = Object.entries(locationCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+    
+    const sortedEquipment = Object.entries(equipmentCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+    
+    const sortedMonthly = Object.entries(monthlyData);
+    
+    return {
+        total: totalReports,
+        unresolved: unresolvedCount,
+        resolved: resolvedCount,
+        locations: sortedLocations,
+        equipment: sortedEquipment,
+        monthly: sortedMonthly
+    };
+}
+
+// Function to draw filtered pie chart
+function drawFilteredPieChart(equipmentData) {
+    return new Promise((resolve) => {
+        if (equipmentData.length === 0) {
+            resolve(null);
+            return;
+        }
+        
+        const chartDiv = document.createElement('div');
+        chartDiv.style.width = '800px';
+        chartDiv.style.height = '400px';
+        chartDiv.style.position = 'absolute';
+        chartDiv.style.left = '-9999px';
+        document.body.appendChild(chartDiv);
+        
+        const dataArray = [['Equipment Type', 'Number of Reports']];
+        equipmentData.forEach(([equipment, count]) => {
+            dataArray.push([equipment, count]);
+        });
+        
+        const data = google.visualization.arrayToDataTable(dataArray);
+        
+        const options = {
+            pieHole: 0.4,
+            colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#c7ecee', '#778beb', '#f8a5c2'],
+            legend: { 
+                position: 'right',
+                textStyle: { fontSize: 10 },
+                maxLines: 10
+            },
+            chartArea: { left: 20, top: 30, width: '90%', height: '100%' },
+            width: 800,
+            height: 400
+        };
+        
+        const tempChart = new google.visualization.PieChart(chartDiv);
+        
+        google.visualization.events.addListener(tempChart, 'ready', function() {
+            html2canvas(chartDiv, {
+                backgroundColor: '#ffffff',
+                scale: 2
+            }).then(canvas => {
+                const imgURI = canvas.toDataURL('image/png');
+                document.body.removeChild(chartDiv);
+                resolve(imgURI);
+            });
+        });
+        
+        tempChart.draw(data, options);
+    });
+}
+
+// Function to draw filtered bar chart
+function drawFilteredBarChart(locationData) {
+    return new Promise((resolve) => {
+        if (locationData.length === 0) {
+            resolve(null);
+            return;
+        }
+        
+        const chartDiv = document.createElement('div');
+        chartDiv.style.width = '800px';
+        chartDiv.style.height = '400px';
+        chartDiv.style.position = 'absolute';
+        chartDiv.style.left = '-9999px';
+        document.body.appendChild(chartDiv);
+        
+        const dataArray = [['Location', 'Number of Reports']];
+        locationData.forEach(([location, count]) => {
+            dataArray.push([location, count]);
+        });
+        
+        const data = google.visualization.arrayToDataTable(dataArray);
+        
+        const options = {
+            hAxis: { 
+                title: 'Number of Reports',
+                minValue: 0
+            },
+            vAxis: { 
+                title: 'Location'
+            },
+            colors: ['#4285f4'],
+            legend: 'none',
+            chartArea: { left: 120, top: 50, width: '65%', height: '80%' },
+            width: 800,
+            height: 400
+        };
+        
+        const tempChart = new google.visualization.BarChart(chartDiv);
+        
+        google.visualization.events.addListener(tempChart, 'ready', function() {
+            html2canvas(chartDiv, {
+                backgroundColor: '#ffffff',
+                scale: 2
+            }).then(canvas => {
+                const imgURI = canvas.toDataURL('image/png');
+                document.body.removeChild(chartDiv);
+                resolve(imgURI);
+            });
+        });
+        
+        tempChart.draw(data, options);
+    });
+}
+
+// Generate filtered report
+async function generateFilteredReport(startDate, endDate) {
+    const filteredReports = filterReportsByDateRange(startDate, endDate);
+    const stats = calculateStatsForDateRange(startDate, endDate);
+    
+    if (filteredReports.length === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: 'No Data',
+            text: 'No reports found in the selected date range'
+        });
+        return;
+    }
+    
+    // Generate chart images for filtered data
+    const pieChartImage = await drawFilteredPieChart(stats.equipment);
+    const barChartImage = await drawFilteredBarChart(stats.locations);
+    
+    generatePDFWithDateRange(filteredReports, stats, startDate, endDate, pieChartImage, barChartImage);
+}
+
+// Generate full report (your original PDF generation code)
+function generateFullReport() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -959,6 +1288,7 @@ $('#generate-report').on('click', function() {
         let totalReports = reportRows.length;
         let unresolvedCount = 0;
         let resolvedCount = 0;
+        const monthlyData = {};
         
         reportRows.forEach(row => {
             const statusBadge = row.querySelector('td:nth-child(5) .badge');
@@ -967,6 +1297,12 @@ $('#generate-report').on('click', function() {
             } else {
                 unresolvedCount++;
             }
+            
+            // Count monthly reports
+            const dateCell = row.querySelectorAll('td')[3].textContent.trim();
+            const rowDate = new Date(dateCell);
+            const monthYear = rowDate.toLocaleString('default', { month: 'short', year: 'numeric' });
+            monthlyData[monthYear] = (monthlyData[monthYear] || 0) + 1;
         });
 
         // Reports Summary Table
@@ -984,208 +1320,104 @@ $('#generate-report').on('click', function() {
         yPosition = drawTable(['Category', 'Count'], summaryData, yPosition);
         yPosition += 10;
 
-        // SECTION 1: Monthly Report Summary
-        checkPageBreak(50);
-        pdf.setFontSize(14);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Monthly Report Summary', margin, yPosition);
-        yPosition += 8;
-
-        const monthlyReportsData = ${not empty monthlyReports ? 'true' : 'false'};
-        if (monthlyReportsData) {
-            const monthlyData = [];
-            <c:forEach var="monthData" items="${monthlyReports}">
-            monthlyData.push(['${monthData.key}', '${monthData.value}']);
-            </c:forEach>
-            yPosition = drawTable(['Month', 'Reports'], monthlyData, yPosition);
-        } else {
-            pdf.setFontSize(10);
-            pdf.setFont('helvetica', 'normal');
-            pdf.text('No monthly data available', margin + 5, yPosition);
-            yPosition += 6;
-        }
-
-        yPosition += 10;
-
-        // SECTION 2: Top 10 Unresolved Reports by Equipment Type (with PIE CHART)
-        checkPageBreak(80);
-        pdf.setFontSize(14);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Top 10 Unresolved Reports by Equipment Type', margin, yPosition);
-        yPosition += 8;
-
-        const unresolvedEquipmentData = ${not empty top10UnresolvedEquipment ? 'true' : 'false'};
-        if (unresolvedEquipmentData) {
-            // Temporarily redraw chart without pagination for PDF
-            const pieChartDiv = document.getElementById('equipmentChart');
-            
-            // Store original chart
-            const originalChart = equipmentChart;
-            
-            // Redraw chart without legend pagination
-            const data = google.visualization.arrayToDataTable([
-                ['Equipment Type', 'Number of Reports'],
-                <c:forEach var="equipmentData" items="${equipmentReports}">
-                    ['${equipmentData.key}', ${equipmentData.value}],
-                </c:forEach>
-            ]);
-
-            const pdfOptions = {
-                pieHole: 0.4,
-                colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#c7ecee', '#778beb', '#f8a5c2'],
-                legend: { 
-                    position: 'right',
-                    textStyle: { fontSize: 10 },
-                    maxLines: 10
-                },
-                chartArea: { left: 20, top: 30, width: '90%', height: '100%' }
-            };
-
-            const tempChart = new google.visualization.PieChart(pieChartDiv);
-            
-            // Wait for chart to be drawn before capturing
-            google.visualization.events.addListener(tempChart, 'ready', function() {
-                html2canvas(pieChartDiv, {
-                    backgroundColor: '#ffffff',
-                    scale: 2
-                }).then(canvas => {
-                    const pieImgData = canvas.toDataURL('image/png');
-                    const pieChartY = yPosition;
-                    const pieChartHeight = 70;
-                    const pieChartWidth = 110;
-                    const pieChartX = (pageWidth - pieChartWidth) / 2;
-                    
-                    pdf.addImage(pieImgData, 'PNG', pieChartX, pieChartY, pieChartWidth, pieChartHeight);
-
-                    yPosition = pieChartY + pieChartHeight + 5;
-                    
-                    // Restore original chart
-                    drawEquipmentChart();
-
-                    // Add equipment table below pie chart
-                    const equipmentData = [];
-                    let rank = 1;
-                    <c:forEach var="equipData" items="${top10UnresolvedEquipment}">
-                    equipmentData.push([rank, '${equipData.key}', '${equipData.value}']);
-                    rank++;
-                    </c:forEach>
-                    yPosition = drawTable(['Rank', 'Equipment Type', 'Unresolved Reports'], equipmentData, yPosition);
-                    yPosition += 10;
-
-                    // SECTION 3: Top 5 Most Reported Locations 
-                   checkPageBreak(100);
-                    pdf.setFontSize(14);
-                    pdf.setFont('helvetica', 'bold');
-                    pdf.text('Top 5 Most Reported Locations', margin, yPosition);
-                    yPosition += 15;
-
-                    const locationReportsData = ${not empty locationReports ? 'true' : 'false'};
-                    if (locationReportsData) {
-                        // Capture bar chart as image
-                        const barChartDiv = document.getElementById('locationChart');
-                        html2canvas(barChartDiv, {
-                            backgroundColor: '#ffffff',
-                            scale: 2
-                        }).then(barCanvas => {
-                            const barImgData = barCanvas.toDataURL('image/png');
-                            const barChartY = yPosition;
-                            const barChartHeight = 70;
-                            const barChartWidth = 150;
-                            const barChartX = (pageWidth - barChartWidth) / 2 + 20;
-                            
-                            pdf.addImage(barImgData, 'PNG', barChartX, barChartY, barChartWidth, barChartHeight);
-
-                            yPosition = barChartY + barChartHeight + 5;
-
-                            // Add All Reports by Location table below bar chart
-                            checkPageBreak(50);
-                            pdf.setFontSize(14);
-                            pdf.setFont('helvetica', 'bold');
-                            pdf.text('All Reports by Location', margin, yPosition);
-                            yPosition += 8;
-
-                            const allLocationReportsData = ${not empty allLocationReports ? 'true' : 'false'};
-                            if (allLocationReportsData) {
-                                const locationData = [];
-                                <c:forEach var="locData" items="${allLocationReports}">
-                                locationData.push(['${locData.key}', '${locData.value}']);
-                                </c:forEach>
-                                yPosition = drawTable(['Location', 'Reports'], locationData, yPosition);
-                            } else {
-                                pdf.setFontSize(10);
-                                pdf.setFont('helvetica', 'normal');
-                                pdf.text('No location data available', margin + 5, yPosition);
-                                yPosition += 6;
-                            }
-
-                            // Add footer to all pages
-                            const totalPages = pdf.internal.getNumberOfPages();
-                            for (let i = 1; i <= totalPages; i++) {
-                                pdf.setPage(i);
-                                addFooter();
-                            }
-
-                            // Open PDF in new tab
-                            const pdfBlob = pdf.output('blob');
-                            const pdfUrl = URL.createObjectURL(pdfBlob);
-                            const newWindow = window.open(pdfUrl, '_blank');
-                            
-                            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
-                        });
-                    } else {
-                        pdf.setFontSize(10);
-                        pdf.setFont('helvetica', 'normal');
-                        pdf.text('No location data available', margin + 5, yPosition);
-                        yPosition += 6;
-
-                        // Add footer to all pages
-                        const totalPages = pdf.internal.getNumberOfPages();
-                        for (let i = 1; i <= totalPages; i++) {
-                            pdf.setPage(i);
-                            addFooter();
-                        }
-
-                        // Open PDF in new tab
-                        const pdfBlob = pdf.output('blob');
-                        const pdfUrl = URL.createObjectURL(pdfBlob);
-                        const newWindow = window.open(pdfUrl, '_blank');
-                        
-                        setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
-                    }
-                });
-            });
-            
-            // Draw the modified chart
-            tempChart.draw(data, pdfOptions);
-        } else {
-            pdf.setFontSize(10);
-            pdf.setFont('helvetica', 'normal');
-            pdf.text('No unresolved reports', margin + 5, yPosition);
-            yPosition += 6;
-
-            // Continue with location section
-            yPosition += 10;
-
+        // Monthly Report Summary
+        const sortedMonthly = Object.entries(monthlyData);
+        if (sortedMonthly.length > 0) {
             checkPageBreak(50);
             pdf.setFontSize(14);
             pdf.setFont('helvetica', 'bold');
-            pdf.text('Top 5 Most Reported Locations', margin, yPosition);
+            pdf.text('Monthly Report Summary', margin, yPosition);
+            yPosition += 8;
+            
+            yPosition = drawTable(['Month', 'Reports'], sortedMonthly, yPosition);
+            yPosition += 10;
+        }
+
+        // Capture and add Equipment Pie Chart
+        if (equipmentChart && typeof equipmentChart.getImageURI === 'function') {
+            checkPageBreak(100);
+            pdf.setFontSize(14);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Top 10 Unresolved Reports by Equipment Type', margin, yPosition);
             yPosition += 8;
 
-            const locationReportsData = ${not empty allLocationReports ? 'true' : 'false'};
-            if (locationReportsData) {
-                const locationData = [];
-                <c:forEach var="locData" items="${allLocationReports}">
-                locationData.push(['${locData.key}', '${locData.value}']);
-                </c:forEach>
-                yPosition = drawTable(['Location', 'Reports'], locationData, yPosition);
-            } else {
-                pdf.setFontSize(10);
-                pdf.setFont('helvetica', 'normal');
-                pdf.text('No location data available', margin + 5, yPosition);
-                yPosition += 6;
-            }
+            try {
+                const chartDiv = document.getElementById('equipmentChart');
+                html2canvas(chartDiv, {
+                    backgroundColor: '#ffffff',
+                    scale: 2
+                }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const chartWidth = 110;
+                    const chartHeight = 70;
+                    const chartX = (pageWidth - chartWidth) / 2;
+                    
+                    pdf.addImage(imgData, 'PNG', chartX, yPosition, chartWidth, chartHeight);
+                    yPosition += chartHeight + 5;
 
+                    // Equipment table data
+                    const equipmentRows = document.querySelectorAll('#equipmentChart svg text');
+                    const equipmentData = [];
+                    let rank = 1;
+                    
+                    equipmentRows.forEach((text, index) => {
+                        const content = text.textContent.trim();
+                        if (content && !content.includes('Equipment') && rank <= 10) {
+                            equipmentData.push([rank, content, '']);
+                            rank++;
+                        }
+                    });
+
+                    if (equipmentData.length > 0) {
+                        yPosition = drawTable(['Rank', 'Equipment Type', 'Unresolved Reports'], equipmentData, yPosition);
+                        yPosition += 10;
+                    }
+
+                    continueWithLocationChart();
+                });
+            } catch (error) {
+                console.error('Error capturing equipment chart:', error);
+                continueWithLocationChart();
+            }
+        } else {
+            continueWithLocationChart();
+        }
+
+        function continueWithLocationChart() {
+            // Capture and add Location Bar Chart
+            if (locationChart && typeof locationChart.getImageURI === 'function') {
+                checkPageBreak(100);
+                pdf.setFontSize(14);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('Top 5 Most Reported Locations', margin, yPosition);
+                yPosition += 15;
+
+                try {
+                    const chartDiv = document.getElementById('locationChart');
+                    html2canvas(chartDiv, {
+                        backgroundColor: '#ffffff',
+                        scale: 2
+                    }).then(canvas => {
+                        const imgData = canvas.toDataURL('image/png');
+                        const barChartWidth = 150;
+                        const barChartHeight = 70;
+                        const barChartX = (pageWidth - barChartWidth) / 2 + 20;
+                        
+                        pdf.addImage(imgData, 'PNG', barChartX, yPosition, barChartWidth, barChartHeight);
+                        yPosition += barChartHeight + 10;
+
+                        finalizePDF();
+                    });
+                } catch (error) {
+                    console.error('Error capturing location chart:', error);
+                    finalizePDF();
+                }
+            } else {
+                finalizePDF();
+            }
+        }
+
+        function finalizePDF() {
             // Add footer to all pages
             const totalPages = pdf.internal.getNumberOfPages();
             for (let i = 1; i <= totalPages; i++) {
@@ -1196,12 +1428,224 @@ $('#generate-report').on('click', function() {
             // Open PDF in new tab
             const pdfBlob = pdf.output('blob');
             const pdfUrl = URL.createObjectURL(pdfBlob);
-            const newWindow = window.open(pdfUrl, '_blank');
+            window.open(pdfUrl, '_blank');
             
             setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
         }
     }
-});
+}
+
+// Modified PDF generation function that accepts date range
+function generatePDFWithDateRange(reportData, stats, startDate, endDate, pieChartImage, barChartImage) {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 15;
+    let yPosition = 20;
+
+    const now = new Date();
+    const reportDate = now.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    const reportTime = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+    });
+
+    function checkPageBreak(requiredSpace) {
+        if (yPosition + requiredSpace > pageHeight - margin - 20) {
+            pdf.addPage();
+            yPosition = margin + 30;
+            return true;
+        }
+        return false;
+    }
+
+    function drawTable(headers, data, startY) {
+        const tableWidth = pageWidth - (2 * margin);
+        const colWidth = tableWidth / headers.length;
+        const rowHeight = 8;
+        let currentY = startY;
+
+        pdf.setFillColor(51, 51, 51);
+        pdf.setTextColor(255, 255, 255);
+        pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
+        
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'bold');
+        headers.forEach((header, i) => {
+            pdf.text(header, margin + (i * colWidth) + 2, currentY + 5.5);
+        });
+        
+        currentY += rowHeight;
+        pdf.setTextColor(0, 0, 0);
+
+        pdf.setFont('helvetica', 'normal');
+        data.forEach((row, rowIndex) => {
+            if (currentY + rowHeight > pageHeight - margin - 20) {
+                pdf.addPage();
+                currentY = margin + 30;
+                
+                pdf.setFillColor(51, 51, 51);
+                pdf.setTextColor(255, 255, 255);
+                pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
+                pdf.setFont('helvetica', 'bold');
+                headers.forEach((header, i) => {
+                    pdf.text(header, margin + (i * colWidth) + 2, currentY + 5.5);
+                });
+                currentY += rowHeight;
+                pdf.setTextColor(0, 0, 0);
+                pdf.setFont('helvetica', 'normal');
+            }
+
+            if (rowIndex % 2 === 0) {
+                pdf.setFillColor(245, 245, 245);
+                pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
+            }
+
+            row.forEach((cell, i) => {
+                pdf.rect(margin + (i * colWidth), currentY, colWidth, rowHeight);
+                pdf.text(String(cell), margin + (i * colWidth) + 2, currentY + 5.5);
+            });
+            
+            currentY += rowHeight;
+        });
+
+        return currentY;
+    }
+
+    function addFooter() {
+        const footerY = pageHeight - 10;
+        pdf.setFontSize(8);
+        pdf.setFont('helvetica', 'italic');
+        pdf.setTextColor(128, 128, 128);
+        
+        pdf.text('Generated on: ' + reportDate + ' at ' + reportTime, margin, footerY);
+        pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'center' });
+    }
+
+    const logoImg = new Image();
+    logoImg.src = './resources/images/USTLogo2.png';
+    
+    logoImg.onload = function() {
+        pdf.setFillColor(51, 51, 51);
+        pdf.rect(0, 0, pageWidth, 25, 'F');
+
+        const imgWidth = logoImg.width;
+        const imgHeight = logoImg.height;
+        const aspectRatio = imgWidth / imgHeight;
+        const logoHeight = 13;
+        const logoWidth = logoHeight * aspectRatio;
+        
+        pdf.addImage(logoImg, 'PNG', margin, 6, logoWidth, logoHeight);
+
+        yPosition = 35;
+        generateContent();
+    };
+    
+    logoImg.onerror = function() {
+        yPosition = margin;
+        generateContent();
+    };
+    
+    function generateContent() {
+        // Title
+        pdf.setFontSize(16);
+        pdf.setFont('helvetica', 'bold');
+        pdf.setTextColor(0, 0, 0);
+        pdf.text('Facilities Management Office - Reports Dashboard', pageWidth / 2, yPosition, { align: 'center' });
+        yPosition += 8;
+        
+        // Add date range info
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'normal');
+        const dateRangeText = 'Period: ' + startDate.toLocaleDateString() + ' to ' + endDate.toLocaleDateString();
+        pdf.text(dateRangeText, pageWidth / 2, yPosition, { align: 'center' });
+        yPosition += 12;
+
+        // Reports Summary
+        checkPageBreak(50);
+        pdf.setFontSize(14);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('Reports Summary', margin, yPosition);
+        yPosition += 8;
+
+        const summaryData = [
+            ['Total Reports', stats.total],
+            ['Unresolved Reports', stats.unresolved],
+            ['Resolved Reports', stats.resolved]
+        ];
+        yPosition = drawTable(['Category', 'Count'], summaryData, yPosition);
+        yPosition += 10;
+
+        // Monthly Report Summary
+        if (stats.monthly.length > 0) {
+            checkPageBreak(50);
+            pdf.setFontSize(14);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Monthly Report Summary', margin, yPosition);
+            yPosition += 8;
+            
+            yPosition = drawTable(['Month', 'Reports'], stats.monthly, yPosition);
+            yPosition += 10;
+        }
+
+        // Equipment Chart
+        if (pieChartImage && stats.equipment.length > 0) {
+            checkPageBreak(100);
+            pdf.setFontSize(14);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Top 10 Unresolved Reports by Equipment Type', margin, yPosition);
+            yPosition += 8;
+
+            const chartWidth = 110;
+            const chartHeight = 70;
+            const chartX = (pageWidth - chartWidth) / 2;
+            
+            pdf.addImage(pieChartImage, 'PNG', chartX, yPosition, chartWidth, chartHeight);
+            yPosition += chartHeight + 5;
+
+            const equipmentData = stats.equipment.map((item, index) => [index + 1, item[0], item[1]]);
+            yPosition = drawTable(['Rank', 'Equipment Type', 'Unresolved Reports'], equipmentData, yPosition);
+            yPosition += 10;
+        }
+
+        // Location Chart
+        if (barChartImage && stats.locations.length > 0) {
+            checkPageBreak(100);
+            pdf.setFontSize(14);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Top 5 Most Reported Locations', margin, yPosition);
+            yPosition += 15;
+
+            const barChartWidth = 150;
+            const barChartHeight = 70;
+            const barChartX = (pageWidth - barChartWidth) / 2 + 20;
+            
+            pdf.addImage(barChartImage, 'PNG', barChartX, yPosition, barChartWidth, barChartHeight);
+            yPosition += barChartHeight + 10;
+        }
+
+        // Add footer to all pages
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+            pdf.setPage(i);
+            addFooter();
+        }
+
+        // Open PDF in new tab
+        const pdfBlob = pdf.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        window.open(pdfUrl, '_blank');
+        
+        setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+    }
+}
+
 
     // QR Code download functionality
     $('#generateQRBtn').on('click', function() {

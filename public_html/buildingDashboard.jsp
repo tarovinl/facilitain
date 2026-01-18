@@ -166,7 +166,154 @@
 
 
 
+// Show modal when Generate Report button is clicked
 function generateReport() {
+    const reportModal = new bootstrap.Modal(document.getElementById('dateRangeModal'));
+    reportModal.show();
+}
+
+// Initialize all event listeners when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Radio button change handler
+    document.querySelectorAll('input[name="reportType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const dateInputs = document.getElementById('dateRangeInputs');
+            if (this.value === 'range') {
+                dateInputs.style.display = 'block';
+                document.getElementById('startDate').required = true;
+                document.getElementById('endDate').required = true;
+            } else {
+                dateInputs.style.display = 'none';
+                document.getElementById('startDate').required = false;
+                document.getElementById('endDate').required = false;
+                document.getElementById('dateError').style.display = 'none';
+            }
+        });
+    });
+
+    // Date validation function
+    function validateDates() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const dateError = document.getElementById('dateError');
+        
+        if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+            dateError.style.display = 'block';
+            return false;
+        }
+        dateError.style.display = 'none';
+        return true;
+    }
+
+    // Date change listeners
+    document.getElementById('startDate').addEventListener('change', validateDates);
+    document.getElementById('endDate').addEventListener('change', validateDates);
+
+    // Generate report button handler
+    document.getElementById('generateReportBtn').addEventListener('click', function() {
+        const reportType = document.querySelector('input[name="reportType"]:checked').value;
+        
+        if (reportType === 'range') {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) {
+                alert('Please select both start and end dates');
+                return;
+            }
+            
+            if (!validateDates()) {
+                return;
+            }
+            
+            // Close modal and generate filtered report
+            bootstrap.Modal.getInstance(document.getElementById('dateRangeModal')).hide();
+            generateFilteredReport(new Date(startDate), new Date(endDate));
+        } else {
+            // Close modal and generate full report
+            bootstrap.Modal.getInstance(document.getElementById('dateRangeModal')).hide();
+            generateFullReport();
+        }
+    });
+
+    // Load activities
+    fetch('upcomingactservlet?locID=' + locIDajax)
+        .then(res => res.text())
+        .then(html => document.getElementById('upcoming-activities').innerHTML = html)
+        .catch(err => console.error('Error loading upcoming activities:', err));
+
+    fetch('recentactservlet?locID=' + locIDajax)
+        .then(res => res.text())
+        .then(html => document.getElementById('recent-activities').innerHTML = html)
+        .catch(err => console.error('Error loading recent activities:', err));
+});
+
+// Get repairs data filtered by date range
+function getRepairsDataForRange(startDate, endDate) {
+    const repairsData = [];
+
+    const compareStart = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+    const compareEnd = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0);
+
+    <c:forEach var="month" items="${monthsList}" varStatus="status">
+    {
+        let monthDate = new Date(${currentYear}, ${status.index}, 15);
+
+        if (monthDate >= compareStart && monthDate <= compareEnd) {
+            repairsData.push(['${month}', ${repairCount}]);
+        }
+    }
+    </c:forEach>
+
+    return repairsData;
+}
+
+// Draw filtered column chart for PDF
+function drawFilteredColumnChart(startDate, endDate) {
+    return new Promise((resolve) => {
+        const chartDiv = document.createElement('div');
+        chartDiv.style.width = '800px';
+        chartDiv.style.height = '400px';
+        chartDiv.style.position = 'absolute';
+        chartDiv.style.left = '-9999px';
+        document.body.appendChild(chartDiv);
+        
+        const repairsData = getRepairsDataForRange(startDate, endDate);
+        
+        if (repairsData.length === 0) {
+            document.body.removeChild(chartDiv);
+            resolve(null);
+            return;
+        }
+        
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Month');
+        data.addColumn('number', 'No. of Repairs');
+        data.addRows(repairsData);
+        
+        var options = {
+            hAxis: { title: 'Period' },
+            vAxis: { title: 'Repairs/Replacements' },
+            colors: ['#fccc4c'],
+            legend: { position: 'none' },
+            width: 800,
+            height: 400
+        };
+        
+        var tempChart = new google.visualization.ColumnChart(chartDiv);
+        
+        google.visualization.events.addListener(tempChart, 'ready', function() {
+            const imgURI = tempChart.getImageURI();
+            document.body.removeChild(chartDiv);
+            resolve(imgURI);
+        });
+        
+        tempChart.draw(data, options);
+    });
+}
+
+// Generate full report (all data)
+function generateFullReport() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({
         orientation: 'portrait',
@@ -187,7 +334,6 @@ function generateReport() {
         hour12: true 
     });
 
-    // Header background
     doc.setFillColor(51, 51, 51);
     doc.rect(0, 0, 210, 25, 'F');
 
@@ -200,20 +346,17 @@ function generateReport() {
         const contentStartY = 30;
         const pageHeight = doc.internal.pageSize.getHeight();
 
-        // Title
         doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0, 0, 0);
         doc.text(locName, 105, contentStartY + 10, {align: 'center'});
 
-        // Pending Maintenance Section
         doc.setFontSize(14);
         doc.setFont(undefined, 'bold');
         doc.text("Pending Maintenance", 105, contentStartY + 25, {align: 'center'});
         doc.setFont(undefined, 'normal');
 
-        // Capture pie chart as image
-         const pieChartDiv = document.getElementById('pendingMainChart');
+        const pieChartDiv = document.getElementById('pendingMainChart');
         html2canvas(pieChartDiv, {
             backgroundColor: '#ffffff',
             scale: 2
@@ -226,8 +369,6 @@ function generateReport() {
             
             doc.addImage(pieImgData, 'PNG', pieChartX, pieChartY, pieChartWidth, pieChartHeight);
 
-
-            // Fetch table data for pending maintenance
             fetch('reportpieservlet?locID=' + locIDajax)
                 .then(response => response.json())
                 .then(dataList => {
@@ -266,7 +407,6 @@ function generateReport() {
                         });
                     }
 
-                    // Repairs and Replacement per Month Section
                     let afterPendingY = tableStartY + 60;
                     if (doc.lastAutoTable && doc.lastAutoTable.finalY) {
                         afterPendingY = doc.lastAutoTable.finalY + 20;
@@ -278,7 +418,6 @@ function generateReport() {
                     doc.text("Repairs and Replacements per Month", 105, afterPendingY, {align: 'center'});
                     doc.setFont(undefined, 'normal');
 
-                    // Capture column chart as image
                     const columnChartDiv = document.getElementById('repairNoChart');
                     html2canvas(columnChartDiv, {
                         backgroundColor: '#ffffff',
@@ -292,7 +431,6 @@ function generateReport() {
                         
                         doc.addImage(columnImgData, 'PNG', columnChartX, columnChartY, columnChartWidth, columnChartHeight);
 
-                        // Repairs per month data table
                         const repairsData = [];
                         <c:forEach var="month" items="${monthsList}" varStatus="status">
                             <c:set var="repairCount2" value="0" />
@@ -333,7 +471,6 @@ function generateReport() {
                             }
                         });
 
-                        // Add footer
                         const footerY = pageHeight - 10;
                         doc.setFontSize(8);
                         doc.setFont('helvetica', 'italic');
@@ -342,7 +479,6 @@ function generateReport() {
                         doc.text('Generated on: ' + reportDate + ' at ' + reportTime, 15, footerY);
                         doc.text('University of Santo Tomas - Facilities Management Office', 105, footerY, { align: 'left' });
 
-                        // Generate PDF
                         const pdfBlob = doc.output('blob');
                         const pdfUrl = URL.createObjectURL(pdfBlob);
                         const newWindow = window.open(pdfUrl, '_blank');
@@ -362,7 +498,176 @@ function generateReport() {
     };
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+// Generate filtered report (date range)
+async function generateFilteredReport(startDate, endDate) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+    });
+
+    const locName = '${locName}';
+    const now = new Date();
+    const reportDate = now.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    const reportTime = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+    });
+
+    doc.setFillColor(51, 51, 51);
+    doc.rect(0, 0, 210, 25, 'F');
+
+    const logoImg = new Image();
+    logoImg.src = 'resources/images/USTLogo.png';
+    
+    logoImg.onload = async function() {
+        doc.addImage(logoImg, 'PNG', 15, 5, 65, 13);
+
+        const contentStartY = 30;
+        const pageHeight = doc.internal.pageSize.getHeight();
+
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(0, 0, 0);
+        doc.text(locName, 105, contentStartY + 10, {align: 'center'});
+        
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        const dateRangeText = 'Period: ' + startDate.toLocaleDateString() + ' to ' + endDate.toLocaleDateString();
+        doc.text(dateRangeText, 105, contentStartY + 18, {align: 'center'});
+
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text("Pending Maintenance", 105, contentStartY + 30, {align: 'center'});
+        doc.setFont(undefined, 'normal');
+
+        const pieChartDiv = document.getElementById('pendingMainChart');
+        const pieCanvas = await html2canvas(pieChartDiv, {
+            backgroundColor: '#ffffff',
+            scale: 2
+        });
+        
+        const pieImgData = pieCanvas.toDataURL('image/png');
+        const pieChartY = contentStartY + 35;
+        const pieChartHeight = 65;
+        const pieChartWidth = 175;
+        const pieChartX = (210 - pieChartWidth) / 2;
+        
+        doc.addImage(pieImgData, 'PNG', pieChartX, pieChartY, pieChartWidth, pieChartHeight);
+
+        const dataList = await fetch('reportpieservlet?locID=' + locIDajax).then(r => r.json());
+        
+        const tableStartY = pieChartY + pieChartHeight + 5;
+
+        if (!Array.isArray(dataList) || dataList.length === 0) {
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text("No pending maintenance data available.", 105, tableStartY + 5, {align: 'center'});
+        } else {
+            const bodyData = dataList.map(item => [item.category, item.count]);
+
+            doc.autoTable({
+                startY: tableStartY,
+                margin: { left: 20, right: 20 },
+                head: [["Category", "Number of Equipment Pending Maintenance"]],
+                body: bodyData,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [51, 51, 51],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold'
+                },
+                styles: {
+                    cellPadding: 5,
+                    fontSize: 11,
+                    valign: 'middle'
+                },
+                columnStyles: {
+                    0: { halign: 'left', cellWidth: 'auto' },
+                    1: { halign: 'center', cellWidth: 'auto' }
+                }
+            });
+        }
+
+        let afterPendingY = tableStartY + 60;
+        if (doc.lastAutoTable && doc.lastAutoTable.finalY) {
+            afterPendingY = doc.lastAutoTable.finalY + 20;
+        }
+
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text("Repairs and Replacements (Filtered Period)", 105, afterPendingY, {align: 'center'});
+        doc.setFont(undefined, 'normal');
+
+        const columnImgData = await drawFilteredColumnChart(startDate, endDate);
+        
+        if (columnImgData) {
+            const columnChartY = afterPendingY + 5;
+            const columnChartHeight = 60;
+            const columnChartWidth = 120;
+            const columnChartX = (210 - columnChartWidth) / 2;
+            
+            doc.addImage(columnImgData, 'PNG', columnChartX, columnChartY, columnChartWidth, columnChartHeight);
+
+            const filteredRepairsData = getRepairsDataForRange(startDate, endDate);
+            const repairsTableY = columnChartY + columnChartHeight + 5;
+
+            doc.autoTable({
+                startY: repairsTableY,
+                margin: {left: 20, right: 20, bottom: 25},
+                head: [["Month", "Number of Repairs"]],
+                body: filteredRepairsData,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [51, 51, 51],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold'
+                },
+                styles: {
+                    cellPadding: 5,
+                    fontSize: 11,
+                    valign: 'middle'
+                },
+                columnStyles: {
+                    0: { halign: 'left', cellWidth: 'auto' },
+                    1: { halign: 'center', cellWidth: 'auto' }
+                }
+            });
+        } else {
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text("No repairs data available for selected period.", 105, afterPendingY + 10, {align: 'center'});
+        }
+
+        const footerY = pageHeight - 10;
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'italic');
+        doc.setTextColor(128, 128, 128);
+        
+        doc.text('Generated on: ' + reportDate + ' at ' + reportTime, 15, footerY);
+        doc.text('University of Santo Tomas - Facilities Management Office', 105, footerY, { align: 'left' });
+
+        const pdfBlob = doc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const newWindow = window.open(pdfUrl, '_blank');
+        
+        if (newWindow) {
+            newWindow.document.title = locName + '_Maintenance_Report.pdf';
+        }
+        
+        setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+    };
+}
+
+
+ddocument.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.buttonsBuilding:nth-child(2)').addEventListener('click', generateReport);
 });
 
@@ -521,6 +826,52 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>-->
     
+    
+    <div class="modal fade" id="dateRangeModal" tabindex="-1" aria-labelledby="dateRangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dateRangeModalLabel">Generate Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Select Report Type:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="reportType" id="allReports" value="all" checked>
+                        <label class="form-check-label" for="allReports">
+                            All Reports (No Date Filter)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="reportType" id="dateRangeReports" value="range">
+                        <label class="form-check-label" for="dateRangeReports">
+                            Custom Date Range (Repairs Only)
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="dateRangeInputs" style="display: none;">
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate" required>
+                    </div>
+                    <div id="dateError" class="text-danger small" style="display: none;">
+                        End date must be after start date
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 // AI was used to convert the script code of Upcoming Activities to server-side rather than client-side
 // Tool: ChatGPT, Prompt: "Could you convert the code above to fit the server-side rendering? [code above is initial client-side code of the program]"
