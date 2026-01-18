@@ -74,12 +74,18 @@ public class itemTypeController extends HttpServlet {
         try (Connection connection = PooledConnection.getConnection()) {
             if ("archive".equals(action)) {
                 int itemTypeId = Integer.parseInt(request.getParameter("itemTypeId"));
-                String query = "UPDATE C##FMO_ADM.FMO_ITEM_TYPES SET ARCHIVED_FLAG = 2 WHERE ITEM_TYPE_ID = ?";
-                try (PreparedStatement statement = connection.prepareStatement(query)) {
-                    statement.setInt(1, itemTypeId);
-                    statement.executeUpdate();
+                
+                // Check if item type is in use before archiving
+                if (isItemTypeInUse(connection, itemTypeId)) {
+                    redirectParams = "?error=inuse";
+                } else {
+                    String query = "UPDATE C##FMO_ADM.FMO_ITEM_TYPES SET ARCHIVED_FLAG = 2 WHERE ITEM_TYPE_ID = ?";
+                    try (PreparedStatement statement = connection.prepareStatement(query)) {
+                        statement.setInt(1, itemTypeId);
+                        statement.executeUpdate();
+                    }
+                    redirectParams = "?action=archived";
                 }
-                redirectParams = "?action=archived";
             } else {
                 // Handle add/edit logic
                 String editMode = request.getParameter("editMode");
@@ -135,6 +141,26 @@ public class itemTypeController extends HttpServlet {
         }
 
         response.sendRedirect("itemType" + redirectParams);
+    }
+
+    /**
+     * Checks if an item type is currently being used by any items
+     * @param conn Database connection
+     * @param itemTypeId Item Type ID to check
+     * @return true if item type is in use, false otherwise
+     */
+    private boolean isItemTypeInUse(Connection conn, Integer itemTypeId) throws SQLException {
+        String checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS WHERE ITEM_TYPE_ID = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
+            stmt.setInt(1, itemTypeId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
     }
 
     /**

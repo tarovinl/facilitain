@@ -106,7 +106,7 @@
         
         .dataTables_filter {
             margin-bottom: 20px; 
-    }
+        }
     </style>
 </head>
 <body>
@@ -337,6 +337,13 @@
                         ...alertConfig,
                         title: 'Duplicate Category!',
                         text: 'A category with this name already exists. Please use a different name.',
+                        icon: 'warning'
+                    };
+                } else if (error === 'inuse') {
+                    alertConfig = {
+                        ...alertConfig,
+                        title: 'Cannot Archive!',
+                        text: 'This category is currently being used by one or more items. Please reassign or remove those items before archiving this category.',
                         icon: 'warning'
                     };
                 } else {
