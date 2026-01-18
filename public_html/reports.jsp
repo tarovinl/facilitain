@@ -1288,6 +1288,7 @@ function generateFullReport() {
         let totalReports = reportRows.length;
         let unresolvedCount = 0;
         let resolvedCount = 0;
+        const monthlyData = {};
         
         reportRows.forEach(row => {
             const statusBadge = row.querySelector('td:nth-child(5) .badge');
@@ -1296,6 +1297,12 @@ function generateFullReport() {
             } else {
                 unresolvedCount++;
             }
+            
+            // Count monthly reports
+            const dateCell = row.querySelectorAll('td')[3].textContent.trim();
+            const rowDate = new Date(dateCell);
+            const monthYear = rowDate.toLocaleString('default', { month: 'short', year: 'numeric' });
+            monthlyData[monthYear] = (monthlyData[monthYear] || 0) + 1;
         });
 
         // Reports Summary Table
@@ -1313,28 +1320,118 @@ function generateFullReport() {
         yPosition = drawTable(['Category', 'Count'], summaryData, yPosition);
         yPosition += 10;
 
-        // Continue with the rest of your existing PDF generation code...
-        // (Monthly reports, equipment chart, location chart sections)
-        // This is where all your existing chart capture and table generation code goes
-        
-        // For brevity, I'm showing the structure - you keep your existing logic for:
-        // - Monthly Report Summary section
-        // - Equipment pie chart capture and table
-        // - Location bar chart capture and table
-        
-        // Add footer to all pages
-        const totalPages = pdf.internal.getNumberOfPages();
-        for (let i = 1; i <= totalPages; i++) {
-            pdf.setPage(i);
-            addFooter();
+        // Monthly Report Summary
+        const sortedMonthly = Object.entries(monthlyData);
+        if (sortedMonthly.length > 0) {
+            checkPageBreak(50);
+            pdf.setFontSize(14);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Monthly Report Summary', margin, yPosition);
+            yPosition += 8;
+            
+            yPosition = drawTable(['Month', 'Reports'], sortedMonthly, yPosition);
+            yPosition += 10;
         }
 
-        // Open PDF in new tab
-        const pdfBlob = pdf.output('blob');
-        const pdfUrl = URL.createObjectURL(pdfBlob);
-        window.open(pdfUrl, '_blank');
-        
-        setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+        // Capture and add Equipment Pie Chart
+        if (equipmentChart && typeof equipmentChart.getImageURI === 'function') {
+            checkPageBreak(100);
+            pdf.setFontSize(14);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Top 10 Unresolved Reports by Equipment Type', margin, yPosition);
+            yPosition += 8;
+
+            try {
+                const chartDiv = document.getElementById('equipmentChart');
+                html2canvas(chartDiv, {
+                    backgroundColor: '#ffffff',
+                    scale: 2
+                }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const chartWidth = 110;
+                    const chartHeight = 70;
+                    const chartX = (pageWidth - chartWidth) / 2;
+                    
+                    pdf.addImage(imgData, 'PNG', chartX, yPosition, chartWidth, chartHeight);
+                    yPosition += chartHeight + 5;
+
+                    // Equipment table data
+                    const equipmentRows = document.querySelectorAll('#equipmentChart svg text');
+                    const equipmentData = [];
+                    let rank = 1;
+                    
+                    equipmentRows.forEach((text, index) => {
+                        const content = text.textContent.trim();
+                        if (content && !content.includes('Equipment') && rank <= 10) {
+                            equipmentData.push([rank, content, '']);
+                            rank++;
+                        }
+                    });
+
+                    if (equipmentData.length > 0) {
+                        yPosition = drawTable(['Rank', 'Equipment Type', 'Unresolved Reports'], equipmentData, yPosition);
+                        yPosition += 10;
+                    }
+
+                    continueWithLocationChart();
+                });
+            } catch (error) {
+                console.error('Error capturing equipment chart:', error);
+                continueWithLocationChart();
+            }
+        } else {
+            continueWithLocationChart();
+        }
+
+        function continueWithLocationChart() {
+            // Capture and add Location Bar Chart
+            if (locationChart && typeof locationChart.getImageURI === 'function') {
+                checkPageBreak(100);
+                pdf.setFontSize(14);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('Top 5 Most Reported Locations', margin, yPosition);
+                yPosition += 15;
+
+                try {
+                    const chartDiv = document.getElementById('locationChart');
+                    html2canvas(chartDiv, {
+                        backgroundColor: '#ffffff',
+                        scale: 2
+                    }).then(canvas => {
+                        const imgData = canvas.toDataURL('image/png');
+                        const barChartWidth = 150;
+                        const barChartHeight = 70;
+                        const barChartX = (pageWidth - barChartWidth) / 2 + 20;
+                        
+                        pdf.addImage(imgData, 'PNG', barChartX, yPosition, barChartWidth, barChartHeight);
+                        yPosition += barChartHeight + 10;
+
+                        finalizePDF();
+                    });
+                } catch (error) {
+                    console.error('Error capturing location chart:', error);
+                    finalizePDF();
+                }
+            } else {
+                finalizePDF();
+            }
+        }
+
+        function finalizePDF() {
+            // Add footer to all pages
+            const totalPages = pdf.internal.getNumberOfPages();
+            for (let i = 1; i <= totalPages; i++) {
+                pdf.setPage(i);
+                addFooter();
+            }
+
+            // Open PDF in new tab
+            const pdfBlob = pdf.output('blob');
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            window.open(pdfUrl, '_blank');
+            
+            setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
+        }
     }
 }
 
