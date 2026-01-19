@@ -361,6 +361,13 @@ $(document).ready(function () {
                     text: 'An item type with this name already exists in the selected category. Please use a different name.',
                     icon: 'warning'
                 };
+            } else if (error === 'inuse') {
+                alertConfig = {
+                    ...alertConfig,
+                    title: 'Cannot Archive!',
+                    text: 'This item type is currently being used by one or more items. Please reassign or remove those items before archiving this item type.',
+                    icon: 'warning'
+                };
             } else {
                 alertConfig = {
                     ...alertConfig,

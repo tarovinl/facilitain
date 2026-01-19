@@ -114,6 +114,8 @@
 </div>
     <script>
     function resizeMap() {
+        // AI was used for the map resizing function
+        // Tool: ChatGPT, Prompt: "How do I resize the map within its container?"
         const mapContainer = document.getElementById('map');
         const width = mapContainer.offsetWidth;  // Get the container's width
         mapContainer.style.height = width+'px';  // Set the height to match the width (square)

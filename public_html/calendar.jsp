@@ -83,7 +83,8 @@
             var endYear = currentYear + 10;   // 10 years after current year
             var recurringEvents = [];
 
-
+            // AI was used to generate the yearly looping for calendar events
+            // Tool: ChatGPT, Prompt: "How could I show yearly events using the categories and jobs table."
             for (var year = startYear; year <= endYear; year++) {
                 <c:forEach var="job" items="${calendarSched}">
                 <c:if test="${fn:contains(job.repeatInterval, 'YEARLY')}">

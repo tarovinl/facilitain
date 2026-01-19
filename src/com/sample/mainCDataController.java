@@ -22,22 +22,20 @@ import javax.servlet.http.*;
 
 import sample.model.PooledConnection;
 
-@WebServlet(name = "mainADataController", urlPatterns = { "/mainadatacontroller" })
-public class mainADataController extends HttpServlet {
+@WebServlet(name = "mainCDataController", urlPatterns = { "/maincdatacontroller" })
+public class mainCDataController extends HttpServlet {
     private static final String CONTENT_TYPE = "text/html; charset=windows-1252";
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
     }
-
+    
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(CONTENT_TYPE);
         
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
-        
         int start = Integer.parseInt(request.getParameter("start"));
         int length = Integer.parseInt(request.getParameter("length"));
         String searchValue = request.getParameter("search[value]");
@@ -46,15 +44,15 @@ public class mainADataController extends HttpServlet {
             }
         String draw = request.getParameter("draw");
 
-        String locID = request.getParameter("locID");
+        String locID = "1";
         String floorName = "all";
         String userRole = request.getParameter("userRole");
         String userEmail = request.getParameter("userEmail");
         String sessionName = request.getParameter("sessionName");
-        //            System.out.println("Location ID: " + locID);
-        //            System.out.println("Floor Name: " + floorName);
-        //            System.out.println("User Role: " + userRole);
-        //            System.out.println("Session Name: " + sessionName);
+                    System.out.println("fake ahh loc id: " + locID);
+                    System.out.println("Floor Name: " + floorName);
+                    System.out.println("User Role: " + userRole);
+                    System.out.println("Session Name: " + sessionName);
 
         List<Map<String, Object>> data = new ArrayList<>();
         int recordsTotal = 0;
@@ -62,7 +60,7 @@ public class mainADataController extends HttpServlet {
 
         try (Connection conn = PooledConnection.getConnection()) {
             // Count total
-            String countSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEMS WHERE item_stat_id = 1 AND location_id = ?";
+            String countSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS WHERE item_stat_id = ?";
             try (PreparedStatement ps = conn.prepareStatement(countSql)) {
                 ps.setString(1, locID);
                 ResultSet rs = ps.executeQuery();
@@ -77,7 +75,7 @@ public class mainADataController extends HttpServlet {
             // Tool: ChatGPT, Prompt: "Insert this query inside query.append(" ")
             StringBuilder query = new StringBuilder();
             query.append("SELECT ")
-                 .append("i.item_id, ")
+                 .append("i.item_id, i.location_id, ")
                  .append("i.item_type_id, ")
                  .append("i.location_text, ")
                  .append("i.floor_no, ")
@@ -110,12 +108,11 @@ public class mainADataController extends HttpServlet {
                  .append("CASE WHEN i.ac_accu = 1 THEN 'ACCU ' ELSE '' END || ")
                  .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
                  .append(") AS ac_typez ")
-                 .append("FROM FMO_ADM.FMO_ITEMS i ")
-                 .append("JOIN FMO_ADM.FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id ")
-                 .append("JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id ")
-                 .append("JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON l.item_loc_id = i.location_id ")
-                 .append("WHERE i.item_stat_id = 1 ")
-                 .append("AND i.location_id = ? ");
+                 .append("FROM C##FMO_ADM.FMO_ITEMS i ")
+                 .append("JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id ")
+                 .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id ")
+                 .append("JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON l.item_loc_id = i.location_id ")
+                 .append("WHERE i.item_stat_id = ? ");
 
                 if (searchValue != null && !searchValue.isEmpty()) {
                     query.append("AND (")
@@ -123,6 +120,7 @@ public class mainADataController extends HttpServlet {
                          .append("LOWER(c.name) LIKE ? OR ")
                          .append("LOWER(t.name) LIKE ? OR ")
                          .append("LOWER(i.brand_name) LIKE ? OR ")
+                         .append("LOWER(l.name) LIKE ? OR ")
                          .append("LOWER(NVL(i.room_no, 'N/A')) LIKE ? OR ")
                          .append("CAST(i.item_id AS VARCHAR(20)) LIKE ? OR ")
                          .append("LOWER(")
@@ -132,7 +130,8 @@ public class mainADataController extends HttpServlet {
                          .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
                          .append(")")
                          .append(") LIKE ? OR ")
-                         .append("TO_CHAR(i.date_installed, 'YYYY-MM-DD') LIKE ? ")
+                         .append("TO_CHAR(i.date_installed, 'YYYY-MM-DD') LIKE ? OR ")
+                         .append("TO_CHAR(i.last_maintenance_date, 'YYYY-MM-DD') LIKE ? ")
                          .append(")");
                 }
 
@@ -143,17 +142,19 @@ public class mainADataController extends HttpServlet {
 
             try (PreparedStatement ps = conn.prepareStatement(paginatedQuery)) {
                 int paramIndex = 1;
-                ps.setString(paramIndex++, locID);
+                ps.setString(paramIndex++,locID);
                     if (searchValue != null && !searchValue.isEmpty()) {
                         String sv = "%" + searchValue.toLowerCase() + "%";
                         ps.setString(paramIndex++, sv); // i.name
                         ps.setString(paramIndex++, sv); // c.name
                         ps.setString(paramIndex++, sv); // t.name
                         ps.setString(paramIndex++, sv); // brand_name
+                        ps.setString(paramIndex++, sv); // l.name
                         ps.setString(paramIndex++, sv); // room_no
                         ps.setString(paramIndex++, sv); // item_id (casted)
                         ps.setString(paramIndex++, sv); // ac_typez
                         ps.setString(paramIndex++, sv); // date_installed
+                        ps.setString(paramIndex++, sv); // last_maintenance_date
                     }
                 ps.setInt(paramIndex++, start + length);
                 ps.setInt(paramIndex, start);
@@ -164,6 +165,7 @@ public class mainADataController extends HttpServlet {
                     Map<String, Object> row = new HashMap<>();
                     int itemId = rs.getInt("item_id");
                     String itemName = rs.getString("item_name");
+                    String locID2 = rs.getString("location_id");
                     String locName = rs.getString("location_name");
                     String locText = rs.getString("location_text");
                     int quantity = rs.getInt("quantity");
@@ -176,6 +178,7 @@ public class mainADataController extends HttpServlet {
                     int typeID = rs.getInt("item_type_id");
                     String itemBrand = rs.getString("brand_name");
                     Date dateInstalled = rs.getDate("date_installed");
+                    Date dateLastMaint = rs.getDate("last_maintenance_date");
                     Date dateExpiry = rs.getDate("expiry_date");
                     String remarks = rs.getString("remarks");
                     remarks = (remarks == null) ? "" : remarks;
@@ -193,8 +196,10 @@ public class mainADataController extends HttpServlet {
                     acTypez = (acTypez == null) ? "" : acTypez;
                     
                     System.out.println("Item ID: " + itemId);
-                    System.out.println("Location ID: " + locID);
+                    System.out.println("Location ID: " + locID2);
                     System.out.println("Item Name: " + itemName);
+                    System.out.println("Location bruddah: " + locName);
+                    System.out.println("Item Floor: " + itemFloor);
                     System.out.println("Item Room: " + itemRoom);
                     System.out.println("Category: " + category);
                     System.out.println("Type: " + type);
@@ -234,29 +239,31 @@ public class mainADataController extends HttpServlet {
                                                ));
                     row.put("itemID", itemId);
                     row.put("itemName", itemName);
+                    row.put("locName", locName);
                     row.put("itemFloor", itemFloor);
                     row.put("itemRoom", itemRoom);
                     row.put("category", category);
                     row.put("type", type);
                     row.put("itemBrand", itemBrand);
-                    row.put("dateInstalled", dateInstalled != null ? dateInstalled.toString() : "N/A");
+//                    row.put("dateInstalled", dateInstalled != null ? dateInstalled.toString() : "N/A");
 
                     // Quotation button
-//                    String quotationHtml = "<form id='quotForm' method='GET' action='quotations.jsp' style='display: none;'>" +
-//                                                "<input type='hidden' name='displayQuotItemID' id='hiddenItemID'>" +
-//                                            "</form>" +
-//                                            "<input type='image' " +
-//                                                "src='resources/images/quotationsIcon.svg' " +
-//                                                "id='quotModalButton' " +
-//                                                "alt='Open Quotation Modal' " +
-//                                                "width='24' " +
-//                                                "height='24' " +
-//                                                "data-itemid='" + itemId + "' " +
-//                                                "data-bs-toggle='modal' " +
-//                                                "data-bs-target='#quotEquipmentModal' " +
-//                                                "onclick='openQuotModal(this)'>";
-//                    row.put("quotation", quotationHtml);
+        //                    String quotationHtml = "<form id='quotForm' method='GET' action='quotations.jsp' style='display: none;'>" +
+        //                                                "<input type='hidden' name='displayQuotItemID' id='hiddenItemID'>" +
+        //                                            "</form>" +
+        //                                            "<input type='image' " +
+        //                                                "src='resources/images/quotationsIcon.svg' " +
+        //                                                "id='quotModalButton' " +
+        //                                                "alt='Open Quotation Modal' " +
+        //                                                "width='24' " +
+        //                                                "height='24' " +
+        //                                                "data-itemid='" + itemId + "' " +
+        //                                                "data-bs-toggle='modal' " +
+        //                                                "data-bs-target='#quotEquipmentModal' " +
+        //                                                "onclick='openQuotModal(this)'>";
+        //                    row.put("quotation", quotationHtml);
                     row.put("capacity", capacity);
+                    row.put("dateLastMaint", dateLastMaint != null ? dateLastMaint.toString() : "N/A");
                     
                     // Status dropdown
                     row.put("status", buildStatusDropdown(
@@ -272,7 +279,7 @@ public class mainADataController extends HttpServlet {
                         row.put("actions", buildActionsDropdown(
                                                 itemId,
                                                 statusId,
-                                                locID,
+                                                locID2,
                                                 floorName,
                                                 itemName,
                                                 locText,
@@ -311,17 +318,17 @@ public class mainADataController extends HttpServlet {
             if (searchValue != null && !searchValue.isEmpty()) {
                 StringBuilder countFilteredSql = new StringBuilder();
                 countFilteredSql.append("SELECT COUNT(*) ")
-                                .append("FROM FMO_ADM.FMO_ITEMS i ")
-                                .append("JOIN FMO_ADM.FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id ")
-                                .append("JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id ")
-                                .append("JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON l.item_loc_id = i.location_id ")
-                                .append("WHERE i.item_stat_id = 1 ")
-                                .append("AND i.location_id = ? ")
+                                .append("FROM C##FMO_ADM.FMO_ITEMS i ")
+                                .append("JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON t.item_type_id = i.item_type_id ")
+                                .append("JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON c.item_cat_id = t.item_cat_id ")
+                                .append("JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON l.item_loc_id = i.location_id ")
+                                .append("WHERE i.item_stat_id = ? ")
                                 .append("AND (")
                                 .append("LOWER(i.name) LIKE ? OR ")
                                 .append("LOWER(c.name) LIKE ? OR ")
                                 .append("LOWER(t.name) LIKE ? OR ")
                                 .append("LOWER(i.brand_name) LIKE ? OR ")
+                                .append("LOWER(l.name) LIKE ? OR ")
                                 .append("LOWER(NVL(i.room_no, 'N/A')) LIKE ? OR ")
                                 .append("CAST(i.item_id AS VARCHAR(20)) LIKE ? OR ")
                                 .append("LOWER(TRIM( ")
@@ -330,6 +337,7 @@ public class mainADataController extends HttpServlet {
                                 .append("CASE WHEN i.ac_inverter = 1 THEN 'INVERTER' ELSE '' END ")
                                 .append(")) LIKE ? OR ")
                                 .append("TO_CHAR(i.date_installed, 'YYYY-MM-DD') LIKE ? ")
+                                .append("TO_CHAR(i.last_maintenance_date, 'YYYY-MM-DD') LIKE ? ")
                                 .append(")");
 
                 try (PreparedStatement ps = conn.prepareStatement(countFilteredSql.toString())) {
@@ -340,10 +348,12 @@ public class mainADataController extends HttpServlet {
                     ps.setString(idx++, sv); // c.name
                     ps.setString(idx++, sv); // t.name
                     ps.setString(idx++, sv); // brand_name
+                    ps.setString(idx++, sv); // l.name
                     ps.setString(idx++, sv); // room_no
                     ps.setString(idx++, sv); // item_id
                     ps.setString(idx++, sv); // ac_typez
                     ps.setString(idx++, sv); // date_installed
+                    ps.setString(idx++, sv); // last_maintenance_date
 
                     ResultSet rs = ps.executeQuery();
                     if (rs.next()) {
@@ -368,6 +378,7 @@ public class mainADataController extends HttpServlet {
         String json = new Gson().toJson(jsonResponse);
         response.setContentType("application/json");
         response.getWriter().write(json);
+        
         }
 
         private String buildStatusDropdown(
@@ -378,7 +389,7 @@ public class mainADataController extends HttpServlet {
         String floorName
         ) {
         StringBuilder sb = new StringBuilder();
-        String sql = "SELECT status_id, status_name FROM FMO_ADM.fmo_item_maintenance_status ORDER BY status_id";
+        String sql = "SELECT status_id, status_name FROM C##FMO_ADM.fmo_item_maintenance_status ORDER BY status_id";
         
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -390,10 +401,8 @@ public class mainADataController extends HttpServlet {
         //                  .append("<select name='statusDropdown' class='statusDropdown' onchange='this.form.submit()'>");
             // AI was used to convert the html code to appended code here
             // Tool: ChatGPT, Prompt: "Convert the code above into .append("")"
-            sb.append("<form action='itemcontroller' method='POST'>")
+            sb.append("<form action='itemallcontroller' method='POST'>")
                   // always include locID and floorName
-                  .append("<input type='hidden' name='itemLID' value='").append(locID).append("'/>")
-                  .append("<input type='hidden' name='itemFlr' value='").append(floorName).append("'/>")
                   // current item ID
                   .append("<input type='hidden' name='maintStatID' value='").append(itemId).append("'/>")
                   // old maintenance status
@@ -436,7 +445,7 @@ public class mainADataController extends HttpServlet {
         private String buildActionsDropdown(
         int itemId,
         int selectedStatus,
-        String locID,
+        String locID2,
         String floorName,
         String itemName,
         String locText,
@@ -491,6 +500,7 @@ public class mainADataController extends HttpServlet {
                         "data-toggle='modal' " +
                         "data-target='#editEquipment' " +
                         "data-itemid='" + itemId + "' " +
+                        "data-itemloc='" + locID2 + "' " +
                         "data-itemname='" + itemName + "' " +
                         "data-itembrand='" + itemBrand + "' " +
                         "data-dateinst='" + dateInstalled + "' " +

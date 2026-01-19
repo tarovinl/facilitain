@@ -20,8 +20,6 @@
 
 <c:forEach items="${locations}" var="location">
     <c:if test="${location.itemLocId == locID}">
-        <c:set var="locName" value="${location.locName}" />
-        <c:set var="locDescription" value="${location.locDescription}" />
         <c:set var="matchFound" value="true" />
         <c:set var="locID2" value="${location.itemLocId}" />
     </c:if>
@@ -38,7 +36,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Location Dashboard</title>
+        <title>All Equipments Dashboard</title>
         <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
         <link rel="stylesheet" href="./resources/css/bDash.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -91,7 +89,7 @@
 
 </style>
         <script>
-        var locIDajax = '<%= request.getParameter("locID") %>';
+        var locIDajax = 'allEquip';
 
         google.charts.load('current', {packages: ['corechart']});
         google.charts.setOnLoadCallback(drawCharts);
@@ -139,14 +137,10 @@
             <c:forEach var="month" items="${monthsList}" varStatus="status">
                 <c:set var="repairCount" value="0" />
                 <c:set var="monthNumber" value="${status.index + 1}" />
-                <c:forEach var="repair" items="${REPAIRS_PER_MONTH}">
-                <c:if test="${repair.repairLocID == locID2}">
-                    <c:if test="${repair.repairYear == currentYear}">
+                <c:forEach var="repair" items="${ALL_REPAIRS_PER_MONTH}">
                     <c:if test="${repair.repairMonth == monthNumber}">
                         <c:set var="repairCount" value="${repair.repairCount}" />
                     </c:if>
-                    </c:if>
-                </c:if>
                 </c:forEach>
                 ['${month}', ${repairCount}],
             </c:forEach>
@@ -154,7 +148,7 @@
         // Set options for the column chart
         var options = {
             hAxis: { title: '${currentYear}' },
-            vAxis: { title: 'Repairs/Replacements' },
+            vAxis: { title: 'Repairs' },
             colors: ['#fccc4c'],
             legend: { position: 'none' }
         };
@@ -667,11 +661,6 @@ async function generateFilteredReport(startDate, endDate) {
 }
 
 
-ddocument.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('.buttonsBuilding:nth-child(2)').addEventListener('click', generateReport);
-});
-
-
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.buttonsBuilding:nth-child(2)').addEventListener('click', generateReport);
 });
@@ -696,14 +685,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   <!-- Right: Edit and Generate Buttons -->
   <div class="col-auto d-flex justify-content-end align-items-center gap-2 flex-wrap">
-    <c:if test="${sessionScope.role == 'Admin'}">
-      <button class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center"
-              style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
-              onclick="window.location.href='buildingDashboard?locID=${locID}/edit'">
-        <img src="resources/images/icons/edit.svg" alt="edit icon" width="25" height="25">
-        <span class="d-none d-lg-inline ps-2">Edit</span>
-      </button>
-    </c:if>
 
     <button onclick="generateReport()"
         class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center"
@@ -721,36 +702,27 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="col-12 col-lg-8 vh-25 align-items-stretch mb-4">
         <div class="buildingBanner rounded-4" style="margin-top: 14px; background-image: 
                                     linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.6) 100%), 
-                                    url('./buildingdisplaycontroller?locID=${locID}'); background-size: cover; background-position: center; height: 80%; display: flex; flex-direction:column;justify-content: flex-end;">
+                                    url('resources/images/samplebuilding.jpg'); background-size: cover; background-position: center; height: 80%; display: flex; flex-direction:column;justify-content: flex-end;">
             <!--<div class="statusDiv">
                 <img src="resources/images/greenDot.png" alt="building status indicator" width="56" height="56">
             </div>-->
             <div class="buildingName text-light" style="font-family: NeueHaasMedium, sans-serif;">
-                <h1>${locName}</h1>
+                <h1>All Equipment</h1>
             </div>
             <div>
-                <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
-                    <c:if test="${floors.key == locID}">
-                        <c:forEach var="floor" items="${floors.value}" varStatus="status">
-                            <c:if test="${status.first}">
-                                <a href="buildingDashboard?locID=${locID}/manage?floor=${floor}" 
+                                <a href="allDashboard/manage" 
                                 class="buildingManage d-flex align-items-center text-decoration-none text-white fs-3" 
                                 style="font-family: NeueHaasLight, sans-serif;">
                                 Manage
                                 <img src="resources/images/icons/angle-right-solid.svg" alt="next icon" width="25" height="25">
                                 </a>
-
-                            </c:if>
-                        </c:forEach>
-                    </c:if>
-                </c:forEach>
             </div>
         </div>
     </div>
     <div class="col-12 col-lg-4 vh-25 align-items-stretch mb-4" style="margin-top: 14px;">
       	    <div class="diagram" style="height: 83%;">
               <div class="diagramTitle">
-                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Repairs and Replacements per Month</h4>
+                <h4 style=" font-family: NeueHaasMedium, sans-serif !important;">Repairs per Month</h4>
               </div>
               <div style="background: white; height: 240px; border-radius:15px;">
                 <div id="repairNoChart" style="height: 100%; width: 100%; overflow: hidden; border-radius:15px;"></div>
@@ -825,9 +797,8 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
       </div>
     </div>-->
-    
-    
-    <div class="modal fade" id="dateRangeModal" tabindex="-1" aria-labelledby="dateRangeModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="dateRangeModal" tabindex="-1" aria-labelledby="dateRangeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -872,11 +843,12 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
+    
 <script>
 // AI was used to convert the script code of Upcoming Activities to server-side rather than client-side
 // Tool: ChatGPT, Prompt: "Could you convert the code above to fit the server-side rendering? [code above is initial client-side code of the program]"
 document.addEventListener('DOMContentLoaded', function() {
-  const locIDajax = '<%= request.getParameter("locID") %>';
+  const locIDajax = 'allEquip';
   fetch('upcomingactservlet?locID=' + locIDajax)
     .then(res => res.text())
     .then(html => document.getElementById('upcoming-activities').innerHTML = html)

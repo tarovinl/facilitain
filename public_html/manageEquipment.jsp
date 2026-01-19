@@ -8,8 +8,9 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Manage Location</title>
+        <title>Manage All Equipment</title>
      
+    <base href="${pageContext.request.contextPath}/">
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!-- DataTables CSS -->
@@ -320,34 +321,12 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     
     </head>
 
-<%
-    String fullBuildingID = request.getParameter("locID");
-    String locID = fullBuildingID.split("/")[0]; 
-    String floorName = null;
-    int floorIndex = fullBuildingID.indexOf("floor=");
-    if (floorIndex != -1) {
-        floorName = fullBuildingID.substring(floorIndex + 6);  // Extract everything after "floor="
-    }
-    request.setAttribute("locID", locID);
-    request.setAttribute("floorName", floorName);
-%>
-
-            <c:set var="locMatchFound" value="false" />
-            <c:set var="flrMatchFound" value="false" />
-            
-            <c:forEach items="${locations}" var="location">
-                <c:if test="${location.itemLocId == locID}">
-                    <c:set var="locName" value="${location.locName}"/>
-                    <c:set var="locMatchFound" value="true" />
-                </c:if>
-            </c:forEach>    
-            <!--AI was used to format the brands in the list-->
-            <!--Tool: ChatGPT, Prompt: "create a loop that formats the brands like this 'Safeway, Mitsubishi, Brand, ...'"-->
             <c:set var="brandListString" value="" />
                 <c:forEach var="brand" items="${FMO_BRANDS_LIST}" varStatus="status">
                     <c:set var="brandListString" value="${brandListString}${brand.itemBrand}${status.last ? '' : ', '}" />
                 </c:forEach>
-
+<c:set var="floorName" value="allFloor" />
+<c:set var="locID" value="allLoc" />
 
     <body>
     <jsp:include page="navbar.jsp"/>
@@ -362,7 +341,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         <div class="topButtons"> <!-- top buttons -->
             <div>
                 <!-- Link component remains unchanged -->
-                <a href="./buildingDashboard?locID=${locID}" class=" buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" style="text-decoration: none;color: black;  display: flex; align-items: center; font-family: NeueHaasLight, sans-serif;">
+                <a href="./allDashboard" class=" buttonsBack d-flex align-items-center gap-2 text-decoration-none text-dark fs-4" style="text-decoration: none;color: black;  display: flex; align-items: center; font-family: NeueHaasLight, sans-serif;">
                
     <img src="resources/images/icons/angle-left-solid.svg" alt="back icon" width="20" height="20">
     Back
@@ -372,18 +351,12 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
         <div class=" border-bottom pt-2">
         
     <div class=" d-flex justify-content-between align-items-center">
-        <h1 class="display-5 display-md-5 display-lg-4" style="font-family: NeueHaasMedium, sans-serif;">${locName}</h1>
+        <h1 class="display-5 display-md-5 display-lg-4" style="font-family: NeueHaasMedium, sans-serif;">All Equipment</h1>
     <div class="mb-2">
         <c:choose>
             <c:when test="${sessionScope.role == 'Admin'}">
             <div class="row">
                 <div class="col-12 col-sm-auto d-flex justify-content-end align-items-center gap-2 flex-wrap">
-                    <button class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center"
-                            style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
-                            onclick="window.location.href='buildingDashboard?locID=${locID}/edit'">
-                        <img src="resources/images/icons/edit.svg"  alt="edit icon" width="25" height="25">
-                         <span class="d-none d-lg-inline ps-2">Edit Location</span>
-                    </button>
                     <button class="btn btn-md topButtons px-3 py-2 rounded-2 hover-outline text-dark d-flex align-items-center justify-content-center"
                             style="font-family: NeueHaasMedium, sans-serif; background-color: #fccc4c;"
                             data-toggle="modal" data-target="#addEquipment" type="button"
@@ -403,38 +376,19 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
 <div class=" container-fluid p-0 d-flex border-bottom justify-content-between align-items-center flex-wrap">
     <!-- Left side: Floor name -->
     <div class="d-flex align-items-center" style="height: 60px;">
-  <h1 class="display-5 display-md-5 display-lg-4 m-0" style="font-family: NeueHaasMedium, sans-serif; color: #212529;">
-    ${floorName == 'all' ? 'All Items' : floorName}
-  </h1>
+  <!--<h1 class="display-5 display-md-5 display-lg-4 m-0" style="font-family: NeueHaasMedium, sans-serif; color: #212529;">
+    All Items
+  </h1>-->
 </div>
 
     <!-- Right side: Floor selection links -->
     <div class="d-flex flex-wrap gap-3" style="font-family: NeueHaasLight, sans-serif;">
-        <a href="./buildingDashboard?locID=${locID}/manage?floor=all" class="floorLinks fs-5">
-            All Items
-        </a>
-        <c:if test="${floorName == 'all'}">
-            <c:set var="flrMatchFound" value="true" />
-        </c:if>
-        <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
-            <c:if test="${floors.key == locID}">
-                <c:forEach var="floor" items="${floors.value}">
-                    <a href="./buildingDashboard?locID=${locID}/manage?floor=${floor}" class="floorLinks fs-5">
-                        ${floor}
-                    </a>
-                    <c:if test="${floor == floorName}">
-                        <c:set var="flrMatchFound" value="true" />
-                    </c:if>
-                </c:forEach>
-            </c:if>
-        </c:forEach>
     </div>
 </div>
 
 
          
         
-        <c:if test="${floorName == 'all'}">
         <div class="roomDropsdiv ">
             <div class="table-responsive">
             <table id="allItemsTable" class="display dataTable" style="width:100%;">
@@ -443,13 +397,14 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                         <th> </th>
                         <th>ID</th>
                         <th>Codename</th>
+                        <th>Location</th>
                         <th>Floor</th>
                         <th>Room</th>
                         <th>Category</th>
                         <th>Type</th>
                         <th>Brand</th>
-                        <th>Date Installed</th>
                         <th>Capacity</th>
+                        <th>Last Maint. Date</th>
                         <th>Status</th>
                             <th>Actions</th>
                     </tr>
@@ -457,7 +412,6 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
             </table>
             </div>
         </div>
-        </c:if>
         
        <!-- confirm status change-->
         <!--<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="confirmModalLabel" aria-hidden="true">
@@ -531,30 +485,6 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
           </div>
         </div>-->
         
-        <!-- list of room dropdowns  (turn roomDropdown <li> into foreach)-->
-        <c:if test="${floorName != 'all'}">
-        <div class="roomDropsdiv">
-            <div class="table-responsive">
-            <table id="itemsTable" class="display dataTable" style="width:100%;">
-                <thead>
-                    <tr>
-                        <th> </th>
-                        <th>ID</th>
-                        <th>Codename</th>
-                        <th>Room</th>
-                        <th>Category</th>
-                        <th>Type</th>
-                        <th>Brand</th>
-                        <th>Date Installed</th>
-                        <th>Capacity</th>
-                        <th>Status</th>
-                            <th>Actions</th>
-                    </tr>
-                </thead>
-            </table>
-            </div>
-        </div>    
-        </c:if>
      </div>
    </div>
 </div>
@@ -563,15 +493,13 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     <div class="modal-dialog" role="document">
         <div class="modal-content">
                 
-                        <form action="itemcontroller" method="POST">
+                        <form action="itemallcontroller" method="POST">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="addEquipmentModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Add Equipment</h5>
                                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                             
-                            <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}">
-                            <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}">
                             <div class="row mt-1">
                                 <div class="col">
                                     <label for="" class="form-label">Codename <span style="color: red;">*</span></label>
@@ -734,15 +662,13 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     <div class="modal-dialog" role="document">
         <div class="modal-content">
         
-                        <form action="itemcontroller" method="POST">
+                        <form action="itemallcontroller" method="POST">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="editEquipmentModalLabel" style="font-family: 'NeueHaasMedium', sans-serif;">Edit Equipment</h5>
                                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                             <input type="hidden" name="itemEditID" id="itemIDField" class="form-control">
-                            <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}">
-                            <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}">
                             <div class="row mt-1">
                                 <div class="col">
                                     <label for="" class="form-label">Codename <span style="color: red;">*</span></label>
@@ -835,7 +761,7 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
                                     <label for="itemEditFloor" class="form-label">Floor <span style="color: red;">*</span></label>
                                     <select class="form-select" name="itemEditFloor" id="itemEditFloor" onchange="roomEditRender()">
                                       <c:forEach var="floors" items="${FMO_FLOORS_LIST}">
-                                        <c:if test="${floors.key == locID}">
+                                        <c:if test="${floors.key == 1}">
                                         <c:forEach var="floor" items="${floors.value}">
                                             <option value="${floor}">${floor}</option>
                                         </c:forEach>
@@ -1106,18 +1032,13 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     <!--end of archive equipment modal-->
     
     <!--Archive Maintenance Modal but real-->
-<form id="archiveMaintenanceForm" action="itemcontroller" method="post" style="display: none;">
-    <input type="hidden" name="itemLID" id="itemLID" class="form-control" value="${locID}">
-    <input type="hidden" name="itemFlr" id="itemFlr" class="form-control" value="${floorName}">
+<form id="archiveMaintenanceForm" action="itemallcontroller" method="post" style="display: none;">
     <input type="hidden" name="itemArchiveID" id="itemArchiveID" class="form-control">
 </form>
 
     
     <jsp:include page="quotations.jsp" />
     
-    <c:if test="${locMatchFound == false || flrMatchFound == false}">
-        <meta http-equiv="refresh" content="0; URL=./errorPage.jsp" /> 
-    </c:if>
     
     <c:choose>
         <c:when test="${sessionScope.role == 'Admin'}">
@@ -1195,65 +1116,39 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     </c:choose>
 <script>
 $(document).ready(function(){
-    $('#itemsTable').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: 'mainbdatacontroller',
-            type: 'POST',
-            data: function (d) {
-                // AI was used to figure out how to pass locID and floorName from JSP to servlet
-                // Tool: Microsoft Copilot, Prompt: "convert the items table to server-side [copy paste of client-side code]"
-                d.locID = "${locID}";
-                d.floorName = "${floorName}";
-                d.userRole = "${sessionScope.role}";
-                d.userEmail = "${sessionScope.email}";
-                d.sessionName = "${sessionScope.name}";
-            }
-        },
-        columns: [
-            { data: 'itemInfo', orderable: false, searchable: false },
-            { data: 'itemID' },
-            { data: 'itemName' },
-            { data: 'itemRoom' },
-            { data: 'category' },
-            { data: 'type' },
-            { data: 'itemBrand' },
-            { data: 'dateInstalled' },
-//            { data: 'quotation', orderable: false, searchable: false },
-            { data: 'capacity' },
-            { data: 'status', orderable: false },
-            // Actions column only if Admin
-            { data: 'actions', orderable: false, searchable: false }
-            
-        ]
-    });
     $('#allItemsTable').DataTable({
         processing: true,
         serverSide: true,
         ajax: {
-            url: 'mainadatacontroller',
+            url: 'maincdatacontroller',
+
             type: 'POST',
             data: function (d) {
                 // Pass locID and floorName from JSP to servlet
-                d.locID = "${locID}";
-                d.floorName = "${floorName}";
+//                d.locID = "${locID}";
+//                d.floorName = "${floorName}";
                 d.userRole = "${sessionScope.role}";
                 d.userEmail = "${sessionScope.email}";
                 d.sessionName = "${sessionScope.name}";
-            }
+            },
+            error: function(xhr, error, thrown) { 
+            console.error('DataTables error:', error);
+            console.error('Status:', xhr.status);
+            console.error('Response:', xhr.responseText);
+            alert('AJAX Error: ' + thrown + '\nStatus: ' + xhr.status); }
         },
         columns: [
             { data: 'itemInfo', orderable: false, searchable: false },
             { data: 'itemID' },
             { data: 'itemName' },
+            { data: 'locName' },
             { data: 'itemFloor' },
             { data: 'itemRoom' },
             { data: 'category' },
             { data: 'type' },
             { data: 'itemBrand' },
-            { data: 'dateInstalled' },
             { data: 'capacity' },
+            { data: 'dateLastMaint' },
             { data: 'status', orderable: false },
             // Actions column only if Admin
             { data: 'actions', orderable: false, searchable: false }
@@ -1263,14 +1158,11 @@ $(document).ready(function(){
 </script>
     
     <script>
-    const locID1 = "<%= locID %>"; // Embed locID from JSP
-    const floorName1 = "<%= floorName %>";
     document.addEventListener("DOMContentLoaded", function () {
         let selectedDropdown = null;
         let previousValue = null;
     
         const allItemsTable = document.getElementById("allItemsTable");
-        const itemsTable = document.getElementById("itemsTable");
     
         function handleDropdownChange(event) {
             const target = event.target;
@@ -1347,9 +1239,6 @@ $(document).ready(function(){
     
         if (allItemsTable) {
             allItemsTable.addEventListener("change", handleDropdownChange);
-        }
-        if (itemsTable) {
-            itemsTable.addEventListener("change", handleDropdownChange);
         }
     
         document.querySelectorAll(".statusDropdown").forEach(dropdown => {
@@ -1493,12 +1382,12 @@ const buildingFloors = {
     };
 
 function QOLLocSet(){
-    var itemLID = parseInt(${locID}); 
+//    var itemLID = parseInt(${locID}); 
         var selectLoc = document.querySelector('select[name="itemBuilding"]');
         if (selectLoc) {
             var options = selectLoc.options;
             for (var i = 0; i < options.length; i++) {
-                if (parseInt(options[i].value) === itemLID) {
+                if (parseInt(options[i].value) === 1) {
                     options[i].selected = true;
                     break;
                 }
@@ -1646,7 +1535,7 @@ const inputER = document.querySelector("#itemEditRoom");
     
     function populateEditModal(button) {
         var itemID = button.getAttribute('data-itemid');
-        var itemLID = parseInt(${locID});
+        var itemLocz = parseInt(button.getAttribute('data-itemloc'));
         var itemName = button.getAttribute('data-itemname');
         var itemBrand = button.getAttribute('data-itembrand');
         var itemFloor = button.getAttribute('data-itemfloor');
@@ -1666,7 +1555,7 @@ const inputER = document.querySelector("#itemEditRoom");
         var itemEV = button.getAttribute('data-itemev');
         var itemEPH = button.getAttribute('data-itemeph');
         var itemEHZ = button.getAttribute('data-itemehz');
-        
+        console.log("yo son this is populateeditmodal wit da itemLID: "+itemLocz);
         document.querySelector('input[name="itemEditID"]').value = itemID;
 
         document.querySelector('input[name="itemEditCode"]').value = itemName;
@@ -1737,7 +1626,7 @@ const inputER = document.querySelector("#itemEditRoom");
         if (selectLoc) {
             var options = selectLoc.options;
             for (var i = 0; i < options.length; i++) {
-                if (parseInt(options[i].value) === itemLID) {
+                if (parseInt(options[i].value) === itemLocz) {
                     options[i].selected = true;
                     break;
                 }
@@ -1766,7 +1655,6 @@ const inputER = document.querySelector("#itemEditRoom");
         var itemName = button.getAttribute('data-iteminame');
         var itemLName = button.getAttribute('data-itemilname');
         var itemID = button.getAttribute('data-itemiid');
-        var itemLID = parseInt(${locID});
         var itemBrand = button.getAttribute('data-itemibrand');
         var itemFloor = button.getAttribute('data-itemifloor');
         var itemRoom = button.getAttribute('data-itemiroom');
@@ -1830,9 +1718,9 @@ const inputER = document.querySelector("#itemEditRoom");
     
     function setFloorSelection(button) {
     var itemRoom = button.getAttribute('data-itemroom');
-    console.log(itemRoom);
-    const flrName = '${floorName}';
-    console.log(flrName);
+    console.log("this be room name on setFloorSelection: " + itemRoom);
+    const flrName = button.getAttribute('data-itemfloor');
+    console.log("this be floor name on setFloorSelection: " + flrName);
     const itemEditFloor = document.getElementById('itemEditFloor');
 
     // Loop through options to find and select the one that matches floorName
@@ -2018,8 +1906,6 @@ function roomEditRenderCopy() {
 });
 </script>
 <script>
-const LID = "<%= locID %>"; // Embed JSP variable
-const flrN = "<%= floorName %>";
 
 $(document).ready(function() {
     $(document).on('click', '.history-btn', function() {
@@ -2034,7 +1920,7 @@ $(document).ready(function() {
         $('#historyEquipment').modal('show'); 
         
         $.ajax({
-            url: `buildingDashboard?locID=${LID}/manage?floor=${flrN}`,
+            url: `allDashboard/manage`,
             type: 'GET',
             data: { itemHID: itemHID },
             dataType: "json",

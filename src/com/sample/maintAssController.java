@@ -69,6 +69,13 @@ public class maintAssController extends HttpServlet {
                // Load initial page data (minimal - just dropdowns and constants)
                loadInitialPageData(request, response);
             }
+    
+    private void setSessionTimezone(Connection con) throws SQLException {
+        try (PreparedStatement stmt = con.prepareStatement(
+            "ALTER SESSION SET TIME_ZONE = 'Asia/Manila'")) {
+            stmt.execute();
+        }
+    }
 
     /**
      * Handles AJAX request for equipment list (for autocomplete)
@@ -79,7 +86,8 @@ public class maintAssController extends HttpServlet {
         List<String> equipmentList = new ArrayList<>();
         
         try (Connection con = PooledConnection.getConnection()) {
-            String sql = "SELECT i.NAME FROM FMO_ADM.FMO_ITEMS i " +
+            setSessionTimezone(con);
+            String sql = "SELECT i.NAME FROM C##FMO_ADM.FMO_ITEMS i " +
                         "WHERE i.ITEM_STAT_ID = 1 " +
                         "AND i.MAINTENANCE_STATUS = 2 " +
                         "AND NOT EXISTS (" +
@@ -129,7 +137,7 @@ public class maintAssController extends HttpServlet {
         String equipmentListString = "";
 
         try (Connection con = PooledConnection.getConnection()) {
-            
+            setSessionTimezone(con);
             // Load locations (for dropdowns and location info)
             String locSql = "SELECT ITEM_LOC_ID, NAME FROM FMO_ADM.FMO_ITEM_LOCATIONS ORDER BY UPPER(NAME)";
             try (PreparedStatement stmt = con.prepareStatement(locSql);
@@ -264,7 +272,7 @@ public class maintAssController extends HttpServlet {
         int recordsFiltered = 0;
 
         try (Connection con = PooledConnection.getConnection()) {
-            
+            setSessionTimezone(con);
             // Count total records 
             String countSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEMS " +
                               "WHERE ITEM_STAT_ID = 1 AND MAINTENANCE_STATUS = 2";
@@ -279,7 +287,8 @@ public class maintAssController extends HttpServlet {
             // Build main query with pagination
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM (")
-               .append("  SELECT i.ITEM_ID, i.NAME, i.BRAND_NAME, i.FLOOR_NO, i.LOCATION_ID, i.MAINTENANCE_STATUS, i.PLANNED_MAINTENANCE_DATE, ")
+               .append("  SELECT i.ITEM_ID, i.NAME, i.BRAND_NAME, i.FLOOR_NO, i.LOCATION_ID, i.MAINTENANCE_STATUS, ")
+               .append("    TO_CHAR(i.PLANNED_MAINTENANCE_DATE + INTERVAL '8' HOUR, 'YYYY-MM-DD HH24:MI:SS') AS PLANNED_MAINTENANCE_DATE, ")
                .append("    t.NAME AS TYPE_NAME, t.ITEM_CAT_ID, ")
                .append("    c.NAME AS CAT_NAME, ")
                .append("    l.NAME AS LOC_NAME, ")
@@ -425,7 +434,7 @@ public class maintAssController extends HttpServlet {
         int recordsFiltered = 0;
 
         try (Connection con = PooledConnection.getConnection()) {
-            
+            setSessionTimezone(con);
             // Count total incomplete assignments WHERE ITEM IS ACTIVE
             String countSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_MAINTENANCE_ASSIGN ma " +
                               "JOIN FMO_ADM.FMO_ITEMS i ON ma.ITEM_ID = i.ITEM_ID " +
@@ -440,7 +449,8 @@ public class maintAssController extends HttpServlet {
             // Main query with pagination 
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM (")
-               .append("  SELECT ma.ASSIGN_ID, ma.ITEM_ID, ma.USER_ID, ma.MAIN_TYPE_ID, ma.DATE_OF_MAINTENANCE, ")
+               .append("  SELECT ma.ASSIGN_ID, ma.ITEM_ID, ma.USER_ID, ma.MAIN_TYPE_ID, ")
+               .append("    TO_CHAR(ma.DATE_OF_MAINTENANCE + INTERVAL '8' HOUR, 'YYYY-MM-DD') AS DATE_OF_MAINTENANCE, ")
                .append("    i.NAME AS ITEM_NAME, i.BRAND_NAME, i.FLOOR_NO, i.LOCATION_ID, i.MAINTENANCE_STATUS, ")
                .append("    t.NAME AS TYPE_NAME, t.ITEM_CAT_ID, ")
                .append("    c.NAME AS CAT_NAME, ")
