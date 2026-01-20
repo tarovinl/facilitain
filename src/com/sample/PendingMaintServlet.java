@@ -48,10 +48,10 @@ public class PendingMaintServlet extends HttpServlet {
             "    c.item_cat_id AS CATEGORY_ID, " +
             "    c.name AS CATEGORY_NAME, " +
             "    COUNT(i.item_id) AS ITEM_COUNT " +
-            "FROM C##FMO_ADM.FMO_ITEM_CATEGORIES c " +
-            "JOIN C##FMO_ADM.FMO_ITEM_TYPES t " +
+            "FROM FMO_ADM.FMO_ITEM_CATEGORIES c " +
+            "JOIN FMO_ADM.FMO_ITEM_TYPES t " +
             "    ON c.item_cat_id = t.item_cat_id " +
-            "JOIN C##FMO_ADM.FMO_ITEMS i " +
+            "JOIN FMO_ADM.FMO_ITEMS i " +
             "    ON i.item_type_id = t.item_type_id " +
             "WHERE " +
             "    i.item_stat_id = 1 " +

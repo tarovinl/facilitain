@@ -87,7 +87,7 @@ public class maintAssController extends HttpServlet {
         
         try (Connection con = PooledConnection.getConnection()) {
             setSessionTimezone(con);
-            String sql = "SELECT i.NAME FROM C##FMO_ADM.FMO_ITEMS i " +
+            String sql = "SELECT i.NAME FROM FMO_ADM.FMO_ITEMS i " +
                         "WHERE i.ITEM_STAT_ID = 1 " +
                         "AND i.MAINTENANCE_STATUS = 2 " +
                         "AND NOT EXISTS (" +

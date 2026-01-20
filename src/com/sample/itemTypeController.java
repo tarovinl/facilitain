@@ -79,7 +79,7 @@ public class itemTypeController extends HttpServlet {
                 if (isItemTypeInUse(connection, itemTypeId)) {
                     redirectParams = "?error=inuse";
                 } else {
-                    String query = "UPDATE C##FMO_ADM.FMO_ITEM_TYPES SET ARCHIVED_FLAG = 2 WHERE ITEM_TYPE_ID = ?";
+                    String query = "UPDATE FMO_ADM.FMO_ITEM_TYPES SET ARCHIVED_FLAG = 2 WHERE ITEM_TYPE_ID = ?";
                     try (PreparedStatement statement = connection.prepareStatement(query)) {
                         statement.setInt(1, itemTypeId);
                         statement.executeUpdate();
@@ -150,7 +150,7 @@ public class itemTypeController extends HttpServlet {
      * @return true if item type is in use, false otherwise
      */
     private boolean isItemTypeInUse(Connection conn, Integer itemTypeId) throws SQLException {
-        String checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS WHERE ITEM_TYPE_ID = ?";
+        String checkSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEMS WHERE ITEM_TYPE_ID = ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
             stmt.setInt(1, itemTypeId);

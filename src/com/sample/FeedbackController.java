@@ -35,7 +35,7 @@ public class FeedbackController extends HttpServlet {
         // FIXED: Include year in the grouping and ordering
         String satisfactionQuery =
             "SELECT TO_CHAR(REC_INS_DT, 'Mon YYYY') AS MONTH_YEAR, AVG(RATING) AS AVERAGE_RATING " +
-            "FROM C##FMO_ADM.FMO_ITEM_FEEDBACK " +
+            "FROM FMO_ADM.FMO_ITEM_FEEDBACK " +
             "GROUP BY TO_CHAR(REC_INS_DT, 'Mon YYYY'), TO_CHAR(REC_INS_DT, 'YYYY-MM') " +
             "ORDER BY TO_DATE(TO_CHAR(REC_INS_DT, 'YYYY-MM'), 'YYYY-MM')";
         

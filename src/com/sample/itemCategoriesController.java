@@ -62,7 +62,7 @@ public class itemCategoriesController extends HttpServlet {
                 if (isCategoryInUse(conn, itemCID)) {
                     redirectParams = "?error=inuse";
                 } else {
-                    String archiveSql = "UPDATE C##FMO_ADM.FMO_ITEM_CATEGORIES SET ARCHIVED_FLAG = 2 WHERE ITEM_CAT_ID = ?";
+                    String archiveSql = "UPDATE FMO_ADM.FMO_ITEM_CATEGORIES SET ARCHIVED_FLAG = 2 WHERE ITEM_CAT_ID = ?";
                     try (PreparedStatement stmt = conn.prepareStatement(archiveSql)) {
                         stmt.setInt(1, itemCID);
                         stmt.executeUpdate();
@@ -118,7 +118,7 @@ public class itemCategoriesController extends HttpServlet {
      * @return true if category is in use, false otherwise
      */
     private boolean isCategoryInUse(Connection conn, Integer itemCID) throws SQLException {
-        String checkSql = "SELECT COUNT(*) FROM C##FMO_ADM.FMO_ITEMS WHERE ITEM_TYPE_ID = ?";
+        String checkSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEMS WHERE ITEM_TYPE_ID = ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
             stmt.setInt(1, itemCID);

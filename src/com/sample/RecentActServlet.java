@@ -47,11 +47,11 @@ public class RecentActServlet extends HttpServlet {
                         " t.name as TYPE_NAME, " +
                         " c.name as CAT_NAME, " +
                         " l.name as LOCATION_NAME " +
-                        "FROM C##FMO_ADM.FMO_ITEMS i " +
-                        "JOIN C##FMO_ADM.FMO_ITEM_TYPES t ON i.item_type_id = t.item_type_id " +
-                        "JOIN C##FMO_ADM.FMO_ITEM_CATEGORIES c ON t.item_cat_id = c.item_cat_id " +
-                        "JOIN C##FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED m ON i.item_type_id = m.item_type_id " +
-                        "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON i.location_id = l.item_loc_id " +
+                        "FROM FMO_ADM.FMO_ITEMS i " +
+                        "JOIN FMO_ADM.FMO_ITEM_TYPES t ON i.item_type_id = t.item_type_id " +
+                        "JOIN FMO_ADM.FMO_ITEM_CATEGORIES c ON t.item_cat_id = c.item_cat_id " +
+                        "JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_SCHED m ON i.item_type_id = m.item_type_id " +
+                        "JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON i.location_id = l.item_loc_id " +
                         "WHERE 1=1 "
             );
             
