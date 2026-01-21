@@ -597,8 +597,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-cancel-outline" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="generateReportBtn">Generate Report</button>
             </div>
         </div>
     </div>
@@ -902,6 +902,15 @@ function validateDates() {
     return true;
 }
 
+(function() {
+    const today = new Date().toISOString().split('T')[0];
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    
+    if (startDateInput) startDateInput.max = today;
+    if (endDateInput) endDateInput.max = today;
+})();
+
 document.getElementById('startDate').addEventListener('change', validateDates);
 document.getElementById('endDate').addEventListener('change', validateDates);
 
@@ -1048,7 +1057,7 @@ function drawFilteredPieChart(equipmentData) {
                 textStyle: { fontSize: 10 },
                 maxLines: 10
             },
-            chartArea: { left: 20, top: 30, width: '90%', height: '100%' },
+            chartArea: { left: 20, top: 30, width: '90%', height: '80%' },
             width: 800,
             height: 400
         };
@@ -1525,7 +1534,7 @@ function generatePDFWithDateRange(reportData, stats, startDate, endDate, pieChar
         pdf.setTextColor(128, 128, 128);
         
         pdf.text('Generated on: ' + reportDate + ' at ' + reportTime, margin, footerY);
-        pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'center' });
+        pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'left' });
     }
 
     const logoImg = new Image();

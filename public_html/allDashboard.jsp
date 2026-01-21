@@ -198,6 +198,15 @@ document.addEventListener('DOMContentLoaded', function() {
         dateError.style.display = 'none';
         return true;
     }
+    
+    (function() {
+    const today = new Date().toISOString().split('T')[0];
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    
+    if (startDateInput) startDateInput.max = today;
+    if (endDateInput) endDateInput.max = today;
+})();
 
     // Date change listeners
     document.getElementById('startDate').addEventListener('change', validateDates);
@@ -405,6 +414,12 @@ function generateFullReport() {
                     if (doc.lastAutoTable && doc.lastAutoTable.finalY) {
                         afterPendingY = doc.lastAutoTable.finalY + 20;
                     }
+                    
+                    const repairsSectionHeight = 80; 
+                    if (afterPendingY + repairsSectionHeight > pageHeight - 25) {
+                        doc.addPage();
+                        afterPendingY = 30; 
+                    }
 
                     doc.setTextColor(0, 0, 0);
                     doc.setFontSize(14);
@@ -593,6 +608,12 @@ async function generateFilteredReport(startDate, endDate) {
         if (doc.lastAutoTable && doc.lastAutoTable.finalY) {
             afterPendingY = doc.lastAutoTable.finalY + 20;
         }
+        
+        const repairsSectionHeight = 80; 
+                    if (afterPendingY + repairsSectionHeight > pageHeight - 25) {
+                        doc.addPage();
+                        afterPendingY = 30; 
+                    }
 
         doc.setTextColor(0, 0, 0);
         doc.setFontSize(14);
@@ -837,8 +858,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="generateReportBtn">Generate Report</button>
             </div>
         </div>
     </div>

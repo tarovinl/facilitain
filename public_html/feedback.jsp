@@ -266,8 +266,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-cancel-outline" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="generateReportBtn">Generate Report</button>
             </div>
         </div>
     </div>
@@ -344,130 +344,209 @@
     dateModal.show();
 });
 
-function drawFilteredChart(startDate, endDate) {
-    return new Promise((resolve) => {
-        const chartDiv = document.createElement('div');
-        chartDiv.style.width = '800px';
-        chartDiv.style.height = '400px';
-        chartDiv.style.position = 'absolute';
-        chartDiv.style.left = '-9999px';
-        document.body.appendChild(chartDiv);
-        
-        const monthlyData = calculateMonthlySatisfactionForRange(startDate, endDate);
-        
-        if (monthlyData.length === 0) {
-            document.body.removeChild(chartDiv);
-            resolve(null);
-            return;
-        }
-        
-        const dataArray = [['Month', 'Satisfaction Rate', { role: 'style' }]];
-        monthlyData.forEach(([month, rate]) => {
-            const rateNum = parseFloat(rate);
-            const color = rateNum >= 4 ? 'green' : (rateNum > 2 ? '#FFC107' : 'red');
-            dataArray.push([month, rateNum, color]);
+    function drawFilteredChart(startDate, endDate) {
+        return new Promise((resolve) => {
+            const chartDiv = document.createElement('div');
+            chartDiv.style.width = '800px';
+            chartDiv.style.height = '400px';
+            chartDiv.style.position = 'absolute';
+            chartDiv.style.left = '-9999px';
+            document.body.appendChild(chartDiv);
+            
+            const monthlyData = calculateMonthlySatisfactionForRange(startDate, endDate);
+            
+            if (monthlyData.length === 0) {
+                document.body.removeChild(chartDiv);
+                resolve(null);
+                return;
+            }
+            
+            const dataArray = [['Month', 'Satisfaction Rate', { role: 'style' }]];
+            monthlyData.forEach(([month, rate]) => {
+                const rateNum = parseFloat(rate);
+                const color = rateNum >= 4 ? 'green' : (rateNum > 2 ? '#FFC107' : 'red');
+                dataArray.push([month, rateNum, color]);
+            });
+            
+            const data = google.visualization.arrayToDataTable(dataArray);
+            
+            const options = {
+                title: 'Monthly Satisfaction Rates',
+                hAxis: { title: 'Month' },
+                vAxis: { title: 'Average Rating', minValue: 0, maxValue: 5 },
+                legend: 'none',
+                width: 800,
+                height: 400
+            };
+            
+            const tempChart = new google.visualization.ColumnChart(chartDiv);
+            
+            google.visualization.events.addListener(tempChart, 'ready', function() {
+                const imgURI = tempChart.getImageURI();
+                document.body.removeChild(chartDiv);
+                resolve(imgURI);
+            });
+            
+            tempChart.draw(data, options);
         });
-        
-        const data = google.visualization.arrayToDataTable(dataArray);
-        
-        const options = {
-            title: 'Monthly Satisfaction Rates',
-            hAxis: { title: 'Month' },
-            vAxis: { title: 'Average Rating', minValue: 0, maxValue: 5 },
-            legend: 'none',
-            width: 800,
-            height: 400
-        };
-        
-        const tempChart = new google.visualization.ColumnChart(chartDiv);
-        
-        google.visualization.events.addListener(tempChart, 'ready', function() {
-            const imgURI = tempChart.getImageURI();
-            document.body.removeChild(chartDiv);
-            resolve(imgURI);
-        });
-        
-        tempChart.draw(data, options);
-    });
-}
-
-// Handle report type selection
-document.querySelectorAll('input[name="reportType"]').forEach(radio => {
-    radio.addEventListener('change', function() {
-        const dateInputs = document.getElementById('dateRangeInputs');
-        if (this.value === 'range') {
-            dateInputs.style.display = 'block';
-            document.getElementById('startDate').required = true;
-            document.getElementById('endDate').required = true;
-        } else {
-            dateInputs.style.display = 'none';
-            document.getElementById('startDate').required = false;
-            document.getElementById('endDate').required = false;
-            document.getElementById('dateError').style.display = 'none';
-        }
-    });
-});
-
-// Validate dates
-function validateDates() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    const dateError = document.getElementById('dateError');
-    
-    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
-        dateError.style.display = 'block';
-        return false;
     }
-    dateError.style.display = 'none';
-    return true;
-}
-
-document.getElementById('startDate').addEventListener('change', validateDates);
-document.getElementById('endDate').addEventListener('change', validateDates);
-
-// Generate report button
-document.getElementById('generateReportBtn').addEventListener('click', function() {
-    const reportType = document.querySelector('input[name="reportType"]:checked').value;
     
-    if (reportType === 'range') {
+    // Handle report type selection
+    document.querySelectorAll('input[name="reportType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const dateInputs = document.getElementById('dateRangeInputs');
+            if (this.value === 'range') {
+                dateInputs.style.display = 'block';
+                document.getElementById('startDate').required = true;
+                document.getElementById('endDate').required = true;
+            } else {
+                dateInputs.style.display = 'none';
+                document.getElementById('startDate').required = false;
+                document.getElementById('endDate').required = false;
+                document.getElementById('dateError').style.display = 'none';
+            }
+        });
+    });
+    
+    // Validate dates
+    function validateDates() {
         const startDate = document.getElementById('startDate').value;
         const endDate = document.getElementById('endDate').value;
+        const dateError = document.getElementById('dateError');
         
-        if (!startDate || !endDate) {
+        if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+            dateError.style.display = 'block';
+            return false;
+        }
+        dateError.style.display = 'none';
+        return true;
+    }
+    
+    (function() {
+    const today = new Date().toISOString().split('T')[0];
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    
+    if (startDateInput) startDateInput.max = today;
+    if (endDateInput) endDateInput.max = today;
+})();
+    
+    document.getElementById('startDate').addEventListener('change', validateDates);
+    document.getElementById('endDate').addEventListener('change', validateDates);
+    
+    // Generate report button
+    document.getElementById('generateReportBtn').addEventListener('click', function() {
+        const reportType = document.querySelector('input[name="reportType"]:checked').value;
+        
+        if (reportType === 'range') {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Missing Dates',
+                    text: 'Please select both start and end dates'
+                });
+                return;
+            }
+            
+            if (!validateDates()) {
+                return;
+            }
+            
+            // Close modal and generate filtered report
+            bootstrap.Modal.getInstance(document.getElementById('dateRangeModal')).hide();
+            generateFilteredReport(new Date(startDate), new Date(endDate));
+        } else {
+            // Close modal and generate full report
+            bootstrap.Modal.getInstance(document.getElementById('dateRangeModal')).hide();
+            generateFullReport();
+        }
+    });
+
+    // Function to filter data by date range
+    function filterDataByDateRange(startDate, endDate) {
+        const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
+        const filteredData = [];
+        
+        feedbackRows.forEach(row => {
+            const dateCell = row.querySelectorAll('td')[5].textContent.trim();
+            const rowDate = new Date(dateCell);
+            
+            if (rowDate >= startDate && rowDate <= endDate) {
+                const cells = row.querySelectorAll('td');
+                filteredData.push({
+                    rating: cells[0].textContent.trim(),
+                    room: cells[1].textContent.trim(),
+                    location: cells[2].textContent.trim(),
+                    suggestions: cells[3].textContent.trim(),
+                    equipment: cells[4].textContent.trim(),
+                    date: cells[5].textContent.trim()
+                });
+            }
+        });
+        
+        return filteredData;
+    }
+    
+    // Function to calculate monthly satisfaction for date range
+    function calculateMonthlySatisfactionForRange(startDate, endDate) {
+        const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
+        const monthlyData = {};
+        
+        feedbackRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const dateCell = cells[5].textContent.trim();
+            const rowDate = new Date(dateCell);
+            
+            if (rowDate >= startDate && rowDate <= endDate) {
+                const rating = parseFloat(cells[0].textContent.trim());
+                const monthYear = rowDate.toLocaleString('default', { month: 'short', year: 'numeric' });
+                
+                if (!monthlyData[monthYear]) {
+                    monthlyData[monthYear] = { total: 0, count: 0 };
+                }
+                monthlyData[monthYear].total += rating;
+                monthlyData[monthYear].count += 1;
+            }
+        });
+        
+        const result = [];
+        for (const [month, data] of Object.entries(monthlyData)) {
+            result.push([month, (data.total / data.count).toFixed(2)]);
+        }
+        
+        return result;
+    }
+    
+    // Generate filtered report
+    async function generateFilteredReport(startDate, endDate) {
+        const filteredFeedback = filterDataByDateRange(startDate, endDate);
+        const monthlySatisfaction = calculateMonthlySatisfactionForRange(startDate, endDate);
+        
+        if (filteredFeedback.length === 0) {
             Swal.fire({
-                icon: 'error',
-                title: 'Missing Dates',
-                text: 'Please select both start and end dates'
+                icon: 'info',
+                title: 'No Data',
+                text: 'No feedback found in the selected date range'
             });
             return;
         }
         
-        if (!validateDates()) {
-            return;
-        }
+        // Generate chart image for filtered data
+        const chartImage = await drawFilteredChart(startDate, endDate);
         
-        // Close modal and generate filtered report
-        bootstrap.Modal.getInstance(document.getElementById('dateRangeModal')).hide();
-        generateFilteredReport(new Date(startDate), new Date(endDate));
-    } else {
-        // Close modal and generate full report
-        bootstrap.Modal.getInstance(document.getElementById('dateRangeModal')).hide();
-        generateFullReport();
+        generatePDFReport(filteredFeedback, monthlySatisfaction, startDate, endDate, chartImage);
     }
-});
-
-// Function to filter data by date range
-function filterDataByDateRange(startDate, endDate) {
-    const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
-    const filteredData = [];
-    
-    feedbackRows.forEach(row => {
-        const dateCell = row.querySelectorAll('td')[5].textContent.trim();
-        const rowDate = new Date(dateCell);
+    //full report
+    function generateFullReport() {
+        const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
+        const allFeedback = [];
         
-        if (rowDate >= startDate && rowDate <= endDate) {
+        feedbackRows.forEach(row => {
             const cells = row.querySelectorAll('td');
-            filteredData.push({
+            allFeedback.push({
                 rating: cells[0].textContent.trim(),
                 room: cells[1].textContent.trim(),
                 location: cells[2].textContent.trim(),
@@ -475,195 +554,138 @@ function filterDataByDateRange(startDate, endDate) {
                 equipment: cells[4].textContent.trim(),
                 date: cells[5].textContent.trim()
             });
-        }
-    });
-    
-    return filteredData;
-}
-
-// Function to calculate monthly satisfaction for date range
-function calculateMonthlySatisfactionForRange(startDate, endDate) {
-    const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
-    const monthlyData = {};
-    
-    feedbackRows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        const dateCell = cells[5].textContent.trim();
-        const rowDate = new Date(dateCell);
-        
-        if (rowDate >= startDate && rowDate <= endDate) {
-            const rating = parseFloat(cells[0].textContent.trim());
-            const monthYear = rowDate.toLocaleString('default', { month: 'short', year: 'numeric' });
-            
-            if (!monthlyData[monthYear]) {
-                monthlyData[monthYear] = { total: 0, count: 0 };
-            }
-            monthlyData[monthYear].total += rating;
-            monthlyData[monthYear].count += 1;
-        }
-    });
-    
-    const result = [];
-    for (const [month, data] of Object.entries(monthlyData)) {
-        result.push([month, (data.total / data.count).toFixed(2)]);
-    }
-    
-    return result;
-}
-
-// Generate filtered report
-async function generateFilteredReport(startDate, endDate) {
-    const filteredFeedback = filterDataByDateRange(startDate, endDate);
-    const monthlySatisfaction = calculateMonthlySatisfactionForRange(startDate, endDate);
-    
-    if (filteredFeedback.length === 0) {
-        Swal.fire({
-            icon: 'info',
-            title: 'No Data',
-            text: 'No feedback found in the selected date range'
-        });
-        return;
-    }
-    
-    // Generate chart image for filtered data
-    const chartImage = await drawFilteredChart(startDate, endDate);
-    
-    generatePDFReport(filteredFeedback, monthlySatisfaction, startDate, endDate, chartImage);
-}
-//full report
-function generateFullReport() {
-    const feedbackRows = document.querySelectorAll('#feedbackTable tbody tr');
-    const allFeedback = [];
-    
-    feedbackRows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        allFeedback.push({
-            rating: cells[0].textContent.trim(),
-            room: cells[1].textContent.trim(),
-            location: cells[2].textContent.trim(),
-            suggestions: cells[3].textContent.trim(),
-            equipment: cells[4].textContent.trim(),
-            date: cells[5].textContent.trim()
-        });
-    });
-    
-    // Use existing satisfaction data from server
-    const monthlyData = [];
-    <c:forEach var="rate" items="${satisfactionRates}">
-    monthlyData.push(['${rate[0]}', '${rate[1]}']);
-    </c:forEach>
-    
-    // Get chart image from existing chart
-    const chartImage = chart ? chart.getImageURI() : null;
-    
-    generatePDFReport(allFeedback, monthlyData, null, null, chartImage);
-}
-
-// Main PDF generation function (modified version of your existing code)
-function generatePDFReport(feedbackData, monthlySatisfaction, startDate, endDate, chartImage) {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 15;
-    let yPosition = 20;
-
-    const now = new Date();
-    const reportDate = now.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    });
-    const reportTime = now.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: true 
-    });
-
-    function checkPageBreak(requiredSpace) {
-        if (yPosition + requiredSpace > pageHeight - margin - 20) {
-            pdf.addPage();
-            yPosition = margin + 30;
-            return true;
-        }
-        return false;
-    }
-
-    function drawTable(headers, data, startY, columnWidths = null) {
-        const tableWidth = pageWidth - (2 * margin);
-        
-        if (!columnWidths) {
-            const colWidth = tableWidth / headers.length;
-            columnWidths = Array(headers.length).fill(colWidth);
-        }
-        
-        const rowHeight = 8;
-        let currentY = startY;
-
-        pdf.setFillColor(51, 51, 51);
-        pdf.setTextColor(255, 255, 255);
-        pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
-        
-        pdf.setFontSize(9);
-        pdf.setFont('helvetica', 'bold');
-        let xPos = margin;
-        headers.forEach((header, i) => {
-            pdf.text(header, xPos + 2, currentY + 5.5);
-            xPos += columnWidths[i];
         });
         
-        currentY += rowHeight;
-        pdf.setTextColor(0, 0, 0);
-
-        pdf.setFontSize(8);
-        pdf.setFont('helvetica', 'normal');
-        data.forEach((row, rowIndex) => {
-            if (currentY + rowHeight > pageHeight - margin - 20) {
+        // Use existing satisfaction data from server
+        const monthlyData = [];
+        <c:forEach var="rate" items="${satisfactionRates}">
+        monthlyData.push(['${rate[0]}', '${rate[1]}']);
+        </c:forEach>
+        
+        // Get chart image from existing chart
+        const chartImage = chart ? chart.getImageURI() : null;
+        
+        generatePDFReport(allFeedback, monthlyData, null, null, chartImage);
+    }
+    
+    // Main PDF generation function (modified version of your existing code)
+    function generatePDFReport(feedbackData, monthlySatisfaction, startDate, endDate, chartImage) {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 15;
+        let yPosition = 20;
+    
+        const now = new Date();
+        const reportDate = now.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        const reportTime = now.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: true 
+        });
+    
+        function checkPageBreak(requiredSpace) {
+            if (yPosition + requiredSpace > pageHeight - margin - 20) {
                 pdf.addPage();
-                currentY = margin + 30;
-                
-                pdf.setFillColor(51, 51, 51);
-                pdf.setTextColor(255, 255, 255);
-                pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
-                pdf.setFontSize(9);
-                pdf.setFont('helvetica', 'bold');
-                xPos = margin;
-                headers.forEach((header, i) => {
-                    pdf.text(header, xPos + 2, currentY + 5.5);
-                    xPos += columnWidths[i];
-                });
-                currentY += rowHeight;
-                pdf.setTextColor(0, 0, 0);
-                pdf.setFontSize(8);
-                pdf.setFont('helvetica', 'normal');
+                yPosition = margin + 30;
+                return true;
             }
-
-            if (rowIndex % 2 === 0) {
-                pdf.setFillColor(245, 245, 245);
-                pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
+            return false;
+        }
+    
+        function drawTable(headers, data, startY, columnWidths = null) {
+            const tableWidth = pageWidth - (2 * margin);
+            
+            if (!columnWidths) {
+                const colWidth = tableWidth / headers.length;
+                columnWidths = Array(headers.length).fill(colWidth);
             }
-
-            xPos = margin;
-            row.forEach((cell, i) => {
-                pdf.rect(xPos, currentY, columnWidths[i], rowHeight);
-                
-                let cellText = String(cell);
-                const colWidth = columnWidths[i];
-                
-                const maxChars = Math.floor(colWidth / 1.5);
-                if (cellText.length > maxChars) {
-                    cellText = cellText.substring(0, maxChars - 3) + '...';
-                }
-                
-                pdf.text(cellText, xPos + 2, currentY + 5.5, { maxWidth: colWidth - 4 });
+            
+            const rowHeight = 8;
+            let currentY = startY;
+        
+            pdf.setFillColor(51, 51, 51);
+            pdf.setTextColor(255, 255, 255);
+            pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
+            
+            pdf.setFontSize(9);
+            pdf.setFont('helvetica', 'bold');
+            let xPos = margin;
+            headers.forEach((header, i) => {
+                pdf.text(header, xPos + 2, currentY + 5.5);
                 xPos += columnWidths[i];
             });
             
             currentY += rowHeight;
-        });
-
-        return currentY;
-    }
+            pdf.setTextColor(0, 0, 0);
+        
+            pdf.setFontSize(8);
+            pdf.setFont('helvetica', 'normal');
+            data.forEach((row, rowIndex) => {
+                if (currentY + rowHeight > pageHeight - margin - 20) {
+                    pdf.addPage();
+                    currentY = margin + 30;
+                    
+                    pdf.setFillColor(51, 51, 51);
+                    pdf.setTextColor(255, 255, 255);
+                    pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
+                    pdf.setFontSize(9);
+                    pdf.setFont('helvetica', 'bold');
+                    xPos = margin;
+                    headers.forEach((header, i) => {
+                        pdf.text(header, xPos + 2, currentY + 5.5);
+                        xPos += columnWidths[i];
+                    });
+                    currentY += rowHeight;
+                    pdf.setTextColor(0, 0, 0);
+                    pdf.setFontSize(8);
+                    pdf.setFont('helvetica', 'normal');
+                }
+        
+                if (rowIndex % 2 === 0) {
+                    pdf.setFillColor(245, 245, 245);
+                    pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
+                }
+        
+                xPos = margin;
+                row.forEach((cell, i) => {
+                    pdf.rect(xPos, currentY, columnWidths[i], rowHeight);
+                    
+                    let cellText = String(cell || '');
+                    const colWidth = columnWidths[i];
+                    
+                    // Truncation rules based on column width
+                    let maxChars;
+                    if (colWidth <= 20) {
+                        maxChars = 10;  // Rating column (18mm)
+                    } else if (colWidth <= 30) {
+                        maxChars = 20; // Room column (28mm)
+                    } else if (colWidth <= 33) {
+                        maxChars = 17; // Location/Equipment columns (32mm)
+                    } else if (colWidth <= 35) {
+                        maxChars = 20; // Date column (30mm)
+                    } else {
+                        maxChars = 30; // Suggestions column (40mm)
+                    }
+                    
+                    if (cellText.length > maxChars) {
+                        cellText = cellText.substring(0, maxChars - 3) + '...';
+                    }
+                    
+                    pdf.text(cellText, xPos + 2, currentY + 5.5, { maxWidth: colWidth - 4 });
+                    xPos += columnWidths[i];
+                });
+                
+                currentY += rowHeight;
+            });
+        
+            return currentY;
+}
 
     function addFooter() {
         const footerY = pageHeight - 10;
@@ -676,7 +698,7 @@ function generatePDFReport(feedbackData, monthlySatisfaction, startDate, endDate
         pdf.setTextColor(128, 128, 128);
         
         pdf.text('Generated on: ' + reportDate + ' at ' + reportTime, margin, footerY);
-        pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'center' });
+        pdf.text('University of Santo Tomas - Facilities Management Office', pageWidth / 2, footerY, { align: 'left' });
     }
 
     const logoImg = new Image();
