@@ -373,18 +373,6 @@ h5, h6, input, textarea, td, tr, p, label, select, option {
     
 </div>
 
-<div class=" container-fluid p-0 d-flex border-bottom justify-content-between align-items-center flex-wrap">
-    <!-- Left side: Floor name -->
-    <div class="d-flex align-items-center" style="height: 60px;">
-  <!--<h1 class="display-5 display-md-5 display-lg-4 m-0" style="font-family: NeueHaasMedium, sans-serif; color: #212529;">
-    All Items
-  </h1>-->
-</div>
-
-    <!-- Right side: Floor selection links -->
-    <div class="d-flex flex-wrap gap-3" style="font-family: NeueHaasLight, sans-serif;">
-    </div>
-</div>
 
 
          
