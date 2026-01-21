@@ -597,8 +597,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-cancel-outline" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="generateReportBtn">Generate Report</button>
             </div>
         </div>
     </div>
