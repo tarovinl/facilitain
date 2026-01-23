@@ -247,6 +247,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script>
+    // Code was made with assistance of an AI tool
+    //ChatGPT Prompt: What solution should I make regarding archiving Categories which is referenced to many other tables?
     // Character counter function
     function updateCharCounter(input, counter) {
         const count = input.value.length;
