@@ -37,6 +37,8 @@
         }
     </style>
 </head>
+<!-- Code was made with assistance of an AI tool
+ChatGPT Prompt: Suggest other error pages a website needs -->
 <body class="bg-light d-flex justify-content-center align-items-center vh-100">
     <div class="container text-center">
         <div class="">

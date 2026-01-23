@@ -252,6 +252,8 @@
     </style>
 </head>
 <body>
+<!-- Code was made with assistance of an AI tool
+ChatGPT Prompt: How do I display images for each location -->
 <div class="container-fluid">
  <nav class="navbar bg-white py-3 mb-4 fixed-top border-bottom border-light-subtle" style="z-index: 1040;">
   <div class="container-fluid">
