@@ -230,6 +230,8 @@
 
 <!-- JavaScript Validation -->
 <script>
+    // Code was made with assistance of an AI tool
+    //ChatGPT Prompt: How to make dynamic dropdowns?
   function toggleOtherOption() {
         const equipmentSelect = document.getElementById("equipment");
         const otherDiv = document.getElementById("otherEquipmentDiv");

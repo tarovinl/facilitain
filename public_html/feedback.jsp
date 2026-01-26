@@ -274,6 +274,8 @@
 </div>
 
     <script>
+    // Code was made with assistance of an AI tool
+    //ChatGPT Prompt: How do i add a date range feature for the generate report function
         google.charts.load('current', { packages: ['corechart'] });
         google.charts.setOnLoadCallback(drawChart);
 

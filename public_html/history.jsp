@@ -222,6 +222,8 @@
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     
     <script>
+    // Code was made with assistance of an AI tool
+    //ChatGPT Prompt: How can i make the Data pagination go Server-side. Give me Instructions
         function formatDetails(rowData) {
             console.log('Row data received:', rowData);
             

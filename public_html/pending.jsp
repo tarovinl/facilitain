@@ -814,7 +814,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script> 
 
 <script>
-
+    // Code was made with assistance of an AI tool
+    //ChatGPT Prompt: How can i make the Data pagination go Server-side based on the previous code?
 function hideLoadingScreen() {
     $('#loadingScreen').fadeOut(300);
 }
@@ -1594,11 +1595,65 @@ $(document).ready(function() {
 </script>
 
 <script>
+     // Set minimum date and prevent manual entry of past dates
     window.onload = function() {
-        var today = new Date().toISOString().split("T")[0");
-        document.getElementById("dateMaint").min = today;
-        document.getElementById("dateEMaint").min = today;
+        var today = new Date().toISOString().split("T")[0];
+        
+        // Set minimum date for both date inputs
+        var dateMaintInput = document.getElementById("dateMaint");
+        var dateEMaintInput = document.getElementById("dateEMaint");
+        
+        if (dateMaintInput) {
+            dateMaintInput.min = today;
+            
+            // Additional validation on change
+            dateMaintInput.addEventListener('change', function() {
+                if (this.value < today) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Please select today or a future date',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                    this.value = today;
+                }
+            });
+        }
+        
+        if (dateEMaintInput) {
+            dateEMaintInput.min = today;
+            
+            // Additional validation on change
+            dateEMaintInput.addEventListener('change', function() {
+                if (this.value < today) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Please select today or a future date',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                    this.value = today;
+                }
+            });
+        }
     };
+    
+    // Also reset min date when modals open (in case page was open past midnight)
+    $('#addMaintenanceModal').on('show.bs.modal', function() {
+        var today = new Date().toISOString().split("T")[0];
+        document.getElementById("dateMaint").min = today;
+    });
+    
+    $('#editMaintenanceModal').on('show.bs.modal', function() {
+        var today = new Date().toISOString().split("T")[0];
+        document.getElementById("dateEMaint").min = today;
+    });
 </script>
 
 

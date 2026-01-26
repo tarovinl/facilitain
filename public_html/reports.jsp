@@ -613,6 +613,8 @@
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 
 <script>
+    // Code was made with assistance of an AI tool
+    //ChatGPT Prompt: Give me Simple Analytics that I can show in the generated report?
 google.charts.load('current', { packages: ['corechart'] });
 google.charts.setOnLoadCallback(drawCharts);
 
