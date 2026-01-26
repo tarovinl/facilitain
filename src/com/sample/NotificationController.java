@@ -116,8 +116,8 @@ public class NotificationController extends HttpServlet {
                          "TO_CHAR(n.CREATED_AT + INTERVAL '8' HOUR, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_AT, " +
                          "l.NAME AS locName, n.ITEM_LOC_ID, n.ITEM_NAME, " +
                          "ROW_NUMBER() OVER (" + orderBy + ") AS rn " +
-                         "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
-                         "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
+                         "FROM FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
+                         "JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
                          "WHERE (n.TYPE != 'ASSIGN' OR n.ITEM_NAME = ?) " + filterSql + 
                          ") WHERE rn > ? AND rn <= ?";
 
