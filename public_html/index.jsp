@@ -1,11 +1,29 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%
-    // Prevent caching - CRITICAL for security
+    
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
     response.setDateHeader("Expires", 0);
     
+    // Keep X-Frame-Options
+    response.setHeader("X-Frame-Options", "DENY");
     
+    String nonce = java.util.UUID.randomUUID().toString();
+    request.setAttribute("cspNonce", nonce);
+    
+    
+            response.setHeader("Content-Security-Policy",
+    "default-src 'self'; " +
+    "script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://accounts.google.com/gsi/client 'nonce-" + nonce + "'; " +
+    "style-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://accounts.google.com/gsi/style 'unsafe-inline'; " +
+    "font-src 'self' https://fonts.gstatic.com; " +
+    "img-src 'self' data: https:; " +
+    "connect-src 'self' https://accounts.google.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
+    "frame-src https://accounts.google.com; " +
+    "frame-ancestors 'none'; " +
+    "base-uri 'self'; " +
+    "form-action 'self'"
+);
 %>
 
 <!DOCTYPE html>
@@ -14,16 +32,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Facilitain</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" 
+      rel="stylesheet">
     <!-- Use context path for CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/custom-fonts.css">
     <!-- Use context path for favicon -->
     <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/resources/images/FMO-Logo.ico">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script nonce="${cspNonce}" 
+        src="https://accounts.google.com/gsi/client" 
+        async 
+        defer
+        ></script>
 
-    <script>
+    <script nonce="${cspNonce}">
         function handleCredentialResponse(response) {
             try {
                 const base64Url = response.credential.split('.')[1];
@@ -71,7 +97,7 @@
         }
     </script>
     
-    <style>
+    <style nonce="${cspNonce}">
         body, h1, h2, h3, h4, h5, th, button, input[type="button"], input[type="submit"] {
             font-family: "Montserrat", sans-serif !important;
             font-weight: 700 !important;
@@ -142,14 +168,26 @@
             text-decoration: underline;
             color: #000;
         }
+        
+        .custom-bg {
+    background: linear-gradient(rgba(30, 30, 30, 0.85), rgba(30, 30, 30, 0.85)), 
+        url('${pageContext.request.contextPath}/resources/images/arch-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+        }
+        
+        .logo-img {
+    max-height: 8rem;
+        }
+        
+        .privacy-text {
+    font-size: 0.80rem;
+     color: #000000 !important;
+}
     </style>
 </head>
-<body class="d-flex flex-column min-vh-100" 
-     style="background: linear-gradient(rgba(30, 30, 30, 0.85), rgba(30, 30, 30, 0.85)), 
-        url('${pageContext.request.contextPath}/resources/images/arch-bg.jpg'); 
-       background-size: cover; 
-       background-position: center; 
-       background-repeat: no-repeat;">
+<body class="d-flex flex-column min-vh-100 custom-bg">
        
        <!-- Code was made with assistance of an AI tool
 ChatGPT Prompt: How to make a log-in function with Google Auth-->
@@ -159,9 +197,8 @@ ChatGPT Prompt: How to make a log-in function with Google Auth-->
             <div class="d-flex col-md-6 align-items-center mb-4 mb-md-0">
                <!-- Use context path for logo -->
                <img src="${pageContext.request.contextPath}/resources/images/FACILITAIN_WLOGO3.png" 
-                    alt="FACILITAIN" 
-                    class="img-fluid mb-4 d-block mx-auto" 
-                    style="max-height: 8rem;">
+     alt="FACILITAIN" 
+     class="img-fluid mb-4 d-block mx-auto logo-img">
             </div>
             <div class="col-md-6">
                 <div class="login-container p-4 p-md-5 rounded-1">
@@ -186,7 +223,7 @@ ChatGPT Prompt: How to make a log-in function with Google Auth-->
                       </div>
                     </div>
                     <hr class="my-3">
-                        <p class="montserrat-regular text-start mb-0" style="font-size: 0.80rem; color: Black;">
+                        <p class="montserrat-regular text-start mb-0 privacy-text">
                           FACILITAIN values your privacy. View our 
                           <a href="#" 
                              class="privacy-link" 
@@ -204,6 +241,9 @@ ChatGPT Prompt: How to make a log-in function with Google Auth-->
     <jsp:include page="privacyClient.jsp"/>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+        nonce="${cspNonce}"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
 </html>
