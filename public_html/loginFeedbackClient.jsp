@@ -152,6 +152,8 @@
         </style>
         <script src="https://accounts.google.com/gsi/client" async defer></script>
         <script>
+             // Code was made with assistance of an AI tool
+             //ChatGPT Prompt: Respondents must have a different landing page
             // Store credential response temporarily
             let pendingCredential = null;
             

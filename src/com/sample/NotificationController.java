@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.List;
 public class NotificationController extends HttpServlet {
 
     @Override
+    
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Notification> notifications = new ArrayList<>();
@@ -75,6 +78,7 @@ public class NotificationController extends HttpServlet {
         } else if ("unread".equals(filterBy)) {
             filterSql = "AND n.IS_READ = 0";
         }
+        
 
         // First, get the total count for pagination
         String countSql = "SELECT COUNT(*) FROM FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
@@ -83,6 +87,7 @@ public class NotificationController extends HttpServlet {
         
         int totalNotifications = 0;
         try (Connection conn = PooledConnection.getConnection()) {
+            setSessionTimezone(conn);
             try (PreparedStatement countStmt = conn.prepareStatement(countSql)) {
                 countStmt.setString(1, sessionUserName != null ? sessionUserName : "");
                 try (ResultSet countRs = countStmt.executeQuery()) {
@@ -107,15 +112,17 @@ public class NotificationController extends HttpServlet {
 
         // Base SQL query with user filtering for ASSIGN notifications and pagination
         String baseSql = "SELECT * FROM (" +
-                        "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, n.CREATED_AT, " +
-                        "l.NAME AS locName, n.ITEM_LOC_ID, n.ITEM_NAME, " +
-                        "ROW_NUMBER() OVER (" + orderBy + ") AS rn " +
-                        "FROM FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
-                        "JOIN FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
-                        "WHERE (n.TYPE != 'ASSIGN' OR n.ITEM_NAME = ?) " + filterSql + 
-                        ") WHERE rn > ? AND rn <= ?";
+                         "SELECT n.NOTIFICATION_ID, n.MESSAGE, n.TYPE, n.IS_READ, " +
+                         "TO_CHAR(n.CREATED_AT + INTERVAL '8' HOUR, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_AT, " +
+                         "l.NAME AS locName, n.ITEM_LOC_ID, n.ITEM_NAME, " +
+                         "ROW_NUMBER() OVER (" + orderBy + ") AS rn " +
+                         "FROM C##FMO_ADM.FMO_ITEM_NOTIFICATIONS n " +
+                         "JOIN C##FMO_ADM.FMO_ITEM_LOCATIONS l ON n.ITEM_LOC_ID = l.ITEM_LOC_ID " +
+                         "WHERE (n.TYPE != 'ASSIGN' OR n.ITEM_NAME = ?) " + filterSql + 
+                         ") WHERE rn > ? AND rn <= ?";
 
         try (Connection conn = PooledConnection.getConnection()) {
+            setSessionTimezone(conn);
             try (PreparedStatement stmt = conn.prepareStatement(baseSql)) {
                 stmt.setString(1, sessionUserName != null ? sessionUserName : "");
                 stmt.setInt(2, offset);
@@ -166,6 +173,13 @@ public class NotificationController extends HttpServlet {
         request.setAttribute("perPage", perPage);
         
         request.getRequestDispatcher("notification.jsp").forward(request, response);
+    }
+    
+    private void setSessionTimezone(Connection con) throws SQLException {
+        try (PreparedStatement stmt = con.prepareStatement(
+            "ALTER SESSION SET TIME_ZONE = 'Asia/Manila'")) {
+            stmt.execute();
+        }
     }
 
     @Override

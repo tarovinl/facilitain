@@ -150,6 +150,9 @@
        background-size: cover; 
        background-position: center; 
        background-repeat: no-repeat;">
+       
+       <!-- Code was made with assistance of an AI tool
+ChatGPT Prompt: How to make a log-in function with Google Auth-->
 
     <div class="container text-center">
         <div class="row">

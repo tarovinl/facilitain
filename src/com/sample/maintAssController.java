@@ -66,7 +66,7 @@ public class maintAssController extends HttpServlet {
                    return;                                       
                }                                                 
 
-               // Load initial page data (minimal - just dropdowns and constants)
+               // Load initial page data 
                loadInitialPageData(request, response);
             }
     
@@ -301,7 +301,7 @@ public class maintAssController extends HttpServlet {
                .append("  JOIN FMO_ADM.FMO_ITEM_MAINTENANCE_STATUS s ON i.MAINTENANCE_STATUS = s.STATUS_ID ")
                .append("  WHERE i.ITEM_STAT_ID = 1 AND i.MAINTENANCE_STATUS = 2");
 
-            // Add search filter if provided - STRIP WHITESPACE
+            // Add search filter if provided 
             if (searchValue != null && !searchValue.isEmpty()) {
                 sql.append(" AND (")
                    .append("    REPLACE(UPPER(i.NAME), ' ', '') LIKE ? OR ")
@@ -415,7 +415,7 @@ public class maintAssController extends HttpServlet {
 
 
     /**
-     * Handles AJAX request for scheduled maintenance table with server-side pagination - FIXED to filet archived items
+     * Handles AJAX request for scheduled maintenance table with server-side pagination 
      */
     
     private void handleScheduledTableAjax(HttpServletRequest request, HttpServletResponse response) 
